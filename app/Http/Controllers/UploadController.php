@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Upload;
 use Illuminate\Http\Request;
 
-
 class UploadController extends Controller {
 
     public function add_fields(Request $request) {
@@ -61,11 +60,16 @@ class UploadController extends Controller {
 
             foreach ($saved_images_directory as $saved_image) {
 
-                $start_pos = strrpos($saved_image, '-') + 1;
-                $end_pos = strrpos($saved_image, '.');
-                $chars = $end_pos - $start_pos;
-                $page_number = substr($saved_image, $start_pos, $chars);
-                $page_number += 1;
+                $start_pos = strrpos($saved_image, '-');
+                if($start_pos !== false) {
+                    $start_pos = strrpos($saved_image, '-') + 1;
+                    $end_pos = strrpos($saved_image, '.');
+                    $chars = $end_pos - $start_pos;
+                    $page_number = substr($saved_image, $start_pos, $chars);
+                    $page_number += 1;
+                } else {
+                    $page_number = 1;
+                }
 
                 $upload                = new Upload();
                 $upload -> file_id       = $file_id;
