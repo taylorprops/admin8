@@ -1,0 +1,181 @@
+.text-orange {
+  color: #d14d00;
+}
+
+.page-add-fields {
+  width: 90%;
+  max-width: 90% !important;
+}
+
+.page-add-fields .file-view {
+  position: relative;
+  width: 100%;
+  height: calc(100VH - 140px);
+  overflow-y: scroll;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page-add-fields .file-view-page-info {
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.page-add-fields .file-view-page-container {
+  opacity: 0.2;
+}
+
+.page-add-fields .file-view-page-container.active {
+  opacity: 1 !important;
+}
+
+.page-add-fields .file-view-image {
+  position: relative;
+}
+
+.page-add-fields .file-view-thumb-container {
+  border: 2px solid transparent;
+}
+
+.page-add-fields .file-view-thumb-container.active {
+  border: 2px solid #007bff;
+}
+
+.page-add-fields .file-view-thumb-footer {
+  font-size: 0.7rem;
+}
+
+.page-add-fields .field-wrapper {
+  padding: 5px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.page-add-fields .field-wrapper.active {
+  border: 2px dotted #090;
+}
+
+.page-add-fields .text-line-div {
+  position: relative;
+  padding-bottom: 1px;
+  resize: both;
+  overflow: visible;
+  z-index: 3;
+  opacity: 0.3;
+}
+
+.page-add-fields .text-line-div.active {
+  z-index: 5;
+  opacity: 1;
+}
+
+.page-add-fields .text-line-div.standard {
+  background: rgba(0, 123, 255, 0.6);
+}
+
+.page-add-fields .text-line-div.group {
+  background: rgba(194, 78, 0, 0.6);
+}
+
+.page-add-fields .text-line-div-feild {
+  resize: none;
+  height: 30px;
+  width: 200px;
+  background: rgba(0, 123, 255, 0.6);
+}
+
+.page-add-fields .text-line {
+  height: 100%;
+  border-bottom: 1px solid #007bff;
+}
+
+.page-add-fields .field-set {
+  z-index: 1;
+}
+
+.page-add-fields .field-set .field-options-holder {
+  position: absolute;
+  top: -45px;
+  width: 200px;
+  overflow: visible;
+  background: #fff;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.page-add-fields .field-set .field-handle {
+  cursor: move;
+}
+
+.page-add-fields .field-set .field-close {
+  cursor: pointer;
+}
+
+.page-add-fields .field-set .ui-resizable-handle {
+  position: absolute;
+  background-color: #007bff;
+  width: 8px;
+  height: 8px;
+}
+
+.page-add-fields .field-set .ui-resizable-se {
+  bottom: -5px;
+  right: -5px;
+  cursor: se-resize;
+}
+
+.page-add-fields .field-set .ui-resizable-sw {
+  bottom: -5px;
+  left: -5px;
+  cursor: sw-resize;
+}
+
+.page-add-fields .field-set .ui-resizable-nw {
+  top: -5px;
+  left: -5px;
+  cursor: nw-resize;
+}
+
+.page-add-fields .field-set .ui-resizable-ne {
+  top: -5px;
+  right: -5px;
+  cursor: ne-resize;
+}
+
+.page-add-fields .field-set .field-textline-addline {
+  cursor: pointer;
+}
+
+.page-add-fields .field-set .add-line-plus {
+  position: absolute;
+  top: 6px;
+}
+
+.page-add-fields .field-set .add-new-line-div {
+  display: none;
+  position: absolute;
+  width: 208px;
+  top: -25px;
+  left: -20px;
+  background: #fff;
+  border: 1px solid #007bff;
+  padding: 10px;
+  z-index: 5;
+}
+
+.page-add-fields .field-set .add-new-line-content {
+  text-align: center;
+}
+
+.page-add-fields .field-set .edit-properties-div {
+  display: none;
+  position: absolute;
+  width: auto;
+  background: #fff;
+  border: 1px solid #007bff;
+  padding: 10px;
+  z-index: 5;
+  text-align: left;
+}
+
