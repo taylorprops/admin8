@@ -190,10 +190,13 @@ function set_field_textline_options(ele, h, w, x, y, id, rect, container) {
     $('.field-properties-textline').off('click').on('click', function () {
         var edit_html;
         var groupid = $('#field_textline_groupid').val();
-        if (groupid != '') {
-            edit_html = 'GroupId: ' + groupid + '<br>';
+
+        var grouped = '';
+        if ($('.c_' + groupid).length > 1) {
+            grouped = '<span class="text-orange font-weight-bold"><i class="fad fa-layer-group"></i> Grouped</span><br>';
         }
-        edit_html = edit_html + '<div class="my-2">Field ID<br><input type="text" class="field-textline-input" data-type="id" data-fieldid="' + id + '" data-groupid="' + groupid + '"></div> \
+
+        edit_html = grouped + '<div class="my-2">Field ID<br><input type="text" class="field-textline-input" data-type="id" data-fieldid="' + id + '" data-groupid="' + groupid + '"></div> \
             <div class="d-flex justify-content-around mt-3"> \
                 <a href="javascript: void(0);" class="btn btn-success btn-sm shadow" id="save_field_properties_textline">Save</a> \
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm field-close-properties-textline">Cancel</a> \

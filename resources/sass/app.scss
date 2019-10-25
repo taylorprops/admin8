@@ -1,6 +1,18 @@
-// Doc Management
-@import "variables";
-@import "doc_management/add_fields";
-@import "doc_management/files";
-@import "doc_management/upload";
-@import "global";
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// SECTIONS
+
+/////////////// DOC MANAGEMENT ///////////////
+
+// Pages
+    // doc_management
+@import 'doc_management/add_fields.scss';
+@import 'doc_management/files.scss';
+@import 'doc_management/upload.scss';
