@@ -2,6 +2,7 @@
 
 
 // PAGE List of all files
+Route::get('/', 'UploadController@get_docs');
 Route::get('/doc_management', 'UploadController@get_docs') -> name('doc_management');
 // PAGE Upload page
 Route::get('/upload', function () {
