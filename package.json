@@ -34,4 +34,15 @@
   "main": "webpack.mix.js",
   "directories": {
     "test": "tests"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/taylorprops/admin/issues"
+  },
+  "homepage": "https://github.com/taylorprops/admin#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taylorprops/admin.git"
   }
+}
