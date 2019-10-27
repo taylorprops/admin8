@@ -448,15 +448,15 @@ function save() {
         field_data['field_id'] = $(this).data('fieldid');
         field_data['group_id'] = $(this).data('groupid');
         field_data['page'] = $(this).data('page');
-        field_data['type'] = $(this).data('type');
-        field_data['x'] = $(this).data('x');
-        field_data['y'] = $(this).data('y');
-        field_data['h'] = $(this).data('h');
-        field_data['w'] = $(this).data('w');
-        field_data['xp'] = $(this).data('xp');
-        field_data['yp'] = $(this).data('yp');
-        field_data['hp'] = $(this).data('hp');
-        field_data['wp'] = $(this).data('wp');
+        field_data['field_type'] = $(this).data('type');
+        field_data['left'] = $(this).data('x');
+        field_data['top'] = $(this).data('y');
+        field_data['height'] = $(this).data('h');
+        field_data['width'] = $(this).data('w');
+        field_data['left_perc'] = $(this).data('xp');
+        field_data['top_perc'] = $(this).data('yp');
+        field_data['height_perc'] = $(this).data('hp');
+        field_data['width_perc'] = $(this).data('wp');
 
         $(this).find('.field-data-name').each(function () {
             if ($(this).val() != '') {
