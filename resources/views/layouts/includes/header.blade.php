@@ -1,15 +1,15 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Document Management</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <a class="navbar-brand text-white" href="#">Document Management</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon text-white"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="/doc_management">Files</a>
+                <a class="nav-link text-white" href="/doc_management">Files</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/upload">Add File</a>
+                <a class="nav-link text-white" href="/upload">Add File</a>
             </li>
         </ul>
     </div>

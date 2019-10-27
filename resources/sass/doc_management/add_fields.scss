@@ -5,7 +5,7 @@
     .file-view {
         position: relative;
         width: 100%;
-        height: calc(100VH - 140px);
+        height: calc(100vh - 140px);
         overflow-y: scroll;
         margin-left: auto;
         margin-right: auto;
@@ -52,6 +52,19 @@
 
     .field-wrapper.active {
         border: 2px dotted #090;
+    }
+
+    .field-view-name {
+        position: absolute;
+        top: -30px;
+        left: 0px;
+        font-size: .8rem;
+        background: rgba($primary-color, 0.5);
+        padding: 3px;
+        color: white;
+    }
+    .field-view-name.active {
+        background: rgba($primary-color, 1);
     }
 
     // Fields
@@ -169,7 +182,7 @@
         .edit-properties-div {
             display: none;
             position: absolute;
-            width: auto;
+            width: 450px;
             background: #fff;
             border: 1px solid $primary-color;
             padding: 10px;

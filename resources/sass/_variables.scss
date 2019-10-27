@@ -1,5 +1,5 @@
 // Body
-$body-bg: #f8fafc;
+$body-bg: #ffffff;
 
 // Typography
 $font-family-sans-serif: 'Nunito', sans-serif;
@@ -7,22 +7,21 @@ $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 
 // Colors
-$blue: #3490dc;
+$blue: #007bff;
 $indigo: #6574cd;
 $purple: #9561e2;
 $pink: #f66d9b;
 $red: #e3342f;
-$orange: #f6993f;
+$orange: #ee5a46;
 $yellow: #ffed4a;
-$green: #38c172;
+$green: #30a730;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
 
-
-$blue: #007bff;
-$green: #30a730;
-$orange: #fa4f00;
-
+$theme-colors: (
+    "primary": $blue,
+    "secondary": $orange
+);
 $primary-color: $blue;
 $secondary-color: $orange;
 

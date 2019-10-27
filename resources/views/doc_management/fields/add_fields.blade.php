@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid page-add-fields file-view-container">
     <div class="row">
-        <div class="col-8 ml-5">
+        <div class="col-8 ml-2">
             <div class="d-flex flex-row field-container-textline p-2">
                 <div class="field-wrapper mr-4" data-type="textline">
                     <div class="text-line-div-feild not-resizable rounded mt-1">
@@ -11,10 +11,11 @@
                     </div>
                 </div>
                 <div class="field-wrapper mr-4"><a href="javascript:void(0)" class="btn btn-primary">Check Box</a></div>
+                <div><a href="javascript:void(0)" class="btn btn-success" id="save_fields">Save</a></div>
             </div>
         </div>
         <div class="col-2">
-            <div class="float-right text-center">Zoom<input type="range" class="form-control-range" id="zoom_control" min="50" max="100" value="100"></div>
+            <div class="float-right text-center mr-4 zoom-container">Zoom<input type="range" class="form-control-range" id="zoom_control" min="50" max="100" value="100"></div>
         </div>
         <div class="col-2"></div>
     </div>
@@ -64,13 +65,17 @@
         </div>
     </div>
 </div><!-- ./ .container -->
-
+<input type="hidden" id="document_id" value="{{ $file['id'] }}">
 <input type="hidden" id="active_page" value="1">
 <input type="hidden" id="active_field">
 <input type="hidden" id="field_textline_height" value="30">
 <input type="hidden" id="field_textline_width" value="200">
 <input type="hidden" id="field_textline_x">
 <input type="hidden" id="field_textline_y">
+<input type="hidden" id="field_textline_heightp" value="30">
+<input type="hidden" id="field_textline_widthp" value="200">
+<input type="hidden" id="field_textline_xp">
+<input type="hidden" id="field_textline_yp">
 <input type="hidden" id="field_textline_groupid">
 
 @endsection
