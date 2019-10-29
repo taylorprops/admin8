@@ -1,6 +1,6 @@
 .page-add-fields {
-    width: 90%;
-    max-width: 90% !important;
+    width: 100%;
+    max-width: 100% !important;
 
     .file-view {
         position: relative;
@@ -103,7 +103,7 @@
     // end textlines
 
     // field divs after dropping
-    .field-set {
+    .field-div {
         z-index: 1;
 
         .field-options-holder {

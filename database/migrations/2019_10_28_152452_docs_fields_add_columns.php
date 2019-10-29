@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Uploads extends Migration
+class DocsFieldsAddColumns extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class Uploads extends Migration
      */
     public function up()
     {
-        Schema::create('uploads', function (Blueprint $table) {
-            $table -> bigIncrements('id');
-            $table -> timestamps();
-            $table -> string('filename');
-            $table -> string('file_location');
+        Schema::table('docs_fields', function (Blueprint $table) {
+            $table -> softDeletes();
         });
     }
 
@@ -28,6 +25,8 @@ class Uploads extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('uploads');
+        Schema::table('docs_fields', function (Blueprint $table) {
+            //
+        });
     }
 }

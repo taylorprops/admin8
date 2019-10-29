@@ -6,11 +6,7 @@ use Illuminate\Http\Request;
 
 class UploadController extends Controller {
 
-    public function add_fields(Request $request) {
 
-        $files = Upload::whereFileId($request -> file_id) -> orderBy('page_number') -> get() -> toArray();
-        return view('/doc_management/fields/add_fields', ['files' => $files]);
-    }
 
     public function get_docs(Request $request) {
 

@@ -10,4 +10,6 @@ function directory($directory) {
     closedir($handler);
     return $results;
 }
+
+
 ?>

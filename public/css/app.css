@@ -10649,8 +10649,8 @@ a.text-dark:focus {
 }
 
 .page-add-fields {
-  width: 90%;
-  max-width: 90% !important;
+  width: 100%;
+  max-width: 100% !important;
 }
 
 .page-add-fields .file-view {
@@ -10749,11 +10749,11 @@ a.text-dark:focus {
   border-bottom: 1px solid #007bff;
 }
 
-.page-add-fields .field-set {
+.page-add-fields .field-div {
   z-index: 1;
 }
 
-.page-add-fields .field-set .field-options-holder {
+.page-add-fields .field-div .field-options-holder {
   position: absolute;
   top: -45px;
   width: 200px;
@@ -10764,55 +10764,55 @@ a.text-dark:focus {
   padding: 5px;
 }
 
-.page-add-fields .field-set .field-handle {
+.page-add-fields .field-div .field-handle {
   cursor: move;
 }
 
-.page-add-fields .field-set .field-close {
+.page-add-fields .field-div .field-close {
   cursor: pointer;
 }
 
-.page-add-fields .field-set .ui-resizable-handle {
+.page-add-fields .field-div .ui-resizable-handle {
   position: absolute;
   background-color: #007bff;
   width: 8px;
   height: 8px;
 }
 
-.page-add-fields .field-set .ui-resizable-se {
+.page-add-fields .field-div .ui-resizable-se {
   bottom: -5px;
   right: -5px;
   cursor: se-resize;
 }
 
-.page-add-fields .field-set .ui-resizable-sw {
+.page-add-fields .field-div .ui-resizable-sw {
   bottom: -5px;
   left: -5px;
   cursor: sw-resize;
 }
 
-.page-add-fields .field-set .ui-resizable-nw {
+.page-add-fields .field-div .ui-resizable-nw {
   top: -5px;
   left: -5px;
   cursor: nw-resize;
 }
 
-.page-add-fields .field-set .ui-resizable-ne {
+.page-add-fields .field-div .ui-resizable-ne {
   top: -5px;
   right: -5px;
   cursor: ne-resize;
 }
 
-.page-add-fields .field-set .field-textline-addline {
+.page-add-fields .field-div .field-textline-addline {
   cursor: pointer;
 }
 
-.page-add-fields .field-set .add-line-plus {
+.page-add-fields .field-div .add-line-plus {
   position: absolute;
   top: 6px;
 }
 
-.page-add-fields .field-set .add-new-line-div {
+.page-add-fields .field-div .add-new-line-div {
   display: none;
   position: absolute;
   width: 208px;
@@ -10824,11 +10824,11 @@ a.text-dark:focus {
   z-index: 5;
 }
 
-.page-add-fields .field-set .add-new-line-content {
+.page-add-fields .field-div .add-new-line-content {
   text-align: center;
 }
 
-.page-add-fields .field-set .edit-properties-div {
+.page-add-fields .field-div .edit-properties-div {
   display: none;
   position: absolute;
   width: 450px;
