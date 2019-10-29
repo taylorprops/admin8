@@ -23,7 +23,7 @@
 
         <?php $total_pages = count($files); ?>
 
-        <div class="col-10">
+        <div class="col-11 pr-0">
 
             <div class="container-fluid">
                 <div class="file-viewer-container p-1 mx-auto">
@@ -151,11 +151,11 @@
 
             </div>
         </div>
-        <div class="col-2">
+        <div class="col-1 pl-0">
             <div class="file-view p-2" id="thumb_viewer">
                 @foreach($files as $file)
                 <?php $c = $file['page_number']; ?>
-                <div class="file-view-thumb-container w-75 mx-auto <?php echo($c == 1) ? 'active' : ''; ?>" id="thumb_{{ $c }}" data-id="{{ $c }}">
+                <div class="file-view-thumb-container w-100 <?php echo($c == 1) ? 'active' : ''; ?>" id="thumb_{{ $c }}" data-id="{{ $c }}">
                     <div class="file-view-thumb">
                         <a href="javascript: void(0)"><img class="file-thumb w-100 h-100" src="{{ $file['file_location'] }}"></a>
                     </div>

@@ -83,7 +83,7 @@ $(document).ready(function() {
                 $('.focused').hide();
 
                 //create field and attach to container
-                var field = field_text(h,w,x,y,id,id, $('#active_page').val());
+                var field = field_text(h, w, x, y, id, id, $('#active_page').val());
                 // append new field
                 $(container).append(field);
 
@@ -103,8 +103,6 @@ $(document).ready(function() {
                 setTimeout(function () {
 
                     $('#field_textline_groupid').val(id);
-                    //$('#field_' + id).data('groupid', id);
-
                     $('.field-div').removeClass('active');
                     $('#field_' + id).addClass('active');
 
@@ -121,6 +119,7 @@ $(document).ready(function() {
         if(!$(e.target).is('.field-div *')){
             $('.focused, .field-popup').hide();
             $('#field_textline_groupid').val('');
+            $('.field-div').removeClass('active');
             $('.form-div').each(function () {
                 $(this).find('select, input').each(function () {
                     $(this).val($(this).data('defaultvalue'));
@@ -137,7 +136,6 @@ $(document).ready(function() {
             $('.field-div').removeClass('active');
             $(this).addClass('active');
             set_hwxy($(this), $(this).height(), $(this).width(), $(this).position().left, $(this).position().top, $(this).data('groupid'), 'textline');
-
         })
         .resizable({
             containment: container, //$('.file-view-image'), // tried containment: $('#page_div_'+$('#active_field').val()), but not go
