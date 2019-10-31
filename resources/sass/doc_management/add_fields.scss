@@ -25,7 +25,7 @@
         opacity: 1 !important;
     }
 
-    .file-view-image {
+    .field-container {
         position: relative;
     }
 
@@ -54,18 +54,17 @@
         border: 2px dotted #090;
     }
 
-    .field-view-name {
+
+    .field-status-div {
         position: absolute;
-        top: -30px;
+        bottom: -35px;
         left: 0px;
-        font-size: .8rem;
-        background: rgba($primary-color, 0.5);
-        padding: 3px;
-        color: white;
+        background: rgba(255, 255, 255, .9);
+        color: $primary-color;
+        padding: 5px;
     }
-    .field-view-name.active {
-        background: rgba($primary-color, 1);
-    }
+
+
 
     // Fields
 

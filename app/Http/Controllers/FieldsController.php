@@ -10,7 +10,7 @@ use App\Upload;
 class FieldsController extends Controller
 {
     public function get_common_fields(Request $request) {
-        $fields = CommonFields::select('field_name') -> orderBy('field_name', 'ASC') -> get();
+        $fields = CommonFields::select('field_name') -> orderBy('order', 'ASC') -> get();
         return (string) $fields;
     }
 

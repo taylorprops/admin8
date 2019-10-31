@@ -10675,7 +10675,7 @@ a.text-dark:focus {
   opacity: 1 !important;
 }
 
-.page-add-fields .file-view-image {
+.page-add-fields .field-container {
   position: relative;
 }
 
@@ -10701,18 +10701,13 @@ a.text-dark:focus {
   border: 2px dotted #090;
 }
 
-.page-add-fields .field-view-name {
+.page-add-fields .field-status-div {
   position: absolute;
-  top: -30px;
+  bottom: -35px;
   left: 0px;
-  font-size: 0.8rem;
-  background: rgba(0, 123, 255, 0.5);
-  padding: 3px;
-  color: white;
-}
-
-.page-add-fields .field-view-name.active {
-  background: #007bff;
+  background: rgba(255, 255, 255, 0.9);
+  color: #007bff;
+  padding: 5px;
 }
 
 .page-add-fields .text-line-div {

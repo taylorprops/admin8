@@ -20,11 +20,13 @@ $cyan: #6cb2eb;
 
 $theme-colors: (
     "primary": $blue,
-    "secondary": $orange
+    "secondary": $orange,
+    "danger": $red
 );
+
 $primary-color: $blue;
 $secondary-color: $orange;
-
+$danger-color: $red;
 
 .text-orange {
     color: $orange;
