@@ -8,9 +8,6 @@ $(document).ready(function() {
         $('#active_field').val($(this).data('type'));
     });
 
-    // didnt work trying to disable click on non active page
-    // $('.file-view-page-container *').not('.file-view-page-container.active *').unbind('click, dblclick');
-
 
     if ($('.text-line-div').length > 0) {
 
@@ -18,7 +15,7 @@ $(document).ready(function() {
         $('.text-line-div').each(function () {
             // get bounding box coordinates
             var rect = this.getBoundingClientRect();
-            var container = $(this).closest('.file-view-image');
+            var container = $(this).closest('.field-container');
 
             var h = $(this).css('height').replace(/px/, '');
             var w = $(this).css('width').replace(/px/, '');
@@ -44,13 +41,16 @@ $(document).ready(function() {
 
         $('.focused').hide();
 
+
         $('.group_' + group_id).find('.field-textline-addline-container').hide();
         $('.group_' + group_id).find('.field-textline-addline-container').last().show();
+
+        field_status();
 
     }
 
     // on page double click add field
-    $('#file_viewer').on('dblclick', '.file-view-image', function (e) {
+    $('#file_viewer').on('dblclick', '.file-view-page-container.active', function (e) { // changed from .field-container
 
         // disable zoom
         //$('.zoom-container').hide();
@@ -87,6 +87,8 @@ $(document).ready(function() {
                 // append new field
                 $(container).append(field);
 
+                field_status();
+
                 // clear other field when changing name
                 $('.field-data-name').each(function() {
                     $(this).change(function() {
@@ -115,11 +117,12 @@ $(document).ready(function() {
 
     ///////////////// textlines /////////////////////////
     // on page click hide all focused els
-    $(document).on('click', '.file-view-image', function (e) {
+    $(document).on('click', '.field-container', function (e) {
         if(!$(e.target).is('.field-div *')){
             $('.focused, .field-popup').hide();
             $('#field_textline_groupid').val('');
             $('.field-div').removeClass('active');
+            // reset name fields
             $('.form-div').each(function () {
                 $(this).find('select, input').each(function () {
                     $(this).val($(this).data('defaultvalue'));
@@ -138,7 +141,7 @@ $(document).ready(function() {
             set_hwxy($(this), $(this).height(), $(this).width(), $(this).position().left, $(this).position().top, $(this).data('groupid'), 'textline');
         })
         .resizable({
-            containment: container, //$('.file-view-image'), // tried containment: $('#page_div_'+$('#active_field').val()), but not go
+            containment: container, //$('.field-container'), // tried containment: $('#page_div_'+$('#active_field').val()), but not go
             handles: { 'ne': '.ui-resizable-ne', 'nw': '.ui-resizable-nw', 'se': '.ui-resizable-se', 'sw': '.ui-resizable-sw' },
             maxHeight: 50,
             minHeight: 15,
@@ -201,7 +204,6 @@ $(document).ready(function() {
                 var w = field_div.width();
                 var x = field_div.position().left;
                 var y = field_div.position().top;
-                console.log(h, w, x, y);
                 // drop the new line 10px below the original
                 y = y + h + 10;
 
@@ -210,9 +212,11 @@ $(document).ready(function() {
                 id = Date.now();
                 var field = field_text(h,w,x,y,id,group_id, $('#active_page').val());
                 // append new field
-                field_div.closest('.file-view-image').append(field);
+                field_div.closest('.field-container').append(field);
 
                 var new_ele = $('#field_' + id);
+
+                field_status();
 
                 add_lines.toggle();
                 setTimeout(function() {
@@ -270,6 +274,10 @@ $(document).ready(function() {
 
             var cw = container.width();
             var ch = container.height();
+
+            x = edit_div.closest('.field-div').position().left;
+            y = edit_div.closest('.field-div').position().top;
+
             if (x > (cw / 2)) {
                 edit_div.css({ right: '-40px' });
             } else {
@@ -282,7 +290,7 @@ $(document).ready(function() {
             }
 
             var groupid = $('#field_textline_groupid').val();
-            if ($('.group_' + groupid).length > 1) { // TODO might need to change this back to 0
+            if ($('.group_' + groupid).length > 1) {
                 edit_div.find('.grouped-header').remove();
                 edit_div.prepend('<div class="text-orange font-weight-bold grouped-header mb-2"><i class="fad fa-layer-group"></i> Grouped</div>');
             }
@@ -333,6 +341,7 @@ $(document).ready(function() {
     });
 
 
+
     function field_text(h, w, x, y, id, group_id, page) {
 
         var properties_html = ' \
@@ -363,7 +372,11 @@ $(document).ready(function() {
         </div> \ ';
 
         return ' \
-            <div class="field-div text-line-div standard rounded active group_'+group_id+'" style="position: absolute; top: ' + y + 'px; left: ' + x + 'px; height: ' + h + 'px; width: ' + w + 'px;" id="field_' + id + '" data-fieldid="' + id + '" data-groupid="'+group_id+'" data-page="'+page+'" data-type="textline"> \
+            <div class="field-div text-line-div standard rounded active group_'+ group_id + '" style="position: absolute; top: ' + y + 'px; left: ' + x + 'px; height: ' + h + 'px; width: ' + w + 'px;" id="field_' + id + '" data-fieldid="' + id + '" data-groupid="' + group_id + '" data-page="' + page +'" data-type="textline"> \
+                <div class="field-status-div d-flex justify-content-between w-100"> \
+                    <div class="field-status-name-div"></div> \
+                    <div class="field-status-group-div"></div> \
+                </div> \
                 <div class="field-options-holder focused shadow container text-center"> \
                     <div class="row m-0 p-0"> \
                         <div class="col-2 p-0"> \
@@ -409,10 +422,46 @@ $(document).ready(function() {
     }
     ///////////////// end textlines /////////////////////////
 
+
+    function filter_array(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+    function field_status() {
+        var group_ids = [];
+        $('.field-div').each(function () {
+            group_ids.push($(this).data('groupid'));
+        });
+        group_ids = group_ids.filter(filter_array);
+        for (i = 0; i < group_ids.length; i++) {
+            grouped = false;
+            if ($('.field-div[data-groupid="' + group_ids[i] + '"]').length > 1) {
+                grouped = true;
+            }
+            if (grouped == true) {
+                $('.field-div[data-groupid="' + group_ids[i] + '"]').each(function () {
+                    $('.field-div[data-groupid="' + group_ids[i] + '"]').last().find('.field-status-group-div').html('<i class="fal fa-layer-group"></i>');
+                });
+            }
+            $('.field-div[data-groupid="' + group_ids[i] + '"]').last().find('.field-status-name-div').html('field name');
+        }
+
+        $('.field-div').each(function () {
+            $(this).find('.field-data-name').each(function () {
+                if ($(this).val() != '') {
+                    $(this).removeClass('field-data-name-not-named');
+                } else {
+                    $(this).addClass('field-data-name-not-named');
+                }
+            });
+        });
+
+    }
+
+
     function set_hwxy(ele, h, w, x, y, groupid, type) {
 
         var hp, wp, xp, yp;
-        var container = ele.closest('.file-view-image');
+        var container = ele.closest('.field-container');
 
         if (h) {
             hp = (100 * parseFloat(h / parseFloat(container.height()))).toFixed(4);
