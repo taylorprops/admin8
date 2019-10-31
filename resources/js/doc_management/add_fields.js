@@ -290,7 +290,7 @@ $(document).ready(function() {
             }
 
             var groupid = $('#field_textline_groupid').val();
-            if ($('.group_' + groupid).length > 1) {
+            if ($('.group_' + groupid).length > 1) { // test
                 edit_div.find('.grouped-header').remove();
                 edit_div.prepend('<div class="text-orange font-weight-bold grouped-header mb-2"><i class="fad fa-layer-group"></i> Grouped</div>');
             }
