@@ -9,15 +9,18 @@
 /****************** COMPONENT: DOCUMENT MANAGEMENT ******************/
 
 /* List of uploads */
-Route::get('/', 'UploadController@get_docs');
-Route::get('/doc_management', 'UploadController@get_docs') -> name('doc_management');
+Route::get('/create/upload/files', 'DocManagement\Create\UploadController@get_docs') -> name('create.upload.files');
 /* Upload page */
-Route::get('/upload', function () {
-    return view('/doc_management/upload/upload');
+Route::get('/create/upload', function () {
+    return view('/doc_management/create/upload/upload');
 });
-
 /* Add fields page */
-Route::get('/add_fields/{file_id}', 'FieldsController@add_fields');
+Route::get('/create/add_fields/{file_id}', 'DocManagement\Fill\FieldsController@add_fields');
+
+// List of docs to fill fields
+Route::get('/create/fill/fillable_files', 'DocManagement\Fill\FieldsController@fillable_files');
+// fill fields
+Route::get('/create/fill_fields/{file_id}', 'DocManagement\Fill\FieldsController@fill_fields');
 /****************** END COMPONENT: DOCUMENT MANAGEMENT ******************/
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%//
@@ -39,14 +42,16 @@ Route::get('/add_fields/{file_id}', 'FieldsController@add_fields');
 
 /**********  DATA - ADD/EDIT/DELETE /**********/
 // Upload //
-Route::post('/upload_file', 'UploadController@upload_file') -> name('upload_file');
+Route::post('/upload_file', 'DocManagement\Create\UploadController@upload_file') -> name('upload_file');
 
 // Fields //
-Route::post('/save_fields', 'FieldsController@save_fields') -> name('save_fields');
+Route::post('/save_fields', 'DocManagement\Fill\FieldsController@save_fields') -> name('save_fields');
 
 /**********  DATA - GET /**********/
 /* get common fields for select options */
-Route::get('/common_fields', 'FieldsController@get_common_fields') -> name('common_fields');
+Route::get('/common_fields', 'DocManagement\Fill\FieldsController@get_common_fields') -> name('common_fields');
+Route::get('/field', 'DocManagement\Fill\FieldsController@get_field') -> name('field');
+
 
 
 //************************** END COMPONENT: DOCUMENT MANAGEMENT **************************//
@@ -57,4 +62,3 @@ Route::get('/common_fields', 'FieldsController@get_common_fields') -> name('comm
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%//
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%//
 
-Route::get('/test', 'Testcontroller@test');

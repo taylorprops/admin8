@@ -11,5 +11,4 @@ function directory($directory) {
     return $results;
 }
 
-
 ?>

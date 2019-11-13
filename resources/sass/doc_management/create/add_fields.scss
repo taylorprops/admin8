@@ -1,0 +1,285 @@
+.page-add-fields {
+    width: 100%;
+    max-width: 100% !important;
+    overflow-x: hidden;
+
+    .container-90 {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .file-view {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 125px);
+        overflow-y: scroll;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .file-view-page-info {
+        font-size: .8rem;
+        text-align: center;
+    }
+
+    .file-view-page-container {
+        opacity: .2;
+    }
+
+    .file-view-page-container.active {
+        opacity: 1 !important;
+    }
+
+    .field-container {
+        position: relative;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .file-view-thumb-container {
+        border: 2px solid rgba($primary-color, .2);
+        margin-bottom: 5px;
+    }
+
+    .file-view-thumb-container.active {
+        border: 2px solid $primary-color;
+    }
+
+    .file-view-thumb-footer {
+        font-size: .7rem;
+    }
+
+    // FIELDS
+    // fields toolbar
+
+    .field-wrapper {
+        padding: 5px;
+        border: 2px solid transparent;
+        cursor: pointer;
+    }
+
+    .field-wrapper.active {
+        background: #fff;
+        border: 2px solid $primary-color;
+    }
+
+    .textline-div-field, .number-div-field, .date-div-field {
+        resize: none;
+        height: 30px;
+        width: 150px;
+        background: rgba($blue, .8);
+    }
+
+    .checkbox-div-field {
+        height: 25px;
+        width: 25px;
+        border: 4px solid $blue;
+    }
+    .radio-div-field {
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        border: 4px solid $blue;
+    }
+
+
+    // Fields
+    .field-div.standard {
+        background: rgba($blue, .2);
+        cursor: pointer;
+    }
+    .field-div.standard.active {
+        background: rgba($blue, .6);
+        cursor: default;
+    }
+    .field-div.group {
+        background: rgba($orange, .2);
+        cursor: pointer;
+    }
+    .field-div.group.active {
+        background: rgba($orange, .6);
+        cursor: default;
+    }
+
+    // radios
+    .radio-div {
+        border-radius: 50%;
+    }
+
+
+    // field html
+    .textline-html {
+        height: 100%;
+    }
+    .checkbox-html, .radio-html {
+        height: 100%;
+        width: 100%;
+        border: 4px solid $blue;
+    }
+    .radio-html {
+        border-radius: 50%;
+    }
+
+
+    // field divs after dropping
+    .field-div {
+        position: relative;
+        z-index: 1;
+        resize: both;
+        overflow: visible;
+        z-index: 3;
+        cursor: default;
+
+        .field-options-holder {
+            position: absolute;
+            top: -55px;
+            width: 140px;
+            overflow: visible;
+            background: #fff;
+            border: 1px solid $primary-color;
+            border-radius: 2px;
+            padding: 5px;
+        }
+
+        .field-handle {
+            cursor: move;
+        }
+        .field-close {
+            cursor: pointer;
+        }
+
+        // resizable handles
+        .ui-resizable-handle {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 7px solid $primary-color;
+        }
+        .ui-resizable-se {
+            bottom: -10px;
+            right: -10px;
+            cursor: se-resize;
+            transform: rotate(45deg);
+        }
+        .ui-resizable-sw {
+            bottom: -10px;
+            left: -10px;
+            cursor: sw-resize;
+            transform: rotate(135deg);
+        }
+        .ui-resizable-nw {
+            top: -10px;
+            left: -10px;
+            cursor: nw-resize;
+            transform: rotate(225deg);
+        }
+        .ui-resizable-ne {
+            top: -10px;
+            right: -10px;
+            cursor: ne-resize;
+            transform: rotate(315deg);
+        }
+
+
+        .form-div .col-12 {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+        // field specific options
+
+        // textlines
+        .field-add-item{
+            cursor: pointer;
+        }
+        .add-item-plus {
+            position: absolute; top: 6px
+        }
+
+        .add-item-div {
+            display: none;
+            position: absolute;
+            width: auto;
+            top: -25px;
+            left: -20px;
+            background: #fff;
+            border: 1px solid $primary-color;
+            padding: 10px;
+            z-index: 5;
+        }
+        .add-item-content {
+            text-align: center;
+        }
+
+        // properties
+        .field-properties, .remove-field {
+            cursor: pointer;
+        }
+
+        .edit-properties-div {
+            display: none;
+            position: fixed;
+            width: 450px;
+            z-index: 15;
+            left: 0;
+            top: 100px;
+            right: 0;
+            margin: auto;
+        }
+
+        .field-status-div {
+            display: none;
+            position: absolute;
+            bottom: -17px;
+            background: rgba(255, 255, 255, .9);
+            color: $primary-color;
+            font-size: .7rem;
+            padding: 1px;
+            line-height: 1.0;
+            z-index: 0;
+        }
+
+        .field-status-name-div {
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+
+        .form-div .card-body {
+            max-height: 55VH;
+            overflow: auto;
+        }
+        .field-data-inputs-div {
+            position: relative;
+        }
+        .delete-input {
+            position: absolute;
+            right: 15px;
+            top: 5px;
+        }
+
+    }
+
+    .field-error-div {
+        color: $red;
+        margin-top: 10px;
+    }
+    .field-error {
+        border: 3px solid $danger-color;
+    }
+    .field-error-item {
+        padding: 2px 0px 0px 5px;
+    }
+
+
+    .field-div.active {
+        z-index: 5;
+    }
+
+
+    .checkbox-div .field-options-holder, .radio-div .field-options-holder {
+        left: -50px;
+    }
+
+}

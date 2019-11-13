@@ -1,0 +1,99 @@
+.page-fill-fields {
+    width: 100%;
+    max-width: 100% !important;
+    overflow-x: hidden;
+
+    .container-90 {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .file-view {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 130px);
+        overflow-y: scroll;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .file-view-page-info {
+        font-size: .8rem;
+        text-align: center;
+    }
+
+
+    .file-view-thumb-container {
+        border: 2px solid rgba($primary-color, .2);
+        margin-bottom: 5px;
+    }
+
+    .file-view-thumb-container.active {
+        border: 2px solid $primary-color;
+    }
+
+    .file-view-thumb-footer {
+        font-size: .7rem;
+    }
+
+    .field-toolbar {
+        height: 70px;
+        border-bottom: 1px solid $primary-color;
+    }
+
+    // Fields
+
+   // .field-div {
+
+    //}
+
+    .field-container, .field-container-hidden {
+        position: relative;
+        padding: 0px;
+        margin: 0px;
+    }
+    // give filled a background too
+    .fillable-field-container, .fillable-field-container-hidden.filled {
+        background: rgba($primary-color, .1);
+    }
+
+    .datepicker {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: none;
+    }
+
+    // Fields
+    .field-div.standard {
+        background: rgba($primary-color, .2);
+        cursor: pointer;
+    }
+    .field-div.standard.active {
+        background: rgba($primary-color, .6);
+        cursor: default;
+    }
+    .field-div.group {
+        background: rgba($secondary-color, .2);
+        cursor: pointer;
+    }
+    .field-div.group.active {
+        background: rgba($secondary-color, .6);
+        cursor: default;
+    }
+
+
+    .edit-properties-div {
+        display: none;
+        position: fixed;
+        width: 600px;
+        z-index: 15;
+        left: 0;
+        top: 100px;
+        right: 0;
+        margin: auto;
+    }
+
+
+}
