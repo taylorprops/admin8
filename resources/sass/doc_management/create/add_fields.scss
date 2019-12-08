@@ -3,11 +3,6 @@
     max-width: 100% !important;
     overflow-x: hidden;
 
-    .container-90 {
-        width: 90%;
-        margin: 0 auto;
-    }
-
     .file-view {
         position: relative;
         width: 100%;
@@ -19,7 +14,7 @@
 
 
     .file-view-page-info {
-        font-size: .8rem;
+        font-size: 1.2rem;
         text-align: center;
     }
 
@@ -94,11 +89,11 @@
         cursor: default;
     }
     .field-div.group {
-        background: rgba($orange, .2);
+        background: rgba($purple, .2);
         cursor: pointer;
     }
     .field-div.group.active {
-        background: rgba($orange, .6);
+        background: rgba($purple, .6);
         cursor: default;
     }
 
@@ -134,7 +129,7 @@
         .field-options-holder {
             position: absolute;
             top: -55px;
-            width: 140px;
+            width: 200px;
             overflow: visible;
             background: #fff;
             border: 1px solid $primary-color;
@@ -154,34 +149,22 @@
             position: absolute;
             width: 0;
             height: 0;
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
-            border-left: 7px solid $primary-color;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 10px solid $primary-color;
         }
-        .ui-resizable-se {
-            bottom: -10px;
-            right: -10px;
-            cursor: se-resize;
-            transform: rotate(45deg);
+        .ui-resizable-e {
+            bottom: 5px;
+            right: -20px;
+            cursor: e-resize;
         }
-        .ui-resizable-sw {
-            bottom: -10px;
-            left: -10px;
-            cursor: sw-resize;
-            transform: rotate(135deg);
+        .ui-resizable-w {
+            bottom: 5px;
+            left: -20px;
+            cursor: w-resize;
+            transform: rotate(180deg);
         }
-        .ui-resizable-nw {
-            top: -10px;
-            left: -10px;
-            cursor: nw-resize;
-            transform: rotate(225deg);
-        }
-        .ui-resizable-ne {
-            top: -10px;
-            right: -10px;
-            cursor: ne-resize;
-            transform: rotate(315deg);
-        }
+
 
 
         .form-div .col-12 {
@@ -218,16 +201,31 @@
             cursor: pointer;
         }
 
-        .edit-properties-div {
-            display: none;
-            position: fixed;
-            width: 450px;
-            z-index: 15;
-            left: 0;
-            top: 100px;
-            right: 0;
-            margin: auto;
+        .mini-slider-icon {
+            width: 40px;
         }
+        .mini-slide-container {
+            position: relative;
+        }
+        .mini-slider-option:hover {
+            cursor: pointer;
+        }
+        .mini-slider {
+            position: absolute;
+            left: -20px;
+            bottom: -10px;
+            display: none;
+            width: 60px;
+            height: auto;
+            padding: 5px;
+        }
+        .mini-slider-option {
+            width: 40px;
+            cursor: pointer;
+        }
+
+
+
 
         .field-status-div {
             display: none;
@@ -236,7 +234,6 @@
             background: rgba(255, 255, 255, .9);
             color: $primary-color;
             font-size: .7rem;
-            padding: 1px;
             line-height: 1.0;
             z-index: 0;
         }
@@ -246,10 +243,12 @@
             white-space: nowrap;
         }
 
-        .form-div .card-body {
-            max-height: 55VH;
+        // edit properties  - limit height
+        .modal-body {
+            max-height: 75VH;
             overflow: auto;
         }
+
         .field-data-inputs-div {
             position: relative;
         }
@@ -263,10 +262,10 @@
 
     .field-error-div {
         color: $red;
-        margin-top: 10px;
+        margin: 7px;
     }
     .field-error {
-        border: 3px solid $danger-color;
+        background: rgba($danger-color, .7) !important;
     }
     .field-error-item {
         padding: 2px 0px 0px 5px;
@@ -280,6 +279,10 @@
 
     .checkbox-div .field-options-holder, .radio-div .field-options-holder {
         left: -50px;
+    }
+
+    .form-div h5 {
+        padding-bottom: 5px;
     }
 
 }

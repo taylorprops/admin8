@@ -1,4 +1,5 @@
-import { filter_array } from '../../global.js';
+import { filter_array, select_menu } from '../../global.js';
+
 if (document.URL.match(/create\/add_fields/)) {
 
     $(document).ready(function () {
@@ -7,6 +8,12 @@ if (document.URL.match(/create\/add_fields/)) {
         // TODO run field_status() after any add or remove
 
         set_common_fields();
+        setTimeout(function () {
+            field_list();
+            setTimeout(function() {
+                check_fields();
+            }, 500);
+        }, 500);
 
         // Show active field
         $('.field-wrapper').click(function () {
@@ -20,36 +27,34 @@ if (document.URL.match(/create\/add_fields/)) {
 
 
             $('.field-div').each(function () {
-                var group_id = '';
 
                 // get bounding box coordinates
-                var rect = this.getBoundingClientRect();
-                var container = $(this).closest('.field-container');
+                let rect = this.getBoundingClientRect();
+                let container = $(this).closest('.field-container');
 
-                var h = $(this).css('height').replace(/px/, '');
-                var w = $(this).css('width').replace(/px/, '');
-                var x = $(this).css('left').replace(/px/, '');
-                var y = $(this).css('top').replace(/px/, '');
-                // convert from % to px
-                $(this).css('height', h + 'px');
-                $(this).css('width', w + 'px');
-                $(this).css('top', y + 'px');
-                $(this).css('left', x + 'px');
+                let group_id = $(this).data('group-id');
+                let field_type = $(this).data('type');
+
+                // let h = $(this).css('height').replace(/px/, '');
+                // let w = $(this).css('width').replace(/px/, '');
+                // let h_perc = pix_2_perc_hw('height', h, container);
+                // let w_perc = pix_2_perc_hw('width', w, container);
+                // let x = $(this).css('left').replace(/px/, '');
+                // let y = $(this).css('top').replace(/px/, '');
+                // // convert from % to px
+                // $(this).css('height', h + 'px');
+                // $(this).css('width', w + 'px');
+                // $(this).css('top', y + 'px');
+                // $(this).css('left', x + 'px');
 
 
-                group_id = $(this).data('groupid');
+
+
+                $(this).find('.field-properties').data('field-type', field_type);
 
                 // clear other field when changing name
-                if ($(this).data('type') != 'checkbox') {
-                    $('#name_select_' + group_id).change(function () {
-                        $('#name_input_' + group_id).val('').next('label').removeClass('active');
-                        if ($(this).val() == '') {
-                            $(this).next('label').removeClass('active');
-                        }
-                    });
-                    $('#name_input_' + group_id).change(function () {
-                        $('#name_select_'+group_id).val('').next('label').removeClass('active');
-                    });
+                if (field_type != 'checkbox') {
+                    clear_fields_on_change(group_id);
                 }
                 // add grouped class
                 if ($('.group_' + group_id).length > 1) {
@@ -59,8 +64,8 @@ if (document.URL.match(/create\/add_fields/)) {
                 $('.group_' + group_id).find('.add-item-container').hide();
                 $('.group_' + group_id).find('.add-item-container').last().show();
 
-                set_field_options($(this).data('type'), $(this), x, y, $(this).data('fieldid'), rect, container);
-                set_hwxy($(this), h, w, x, y, $(this).data('groupid'), $(this).data('type'));
+                set_field_options(field_type, $(this), $(this).data('field-id'), rect, container);
+                set_hwxy($(this), $(this).data('group-id'), field_type);
 
 
             });
@@ -68,47 +73,64 @@ if (document.URL.match(/create\/add_fields/)) {
             $('.focused').hide();
 
             field_status();
+            setTimeout(function () {
+                $('.add-input').off('click').on('click', add_input);
+                $('.delete-input').off('click').on('click', delete_input);
 
-            $('.add-input').click(add_input);
-            $('.delete-input').click(delete_input);
+            }, 1500);
+
 
         }
 
-
+        $('.delete-input').off('click').on('click', delete_input);
 
 
         // on page double click add field
-        $('#file_viewer').on('dblclick', '.file-view-page-container.active', function (e) { // changed from .field-container
+        $('#file_viewer').on('dblclick', '.file-view-page-container.active .file-image', function (e) { // changed from just .file-view-page-container.active - adding .file-image prevents new field being created when double clicking in edit properties div
 
-            // disable zoom
-            //$('.zoom-container').hide();
             // get container so easier to find elements
-            var container = $(e.target.parentNode);
+            let container = $(e.target.parentNode);
 
-            var field_type = $('#active_field').val();
+            let field_type = $('#active_field').val();
 
             // only if a field has been selected
             if (field_type != '') {
 
                 // get bounding box coordinates
-                var rect = e.target.getBoundingClientRect();
+                let rect = e.target.getBoundingClientRect();
                 // get target coordinates
-                var x = parseInt(Math.round(e.clientX - rect.left));
-                var y = parseInt(Math.round(e.clientY - rect.top));
+                let x = parseInt(Math.round(e.clientX - rect.left));
+                let y = parseInt(Math.round(e.clientY - rect.top));
 
-                // yset bottom left of field div at pointer tip
-                y = (y - parseInt($('#field_' + field_type + '_height').val()));
+                let x_perc = pix_2_perc_xy('x', x, container);
+                let y_perc = pix_2_perc_xy('y', y, container);
 
-                // set w and h for next element created - always the same as last field type added
-                var w = parseInt($('#field_' + field_type + '_width').val());
-                var h = parseInt($('#field_' + field_type + '_height').val());
+                let ele_h_perc = 1.3;
+                if (field_type == 'radio' || field_type == 'checkbox') {
+                    ele_h_perc = 1.1;
+                }
+                // remove element height from top position
+                y_perc = y_perc - ele_h_perc;
 
+                // set w and h for new field
+                let h_perc, w_perc;
+                if (field_type == 'radio' || field_type == 'checkbox') {
+                    h_perc = 1.1;
+                    w_perc = 1.45;
+                } else {
+                    h_perc = $('#field_' + field_type + '_heightp').val();
+                    w_perc = $('#field_' + field_type + '_widthp').val();
+                }
+                h_perc = parseFloat(h_perc);
+                w_perc = parseFloat(w_perc);
+                // let h = perc_2_pix('height', h_perc, container);
+                // let w = perc_2_pix('width', w_perc, container);
 
                 // create unique id for field
-                var id = Date.now();
+                let id = Date.now();
 
                 //create field and attach to container
-                var field = field_html(h, w, x, y, id, id, $('#active_page').val(), field_type);
+                let field = field_html(h_perc, w_perc, x_perc, y_perc, id, id, $('#active_page').val(), field_type);
 
                 // hide all handles and buttons
                 $('.focused').hide();
@@ -116,45 +138,37 @@ if (document.URL.match(/create\/add_fields/)) {
                 // append new field
                 $(container).append(field);
 
-                setTimeout(function() {
-                    $('select.mdb-select').not('.initialized').materialSelect();
-                    $('.add-input').click(add_input);
+                setTimeout(function () {
+                    //$('select.mdb-select').not('.initialized').materialSelect();
+                    $('.add-input').off('click').on('click', add_input);
                     $('.delete-input').click(delete_input);
+                    field_list();
+                    setTimeout(function() {
+                        check_fields();
+                    }, 500);
                 }, 500);
-
-
-
 
                 // clear other field when changing name
                 if ($('#field_' + id).data('type') != 'checkbox') {
-                    $('#name_select_' + id).change(function () {
-                        $('#name_input_'+id).val('').next('label').removeClass('active');
-                    });
-                    $('#name_input_' + id).change(function () {
-                        $('#name_select_'+id).val('').next('label').removeClass('active');
-                    });
+                    clear_fields_on_change(id);
                 }
 
-                set_hwxy($('#field_' + id), h, w, x, y, id, field_type);
+                set_hwxy($('#field_' + id), id, field_type);
 
-                keep_in_view($('#field_' + id), id, h, w, x, y, container, field_type);
+                keep_in_view($('#field_' + id), w_perc, x_perc, y_perc, field_type);
 
-                set_field_options(field_type, $('#field_' + id), x, y, id, rect, container);
+                set_field_options(field_type, $('#field_' + id), id, rect, container);
 
                 setTimeout(function () {
 
-                    $('#field_textline_groupid').val(id);
                     $('.field-div').removeClass('active');
                     $('#field_' + id).addClass('active');
-
-                    $('.edit-properties-div *').dblclick(function (event) {
-                        console.log('test');
-                        event.stopPropagation();
-                    });
 
                 }, 100);
 
                 field_status();
+
+                select_menu();
 
             }
         });
@@ -162,105 +176,143 @@ if (document.URL.match(/create\/add_fields/)) {
 
         // on page click hide all focused els
         $(document).on('click', '.field-container', function (e) {
+
             if (!$(e.target).is('.field-div *')) {
-                $('.focused, .field-popup').hide();
-                /*
-                var fields = ['textline', 'name', 'address', 'date', 'number', 'radio', 'checkbox'];
-                fields.forEach(function (field) {
-                    $('#field_' + field + '_groupid').val('');
-                });
-                */
-                $('.field-div').removeClass('active');
-                // reset name fields
-                $('.form-div').each(function () {
-                    $(this).find('select, input').each(function () {
-                        $(this).val($(this).data('defaultvalue'));
-                    });
-                });
+                $('.modal').modal('hide');
+                reset_field_properties();
             }
+
         });
 
+        function reset_field_properties() {
+            // reset name fields
+            $('.form-div').each(function () {
+                $(this).find('select, input').not('input.select-dropdown').each(function () {
+                    $(this).val($(this).data('default-value')).trigger('change');
+                });
+            });
+            select_dropdown.refresh();
+            $('.field-div').removeClass('active');
+            $('.focused, .field-popup, .mini-slider').hide();
 
+        }
 
-        function set_field_options(field_type, ele, x, y, id, rect, container) {
-            var handles = {
-                'ne': '.ui-resizable-ne', 'nw': '.ui-resizable-nw', 'se': '.ui-resizable-se', 'sw': '.ui-resizable-sw'
+        function clear_fields_on_change(id) {
+            $('#name_select_' + id).change(function () {
+                if ($(this).val() != '') {
+                    $('#name_input_' + id).val('');
+                } else {
+                    $(this);
+                }
+            });
+            $('#name_input_' + id).change(function () {
+                if ($(this).val() != '') {
+                    $('#name_select_' + id).val('');
+                }
+            });
+        }
+
+        function set_field_options(field_type, ele, id, rect, container) {
+
+            let handles = {
+                'e': '.ui-resizable-e', 'w': '.ui-resizable-w'
             };
-            var aspect_ratio = '';
-            var max_height = 30;
-            var min_height = 15;
+            let aspect_ratio = '';
             if (field_type == 'checkbox' || field_type == 'radio') {
                 aspect_ratio = '4 / 4';
-                max_height = 40;
             }
 
+            // let h = ele.height();
+            // let w = ele.width();
+            // let h_perc = pix_2_perc_hw('height', h, container);
+            // let w_perc = pix_2_perc_hw('width', w, container);
+            // let y = ele.position().top;
+            // let x = ele.position().left;
+            // let x_perc = pix_2_perc_xy('x', x, container);
+            // let y_perc = pix_2_perc_xy('y', y,container);
+
             ele.click(function (e) {
-                e.stopPropagation();
+
+                if (e.target === this) {
+                    e.stopPropagation();
+                }
                 $('.focused').hide();
-                $(this).find('.focused').show();
+                ele.find('.focused').show();
                 $('.field-div').removeClass('active');
-                $(this).addClass('active');
-                set_hwxy($(this), $(this).height(), $(this).width(), $(this).position().left, $(this).position().top, $(this).data('groupid'), field_type);
-            })
-                .resizable({
-                    containment: container, //$('.field-container'), // tried containment: $('#page_div_'+$('#active_field').val()), but not go
+                ele.addClass('active');
+                let group_id = ele.data('group-id');
+                set_hwxy(ele, group_id, field_type);
+
+            });
+
+            if (field_type != 'checkbox' && field_type != 'radio') {
+                ele.resizable({
+                    containment: container,
                     handles: handles,
-                    maxHeight: max_height,
-                    minHeight: min_height,
                     aspectRatio: aspect_ratio,
                     stop: function (e, ui) {
-                        var height = $(this).height();
-                        var width = $(this).width();
-                        var left = ui.position.left;
-                        var top = ui.position.top;
-                        // set size of checkboxes if groupped
-                        if (field_type == 'checkbox') {
-                            if ($('.group_' + ele.data('groupid')).length > 1) {
-                                $('.group_' + ele.data('groupid')).each(function () {
-                                    $(this).css({ left: left, height: height, width: width });
-                                    set_hwxy($(this), $(this).height(), $(this).width(), $(this).position().left, $(this).position().top, '', field_type);
-                                });
-                            }
-                        } else {
-                            set_hwxy(ele, height, width, left, top, '', field_type);
-                        }
-                    }
-                })
-                .draggable({
-                    containment: container,
-                    handle: '.field-handle',
-                    cursor: 'grab',
-                    stop: function (e, ui) {
-                        var height = $(this).height();
-                        var width = $(this).width();
-                        var left = ui.position.left;
-                        var top = ui.position.top;
-                        // align checkboxes if groupped
-                        if (field_type == 'checkbox') {
-                            if ($('.group_' + ele.data('groupid')).length > 1) {
-                                $('.group_' + ele.data('groupid')).each(function () {
-                                    $(this).css({ left: left });
-                                    set_hwxy($(this), $(this).height(), $(this).width(), $(this).position().left, $(this).position().top, '', field_type);
-                                });
-                            }
-                        }
+                        let resized_ele = $(e.target);
+                        // let resized_x = ui.position.left;
+                        // let resized_y = ui.position.top;
+                        // let resized_h = resized_ele.height();
+                        // let resized_w = resized_ele.width();
+                        // let resized_h_perc = pix_2_perc_hw('height', resized_h, container);
+                        // let resized_w_perc = pix_2_perc_hw('width', resized_w, container);
+                        setTimeout(function() {
+                            set_hwxy(resized_ele, '', field_type);
+                        }, 500);
 
-                        keep_in_view(ele, id, height, width, left, top, container, field_type);
-                        //set_hwxy($(this), $(this).height(), $(this).width(), ui.position.left, ui.position.top, '', field_type);
                     }
                 });
+            }
+
+            ele.draggable({
+                containment: container,
+                handle: '.field-handle',
+                cursor: 'grab',
+                stop: function (e, ui) {
+                    let dragged_ele = $(e.target);
+                    let dragged_x = ui.position.left;
+                    let dragged_y = ui.position.top;
+                    let dragged_x_perc = pix_2_perc_xy('x', dragged_x, container);
+                    let dragged_y_perc = pix_2_perc_xy('y', dragged_y,container);
+                    let dragged_h = dragged_ele.height();
+                    let dragged_w = dragged_ele.width();
+                    let dragged_h_perc = pix_2_perc_hw('height', dragged_h, container);
+                    let dragged_w_perc = pix_2_perc_hw('width', dragged_w, container);
+                    let dragged_group_id = dragged_ele.data('group-id');
+
+                    // align checkboxes if grouped
+                    if (field_type == 'checkbox') {
+                        if ($('.group_' + dragged_group_id).length > 1) {
+                            $('.group_' + dragged_group_id).each(function () {
+                                $(this).css({ left: dragged_x });
+                                set_hwxy($(this), '', field_type);
+                            });
+                        }
+                    }
+
+                    setTimeout(function() {
+                        set_hwxy(dragged_ele, '', field_type);
+                        keep_in_view(dragged_ele, dragged_w_perc, dragged_x_perc, dragged_y_perc, field_type);
+                    }, 500);
+
+                }
+            });
+
 
             // hide all handles and buttons when another container is selected
             $('.field-select-container').click(function (e) {
                 $('.focused').hide();
                 $('.field-div').removeClass('active');
             });
+
             // remove field
             $('.remove-field').off('click').on('click', function () {
-                var remove_groupid = $('.field-div.active').data('groupid');
+                let remove_group_id = $('.field-div.active').data('group-id');
                 $('.field-div.active').remove();
 
-                var group = $('.group_' + remove_groupid);
+                let group = $('.group_' + remove_group_id);
                 if (group.length > 1) {
                     // hide add line option for all but last
                     group.find('.add-item-container').hide();
@@ -268,20 +320,27 @@ if (document.URL.match(/create\/add_fields/)) {
                 } else {
                     group.find('.add-item-container').show();
                 }
-                // see if other divs in a group and if just one remove group class
+                // see if other divs in a group and if just one remove group class and group icon from field-status-group-div
                 if (group.length == 1) {
-                    group.removeClass('group').addClass('standard');
+                    group.removeClass('group').addClass('standard').find('.field-status-group-div').html('');
                 }
 
                 field_status();
+                setTimeout(function () {
+                    field_list();
+                    setTimeout(function() {
+                        check_fields();
+                    }, 500);
+                }, 500);
             });
 
+            // add additional fields to group
             if (field_type != 'date') {
                 // add items to group
                 ele.find('.field-add-item').off('click').on('click', function () {
 
                     // add line confirm div
-                    var add_item = $(this).next('.add-item-div');
+                    let add_item = $(this).next('.add-item-div');
                     add_item.toggle();
                     $('.field-close-add-item').click(function () {
                         add_item.hide();
@@ -289,45 +348,63 @@ if (document.URL.match(/create\/add_fields/)) {
                     // after confirming
                     ele.find('.add-item').off('click').on('click', function () {
                         // assign group id for original field
-                        var group_id = $(this).data('groupid');
+                        let group_id = $(this).data('group-id');
 
-                        var common_name = $('.group_' + group_id).data('commonname');
-                        var custom_name = $('.group_' + group_id).data('customname');
+                        let common_name = $('.group_' + group_id).data('commonname');
+                        let custom_name = $('.group_' + group_id).data('customname');
                         $('.group_' + group_id).removeClass('standard').addClass('group');
 
 
-                        var field_div = $(this).closest('.field-div');
-                        var h = field_div.height();
-                        var w = field_div.width();
-                        var x = field_div.position().left;
-                        var y = field_div.position().top;
-                        // drop the new line 10px below the original
-                        y = y + h + 10;
+                        // get h,w, x, y etc. incase it was changed during a drag or resize
+                        let field_div = ele.closest('.field-div');
+                        let h = field_div.height();
+                        let w = field_div.width();
+                        let h_perc = pix_2_perc_hw('height', h, container);
+                        let w_perc = pix_2_perc_hw('width', w, container);
+                        let x = field_div.position().left;
+                        let y = field_div.position().top;
+                        let x_perc = pix_2_perc_xy('x', x, container);
+                        let y_perc = pix_2_perc_xy('y', y,container);
+
+                        // drop the new line height of ele below the original
+                        let spacing = 1.1;
+                        if (field_type == 'radio' || field_type == 'checkbox') {
+                            spacing = 1.3;
+                        }
+                        y_perc = y_perc + (h_perc * spacing);
 
                         $('.field-div').removeClass('active');
                         // create new id for new field in group
                         id = Date.now();
-                        var field = field_html(h, w, x, y, id, group_id, $('#active_page').val(), field_type);
+                        let field = field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, $('#active_page').val(), field_type);
                         // append new field
-                        field_div.closest('.field-container').append(field);
+                        ele.closest('.field-container').append(field);
 
-                        setTimeout(function() {
-                            $('select.mdb-select').not('.initialized').materialSelect();
+                        setTimeout(function () {
+                            //$('select.mdb-select').not('.initialized').materialSelect();
+                            field_list();
+                            setTimeout(function() {
+                                check_fields();
+                            }, 500);
                         }, 500);
 
-                        var new_ele = $('#field_' + id);
+                        let new_ele = $('#field_' + id);
 
                         add_item.toggle();
                         setTimeout(function () {
                             $('.focused').fadeOut();
                             $('.field-div').removeClass('active');
                             new_ele.addClass('active').find('.focused').fadeIn();
-                            var h = new_ele.height();
-                            var w = new_ele.width();
-                            var x = new_ele.position().left;
-                            var y = new_ele.position().top;
+                            let new_h = new_ele.height();
+                            let new_w = new_ele.width();
+                            let new_h_perc = pix_2_perc_hw('height', new_h, container);
+                            let new_w_perc = pix_2_perc_hw('width', new_w, container);
+                            let new_x = new_ele.position().left;
+                            let new_y = new_ele.position().top;
+                            let new_x_perc = pix_2_perc_xy('x', new_x, container);
+                            let new_y_perc = pix_2_perc_xy('y', new_y,container);
 
-                            if ((parseInt(y) + parseInt(h)) > parseInt(container.height())) {
+                            if ((parseFloat(new_y_perc) + parseFloat(new_h_perc)) > 98) {
                                 new_ele.css({ border: '3px dotted #900' });
                                 setTimeout(function () {
                                     new_ele.remove();
@@ -335,10 +412,10 @@ if (document.URL.match(/create\/add_fields/)) {
                                 return false;
                             }
 
-                            set_hwxy(new_ele, h, w, x, y, '', field_type);
+                            set_hwxy(new_ele, '', field_type);
 
                             // assign group id to new field
-                            new_ele.data('groupid', group_id).removeClass('standard').addClass('group').addClass('group_' + group_id);
+                            new_ele.data('group-id', group_id).removeClass('standard').addClass('group').addClass('group_' + group_id);
 
                             // move add line option to last line
                             $('.group_' + group_id).find('.add-item-container').hide();
@@ -346,25 +423,24 @@ if (document.URL.match(/create\/add_fields/)) {
 
                             // clear other field when changing name
                             if (new_ele.data('type') != 'checkbox') {
-                                $('#name_select_' + group_id).change(function () {
-                                    $('#name_input_'+group_id).val('').next('label').removeClass('active');
-                                });
-                                $('#name_input_' + group_id).change(function () {
-                                    $('#name_select_'+group_id).val('').next('label').removeClass('active');
-                                });
+                                clear_fields_on_change(group_id);
                             }
 
                             setTimeout(function () {
                                 // set values for field name
                                 if (field_type != 'checkbox') {
-                                    var new_form = new_ele.find('.form-div');
-                                    new_form.find('select').val(common_name).data('defaultvalue', common_name);
-                                    new_form.find('input').val(custom_name).data('defaultvalue', custom_name);
+                                    new_ele.find('select.field-data-name').val(common_name).data('default-value', common_name);
+                                    new_ele.find('input.field-data-name').val(custom_name).data('default-value', custom_name);
                                 }
-                                keep_in_view(new_ele, id, h, w, x, y, container, field_type);
-                                set_field_options(field_type, new_ele, x, y, id, rect, container);
+                                keep_in_view(new_ele, new_w_perc, new_x_perc, new_y_perc, field_type);
+                                set_field_options(field_type, new_ele, id, rect, container);
                                 field_status();
                             }, 500);
+
+                            let inputs_div = ele.find('.field-data-inputs-container');
+                            add_inputs_to_group(group_id, inputs_div);
+
+                            select_menu();
 
 
                         }, 100);
@@ -373,268 +449,511 @@ if (document.URL.match(/create\/add_fields/)) {
                     });
                 });
             }
+
+            // mini-slider
+            $('.mini-slider-icon').off('click').on('click', function () {
+                $('.mini-slider').show();
+                $('.mini-slider-option').off('click').on('click', function () {
+                    let dir = $(this).data('direction');
+                    let operator = (dir == 'up') ? '-' : '+';
+                    let field_div = $(this).closest('.field-div');
+                    let field_type = field_div.data('type');
+                    field_div.css({ top: operator + '=.05%' });
+                    // set new h,w,x,y after moving up and down
+                    set_hwxy(field_div, '', field_type);
+                });
+                $('.mini-slider').blur(function () {
+                    $('.mini-slider').hide();
+                });
+            });
+
             // add properties
             $('.field-properties').off('click').on('click', function () {
+                let field_type = $(this).data('field-type');
+                let edit_div = $(this).next('.edit-properties-div');
 
-                var container = $(this).closest('.field-container');
-                var edit_div = $(this).next('.edit-properties-div');
+                //store inputs html in input to be restored on cancel
+                $('#inputs_html').val(edit_div.find('.field-data-inputs-container').html());
 
-                /*
+                edit_div.modal('show');
+                $('.modal-backdrop').appendTo(edit_div.closest('.properties-container'));
 
-                var cw = container.width();
-                var ch = container.height();
+                // prevent new field being created
+                $('.edit-properties-div *').dblclick(function (event) {
+                    event.stopPropagation();
+                });
 
-                x = edit_div.closest('.field-div').position().left;
-                y = edit_div.closest('.field-div').position().top;
-                if (x > (cw / 2)) {
-                    edit_div.css({ right: '10px' });
-                } else {
-                    edit_div.css({ left: '-10px' });
-                }
-                if (y > (ch / 2)) {
-                    edit_div.css({ top: '-85px' });
-                } else {
-                    edit_div.css({ top: '-10px' });
-                }
-                */
+                // remove common name when custom name is type in
+                edit_div.find('input.field-data-name').keyup(function () {
+                    edit_div.find('select.field-data-name').val('');
+                    select_dropdown.refresh();
+                });
 
-                edit_div.toggle();
+                // auto populate helper text for address fields - they will always be the same as the address type
+                if (field_type == 'address') {
 
-
-                $('.field-save-properties').click(function () {
-                    var group_id = $(this).data('groupid');
-                    var type = $(this).data('type');
-                    var form = $(this).closest('.form-div');
-                    var common_name = form.find('select.field-data-name').val();
-                    var custom_name = form.find('input.field-data-name').val();
-                    var radio_input = form.find('input.field-data-radio-value');
-                    var radio_value = radio_input.val();
-                    var number_select = form.find('select.field-data-number-type');
-                    var number_type = number_select.val();
-                    var address_select = form.find('select.field-data-address-type');
-                    var address_type = address_select.val();
-                    var helper_textarea = form.find('textarea.field-data-helper_text');
-                    var helper_text = helper_textarea.val();
-
-                    // set default values and group values for properties
-                    address_select.data('defaultvalue', address_type);
-
-
-                    $('.group_' + group_id).each(function () {
-                        $(this).find('.form-div').each(function () {
-                            $(this).find('textarea.field-data-helper_text').val(helper_text).data('defaultvalue', helper_text).next('label').addClass('active');
-                        });
+                    edit_div.find('.field-data-address-type').change(function () {
+                        let helper_text = $(this).find('option:selected').text();
+                        let helper_text_input = edit_div.find('.field-data-helper-text');
+                        helper_text_input.val(helper_text).data('default-value', helper_text);
                     });
 
-                    if (number_type != '') {
-                        if ($('.group_' + group_id).length > 1) {
-                            var other_number_type = 'numeric';
-                            if (number_type == 'numeric') {
-                                other_number_type = 'written';
+                } else if (field_type == 'name' || field_type == 'date' || field_type == 'textline') {
+                    //auto populate helper text from field name
+                    edit_div.find('select.field-data-name').change(function () {
+                        let helper_text = $(this).find('option:selected').text();
+                        let helper_text_input = edit_div.find('.field-data-helper-text');
+                        helper_text_input.val(helper_text).data('default-value', helper_text);
+
+                        // auto populate input name and helper text for Buyer and Seller Names
+                        if (field_type == 'name') {
+
+                            let name_type = $(this).val().replace(/\sName/, '');
+                            let inputs_container = edit_div.find('.field-data-inputs-container');
+
+                            if ($(this).val() == 'Seller or Landlord Name' || $(this).val() == 'Buyer Name') {
+                                // force click to add inputs
+                                inputs_container.html('').next('.add-input').trigger('click').trigger('click');
+                                inputs_container.children('.row:eq(0)').find('.field-data-input').val(name_type + ' One Name');
+                                inputs_container.children('.row:eq(0)').find('.field-data-input-helper-text').val('Enter the Full Name of the First ' + name_type);
+                                inputs_container.children('.row:eq(1)').find('.field-data-input').val(name_type + ' Two Name');
+                                inputs_container.children('.row:eq(1)').find('.field-data-input-helper-text').val('Enter the Full Name of the Second  ' + name_type);
+
+                            } else {
+
+                                inputs_container.html('').next('.add-input').trigger('click');
+                                inputs_container.children('.row:eq(0)').find('.field-data-input').val(name_type + ' Name');
+                                inputs_container.children('.row:eq(0)').find('.field-data-input-helper-text').val('Enter the Full Name of the ' + name_type);
+
                             }
-                            $('.group_' + group_id).find('select.field-data-number-type').not(number_select).val(other_number_type).data('defaultvalue', other_number_type);
-                            number_select.data('defaultvalue', number_type);
+
+                            $('.field-data-input, .field-data-input-helper-text');
+                        }
+
+                    });
+
+                } else if (field_type == 'number') {
+
+                    edit_div.find('select.field-data-name').change(function () {
+                        let helper_text = $(this).find('option:selected').text();
+                        let helper_text_input = edit_div.find('.field-data-helper-text');
+                        helper_text_input.val(helper_text).data('default-value', helper_text);
+                    });
+
+                }
+
+                $('.field-save-properties').off('click').on('click', function () {
+
+                    let group_id = $(this).data('group-id');
+                    let type = $(this).data('type');
+                    let form = $(this).parent('div.modal-footer').prev('div.modal-body').find('.form-div');
+                    let common_name = form.find('select.field-data-name').val();
+                    let custom_name = form.find('input.field-data-name').val();
+
+                    // set default values and group values for properties
+
+                    // set inputs html for reset on close, blur etc.
+                    $('#inputs_html').val(edit_div.find('.field-data-inputs-container').html());
+                    let inputs_div = form.find('.field-data-inputs-container');
+                    // address and name groups have different helper text for each field
+                    if (type == 'address' || type == 'name' || type == 'checkbox') {
+                        $('.group_' + group_id).each(function () {
+                            let input = $(this).find('input.field-data-helper-text');
+                            input.attr('value', input.val()).data('default-value', input.val());
+                        });
+                        add_inputs_to_group(group_id, inputs_div);
+                    } else {
+                        // all other groups have the same helper text for each field
+                        let helper_input = form.find('input.field-data-helper-text');
+                        let helper_text = helper_input.val();
+                        $('.group_' + group_id).each(function () {
+                            $(this).find('input.field-data-helper-text').val(helper_text).data('default-value', helper_text);
+                        });
+                    }
+                    // add value and default value to all added inputs
+                    inputs_div.find('.field-data-inputs-div').find('.field-data-input, .field-data-input-helper-text').each(function () {
+                        $(this).data('default-value', $(this).val()).attr('value', $(this).val());
+                    });
+
+                    let address_select = form.find('select.field-data-address-type');
+                    address_select.each(function () {
+                        let address_type = $(this).val();
+                        $(this).data('default-value', address_type);
+                    });
+
+                    let textline_select = form.find('select.field-data-textline-type');
+                    textline_select.each(function () {
+                        let textline_type = $(this).val();
+                        $(this).data('default-value', textline_type);
+                    });
+
+                    let number_select = form.find('select.field-data-number-type');
+                    let number_type = number_select.val();
+                    number_select.data('default-value', number_type);
+                    // update other number types to written if this is numeric. There will be one numeric and possibly multiple written
+                    if (number_type == 'numeric') {
+                        if ($('.group_' + group_id).length > 1) {
+                            $('.group_' + group_id).find('select.field-data-number-type').not(number_select).val('written').data('default-value', 'written');
+                            number_select.data('default-value', number_type);
                         }
                     }
 
                     if (type == 'checkbox') {
-                        form.find('input.field-data-name').data('defaultvalue', custom_name);
+
+                        let checkbox = form.find('input.field-data-checkbox-value');
+                        let checkbox_value = checkbox.val();
+                        checkbox.data('default-value', checkbox_value);
+                        form.find('input.field-data-name').data('default-value', custom_name);
+
                     } else if (type == 'radio') {
-                        radio_input.data('defaultvalue', radio_value);
-                        $('.group_' + group_id).each(function () {
-                            $(this).find('.form-div').each(function () {
-                                $(this).find('input.field-data-name').val(custom_name).data('defaultvalue', custom_name);
-                            });
-                        });
-                    } else {
+
+                        let radio_input = form.find('input.field-data-radio-value');
+                        let radio_value = radio_input.val();
+                        radio_input.data('default-value', radio_value);
                         $('.group_' + group_id).each(function () {
                             $(this).data('commonname', common_name).data('customname', custom_name);
                             $(this).find('.form-div').each(function () {
-                                $(this).find('select.field-data-name').val(common_name).data('defaultvalue', common_name);
-                                $(this).find('input.field-data-name').val(custom_name).data('defaultvalue', custom_name);
+                                $(this).find('input.field-data-name').val(custom_name).data('default-value', custom_name);
                             });
                         });
+
+                    } else {
+
+                        $('.group_' + group_id).each(function () {
+                            $(this).data('commonname', common_name).data('customname', custom_name);
+                            $(this).find('.form-div').each(function () {
+                                $(this).find('select.field-data-name').val(common_name).data('default-value', common_name);
+                                $(this).find('input.field-data-name').val(custom_name).data('default-value', custom_name);
+                            });
+                        });
+
                     }
-                    edit_div.hide();
+
+                    edit_div.modal('hide');
                     field_status();
+                    setTimeout(function () {
+                        field_list();
+                        setTimeout(function() {
+                            check_fields();
+                        }, 500);
+                    }, 500);
+
+
                     $('.group_' + group_id).removeClass('field-error');
 
                 });
 
-                $('.field-close-properties').off('click').on('click', function () {
-                    var form = $(this).closest('.form-div');
-                    form.find('select, input').each(function () {
-                        $(this).val($(this).data('defaultvalue'));
-                    });
+                // clear fields on cancel
+                $('.modal').on('hide.bs.modal', function () {
+
+                    reset_field_properties();
+
+                    let form = $(this).find('.form-div');
+                    // FIXME: this still not working
+                    //form.find('.field-data-inputs-container').html($('#inputs_html').val());
+                    $('.add-input').off('click').on('click', add_input);
+                    $('.delete-input').off('click').on('click', delete_input);
+
                     edit_div.hide();
+
                 });
+
             });
 
         }
 
-        function delete_input() {
-            $(this).closest('.field-data-inputs-div').remove();
+        function add_inputs_to_group(group_id, inputs_div) {
+
+            let c = 0;
+            if ($('.group_' + group_id).length > 1) {
+                $('.group_' + group_id).each(function () {
+                    // inputs to all fields in a group
+                    $(this).find('.field-data-inputs-container').html(inputs_div.html());
+                    // rename all ids so they are unique and add data-default-value
+                    $(this).find('.field-data-inputs-div').find('input, select').each(function () {
+                        c += 1;
+                        $(this).attr('id', 'input_' + group_id + '_' + c).next('label').attr('for', 'input_' + group_id + '_' + c);
+                        $(this).data('default-value', $(this).val());
+                    });
+                });
+            }
+            $('.add-input').off('click').on('click', add_input);
         }
 
+        function delete_input() {
+            $(this).closest('.field-data-inputs-div').fadeOut('slow');
+        }
 
         function add_input() {
-            var append_to = $(this).prev('.field-data-inputs-container');
-            var id = parseInt(append_to.find('.field-data-inputs-div').length) + 1;
-            var field_id = $(this).data('fieldid');
+            let append_to = $(this).prev('.field-data-inputs-container');
+            let input_id = Date.now();
+            let field_id = $(this).data('field-id');
 
-            var new_input = ' \
+            let new_input = ' \
             <div class="row p-2 border border-secondary mb-1 field-data-inputs-div"> \
-                <div class="col-12"> \
-                    <div class="md-form my-1"> \
-                        <input type="text" class="form-control field-data-input" id="input_name_'+field_id+'_'+id+'" data-defaultvalue=""> \
-                        <label for="input_name_'+field_id+'_'+id+'">Input Name</label> \
+                <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
+                <div class="col-12 mt-3"> \
+                    <div class="my-1"> \
+                        <input type="text" class="form-control field-data-input" id="input_name_'+ field_id + '_' + input_id + '" data-id="'+input_id+'"> \
+                        <label for="input_name_'+ field_id + '_' + input_id + '">Input Name</label> \
                     </div> \
                 </div> \
                 <div class="col-12"> \
-                    <div class="md-form my-1"> \
-                        <textarea class="form-control md-textarea field-data-input-helper-text" id="textarea_name_'+field_id+'_'+id+'" rows="1" data-defaultvalue=""></textarea> \
-                        <label for="textarea_name_'+field_id+'_'+id+'">Input Helper Text</label> \
+                    <div class="my-1"> \
+                        <input type="text" class="form-control field-data-input-helper-text" id="input_helper_text_'+ field_id + '_' + input_id + '" data-id="'+input_id+'"> \
+                        <label for="input_helper_text_'+ field_id + '_' + input_id + '">Input Helper Text</label> \
                     </div> \
                 </div> \
             </div> \
             ';
 
             $(new_input).appendTo(append_to);
+            $('.delete-input').click(delete_input);
         }
 
-        function field_properties(type, group_id, id) {
-            var temp_id = Date.now();
+        function field_properties(type, group_id, field_id) {
+
+            let input_id = Date.now();
+            let custom_name_heading;
             if (type == 'radio') {
-                var custom_name_heading = 'Radio Group Name';
+                custom_name_heading = 'Radio Group Name';
             } else {
-                var custom_name_heading = 'Custom Name';
+                custom_name_heading = 'Custom Name';
             }
-            var properties = ' \
-            <div class="form-div"> \
-                <div class="card-header bg-secondary text-white h4 p-2">Field Properties</div> \
-                <div class="bg-secondary-light text-orange p-2">Type - '+ type.toUpperCase() + '</div> \
-                <div class="card-body p-1"> \
-                    <div class="container"> \
-                        <div class="row p-3 border border-secondary mb-1"> \
+
+            let properties = ' \
+                <div class="modal-header bg-primary"> \
+                    <h4 class="modal-title" id="edit_properties_modal_title">Field Properties</h4> \
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                        <span aria-hidden="true" class="text-white">&times;</span> \
+                    </button> \
+                </div> \
+                <div class="modal-body"> \
+                    <h5 class="text-primary">Type -'+ type.toUpperCase() + '</h5> \
+                    <div class="form-div"> \
+                        <div class="container"> \
+                            <div class="row p-2 border border-secondary mb-1"> \
+                                <div class="col-12"> \
+                                    <h5 class="text-secondary mb-0">Field Name</h5> \
+                                </div> \
             ';
             if (type != 'checkbox' && type != 'radio') {
                 properties = properties + ' \
-                            <div class="col-12 md-form my-1" > \
-                                <select class="field-data-name mdb-select colorful-select dropdown-primary" id="name_select_'+id+'" data-fieldtype="common"> \
-                                    <option value="">&nbsp;</option> \
-                                    ' + $('#' + type + '_select_options').val() + ' \
-                                </select> \
-                            </div> \
-                            <label for="name_select_'+id+'" class="mdb-main-label">Select Common Name (Shared)</label> \
-                            <div class="text-primary text-center w-100">OR</div> \
+                                <div class="col-12 my-1"> \
+                                    <label for="name_select_'+ field_id + '" class="mdb-main-label">Select Common Name (Shared)</label> \
+                                    <select class="select-menu field-data-name" id="name_select_'+ field_id + '" data-field-type="common"> \
+                                        <option value="">&nbsp;</option> \
+                                        ' + $('#' + type + '_select_options').val() + ' \
+                                    </select> \
+                                </div> \
+                                <div class="text-primary text-center w-100">OR</div> \
                 ';
             }
             properties = properties + ' \
-                            <div class="col-12 md-form my-1"> \
-                                <input type="text" class="form-control field-data-name" id="name_input_'+ id +'" data-fieldtype="custom"> \
-                                <label for="name_input_'+id+'">'+custom_name_heading+'</label> \
+                                <div class="col-12 my-1"> \
+                                    <label for="name_input_'+ field_id + '">' + custom_name_heading + '</label> \
+                                    <input type="text" class="form-control field-data-name" id="name_input_'+ field_id + '" data-field-type="custom"> \
+                                </div> \
                             </div> \
-                        </div> \
             ';
             if (type == 'number') {
                 properties = properties + ' \
-                        <div class="row p-3 border border-secondary mb-1"> \
-                            <div class="col-12 md-form my-1"> \
-                                <select class="field-data-number-type mdb-select colorful-select dropdown-primary" id="number_select_'+id+'" data-fieldtype="number-type"> \
-                                    <option value="">&nbsp;</option> \
-                                    <option value="numeric">Numeric - 3,000</option> \
-                                    <option value="written">Written - Three Thousand</option> \
-                                </select> \
-                                <label for="number_select_'+id+'" class="mdb-main-label">Number Type</label> \
+                            <div class="row p-2 border border-secondary mb-1"> \
+                                <div class="col-12"> \
+                                    <h5 class="text-secondary mb-0">Number Type</h5> \
+                                </div> \
+                                <div class="col-12 my-1"> \
+                                    <label for="number_select_'+ field_id + '" class="mdb-main-label">Number Type</label> \
+                                    <select class="select-menu field-data-number-type" id="number_select_'+ field_id + '" data-field-type="number-type"> \
+                                        <option value="">&nbsp;</option> \
+                                        <option value="numeric">Numeric - 3,000</option> \
+                                        <option value="written">Written - Three Thousand</option> \
+                                    </select> \
+                                </div> \
                             </div> \
-                        </div> \
+                ';
+            } else if (type == 'textline') {
+                properties = properties + ' \
+                            <div class="row p-2 border border-secondary mb-1"> \
+                                <div class="col-12"> \
+                                    <h5 class="text-secondary mb-0">Text Type <small>(Optional - Use to format the value)</small></h5> \
+                                </div> \
+                                <div class="col-12 my-1" > \
+                                    <label for="textline_select_'+ field_id + '" class="mdb-main-label">Text Type</label> \
+                                    <select class="select-menu field-data-textline-type" id="textline_select_'+ field_id + '" data-field-type="textline-type"> \
+                                        <option value="">&nbsp;</option> \
+                                        <option value="number numbers-only">Number</option> \
+                                        <option value="phone numbers-only">Phone Number</option> \
+                                    </select> \
+                                </div> \
+                            </div> \
                 ';
             } else if (type == 'address') {
                 properties = properties + ' \
-                        <div class="row p-3 border border-secondary mb-1"> \
-                            <div class="col-12 md-form my-1"> \
-                                <select class="field-data-address-type mdb-select colorful-select dropdown-primary" id="address_select_'+id+'" data-fieldtype="address-type"> \
-                                    <option value="">&nbsp;</option> \
-                                    <option value="full">Full Address</option> \
-                                    <option value="street">Street Address</option> \
-                                    <option value="city">City</option> \
-                                    <option value="state">State</option> \
-                                    <option value="zip">Zip Code</option> \
-                                    <option value="county">County</option> \
-                                </select> \
-                                <label for="address_select_'+id+'" class="mdb-main-label">Address Type</label> \
+                            <div class="row p-2 border border-secondary mb-1"> \
+                                <div class="col-12"> \
+                                    <h5 class="text-secondary mb-0">Address Type</h5> \
+                                </div> \
+                                <div class="col-12 my-1"> \
+                                    <label for="address_select_'+ field_id + '" class="mdb-main-label">Address Type</label> \
+                                    <select class="select-menu field-data-address-type" id="address_select_'+ field_id + '" data-field-type="address-type"> \
+                                        <option value="">&nbsp;</option> \
+                                        <option value="full">Full Address</option> \
+                                        <option value="street">Street Address</option> \
+                                        <option value="city">City</option> \
+                                        <option value="state">State</option> \
+                                        <option value="zip">Zip Code</option> \
+                                        <option value="county">County</option> \
+                                    </select> \
+                                </div> \
                             </div> \
-                        </div> \
                 ';
             } else if (type == 'radio') {
                 properties = properties + ' \
-                        <div class="row p-3 border border-secondary mb-1"> \
-                            <div class="col-12 md-form my-1"> \
-                                <input type="text" class="form-control field-data-radio-value" id="field_value_input_'+id+'"> \
-                                <label for="field_value_input_'+id+'">Field Value</label> \
+                            <div class="row p-2 border border-secondary mb-1"> \
+                                <div class="col-12"> \
+                                    <h5 class="text-secondary mb-0">Radio Input Value</h5> \
+                                </div> \
+                                <div class="col-12 my-1"> \
+                                    <label for="field_value_input_'+ field_id + '">Field Value</label> \
+                                    <input type="text" class="form-control field-data-radio-value" id="field_value_input_'+ field_id + '"> \
+                                </div> \
                             </div> \
-                        </div> \
+                ';
+            } else if (type == 'checkbox') {
+                properties = properties + ' \
+                            <div class="row p-2 border border-secondary mb-1"> \
+                                <div class="col-12"> \
+                                    <h5 class="text-secondary mb-0">Checkbox Value</h5> \
+                                </div> \
+                                <div class="col-12 my-1"> \
+                                    <label for="field_value_input_'+ field_id + '">Field Value</label> \
+                                    <input type="text" class="form-control field-data-checkbox-value" id="field_value_input_'+ field_id + '"> \
+                                </div> \
+                            </div> \
                 ';
             }
             properties = properties + ' \
-                        <div class="row p-3 border border-secondary mb-1"> \
-                            <div class="col-12 md-form my-1"> \
-                                <textarea class="form-control md-textarea field-data-helper_text" rows="1" id="helper_text_input_'+ id + '"></textarea> \
-                                <label for="helper_text_input_'+ id + '">Helper Text</label> \
+                            <div class="row p-2 border border-secondary mb-1"> \
+                                <div class="col-12"> \
+                                    <h5 class="text-secondary mb-0">Helper Text</h5> \
+                                </div> \
+                                <div class="col-12 my-1"> \
+                                    <label for="helper_text_input_'+ field_id + '">Helper Text</label> \
+                                    <input type="text" class="form-control field-data-helper-text" id="helper_text_input_'+ field_id + '"> \
+                                </div> \
                             </div> \
-                        </div> \
             ';
             if (type == 'address' || type == 'name') {
                 properties = properties + ' \
-                        <div class="row p-3 border border-secondary mb-1"> \
-                            <div class="col-12"> \
-                                <h5 class="text-secondary">Inputs</h5> \
-                                <div class="container field-data-inputs-container"> \
-                                    <div class="row p-2 border border-secondary mb-1 field-data-inputs-div"> \
-                                        <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
-                                        <div class="col-12 mt-3"> \
-                                            <div class="md-form my-1"> \
-                                                <input type="text" class="form-control field-data-input" id="input_name_'+temp_id+'_1" data-defaultvalue=""> \
-                                                <label for="input_name_'+temp_id+'_1">Input Name</label> \
-                                            </div> \
-                                        </div> \
-                                        <div class="col-12"> \
-                                            <div class="md-form my-1"> \
-                                                <textarea class="form-control md-textarea field-data-input-helper-text" id="textarea_name_'+temp_id+'_1" rows="1" data-defaultvalue=""></textarea> \
-                                                <label for="textarea_name_'+temp_id+'_1">Input Helper Text</label> \
-                                            </div> \
-                                        </div> \
-                                    </div> \
+                            <div class="row p-2 border border-secondary mb-1"> \
+                                <div class="col-12"> \
+                                    <h5 class="text-secondary mb-0">Inputs</h5> \
                                 </div> \
-                                <a href="javascript: void(0);" class="text-green add-input" data-fieldid="'+id+'"><i class="fa fa-plus"></i> Add Input</a> \
+                                <div class="col-12"> \
+                                    <div class="container field-data-inputs-container"> \
+                ';
+                if (type == 'name') {
+                    properties = properties + ' \
+                                        <div class="row p-2 border border-secondary mb-1 field-data-inputs-div"> \
+                                            <div class="col-12 mt-3"> \
+                                                <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
+                                                <div class="my-1"> \
+                                                    <label for="input_name_'+ field_id + '_'+input_id+'">Input Name</label> \
+                                                    <input type="text" class="form-control field-data-input" id="input_name_'+ field_id + '_'+input_id+'" data-default-value="" data-id="'+input_id+'"> \
+                                                </div> \
+                                            </div> \
+                                            <div class="col-12"> \
+                                                <div class="my-1"> \
+                                                    <label for="input_helper_text_'+ field_id + '_'+input_id+'">Input Helper Text</label> \
+                                                    <input type="text" class="form-control field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+input_id+'" data-id="'+input_id+'"> \
+                                                </div> \
+                                            </div> \
+                                        </div> \
+                    ';
+                } else if (type == 'address') {
+                    // adding all address field inputs
+                    let input_list = JSON.stringify({
+                        'street': {
+                            'name': 'Street Address',
+                            'helper': 'Enter The Street Address'
+                        },
+                        'city': {
+                            'name': 'City',
+                            'helper': 'Enter The City'
+                        },
+                        'county': {
+                            'name': 'County',
+                            'helper': 'Enter The County'
+                        },
+                        'state': {
+                            'name': 'State',
+                            'helper': 'Enter The State'
+                        },
+                        'zip': {
+                            'name': 'Zip Code',
+                            'helper': 'Enter The Zip Code'
+                        }
+                    });
+                    let inputs = JSON.parse(input_list);
+                    let c = 1;
+                    for (let key in inputs) {
+                        c += 1;
+                        let input_name = inputs[key]['name'];
+                        let input_helper_text = inputs[key]['helper'];
+                        let inputs_ids = input_id + c;
+
+                        properties = properties + ' \
+                                        <div class="row p-2 border border-secondary mb-1 field-data-inputs-div"> \
+                                            <div class="col-12 mt-3"> \
+                                                <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
+                                                <div class="my-1"> \
+                                                    <label for="input_name_'+ field_id + '_'+inputs_ids+'">Input Name</label> \
+                                                    <input type="text" class="form-control field-data-input" id="input_name_'+ field_id + '_'+inputs_ids+'" value="'+input_name+'" data-default-value="'+input_name+'" data-id="'+inputs_ids+'"> \
+                                                </div> \
+                                            </div> \
+                                            <div class="col-12"> \
+                                                <div class="my-1"> \
+                                                    <label for="input_helper_text_'+ field_id + '_'+inputs_ids+'">Input Helper Text</label> \
+                                                    <input type="text" class="form-control field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+inputs_ids+'" value="'+input_helper_text+'" data-default-value="'+input_helper_text+'" data-id="'+inputs_ids+'"> \
+                                                </div> \
+                                            </div> \
+                                        </div> \
+                        ';
+                    }
+                }
+                properties = properties + ' \
+                                    </div> \
+                                    <a href="javascript: void(0);" class="text-green add-input" data-field-id="'+ field_id + '"><i class="fa fa-plus"></i> Add Input</a> \
+                                </div> \
                             </div> \
-                        </div> \
                 ';
             }
-
-            properties = properties + '</div > \
-                </div> \
+            properties = properties + ' \
+                        </div> \
+                    </div > \
+                </div > \
             ';
             properties = properties + ' \
-                <div class="card-footer d-flex justify-content-around bg-white"> \
-                    <a href="javascript: void(0);" class="btn btn-success btn-sm shadow field-save-properties" data-groupid="'+ group_id + '" data-type="' + type + '">Save</a> \
-                    <a href="javascript:void(0);" class="btn btn-danger btn-sm field-close-properties">Cancel</a> \
+                <div class="modal-footer"> \
+                    <a href="javascript: void(0);" class="btn btn-success btn-sm shadow field-save-properties" data-group-id="'+ group_id + '" data-type="' + type + '">Save</a> \
+                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</a> \
                 </div> \
-            </div> \
             ';
 
             return properties
         }
 
         function add_option(group_id, type) {
+            let icon;
             if (type == 'textline') {
-                var icon = '<i class="fas fa-horizontal-rule fa-lg text-primary"></i>';
+                icon = '<i class="fas fa-horizontal-rule fa-lg text-primary"></i>';
             } else if (type == 'radio') {
-                var icon = '<i class="fas fa-circle fa-lg text-primary"></i>';
+                icon = '<i class="fas fa-circle fa-lg text-primary"></i>';
             } else if (type == 'checkbox') {
-                var icon = '<i class="fal fa-square-full fa-lg text-primary"></i>';
+                icon = '<i class="fal fa-square-full fa-lg text-primary"></i>';
             }
-            var option = ' \
+            let option = ' \
             <div class="add-item-container mr-2" > \
                 <div class="field-add-item mr-3 h-100"> \
                     '+ icon + ' \
@@ -644,7 +963,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     <div class="add-item-content"> \
                         Add Item To Group? \
                         <div class="d-flex justify-content-around"> \
-                            <a href="javascript: void(0);" class="btn btn-success btn-sm add-item shadow" data-groupid="'+ group_id + '">Confirm</a> \
+                            <a href="javascript: void(0);" class="btn btn-success btn-sm add-item shadow" data-group-id="'+ group_id + '">Confirm</a> \
                             <a href="javascript:void(0);" class="btn btn-danger btn-sm field-close-add-item">Cancel</a> \
                         </div> \
                     </div> \
@@ -654,28 +973,28 @@ if (document.URL.match(/create\/add_fields/)) {
             return option;
         }
 
-        function field_html(h, w, x, y, id, group_id, page, type) {
+        function field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, page, type) {
 
-            var properties_html = field_properties(type, group_id, id);
+            let properties_html = field_properties(type, group_id, id);
 
-            var options = '';
-            var field_class = '';
-            var field_html = '';
-            var handles = ' \
-            <div class="ui-resizable-handle ui-resizable-ne focused"></div> \
-            <div class="ui-resizable-handle ui-resizable-se focused"></div> \
-            <div class="ui-resizable-handle ui-resizable-nw focused"></div> \
-            <div class="ui-resizable-handle ui-resizable-sw focused"></div> \
+            let options = '';
+            let field_class = '';
+            let field_html = '';
+            let handles = ' \
+            <div class="ui-resizable-handle ui-resizable-e focused"></div> \
+            <div class="ui-resizable-handle ui-resizable-w focused"></div> \
             ';
             if (type == 'textline' || type == 'name' || type == 'address' || type == 'number') {
                 options = add_option(group_id, 'textline');
                 field_class = 'textline-div standard';
                 field_html = '<div class="textline-html"></div>';
             } else if (type == 'radio') {
+                handles = '';
                 options = add_option(group_id, 'radio');
                 field_class = type + '-div standard';
                 field_html = '<div class="radio-html"></div>';
             } else if (type == 'checkbox') {
+                handles = '';
                 options = add_option(group_id, 'checkbox');
                 field_class = type + '-div standard';
                 field_html = '<div class="checkbox-html"></div>';
@@ -685,7 +1004,7 @@ if (document.URL.match(/create\/add_fields/)) {
             }
 
             return ' \
-            <div class="field-div '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y + 'px; left: ' + x + 'px; height: ' + h + 'px; width: ' + w + 'px;" id="field_' + id + '" data-fieldid="' + id + '" data-groupid="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
+            <div class="field-div '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;" id="field_' + id + '" data-field-id="' + id + '" data-group-id="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
                 <div class="field-status-div d-flex justify-content-left"> \
                     <div class="field-status-name-div"></div> \
                     <div class="field-status-group-div float-right"></div> \
@@ -693,16 +1012,28 @@ if (document.URL.match(/create\/add_fields/)) {
                 <div class="field-options-holder focused shadow container"> \
                     <div class="row m-0 p-0"> \
                         <div class="col-2 p-0"> \
-                            <div class="field-handle"><i class="fal fa-ellipsis-v-alt fa-lg text-primary"></i></div> \
+                            <div class="field-handle"><i class="fal fa-arrows fa-lg text-primary"></i></div> \
                         </div> \
                         <div class="col-8 p-0"> \
                             <div class="d-flex justify-content-center"> \
+                                <div class="mini-slide-container w-100"> \
+                                    <a href="javascript: void(0);" class="mini-slider-icon d-block h-100 text-center"><i class="fal fa-arrows-v text-primary"></i></a> \
+                                    <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
+                                        <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
+                                        <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li> \
+                                    </ul> \
+                                </div> \
                                 '+ options + ' \
-                                <div> \
-                                    <div class="field-properties" data-groupid="'+ group_id + '"> \
+                                <div class="properties-container mr-3"> \
+                                    <div class="field-properties" data-group-id="'+ group_id + '" data-field-type="'+type+'"> \
                                         <i class="fal fa-info-circle fa-lg text-primary"></i> \
                                     </div> \
-                                    <div class="edit-properties-div shadow field-popup card">'+ properties_html + '</div> \
+                                    <div class="modal fade edit-properties-div" id="edit_properties_modal" tabindex="-1" role="dialog" aria-labelledby="edit_properties_modal_title" aria-hidden="true"> \
+                                        <div class="modal-dialog modal-dialog-centered" role="document"> \
+                                            <div class="modal-content">'+ properties_html + ' \
+                                            </div> \
+                                        </div> \
+                                    </div> \
                                 </div> \
                             </div> \
                         </div> \
@@ -714,37 +1045,37 @@ if (document.URL.match(/create\/add_fields/)) {
                 '+ handles + ' \
                 '+ field_html + ' \
             </div> \
-            ;'
+            ';
         }
 
         function field_status() {
-            var group_ids = [];
+            let group_ids = [];
             $('.field-div').each(function () {
-                group_ids.push($(this).data('groupid'));
+                group_ids.push($(this).data('group-id'));
             });
             group_ids = group_ids.filter(filter_array);
 
-            for (var i = 0; i < group_ids.length; i++) {
+            for (let i = 0; i < group_ids.length; i++) {
 
                 // find out if grouped and add icon
-                var grouped = false;
-                if ($('.field-div[data-groupid="' + group_ids[i] + '"]').length > 1) {
+                let grouped = false;
+                if ($('.field-div[data-group-id="' + group_ids[i] + '"]').length > 1) {
                     grouped = true;
                 }
                 if (grouped == true) {
-                    $('.field-div[data-groupid="' + group_ids[i] + '"]').each(function () {
+                    $('.field-div[data-group-id="' + group_ids[i] + '"]').each(function () {
                         // remove all group icons
-                        $('.field-div[data-groupid="' + group_ids[i] + '"]').find('.field-status-group-div').html('');
+                        $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-group-div').html('');
                         // add group icon to last of all
-                        $('.field-div[data-groupid="' + group_ids[i] + '"]').last().find('.field-status-group-div').html('<i class="fal fa-layer-group"></i>');
+                        $('.field-div[data-group-id="' + group_ids[i] + '"]').last().find('.field-status-group-div').html('<i class="fal fa-layer-group"></i>');
 
                     });
                 }
 
 
                 // add field names
-                $('.field-div[data-groupid="' + group_ids[i] + '"]').each(function () {
-                    var field_name = '';
+                $('.field-div[data-group-id="' + group_ids[i] + '"]').each(function () {
+                    let field_name = '';
                     // all but checkbox get names added only to the last
                     if ($(this).data('type') != 'checkbox') {
 
@@ -753,7 +1084,7 @@ if (document.URL.match(/create\/add_fields/)) {
                             if ($(this).val() != '') {
                                 field_name = $(this).val();
                                 // add field name to last of each group
-                                $('.field-div[data-groupid="' + group_ids[i] + '"]').find('.field-status-name-div').last().html(field_name);
+                                $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-name-div').last().html(field_name);
                             }
                         });
                     } else {
@@ -768,75 +1099,95 @@ if (document.URL.match(/create\/add_fields/)) {
 
         }
 
-        function set_hwxy(ele, h, w, x, y, groupid, type) {
+        function pix_2_perc_hw(type, px, container) {
+            if (type == 'width') {
+                return (100 * parseFloat(px / parseFloat(container.width())));
+            } else {
+                return (100 * parseFloat(px / parseFloat(container.height())));
+            }
+        }
 
-            var hp, wp, xp, yp;
-            var container = ele.closest('.field-container');
+        function pix_2_perc_xy(type, px, container) {
+            if (type == 'x') {
+                return (100 * parseFloat(px / parseFloat(container.width())));
+            } else {
+                return (100 * parseFloat(px / parseFloat(container.height())));
+            }
+        }
 
-            if (h) {
-                hp = (100 * parseFloat(h / parseFloat(container.height())));
-                wp = (100 * parseFloat(w / parseFloat(container.width())));
-                ele.data('h', h);
-                ele.data('w', w);
-                ele.data('hp', hp);
-                ele.data('wp', wp);
-                $('#field_' + type + '_height').val(h);
-                $('#field_' + type + '_width').val(w);
-                $('#field_' + type + '_heightp').val(hp);
-                $('#field_' + type + '_widthp').val(wp);
+        function perc_2_pix(type, perc, container) {
+            if (type == 'width') {
+                return parseFloat((perc / 100) * parseFloat(container.width()));
+            } else {
+                return parseFloat((perc / 100) * parseFloat(container.height()));
+            }
+        }
+
+        function set_hwxy(ele, group_id, type) {
+
+            let container = ele.closest('.field-container');
+
+            let h = ele.height();
+            let w = ele.width();
+            let h_perc = pix_2_perc_hw('height', h, container);
+            let w_perc = pix_2_perc_hw('width', w, container);
+
+            let x = ele.position().left;
+            let y = ele.position().top;
+            let x_perc = pix_2_perc_xy('x', x, container);
+            let y_perc = pix_2_perc_xy('y', y,container);
+
+            if (h_perc) {
+                ele.data('hp', h_perc);
+                ele.data('wp', w_perc);
+                $('#field_' + type + '_heightp').val(h_perc);
+                $('#field_' + type + '_widthp').val(w_perc);
             }
             if (x) {
-                xp = (100 * parseFloat(x / parseFloat(container.width())));
-                yp = (100 * parseFloat(y / parseFloat(container.height())));
                 ele.data('x', x);
                 ele.data('y', y);
-                ele.data('xp', xp);
-                ele.data('yp', yp);
+                ele.data('xp', x_perc);
+                ele.data('yp', y_perc);
                 $('#field_' + type + '_x').val(x);
                 $('#field_' + type + '_y').val(y);
-                $('#field_' + type + '_xp').val(xp);
-                $('#field_' + type + '_yp').val(yp);
+                $('#field_' + type + '_xp').val(x_perc);
+                $('#field_' + type + '_yp').val(y_perc);
             }
-            if (groupid) {
-                $('#field_' + type + '_groupid').val(groupid);
+            if (group_id) {
+                $('#field_' + type + '_group_id').val(group_id);
             }
             ele.data('page', ele.data('page'));
 
         }
 
-        function keep_in_view(ele, id, h, w, x, y, container, type) {
+        function keep_in_view(ele, w_perc, x_perc, y_perc, type) {
             // adjust fields if placed out of bounds
-            var dist = '';
-            var cw = container.width();
-            var cd_adjusted = '';
+            let dist = '';
+            let cw = 100;
+            let cd_adjusted = '';
             if (type == 'textline' || type == 'name' || type == 'address' || type == 'date' || type == 'number') {
-                dist = 15;
+                dist = .7;
                 cd_adjusted = cw;
             } else if (type == 'radio' || type == 'checkbox') {
-                dist = 60;
-                cd_adjusted = cw - 80;
+                dist = 3;
+                cd_adjusted = cw - 4;
             }
 
-            if (x < dist) {
-                ele.animate({ left: dist + 'px' });
+            if (x_perc < dist) {
+                ele.animate({ left: dist + '%' });
             }
-            if ((x + w) > cd_adjusted) {
-                var pos = cw - w - dist;
-                ele.animate({ left: pos + 'px' });
+            if ((x_perc + w_perc) > cd_adjusted) {
+                let pos = cw - w_perc - dist;
+                ele.animate({ left: pos + '%' });
             }
 
-            if (y < 40) {
-                ele.animate({ top: '40px' });
+            if (y_perc < 2) {
+                ele.animate({ top: '2%' });
             }
 
             setTimeout(function () {
-                var h = ele.css('height').replace('px', '');
-                var w = ele.css('width').replace('px', '');
-                var x = ele.css('left').replace('px', '');
-                var y = ele.css('top').replace('px', '');
-                var groupid = ele.data('groupid');
-
-                set_hwxy(ele, h, w, x, y, groupid, type);
+                let group_id = ele.data('group-id');
+                set_hwxy(ele, group_id, type);
             }, 1500);
 
         }
@@ -848,8 +1199,8 @@ if (document.URL.match(/create\/add_fields/)) {
                 dataType: "json",
                 success: function (data) {
                     $.each(data, function (k) {
-                        var type = k;
-                        var select_options = '';
+                        let type = k;
+                        let select_options = '';
                         $.each(this, function (k, v) {
                             select_options = select_options + '<option value="' + v + '">' + v + '</option>';
                         });
@@ -860,124 +1211,212 @@ if (document.URL.match(/create\/add_fields/)) {
             });
         }
 
-        /////////////////// Save data ///////////////////////
-        $('#save_fields').click(save_add_fields);
-
-        function save_add_fields() {
-            // remove all error divs
-            $('.field-error-div').remove();
-            $('.field-error').removeClass('field-error');
-            var errors = 'no';
-            var data = [];
-
-            if ($('.field-div').length > 0) {
-
-                $('.field-div').each(function () {
-                    // add error divs
-                    $('<div class="field-error-div"></div>').insertBefore($(this).find('.form-div').find('.card-body'));
-
-                    var field_data = {};
-
-                    var type = $(this).data('type');
-
-                    field_data['file_id'] = $('#file_id').val();
-                    field_data['field_id'] = $(this).data('fieldid');
-                    field_data['group_id'] = $(this).data('groupid');
-                    field_data['page'] = $(this).data('page');
-                    field_data['field_type'] = type;
-                    field_data['left'] = $(this).data('x');
-                    field_data['top'] = $(this).data('y');
-                    field_data['height'] = $(this).data('h');
-                    field_data['width'] = $(this).data('w');
-                    field_data['left_perc'] = $(this).data('xp');
-                    field_data['top_perc'] = $(this).data('yp');
-                    field_data['height_perc'] = $(this).data('hp');
-                    field_data['width_perc'] = $(this).data('wp');
-
-                    // inputs are arrays and have their own table
-                    field_data['field_data_input'] = [];
-                    field_data['field_data_input_helper_text'] = [];
-
-                    if ($(this).find('.field-data-inputs-div').length > 0) {
-                        $(this).find('.field-data-inputs-div').each(function () {
-                            field_data['field_data_input'].push($(this).find('.field-data-input').val());
-                            field_data['field_data_input_helper_text'].push($(this).find('.field-data-input-helper-text').val());
-                        });
+        function field_list() {
+            $('.field-list-container').html('');
+            $('.field-list-container').append('<div class="h3 text-white bg-orange p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>');
+            $('.file-view-page-container').each(function () {
+                let page_number = $(this).data('id');
+                $('.field-list-container').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
+                // get unique group ids
+                let group_ids = [];
+                $(this).find('.field-div').each(function () {
+                    group_ids.push($(this).data('group-id'));
+                });
+                group_ids = group_ids.filter(filter_array);
+                // get all field names and add to field list
+                $.each(group_ids, function (index, group_id) {
+                    let name = $('.group_' + group_id).data('customname');
+                    if ($('.group_' + group_id).data('commonname') != undefined && $('.group_' + group_id).data('commonname') != '') {
+                        name = $('.group_' + group_id).data('commonname');
                     }
+                    if (name == undefined || name == '') {
+                        name = '<span class="text-danger">Not Named</span>';
+                    }
+                    $('.field-list-container').append('<div class="mb-1 border-bottom border-primary"><a href="javascript: void(0)" class="field-list-link" data-group-id="' + group_id + '">' + name + '</a></div>');
+                });
+                $('.field-list-link').off('click').on('click', function () {
+                    let group_id = $(this).data('group-id');
+                    let ele = $('.field-div[data-group-id="' + group_id + '"]').first();
+                    $('.focused').hide();
+                    ele.find('.focused').show();
+                    $('.field-div').removeClass('active');
+                    ele.addClass('active');
 
-                    field_data['field_name'] = null;
-                    field_data['field_name_type'] = null;
-                    $(this).find('.field-data-name').each(function () {
-                        if ($(this).val() != '') {
-                            field_data['field_name'] = $(this).val();
-                            field_data['field_name_type'] = $(this).data('fieldtype');
-                        }
+                    let container = ele.parent();
+                    // let h = ele.height();
+                    // let w = ele.width();
+                    // let h_perc = pix_2_perc_hw('height', h, container);
+                    // let w_perc = pix_2_perc_hw('width', w, container);
+                    // let y = ele.position().top;
+                    // let x = ele.position().left;
+                    let type = ele.data('type');
+                    set_hwxy(ele, group_id, type);
+
+                    let $container = $('#file_viewer'),
+                        $scrollTo = $('#field_' + group_id).first();
+                    $container.animate({
+                        scrollTop: ($scrollTo.offset().top - $container.offset().top + $container.scrollTop()) - 200
                     });
-                    if (field_data['field_name'] == null) {
-                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must name the field</div>');
-                        errors = 'yes';
-                    }
-
-                    field_data['helper_text'] = null;
-                    if ($(this).find('textarea.field-data-helper_text').val() != '') {
-                        field_data['helper_text'] = $(this).find('textarea.field-data-helper_text').val();
-                    }
-                    if (field_data['helper_text'] == null) {
-                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the helper text</div>');
-                        errors = 'yes';
-                    }
-
-                    field_data['number_type'] = null;
-                    if (type == 'number') {
-                        if ($(this).find('select.field-data-number-type').val() != '') {
-                            field_data['number_type'] = $(this).find('select.field-data-number-type').val();
-                        }
-                        if (field_data['number_type'] == null) {
-                            $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the number type</div>');
-                            errors = 'yes';
-                        }
-                    }
-
-                    field_data['address_type'] = null;
-                    if (type == 'address') {
-                        if ($(this).find('select.field-data-address-type').val() != '') {
-                            field_data['address_type'] = $(this).find('select.field-data-address-type').val();
-                        }
-                        if (field_data['address_type'] == null) {
-                            $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the address type</div>');
-                            errors = 'yes';
-                        }
-                    }
-
-                    field_data['radio_value'] = null;
-                    if (type == 'radio') {
-                        if ($(this).find('.field-data-radio-value').val() != '') {
-                            field_data['radio_value'] = $(this).find('.field-data-radio-value').val();
-                        }
-                        if (field_data['radio_value'] == null) {
-                            $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the value</div>');
-                            errors = 'yes';
-                        }
-                    }
-
-
-                    data.push(field_data);
 
                 });
 
-            } else {
+            });
 
-                var field_data = {};
-                field_data['file_id'] = $('#file_id').val();
+        }
 
-                data.push(field_data);
+        function check_fields() {
+            // remove all error divs
+            $('.field-error-div').remove();
+            $('.field-error').removeClass('field-error');
+            $('.field-list-link').removeClass('text-danger');
+            let errors = 'no';
 
+            $('.field-div').each(function () {
+                // add error divs
+                $('<div class="field-error-div"></div>').insertBefore($(this).find('.form-div'));
+
+                let type = $(this).data('type');
+                let errors_found = 'no';
+
+                let field_name = null;
+                $(this).find('.field-data-name').each(function () {
+                    if ($(this).val() != '') {
+                        field_name = $(this).val();
+                    }
+                });
+                if (field_name == null) {
+                    $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must name the field</div>');
+                    errors = 'yes';
+                    errors_found = 'yes';
+                }
+
+                if ($(this).find('input.field-data-helper-text').val() == '') {
+                    $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the helper text</div>');
+                    errors = 'yes';
+                    errors_found = 'yes';
+                }
+
+                if (type == 'number') {
+                    if ($(this).find('select.field-data-number-type').val() == '') {
+                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the number type</div>');
+                        errors = 'yes';
+                        errors_found = 'yes';
+                    }
+                }
+
+                if (type == 'address') {
+                    if ($(this).find('select.field-data-address-type').val() == '') {
+                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the address type</div>');
+                        errors = 'yes';
+                        errors_found = 'yes';
+                    }
+                }
+
+                if (type == 'radio') {
+                    if ($(this).find('.field-data-radio-value').val() == '') {
+                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the value</div>');
+                        errors = 'yes';
+                        errors_found = 'yes';
+                    }
+                }
+
+                if (errors_found == 'yes') {
+                    $('.field-list-link[data-group-id="' +$(this).data('group-id')+'"]').addClass('text-danger');
+                }
+
+            });
+
+            if (errors == 'yes') {
+                return false;
             }
+            return true;
 
-            if (errors == 'no') {
+        }
+
+        /////////////////// Save data ///////////////////////
+        $('#save_add_fields').click(save_add_fields);
+
+        function save_add_fields() {
+
+            let check = check_fields();
+
+            if(check == true) {
+
+                let data = [];
+
+                if ($('.field-div').length > 0) {
+
+                    $('.field-div').each(function () {
+
+                        let field_data = {};
+                        let type = $(this).data('type');
+
+                        field_data['file_id'] = $('#file_id').val();
+                        field_data['field_id'] = $(this).data('field-id');
+                        field_data['group_id'] = $(this).data('group-id');
+                        field_data['page'] = $(this).data('page');
+                        field_data['field_type'] = type;
+                        field_data['left'] = $(this).data('x');
+                        field_data['top'] = $(this).data('y');
+                        field_data['height'] = $(this).data('h');
+                        field_data['width'] = $(this).data('w');
+                        field_data['left_perc'] = $(this).data('xp');
+                        field_data['top_perc'] = $(this).data('yp');
+                        field_data['height_perc'] = $(this).data('hp');
+                        field_data['width_perc'] = $(this).data('wp');
+
+                        // inputs are arrays and have their own table
+                        field_data['field_data_input'] = [];
+                        field_data['field_data_input_helper_text'] = [];
+                        field_data['field_data_input_id'] = [];
+
+                        if ($(this).find('.field-data-inputs-div').length > 0) {
+                            $(this).find('.field-data-inputs-div').each(function () {
+                                if ($(this).find('.field-data-input').val() != '') {
+                                    field_data['field_data_input'].push($(this).find('.field-data-input').val());
+                                    field_data['field_data_input_helper_text'].push($(this).find('.field-data-input-helper-text').val());
+                                    field_data['field_data_input_id'].push($(this).find('.field-data-input').data('id'));
+                                }
+                            });
+                        }
+
+                        $(this).find('.field-data-name').each(function () {
+                            if ($(this).val() != '') {
+                                field_data['field_name'] = $(this).val();
+                                field_data['field_name_type'] = $(this).data('field-type');
+                            }
+                        });
+
+
+                        field_data['helper_text'] = $(this).find('input.field-data-helper-text').val();
+
+                        field_data['number_type'] = $(this).find('select.field-data-number-type').val();
+
+                        field_data['address_type'] = $(this).find('select.field-data-address-type').val();
+
+                        field_data['textline_type'] = $(this).find('select.field-data-textline-type').val();
+
+                        field_data['radio_value'] = $(this).find('.field-data-radio-value').val();
+
+                        field_data['checkbox_value'] = $(this).find('.field-data-checkbox-value').val();
+
+                        data.push(field_data);
+
+                    });
+
+                } else {
+
+                    let field_data = {};
+                    field_data['file_id'] = $('#file_id').val();
+
+                    data.push(field_data);
+
+                }
+
+
                 $.ajax({
                     type: 'POST',
-                    url: '/save_fields',
+                    url: '/save_add_fields',
                     data: { data: JSON.stringify(data) },
                     success: function (response) {
                         $('#modal_success').modal().find('.modal-body').html('Fields Successfully Saved');
@@ -987,35 +1426,32 @@ if (document.URL.match(/create\/add_fields/)) {
                 $('#modal_danger').modal().find('.modal-body').html('All Fields Must Be Completed');
             }
 
-        }
-        /*
-        $('#zoom_control').change(function () {
-            var z = $(this).val();
-            $('#file_viewer').css({ 'width': z + '%' });
 
-        });
-        */
+        }
+
         // highlight active thumb when clicked and scroll into view
         $('.file-view-thumb-container').click(function () {
             $('.file-view-thumb-container').removeClass('active');
             $(this).addClass('active');
-            var id = $(this).data('id');
+            let id = $(this).data('id');
             $('#active_page').val(id);
             document.getElementById('page_' + id).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
         });
 
         // change highlighted thumb on scroll when doc is over half way in view
         $('#file_viewer').scroll(function () {
+
             // Stop the loop once the first is found
-            var cont = 'yes';
-            var id = '';
+            let cont = 'yes';
+
             $('.file-view-page-container').each(function () {
                 if (cont == 'yes') {
+                    let id, center, start, end;
                     id = $(this).data('id');
                     // see if scrolled past half way
-                    var center = $(window).height() / 2;
-                    var start = $(this).offset().top;
-                    var end = start + $(this).height();
+                    center = $(window).height() / 2;
+                    start = $(this).offset().top;
+                    end = start + $(this).height();
                     if (start < center && end > center) {
                         // set opacity to 1 for active and .2 for not active
                         $('.file-view-page-container').removeClass('active');
@@ -1031,6 +1467,15 @@ if (document.URL.match(/create\/add_fields/)) {
             });
 
         });
+
+        function select_menu() {
+            select_dropdown = $('select').prettyDropdown({
+                height: 35,
+                width: '100%',
+                classic: true
+            });
+            //select_dropdown.refresh();
+        }
 
 
     });

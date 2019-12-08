@@ -3,23 +3,19 @@
     max-width: 100% !important;
     overflow-x: hidden;
 
-    .container-90 {
-        width: 90%;
-        margin: 0 auto;
-    }
-
     .file-view {
         position: relative;
         width: 100%;
-        height: calc(100vh - 130px);
+        height: calc(100vh - 110px);
         overflow-y: scroll;
         margin-left: auto;
         margin-right: auto;
     }
 
 
+
     .file-view-page-info {
-        font-size: .8rem;
+        font-size: 1.2rem;
         text-align: center;
     }
 
@@ -38,62 +34,78 @@
     }
 
     .field-toolbar {
-        height: 70px;
+        height: 50px;
         border-bottom: 1px solid $primary-color;
     }
 
     // Fields
 
-   // .field-div {
-
-    //}
-
-    .field-container, .field-container-hidden {
+    .field-container,
+    .field-container-hidden {
         position: relative;
         padding: 0px;
         margin: 0px;
     }
-    // give filled a background too
-    .fillable-field-container, .fillable-field-container-hidden.filled {
-        background: rgba($primary-color, .1);
+
+    input.fillable-field-input {
+        width: 100%;
+        height: 100%;
     }
 
-    .datepicker {
+    .field-datepicker {
+        position: absolute;
+        top: 0px;
+        left: 0px;
         width: 100%;
         height: 100%;
         background: transparent;
         border: none;
+        color: transparent;
+        z-index: 1;
     }
+
+    .data-div {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+
+    .data-div:not(.data-div-radio-check) {
+        font-size: 1em;
+        padding-left: 5px;
+    }
+
+    .data-div.data-div-radio-check {
+        font-size: 1.5em;
+        line-height: 80%;
+    }
+
+
 
     // Fields
-    .field-div.standard {
-        background: rgba($primary-color, .2);
+    .field-div {
+        background: rgba($orange, .1);
         cursor: pointer;
+        color: #000;
+        box-shadow: none;
     }
-    .field-div.standard.active {
-        background: rgba($primary-color, .6);
+
+    .field-div.active {
         cursor: default;
-    }
-    .field-div.group {
-        background: rgba($secondary-color, .2);
-        cursor: pointer;
-    }
-    .field-div.group.active {
-        background: rgba($secondary-color, .6);
-        cursor: default;
+        box-shadow: 0px 9px 0px -5px #FFFFFF,
+        0px -9px 0px -5px #FFFFFF,
+        9px 0px 0px -5px #FFFFFF,
+        -9px 0px 0px -5px  #FFFFFF,
+        0px 0px 0px 5px $blue,
+        5px 5px 10px 5px rgba(0, 0, 0, 0);
     }
 
-
-    .edit-properties-div {
-        display: none;
-        position: fixed;
-        width: 600px;
-        z-index: 15;
-        left: 0;
-        top: 100px;
-        right: 0;
-        margin: auto;
+    .modal-body {
+        max-height: 65VH;
+        overflow: auto;
     }
-
 
 }

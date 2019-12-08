@@ -1,26 +1,26 @@
 /*!
  * Material Design for Bootstrap 4
  * Version: MDB PRO 4.9.0
- * 
- * 
+ *
+ *
  * Copyright: Material Design for Bootstrap
  * https://mdbootstrap.com/
- * 
+ *
  * Read the license: https://mdbootstrap.com/license/
- * 
- * 
+ *
+ *
  * Documentation: https://mdbootstrap.com/
- * 
+ *
  * Getting started: https://mdbootstrap.com/getting-started/
- * 
+ *
  * Tutorials: https://mdbootstrap.com/bootstrap-tutorial/
- * 
+ *
  * Templates: https://mdbootstrap.com/templates/
- * 
+ *
  * Support: https://mdbootstrap.com/forums/forum/support/
- * 
+ *
  * Contact: office@mdbootstrap.com
- * 
+ *
  * Attribution: Animate CSS, Twitter Bootstrap, Materialize CSS, Normalize CSS, Waves JS, WOW JS, Toastr, Chart.js, jquery.easing.js, velocity.js, chart.js, wow.js, scrolling-navbar.js, waves.js, forms-free.js, preloading.js, cards.js, character-counter.js, toastr.js, smooth-scroll.js, dropdown.js, buttons.js, sidenav.js, collapsible.js, range-input.js, file-input.js, material-select.js, picker.js, picker-date.js, picker-time.js, lightbox.js, jquery.sticky.js, scrollbar.js, chips.js, ofi.js, jarallax.js, jarallax-video.js, mdb-autocomplete.js, enhanced-modals.js, treeview.js
  */
 ! function(t) {
@@ -16814,7 +16814,7 @@
                     enable: "activate"
                 }, n.item = {}, n.item.clear = null, n.item.disable = (e.disable || []).slice(0), n.item.enable = -(!0 === (i = n.item.disable)[0] ? i.shift() : -1), n.set("min", e.min).set("max", e.max).set("now"), s ? n.set("select", s, {
                     format: l,
-                    defaultValue: !0
+                    default-value: !0
                 }) : n.set("select", null).set("highlight", n.item.now), n.key = {
                     40: 7,
                     38: -7,
@@ -16910,7 +16910,7 @@
                         }
                         return n.isInteger(t)
                     })).length;
-                if ((!o || !o.nav && !o.defaultValue) && (!h && c.disabled(i) || h && c.disabled(i) && (v || r || a) || !h && (i.pick <= f.pick || i.pick >= p.pick)))
+                if ((!o || !o.nav && !o.default-value) && (!h && c.disabled(i) || h && c.disabled(i) && (v || r || a) || !h && (i.pick <= f.pick || i.pick >= p.pick)))
                     for (h && !v && (!a && d > 0 || !r && d < 0) && (d *= -1); c.disabled(i) && (Math.abs(d) > 1 && (i.month < u.month || i.month > u.month) && (i = u, d = d > 0 ? 1 : -1), i.pick <= f.pick ? (s = !0, d = 1, i = c.create([f.year, f.month, f.date + (i.pick === f.pick ? 0 : -1)])) : i.pick >= p.pick && (l = !0, d = -1, i = c.create([p.year, p.month, p.date + (i.pick === p.pick ? 0 : 1)])), !s || !l);) i = c.create([i.year, i.month, i.date + d]);
                 return i
             }, o.prototype.disabled = function(t) {

@@ -1,29 +1,21 @@
-
 //// MODALS /////
 
 .modal-content {
     border: 1px solid #fff;
     border-radius: 0px;
 }
+
 .modal-header {
     border: none;
     border-radius: 0px;
     color: #fff;
 }
-#modal_success .modal-header {
-    background-color: $green;
-}
 
-// MDBootstrap Fixes
-.md-form label, .select-wrapper > label.mdb-main-label {
-    color: #a3a2a2;
-    z-index: 0;
-}
-.select-wrapper > label.mdb-main-label {
-    top: 0px;
-}
-.dropdown-content {
-    max-height: 500px !important
-}
+//#modal_success .modal-header {}
 
 
+.prettydropdown > ul {
+    color: #495057 !important;
+    border: 1px solid #ced4da !important;
+    font-size: 0.9rem !important;
+}

@@ -8,11 +8,14 @@ $line-height-base: 1.6;
 
 // Colors
 $blue: #1f6bbd;
+$blue-dark: #1c5694;
+$blue-light: #ebf1f7;
 $indigo: #6574cd;
 $purple: #9561e2;
 $pink: #f66d9b;
 $red: #e3342f;
 $orange: #ee5a46;
+$orange-light: #f8e5e3;
 $orange-dark: #943d31;
 $yellow: #ffed4a;
 $green: #30a730;
@@ -32,6 +35,10 @@ $primary-color: $blue;
 $secondary-color: $orange;
 $danger-color: $red;
 
+.text-primary-dark {
+    color: $blue-dark;
+}
+
 .text-orange {
     color: $orange;
 }
@@ -50,4 +57,10 @@ a.text-green:hover {
 }
 .bg-secondary-light {
     background: rgba($secondary-color, .1);
+}
+.bg-orange-light {
+    background: $orange-light;
+}
+.bg-orange {
+    background: $orange;
 }

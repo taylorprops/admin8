@@ -1,5 +1,9 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
 
+.text-primary-dark {
+  color: #1c5694;
+}
+
 .text-orange {
   color: #ee5a46;
 }
@@ -22,6 +26,14 @@ a.text-green:hover {
 
 .bg-secondary-light {
   background: rgba(238, 90, 70, 0.1);
+}
+
+.bg-orange-light {
+  background: #f8e5e3;
+}
+
+.bg-orange {
+  background: #ee5a46;
 }
 
 /*!
@@ -10851,11 +10863,6 @@ a.text-default:focus {
   overflow-x: hidden;
 }
 
-.page-add-fields .container-90 {
-  width: 90%;
-  margin: 0 auto;
-}
-
 .page-add-fields .file-view {
   position: relative;
   width: 100%;
@@ -10866,7 +10873,7 @@ a.text-default:focus {
 }
 
 .page-add-fields .file-view-page-info {
-  font-size: 0.8rem;
+  font-size: 1.2rem;
   text-align: center;
 }
 
@@ -10941,12 +10948,12 @@ a.text-default:focus {
 }
 
 .page-add-fields .field-div.group {
-  background: rgba(238, 90, 70, 0.2);
+  background: rgba(149, 97, 226, 0.2);
   cursor: pointer;
 }
 
 .page-add-fields .field-div.group.active {
-  background: rgba(238, 90, 70, 0.6);
+  background: rgba(149, 97, 226, 0.6);
   cursor: default;
 }
 
@@ -10981,7 +10988,7 @@ a.text-default:focus {
 .page-add-fields .field-div .field-options-holder {
   position: absolute;
   top: -55px;
-  width: 140px;
+  width: 200px;
   overflow: visible;
   background: #fff;
   border: 1px solid #1f6bbd;
@@ -11001,37 +11008,22 @@ a.text-default:focus {
   position: absolute;
   width: 0;
   height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 7px solid #1f6bbd;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 10px solid #1f6bbd;
 }
 
-.page-add-fields .field-div .ui-resizable-se {
-  bottom: -10px;
-  right: -10px;
-  cursor: se-resize;
-  transform: rotate(45deg);
+.page-add-fields .field-div .ui-resizable-e {
+  bottom: 5px;
+  right: -20px;
+  cursor: e-resize;
 }
 
-.page-add-fields .field-div .ui-resizable-sw {
-  bottom: -10px;
-  left: -10px;
-  cursor: sw-resize;
-  transform: rotate(135deg);
-}
-
-.page-add-fields .field-div .ui-resizable-nw {
-  top: -10px;
-  left: -10px;
-  cursor: nw-resize;
-  transform: rotate(225deg);
-}
-
-.page-add-fields .field-div .ui-resizable-ne {
-  top: -10px;
-  right: -10px;
-  cursor: ne-resize;
-  transform: rotate(315deg);
+.page-add-fields .field-div .ui-resizable-w {
+  bottom: 5px;
+  left: -20px;
+  cursor: w-resize;
+  transform: rotate(180deg);
 }
 
 .page-add-fields .field-div .form-div .col-12 {
@@ -11069,15 +11061,31 @@ a.text-default:focus {
   cursor: pointer;
 }
 
-.page-add-fields .field-div .edit-properties-div {
+.page-add-fields .field-div .mini-slider-icon {
+  width: 40px;
+}
+
+.page-add-fields .field-div .mini-slide-container {
+  position: relative;
+}
+
+.page-add-fields .field-div .mini-slider-option:hover {
+  cursor: pointer;
+}
+
+.page-add-fields .field-div .mini-slider {
+  position: absolute;
+  left: -20px;
+  bottom: -10px;
   display: none;
-  position: fixed;
-  width: 450px;
-  z-index: 15;
-  left: 0;
-  top: 100px;
-  right: 0;
-  margin: auto;
+  width: 60px;
+  height: auto;
+  padding: 5px;
+}
+
+.page-add-fields .field-div .mini-slider-option {
+  width: 40px;
+  cursor: pointer;
 }
 
 .page-add-fields .field-div .field-status-div {
@@ -11087,7 +11095,6 @@ a.text-default:focus {
   background: rgba(255, 255, 255, 0.9);
   color: #1f6bbd;
   font-size: 0.7rem;
-  padding: 1px;
   line-height: 1;
   z-index: 0;
 }
@@ -11097,8 +11104,8 @@ a.text-default:focus {
   white-space: nowrap;
 }
 
-.page-add-fields .field-div .form-div .card-body {
-  max-height: 55VH;
+.page-add-fields .field-div .modal-body {
+  max-height: 75VH;
   overflow: auto;
 }
 
@@ -11114,11 +11121,11 @@ a.text-default:focus {
 
 .page-add-fields .field-error-div {
   color: #e3342f;
-  margin-top: 10px;
+  margin: 7px;
 }
 
 .page-add-fields .field-error {
-  border: 3px solid #e3342f;
+  background: rgba(227, 52, 47, 0.7) !important;
 }
 
 .page-add-fields .field-error-item {
@@ -11134,28 +11141,27 @@ a.text-default:focus {
   left: -50px;
 }
 
+.page-add-fields .form-div h5 {
+  padding-bottom: 5px;
+}
+
 .page-fill-fields {
   width: 100%;
   max-width: 100% !important;
   overflow-x: hidden;
 }
 
-.page-fill-fields .container-90 {
-  width: 90%;
-  margin: 0 auto;
-}
-
 .page-fill-fields .file-view {
   position: relative;
   width: 100%;
-  height: calc(100vh - 130px);
+  height: calc(100vh - 110px);
   overflow-y: scroll;
   margin-left: auto;
   margin-right: auto;
 }
 
 .page-fill-fields .file-view-page-info {
-  font-size: 0.8rem;
+  font-size: 1.2rem;
   text-align: center;
 }
 
@@ -11173,7 +11179,7 @@ a.text-default:focus {
 }
 
 .page-fill-fields .field-toolbar {
-  height: 70px;
+  height: 50px;
   border-bottom: 1px solid #1f6bbd;
 }
 
@@ -11184,47 +11190,96 @@ a.text-default:focus {
   margin: 0px;
 }
 
-.page-fill-fields .fillable-field-container,
-.page-fill-fields .fillable-field-container-hidden.filled {
-  background: rgba(31, 107, 189, 0.1);
+.page-fill-fields input.fillable-field-input {
+  width: 100%;
+  height: 100%;
 }
 
-.page-fill-fields .datepicker {
+.page-fill-fields .field-datepicker {
+  position: absolute;
+  top: 0px;
+  left: 0px;
   width: 100%;
   height: 100%;
   background: transparent;
   border: none;
+  color: transparent;
+  z-index: 1;
 }
 
-.page-fill-fields .field-div.standard {
-  background: rgba(31, 107, 189, 0.2);
+.page-fill-fields .data-div {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.page-fill-fields .data-div:not(.data-div-radio-check) {
+  font-size: 1em;
+  padding-left: 5px;
+}
+
+.page-fill-fields .data-div.data-div-radio-check {
+  font-size: 1.5em;
+  line-height: 80%;
+}
+
+.page-fill-fields .field-div {
+  background: rgba(238, 90, 70, 0.1);
   cursor: pointer;
+  color: #000;
+  box-shadow: none;
 }
 
-.page-fill-fields .field-div.standard.active {
-  background: rgba(31, 107, 189, 0.6);
+.page-fill-fields .field-div.active {
   cursor: default;
+  box-shadow: 0px 9px 0px -5px #FFFFFF, 0px -9px 0px -5px #FFFFFF, 9px 0px 0px -5px #FFFFFF, -9px 0px 0px -5px #FFFFFF, 0px 0px 0px 5px #1f6bbd, 5px 5px 10px 5px rgba(0, 0, 0, 0);
 }
 
-.page-fill-fields .field-div.group {
-  background: rgba(238, 90, 70, 0.2);
-  cursor: pointer;
+.page-fill-fields .modal-body {
+  max-height: 65VH;
+  overflow: auto;
 }
 
-.page-fill-fields .field-div.group.active {
-  background: rgba(238, 90, 70, 0.6);
-  cursor: default;
+.form-ele {
+  position: relative;
 }
 
-.page-fill-fields .edit-properties-div {
-  display: none;
-  position: fixed;
-  width: 600px;
-  z-index: 15;
-  left: 0;
-  top: 100px;
-  right: 0;
-  margin: auto;
+.form-ele label {
+  z-index: 0;
+}
+
+.form-ele .form-input,
+.form-ele .form-textarea {
+  padding: 25px 5px 5px 10px;
+  border: 1px solid #ccc;
+  color: #686767;
+  font-size: 1.1rem;
+}
+
+.form-ele .form-input-label,
+.form-ele .form-textarea-label {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  font-size: 1.2rem;
+  color: #9e9e9e;
+  transition: top 0.5s;
+}
+
+.form-ele .form-input-label.active,
+.form-ele .form-textarea-label.active {
+  position: absolute;
+  top: 5px;
+  font-size: 0.9rem;
+  color: #1f6bbd;
+}
+
+.form-ele .form-textarea {
+  width: 100%;
+  height: auto;
 }
 
 .modal-content {
@@ -11238,21 +11293,327 @@ a.text-default:focus {
   color: #fff;
 }
 
-#modal_success .modal-header {
-  background-color: #30a730;
+.prettydropdown > ul {
+  color: #495057 !important;
+  border: 1px solid #ced4da !important;
+  font-size: 0.9rem !important;
 }
 
-.md-form label,
-.select-wrapper > label.mdb-main-label {
-  color: #a3a2a2;
-  z-index: 0;
+/*
+  All a user has to do to change the calendar size is
+  change the font-size on the container and everything
+  magically resizes accordingly. Relative units ftw!
+*/
+
+.qs-datepicker-container {
+  font-size: 1rem;
+  font-family: sans-serif;
+  color: black;
+  position: absolute;
+  width: 15.625em;
+  display: flex;
+  flex-direction: column;
+  z-index: 9001;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border: 1px solid gray;
+  border-radius: 0.263921875em;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 1.25em 1.25em -0.9375em rgba(0, 0, 0, 0.3);
 }
 
-.select-wrapper > label.mdb-main-label {
-  top: 0px;
+.qs-datepicker-container * {
+  box-sizing: border-box;
 }
 
-.dropdown-content {
-  max-height: 500px !important;
+.qs-datepicker-container.qs-centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.qs-datepicker-container.qs-hidden {
+  display: none;
+}
+
+.qs-datepicker .qs-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  width: 100%;
+  height: 100%;
+  padding: 0.5em;
+  z-index: 1;
+  opacity: 1;
+  transition: opacity 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.qs-datepicker .qs-overlay.qs-hidden {
+  opacity: 0;
+  z-index: -1;
+}
+
+.qs-datepicker .qs-overlay .qs-overlay-year {
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid white;
+  border-radius: 0;
+  color: white;
+  font-size: 0.875em;
+  padding: 0.25em 0;
+  width: 80%;
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+}
+
+.qs-datepicker .qs-overlay .qs-overlay-year::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.qs-datepicker .qs-overlay .qs-close {
+  padding: 0.5em;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.qs-datepicker .qs-overlay .qs-submit {
+  border: 1px solid white;
+  border-radius: 0.263921875em;
+  padding: 0.5em;
+  margin: 0 auto auto;
+  cursor: pointer;
+  background: rgba(128, 128, 128, 0.4);
+}
+
+.qs-datepicker .qs-overlay .qs-submit.qs-disabled {
+  color: gray;
+  border-color: gray;
+  cursor: not-allowed;
+}
+
+.qs-datepicker .qs-overlay .qs-overlay-month-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+
+.qs-datepicker .qs-overlay .qs-overlay-month {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: calc(100% / 3);
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.qs-datepicker .qs-overlay .qs-overlay-month.active,
+.qs-datepicker .qs-overlay .qs-overlay-month:hover {
+  opacity: 1;
+}
+
+.qs-datepicker .qs-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  flex-shrink: 0;
+  background: lightgray;
+  -webkit-filter: blur(0px);
+          filter: blur(0px);
+  transition: -webkit-filter 0.3s;
+  transition: filter 0.3s;
+  transition: filter 0.3s, -webkit-filter 0.3s;
+}
+
+.qs-datepicker .qs-controls.qs-blur {
+  -webkit-filter: blur(5px);
+          filter: blur(5px);
+}
+
+.qs-datepicker .qs-arrow {
+  height: 1.5625em;
+  width: 1.5625em;
+  position: relative;
+  cursor: pointer;
+  border-radius: 0.263921875em;
+  transition: background 0.15s;
+}
+
+.qs-datepicker .qs-arrow:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.qs-datepicker .qs-arrow:hover.qs-left:after {
+  border-right-color: black;
+}
+
+.qs-datepicker .qs-arrow:hover.qs-right:after {
+  border-left-color: black;
+}
+
+.qs-datepicker .qs-arrow:after {
+  content: "";
+  border: 0.390625em solid transparent;
+  position: absolute;
+  top: 50%;
+  transition: border 0.2s;
+}
+
+.qs-datepicker .qs-arrow.qs-left:after {
+  border-right-color: gray;
+  right: 50%;
+  transform: translate(25%, -50%);
+}
+
+.qs-datepicker .qs-arrow.qs-right:after {
+  border-left-color: gray;
+  left: 50%;
+  transform: translate(-25%, -50%);
+}
+
+.qs-datepicker .qs-month-year {
+  font-weight: bold;
+  transition: border 0.2s;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+}
+
+.qs-datepicker .qs-month-year:hover {
+  border-bottom: 1px solid gray;
+}
+
+.qs-datepicker .qs-month-year:focus,
+.qs-datepicker .qs-month-year:active:focus {
+  outline: none;
+}
+
+.qs-datepicker .qs-month {
+  padding-right: 0.5ex;
+}
+
+.qs-datepicker .qs-year {
+  padding-left: 0.5ex;
+}
+
+.qs-datepicker .qs-squares {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.3125em;
+  -webkit-filter: blur(0px);
+          filter: blur(0px);
+  transition: -webkit-filter 0.3s;
+  transition: filter 0.3s;
+  transition: filter 0.3s, -webkit-filter 0.3s;
+}
+
+.qs-datepicker .qs-squares.qs-blur {
+  -webkit-filter: blur(5px);
+          filter: blur(5px);
+}
+
+.qs-datepicker .qs-square {
+  width: calc(100% / 7);
+  height: 1.5625em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.1s;
+  border-radius: 0.263921875em;
+}
+
+.qs-datepicker .qs-square.qs-current {
+  font-weight: bold;
+}
+
+.qs-datepicker .qs-square.qs-current span {
+  text-decoration: underline;
+}
+
+.qs-datepicker .qs-square.qs-active {
+  background: lightblue;
+}
+
+.qs-datepicker .qs-square.qs-range-date-start:not(.qs-range-date-6) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.qs-datepicker .qs-square.qs-range-date-middle {
+  background: #d4ebf2;
+}
+
+.qs-datepicker .qs-square.qs-range-date-middle:not(.qs-range-date-0):not(.qs-range-date-6) {
+  border-radius: 0;
+}
+
+.qs-datepicker .qs-square.qs-range-date-middle.qs-range-date-0 {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.qs-datepicker .qs-square.qs-range-date-middle.qs-range-date-6 {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.qs-datepicker .qs-square.qs-range-date-end:not(.qs-range-date-0) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.qs-datepicker .qs-square.qs-disabled span {
+  opacity: 0.2;
+}
+
+.qs-datepicker .qs-square.qs-empty {
+  cursor: default;
+}
+
+.qs-datepicker .qs-square.qs-disabled {
+  cursor: not-allowed;
+}
+
+.qs-datepicker .qs-square.qs-day {
+  cursor: default;
+  font-weight: bold;
+  color: gray;
+}
+
+.qs-datepicker .qs-square:not(.qs-empty):not(.qs-disabled):not(.qs-day):not(.qs-active):hover {
+  background: orange;
+}
+
+.qs-datepicker .qs-event {
+  position: relative;
+}
+
+.qs-datepicker .qs-event:after {
+  content: "";
+  position: absolute;
+  width: 0.46875em;
+  height: 0.46875em;
+  border-radius: 50%;
+  background: #07f;
+  bottom: 0;
+  right: 0;
+}
+
+.qs-datepicker .qs-event.qs-disabled:after,
+.qs-datepicker .qs-event.qs-empty:after {
+  background: #cce4ff;
 }
 

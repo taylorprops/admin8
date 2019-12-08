@@ -1,0 +1,13 @@
+
+PERMISSIONS
+sudo chown -R mike:www-data /var/www/admin/
+sudo find /var/www/admin/ -maxdepth 1 -type f ! -name 'artisan' ! -name 'server.php' ! -name '*env' -exec grep -rl '[a-zA-Z]+*$' {} \; -exec chown mike:www-data  {} \;
+
+sudo chown -R www-data:www-data /var/www/admin/server.php
+sudo chown -R www-data:www-data /var/www/admin/artisan
+sudo chmod 0775 /var/www/admin/artisan
+
+sudo chown -R $USER:www-data /var/www/admin/storage
+sudo chown -R $USER:www-data /var/www/admin/bootstrap/cache
+chmod -R 775 /var/www/admin/storage
+chmod -R 775 /var/www/admin/bootstrap/cache

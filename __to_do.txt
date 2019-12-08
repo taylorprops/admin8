@@ -1,4 +1,29 @@
 
+!!!!!!!!!!!!!!!!!!!
 
-.field-data-name
-    search all of these and make sure all of the same have the same values
+on field properties popup
+    checkbox and maybe radio
+        checkbox/radio input value needs to be moved below Helper text
+
+
+uploaded files can never be deleted after fields have been added
+They just become non-active but still usable in files previously created
+
+
+remove helper text from address fields on add and fill
+
+maybe have to make all data-div the same h,w,x,y percents as parent field-div for creating pdfs
+
+remove all names from inputs
+
+
+
+MAKING PDF LAYERS
+exec('pdftk '.$upload_dir.'\pages\page_01.pdf background '.$upload_dir.'\pages\page_02.pdf output '.$upload_dir.'\pages\combined.pdf');
+
+
+TODO
+INSTALL ON SERVER
+    pdftk
+    wkhtmltopdf
+    maybe html2canvas

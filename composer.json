@@ -14,6 +14,11 @@
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^6.0",
+        "league/flysystem": "^1.0",
+        "mikehaertl/php-pdftk": "^0.7.0",
+        "mikehaertl/phpwkhtmltopdf": "^2.4",
+        "setasign/fpdi-fpdf": "^2.2",
+        "spipu/html2pdf": "^5.2",
         "unisharp/laravel-filemanager": "~1.8"
     },
     "require-dev": {
