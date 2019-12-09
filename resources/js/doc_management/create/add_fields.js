@@ -1,4 +1,5 @@
-import { filter_array, select_menu } from '../../global.js';
+import { filter_array } from '../../global.js';
+import { form_elements } from '../../form_elements.js';
 
 if (document.URL.match(/create\/add_fields/)) {
 
@@ -76,7 +77,6 @@ if (document.URL.match(/create\/add_fields/)) {
             setTimeout(function () {
                 $('.add-input').off('click').on('click', add_input);
                 $('.delete-input').off('click').on('click', delete_input);
-
             }, 1500);
 
 
@@ -168,7 +168,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 field_status();
 
-                select_menu();
+                //select_menu();
 
             }
         });
@@ -187,11 +187,11 @@ if (document.URL.match(/create\/add_fields/)) {
         function reset_field_properties() {
             // reset name fields
             $('.form-div').each(function () {
-                $(this).find('select, input').not('input.select-dropdown').each(function () {
+                $(this).find('select, input').not('input.form-select-search-input').each(function () {
                     $(this).val($(this).data('default-value')).trigger('change');
                 });
             });
-            select_dropdown.refresh();
+            //select_dropdown.refresh();
             $('.field-div').removeClass('active');
             $('.focused, .field-popup, .mini-slider').hide();
 
@@ -200,14 +200,14 @@ if (document.URL.match(/create\/add_fields/)) {
         function clear_fields_on_change(id) {
             $('#name_select_' + id).change(function () {
                 if ($(this).val() != '') {
-                    $('#name_input_' + id).val('');
+                    $('#name_input_' + id).val('').trigger('change');
                 } else {
                     $(this);
                 }
             });
             $('#name_input_' + id).change(function () {
                 if ($(this).val() != '') {
-                    $('#name_select_' + id).val('');
+                    $('#name_select_' + id).val('').trigger('change');
                 }
             });
         }
@@ -429,8 +429,8 @@ if (document.URL.match(/create\/add_fields/)) {
                             setTimeout(function () {
                                 // set values for field name
                                 if (field_type != 'checkbox') {
-                                    new_ele.find('select.field-data-name').val(common_name).data('default-value', common_name);
-                                    new_ele.find('input.field-data-name').val(custom_name).data('default-value', custom_name);
+                                    new_ele.find('select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
+                                    new_ele.find('input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
                                 }
                                 keep_in_view(new_ele, new_w_perc, new_x_perc, new_y_perc, field_type);
                                 set_field_options(field_type, new_ele, id, rect, container);
@@ -440,7 +440,7 @@ if (document.URL.match(/create\/add_fields/)) {
                             let inputs_div = ele.find('.field-data-inputs-container');
                             add_inputs_to_group(group_id, inputs_div);
 
-                            select_menu();
+                            //select_menu();
 
 
                         }, 100);
@@ -485,8 +485,8 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 // remove common name when custom name is type in
                 edit_div.find('input.field-data-name').keyup(function () {
-                    edit_div.find('select.field-data-name').val('');
-                    select_dropdown.refresh();
+                    edit_div.find('select.field-data-name').val('').trigger('change');
+                    //select_dropdown.refresh();
                 });
 
                 // auto populate helper text for address fields - they will always be the same as the address type
@@ -495,7 +495,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     edit_div.find('.field-data-address-type').change(function () {
                         let helper_text = $(this).find('option:selected').text();
                         let helper_text_input = edit_div.find('.field-data-helper-text');
-                        helper_text_input.val(helper_text).data('default-value', helper_text);
+                        helper_text_input.val(helper_text).data('default-value', helper_text).trigger('change');
                     });
 
                 } else if (field_type == 'name' || field_type == 'date' || field_type == 'textline') {
@@ -503,7 +503,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     edit_div.find('select.field-data-name').change(function () {
                         let helper_text = $(this).find('option:selected').text();
                         let helper_text_input = edit_div.find('.field-data-helper-text');
-                        helper_text_input.val(helper_text).data('default-value', helper_text);
+                        helper_text_input.val(helper_text).data('default-value', helper_text).trigger('change');
 
                         // auto populate input name and helper text for Buyer and Seller Names
                         if (field_type == 'name') {
@@ -514,16 +514,16 @@ if (document.URL.match(/create\/add_fields/)) {
                             if ($(this).val() == 'Seller or Landlord Name' || $(this).val() == 'Buyer Name') {
                                 // force click to add inputs
                                 inputs_container.html('').next('.add-input').trigger('click').trigger('click');
-                                inputs_container.children('.row:eq(0)').find('.field-data-input').val(name_type + ' One Name');
-                                inputs_container.children('.row:eq(0)').find('.field-data-input-helper-text').val('Enter the Full Name of the First ' + name_type);
-                                inputs_container.children('.row:eq(1)').find('.field-data-input').val(name_type + ' Two Name');
-                                inputs_container.children('.row:eq(1)').find('.field-data-input-helper-text').val('Enter the Full Name of the Second  ' + name_type);
+                                inputs_container.children('.row:eq(0)').find('.field-data-input').val(name_type + ' One Name').trigger('change');
+                                inputs_container.children('.row:eq(0)').find('.field-data-input-helper-text').val('Enter the Full Name of the First ' + name_type).trigger('change');
+                                inputs_container.children('.row:eq(1)').find('.field-data-input').val(name_type + ' Two Name').trigger('change');
+                                inputs_container.children('.row:eq(1)').find('.field-data-input-helper-text').val('Enter the Full Name of the Second  ' + name_type).trigger('change');
 
                             } else {
 
                                 inputs_container.html('').next('.add-input').trigger('click');
-                                inputs_container.children('.row:eq(0)').find('.field-data-input').val(name_type + ' Name');
-                                inputs_container.children('.row:eq(0)').find('.field-data-input-helper-text').val('Enter the Full Name of the ' + name_type);
+                                inputs_container.children('.row:eq(0)').find('.field-data-input').val(name_type + ' Name').trigger('change');
+                                inputs_container.children('.row:eq(0)').find('.field-data-input-helper-text').val('Enter the Full Name of the ' + name_type).trigger('change');
 
                             }
 
@@ -537,7 +537,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     edit_div.find('select.field-data-name').change(function () {
                         let helper_text = $(this).find('option:selected').text();
                         let helper_text_input = edit_div.find('.field-data-helper-text');
-                        helper_text_input.val(helper_text).data('default-value', helper_text);
+                        helper_text_input.val(helper_text).data('default-value', helper_text).trigger('change');
                     });
 
                 }
@@ -559,7 +559,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     if (type == 'address' || type == 'name' || type == 'checkbox') {
                         $('.group_' + group_id).each(function () {
                             let input = $(this).find('input.field-data-helper-text');
-                            input.attr('value', input.val()).data('default-value', input.val());
+                            input.attr('value', input.val()).data('default-value', input.val()).trigger('change');
                         });
                         add_inputs_to_group(group_id, inputs_div);
                     } else {
@@ -567,12 +567,12 @@ if (document.URL.match(/create\/add_fields/)) {
                         let helper_input = form.find('input.field-data-helper-text');
                         let helper_text = helper_input.val();
                         $('.group_' + group_id).each(function () {
-                            $(this).find('input.field-data-helper-text').val(helper_text).data('default-value', helper_text);
+                            $(this).find('input.field-data-helper-text').val(helper_text).data('default-value', helper_text).trigger('change');
                         });
                     }
                     // add value and default value to all added inputs
                     inputs_div.find('.field-data-inputs-div').find('.field-data-input, .field-data-input-helper-text').each(function () {
-                        $(this).data('default-value', $(this).val()).attr('value', $(this).val());
+                        $(this).data('default-value', $(this).val()).attr('value', $(this).val()).trigger('change');
                     });
 
                     let address_select = form.find('select.field-data-address-type');
@@ -593,7 +593,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     // update other number types to written if this is numeric. There will be one numeric and possibly multiple written
                     if (number_type == 'numeric') {
                         if ($('.group_' + group_id).length > 1) {
-                            $('.group_' + group_id).find('select.field-data-number-type').not(number_select).val('written').data('default-value', 'written');
+                            $('.group_' + group_id).find('select.field-data-number-type').not(number_select).val('written').data('default-value', 'written').trigger('change');
                             number_select.data('default-value', number_type);
                         }
                     }
@@ -613,7 +613,7 @@ if (document.URL.match(/create\/add_fields/)) {
                         $('.group_' + group_id).each(function () {
                             $(this).data('commonname', common_name).data('customname', custom_name);
                             $(this).find('.form-div').each(function () {
-                                $(this).find('input.field-data-name').val(custom_name).data('default-value', custom_name);
+                                $(this).find('input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
                             });
                         });
 
@@ -622,8 +622,8 @@ if (document.URL.match(/create\/add_fields/)) {
                         $('.group_' + group_id).each(function () {
                             $(this).data('commonname', common_name).data('customname', custom_name);
                             $(this).find('.form-div').each(function () {
-                                $(this).find('select.field-data-name').val(common_name).data('default-value', common_name);
-                                $(this).find('input.field-data-name').val(custom_name).data('default-value', custom_name);
+                                $(this).find('select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
+                                $(this).find('input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
                             });
                         });
 
@@ -660,6 +660,8 @@ if (document.URL.match(/create\/add_fields/)) {
 
             });
 
+            form_elements();
+
         }
 
         function add_inputs_to_group(group_id, inputs_div) {
@@ -672,12 +674,14 @@ if (document.URL.match(/create\/add_fields/)) {
                     // rename all ids so they are unique and add data-default-value
                     $(this).find('.field-data-inputs-div').find('input, select').each(function () {
                         c += 1;
-                        $(this).attr('id', 'input_' + group_id + '_' + c).next('label').attr('for', 'input_' + group_id + '_' + c);
+                        $(this).attr('id', 'input_' + group_id + '_' + c);
                         $(this).data('default-value', $(this).val());
+                        // TODO need to activate form-element
                     });
                 });
             }
             $('.add-input').off('click').on('click', add_input);
+            form_elements();
         }
 
         function delete_input() {
@@ -694,14 +698,12 @@ if (document.URL.match(/create\/add_fields/)) {
                 <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
                 <div class="col-12 mt-3"> \
                     <div class="my-1"> \
-                        <input type="text" class="form-control field-data-input" id="input_name_'+ field_id + '_' + input_id + '" data-id="'+input_id+'"> \
-                        <label for="input_name_'+ field_id + '_' + input_id + '">Input Name</label> \
+                        <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Name"> \
                     </div> \
                 </div> \
                 <div class="col-12"> \
                     <div class="my-1"> \
-                        <input type="text" class="form-control field-data-input-helper-text" id="input_helper_text_'+ field_id + '_' + input_id + '" data-id="'+input_id+'"> \
-                        <label for="input_helper_text_'+ field_id + '_' + input_id + '">Input Helper Text</label> \
+                        <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Helper Text"> \
                     </div> \
                 </div> \
             </div> \
@@ -709,6 +711,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
             $(new_input).appendTo(append_to);
             $('.delete-input').click(delete_input);
+            form_elements();
         }
 
         function field_properties(type, group_id, field_id) {
@@ -740,8 +743,7 @@ if (document.URL.match(/create\/add_fields/)) {
             if (type != 'checkbox' && type != 'radio') {
                 properties = properties + ' \
                                 <div class="col-12 my-1"> \
-                                    <label for="name_select_'+ field_id + '" class="mdb-main-label">Select Common Name (Shared)</label> \
-                                    <select class="select-menu field-data-name" id="name_select_'+ field_id + '" data-field-type="common"> \
+                                    <select class="form-select field-data-name" id="name_select_'+ field_id + '" data-field-type="common" data-label="Select Common Name (Shared)"> \
                                         <option value="">&nbsp;</option> \
                                         ' + $('#' + type + '_select_options').val() + ' \
                                     </select> \
@@ -751,8 +753,7 @@ if (document.URL.match(/create\/add_fields/)) {
             }
             properties = properties + ' \
                                 <div class="col-12 my-1"> \
-                                    <label for="name_input_'+ field_id + '">' + custom_name_heading + '</label> \
-                                    <input type="text" class="form-control field-data-name" id="name_input_'+ field_id + '" data-field-type="custom"> \
+                                    <input type="text" class="form-input field-data-name" id="name_input_'+ field_id + '" data-field-type="custom" data-label="' + custom_name_heading + '"> \
                                 </div> \
                             </div> \
             ';
@@ -763,8 +764,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-secondary mb-0">Number Type</h5> \
                                 </div> \
                                 <div class="col-12 my-1"> \
-                                    <label for="number_select_'+ field_id + '" class="mdb-main-label">Number Type</label> \
-                                    <select class="select-menu field-data-number-type" id="number_select_'+ field_id + '" data-field-type="number-type"> \
+                                    <select class="form-select field-data-number-type" id="number_select_'+ field_id + '" data-field-type="number-type" data-label="Number Type"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="numeric">Numeric - 3,000</option> \
                                         <option value="written">Written - Three Thousand</option> \
@@ -779,8 +779,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-secondary mb-0">Text Type <small>(Optional - Use to format the value)</small></h5> \
                                 </div> \
                                 <div class="col-12 my-1" > \
-                                    <label for="textline_select_'+ field_id + '" class="mdb-main-label">Text Type</label> \
-                                    <select class="select-menu field-data-textline-type" id="textline_select_'+ field_id + '" data-field-type="textline-type"> \
+                                    <select class="form-select field-data-textline-type" id="textline_select_'+ field_id + '" data-field-type="textline-type" data-label="Text Type"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="number numbers-only">Number</option> \
                                         <option value="phone numbers-only">Phone Number</option> \
@@ -795,8 +794,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-secondary mb-0">Address Type</h5> \
                                 </div> \
                                 <div class="col-12 my-1"> \
-                                    <label for="address_select_'+ field_id + '" class="mdb-main-label">Address Type</label> \
-                                    <select class="select-menu field-data-address-type" id="address_select_'+ field_id + '" data-field-type="address-type"> \
+                                    <select class="form-select field-data-address-type" id="address_select_'+ field_id + '" data-field-type="address-type" data-label="Address Type"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="full">Full Address</option> \
                                         <option value="street">Street Address</option> \
@@ -815,8 +813,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-secondary mb-0">Radio Input Value</h5> \
                                 </div> \
                                 <div class="col-12 my-1"> \
-                                    <label for="field_value_input_'+ field_id + '">Field Value</label> \
-                                    <input type="text" class="form-control field-data-radio-value" id="field_value_input_'+ field_id + '"> \
+                                    <input type="text" class="form-input field-data-radio-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
                                 </div> \
                             </div> \
                 ';
@@ -827,8 +824,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-secondary mb-0">Checkbox Value</h5> \
                                 </div> \
                                 <div class="col-12 my-1"> \
-                                    <label for="field_value_input_'+ field_id + '">Field Value</label> \
-                                    <input type="text" class="form-control field-data-checkbox-value" id="field_value_input_'+ field_id + '"> \
+                                    <input type="text" class="form-input field-data-checkbox-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
                                 </div> \
                             </div> \
                 ';
@@ -839,8 +835,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-secondary mb-0">Helper Text</h5> \
                                 </div> \
                                 <div class="col-12 my-1"> \
-                                    <label for="helper_text_input_'+ field_id + '">Helper Text</label> \
-                                    <input type="text" class="form-control field-data-helper-text" id="helper_text_input_'+ field_id + '"> \
+                                    <input type="text" class="form-input field-data-helper-text" id="helper_text_input_'+ field_id + '" data-label="Helper Text"> \
                                 </div> \
                             </div> \
             ';
@@ -859,14 +854,12 @@ if (document.URL.match(/create\/add_fields/)) {
                                             <div class="col-12 mt-3"> \
                                                 <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
                                                 <div class="my-1"> \
-                                                    <label for="input_name_'+ field_id + '_'+input_id+'">Input Name</label> \
-                                                    <input type="text" class="form-control field-data-input" id="input_name_'+ field_id + '_'+input_id+'" data-default-value="" data-id="'+input_id+'"> \
+                                                    <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_'+input_id+'" data-default-value="" data-id="'+input_id+'" data-label="Input Name"> \
                                                 </div> \
                                             </div> \
                                             <div class="col-12"> \
                                                 <div class="my-1"> \
-                                                    <label for="input_helper_text_'+ field_id + '_'+input_id+'">Input Helper Text</label> \
-                                                    <input type="text" class="form-control field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+input_id+'" data-id="'+input_id+'"> \
+                                                    <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+input_id+'" data-id="'+input_id+'" data-label="Input Helper Text"> \
                                                 </div> \
                                             </div> \
                                         </div> \
@@ -908,14 +901,12 @@ if (document.URL.match(/create\/add_fields/)) {
                                             <div class="col-12 mt-3"> \
                                                 <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
                                                 <div class="my-1"> \
-                                                    <label for="input_name_'+ field_id + '_'+inputs_ids+'">Input Name</label> \
-                                                    <input type="text" class="form-control field-data-input" id="input_name_'+ field_id + '_'+inputs_ids+'" value="'+input_name+'" data-default-value="'+input_name+'" data-id="'+inputs_ids+'"> \
+                                                    <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_'+inputs_ids+'" value="'+input_name+'" data-default-value="'+input_name+'" data-id="'+inputs_ids+'" data-label="Input Name"> \
                                                 </div> \
                                             </div> \
                                             <div class="col-12"> \
                                                 <div class="my-1"> \
-                                                    <label for="input_helper_text_'+ field_id + '_'+inputs_ids+'">Input Helper Text</label> \
-                                                    <input type="text" class="form-control field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+inputs_ids+'" value="'+input_helper_text+'" data-default-value="'+input_helper_text+'" data-id="'+inputs_ids+'"> \
+                                                    <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+inputs_ids+'" value="'+input_helper_text+'" data-default-value="'+input_helper_text+'" data-id="'+inputs_ids+'" data-label="Input Helper Text"> \
                                                 </div> \
                                             </div> \
                                         </div> \
@@ -1204,7 +1195,7 @@ if (document.URL.match(/create\/add_fields/)) {
                         $.each(this, function (k, v) {
                             select_options = select_options + '<option value="' + v + '">' + v + '</option>';
                         });
-                        $('#' + type + '_select_options').val(select_options);
+                        $('#' + type + '_select_options').val(select_options).trigger('change');
                     });
 
                 }
@@ -1468,14 +1459,14 @@ if (document.URL.match(/create\/add_fields/)) {
 
         });
 
-        function select_menu() {
+        /* function select_menu() {
             select_dropdown = $('select').prettyDropdown({
                 height: 35,
                 width: '100%',
                 classic: true
             });
             //select_dropdown.refresh();
-        }
+        } */
 
 
     });

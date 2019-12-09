@@ -1,7 +1,7 @@
 require('./bootstrap');
 
 require('./global.js');
-require('./form-elements.js');
+require('./form_elements.js');
 
 // Document Management
 require('./doc_management/create/add_fields.js');

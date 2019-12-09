@@ -108,15 +108,14 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                     @if($field['field_type'] != 'checkbox' && $field['field_type'] != 'radio')
                                                     <div class="col-12">
                                                         <div class="my-1">
-                                                            <label for="name_select_{{$field['field_id']}}" class="mdb-main-label">Select Common Name (Shared)</label>
-                                                            <select class="select-menu field-data-name" id="name_select_{{$field['field_id']}}" data-field-type="common" data-default-value="{{$common_name}}">
+                                                            <select class="form-select field-data-name form-select-searchable" id="name_select_{{$field['field_id']}}" data-field-type="common" data-default-value="{{$common_name}}" data-label="Select Common Name (Shared)">
                                                                 <option value="">&nbsp;</option>
                                                                 @foreach ($common_fields as $field_type => $field_names)
-                                                                @if($field['field_type'] == $field_type)
-                                                                @foreach($field_names as $field_name)
-                                                                <option value="{{ $field_name[0] }}" @if($field_name[0]==$common_name) selected @endif>{{ $field_name[0] }}</option>
-                                                                @endforeach
-                                                                @endif
+                                                                    @if($field['field_type'] == $field_type)
+                                                                        @foreach($field_names as $field_name)
+                                                                        <option value="{{ $field_name[0] }}" @if($field_name[0]==$common_name) selected @endif>{{ $field_name[0] }}</option>
+                                                                        @endforeach
+                                                                    @endif
                                                                 @endforeach
                                                             </select>
 
@@ -126,8 +125,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                     @endif
                                                     <div class="col-12">
                                                         <div class="my-1">
-                                                            <label for="name_input_{{$field['field_id']}}">Custom Name</label>
-                                                            <input type="text" class="form-control field-data-name" id="name_input_{{$field['field_id']}}" data-field-type="custom" value="{{ $custom_name }}" data-default-value="{{ $custom_name }}">
+                                                            <input type="text" class="form-input field-data-name" id="name_input_{{$field['field_id']}}" data-field-type="custom" value="{{ $custom_name }}" data-default-value="{{ $custom_name }}" data-label="Custom Name">
 
                                                         </div>
                                                     </div>
@@ -137,8 +135,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                     <div class="col-12">
                                                         <h5 class="text-secondary mb-0">Number Type</h5>
                                                         <div class="my-1">
-                                                            <label for="number_select_{{$field['field_id']}}" class="mdb-main-label">Number Type</label>
-                                                            <select class="select-menu field-data-number-type" id="number_select_{{$field['field_id']}}" data-field-type="number-type" data-default-value="{{ $field['number_type'] }}">
+                                                            <select class="form-select field-data-number-type" id="number_select_{{$field['field_id']}}" data-field-type="number-type" data-default-value="{{ $field['number_type'] }}" data-label="Number Type">
                                                                 <option value="">&nbsp;</option>
                                                                 <option value="numeric" @if($field['number_type']=='numeric' ) selected @endif>Numeric - 3,000</option>
                                                                 <option value="written" @if($field['number_type']=='written' ) selected @endif>Written - Three Thousand</option>
@@ -151,8 +148,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                     <div class="col-12">
                                                         <h5 class="text-secondary mb-0">Text Type <small>(Optional - Use to format the value)</small></h5>
                                                         <div class="my-1">
-                                                            <label for="textline_select_{{$field['field_id']}}" class="mdb-main-label">Text Type</label>
-                                                            <select class="select-menu field-data-textline-type" id="textline_select_{{$field['field_id']}}" data-field-type="textline-type" data-default-value="{{ $field['textline_type'] }}">
+                                                            <select class="form-select field-data-textline-type" id="textline_select_{{$field['field_id']}}" data-field-type="textline-type" data-default-value="{{ $field['textline_type'] }}" data-label="Text Type">
                                                                 <option value="">&nbsp;</option>
                                                                 <option value="number numbers-only" @if($field['textline_type']=='number numbers-only' ) selected @endif>Number</option>
                                                                 <option value="phone numbers-only" @if($field['textline_type']=='phone numbers-only' ) selected @endif>Phone Number</option>
@@ -165,8 +161,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                     <div class="col-12">
                                                         <h5 class="text-secondary mb-0">Address Type</h5>
                                                         <div class="my-1">
-                                                            <label for="address_select_{{$field['field_id']}}" class="mdb-main-label">Address Type</label>
-                                                            <select class="select-menu field-data-address-type" id="address_select_{{$field['field_id']}}" data-field-type="address-type" data-default-value="{{ $field['address_type'] }}">
+                                                            <select class="form-select field-data-address-type" id="address_select_{{$field['field_id']}}" data-field-type="address-type" data-default-value="{{ $field['address_type'] }}" data-label="Address Type">
                                                                 <option value="">&nbsp;</option>
                                                                 <option value="full" @if($field['address_type']=='full' ) selected @endif>Full Address</option>
                                                                 <option value="street" @if($field['address_type']=='street' ) selected @endif>Street Address</option>
@@ -184,8 +179,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                     <div class="col-12">
                                                         <h5 class="text-secondary mb-0">Radio Input Value</h5>
                                                         <div class="my-1">
-                                                            <label for="field_value_input_{{$field['field_id']}}">Field Value</label>
-                                                            <input type="text" class="form-control field-data-radio-value" id="field_value_input_{{$field['field_id']}}" value="{{ $field['radio_value'] }}" data-default-value="{{ $field['radio_value'] }}">
+                                                            <input type="text" class="form-input field-data-radio-value" id="field_value_input_{{$field['field_id']}}" value="{{ $field['radio_value'] }}" data-default-value="{{ $field['radio_value'] }}" data-label="Field Value">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -194,8 +188,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                     <div class="col-12">
                                                         <h5 class="text-secondary mb-0">Checkbox Value</h5>
                                                         <div class="my-1">
-                                                            <label for="field_value_input_{{$field['field_id']}}">Field Value</label>
-                                                            <input type="text" class="form-control field-data-checkbox-value" id="field_value_input_{{$field['field_id']}}" value="{{ $field['checkbox_value'] }}" data-default-value="{{ $field['checkbox_value'] }}">
+                                                            <input type="text" class="form-input field-data-checkbox-value" id="field_value_input_{{$field['field_id']}}" value="{{ $field['checkbox_value'] }}" data-default-value="{{ $field['checkbox_value'] }}" data-label="Field Value">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -204,8 +197,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                     <div class="col-12">
                                                         <h5 class="text-secondary mb-0">Helper Text</h5>
                                                         <div class="my-1">
-                                                            <label for="helper_text_input_{{$field['field_id']}}">Helper Text</label>
-                                                            <input type="text" class="form-control field-data-helper-text" id="helper_text_input_{{$field['field_id']}}" value="{{ $field['helper_text'] }}" data-default-value="{{ $field['helper_text'] }}">
+                                                            <input type="text" class="form-input field-data-helper-text" id="helper_text_input_{{$field['field_id']}}" value="{{ $field['helper_text'] }}" data-default-value="{{ $field['helper_text'] }}" data-label="Helper Text">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -220,14 +212,12 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                                 <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a>
                                                                 <div class="col-12 mt-3">
                                                                     <div class="my-1">
-                                                                        <label for="input_name_{{ $field['field_id'] }}_{{ $field_input['input_id'] }}">Input Name</label>
-                                                                        <input type="text" class="form-control field-data-input" id="input_name_{{ $field['field_id'] }}_{{ $field_input['input_id'] }}" value="{{ $field_input['input_name'] }}" data-default-value="{{ $field_input['input_name'] }}" data-id="{{ $field_input['input_id'] }}">
+                                                                        <input type="text" class="form-input field-data-input" id="input_name_{{ $field['field_id'] }}_{{ $field_input['input_id'] }}" value="{{ $field_input['input_name'] }}" data-default-value="{{ $field_input['input_name'] }}" data-id="{{ $field_input['input_id'] }}" data-label="Input Name">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-12">
                                                                     <div class="my-1">
-                                                                        <label for="input_helper_text_{{ $field['field_id'] }}_{{ $field_input['input_id'] }}">Input Helper Text</label>
-                                                                        <input type="text" class="form-control field-data-input-helper-text" id="input_helper_text_{{ $field['field_id'] }}_{{ $field_input['input_id'] }}" value="{{ $field_input['input_helper_text'] }}" data-default-value="{{ $field_input['input_helper_text'] }}" data-id="{{ $field_input['input_id'] }}">
+                                                                        <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_{{ $field['field_id'] }}_{{ $field_input['input_id'] }}" value="{{ $field_input['input_helper_text'] }}" data-default-value="{{ $field_input['input_helper_text'] }}" data-id="{{ $field_input['input_id'] }}" data-label="Input Helper Text">
                                                                     </div>
                                                                 </div>
                                                             </div>

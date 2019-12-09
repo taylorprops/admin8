@@ -12,18 +12,18 @@ $(document).ready(function () {
         headers: {'X-CSRF-TOKEN': _token}
     };
 
-    window.select_dropdown = $('select').prettyDropdown({
+    /* window.select_dropdown = $('select').prettyDropdown({
         height: 35,
         width: '100%',
         classic: true
-    });
+    }); */
     //select_dropdown.refresh();
 
 
     setTimeout(function () {
         // mdb selects
         //$('.mdb-select').materialSelect();
-        //$('select.mdb-select').addClass('initialized');
+            //$('select.mdb-select').addClass('initialized');
 
     }, 1000);
 
