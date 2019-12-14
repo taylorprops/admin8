@@ -1,4 +1,8 @@
+import SimpleBar from 'simplebar';
+//import 'simplebar';
+import 'simplebar/dist/simplebar.css';
 $(document).ready(function () {
+
 
     // send csrf with every ajax request
     window._token = $('meta[name="csrf-token"]').attr('content');
@@ -12,24 +16,12 @@ $(document).ready(function () {
         headers: {'X-CSRF-TOKEN': _token}
     };
 
-    /* window.select_dropdown = $('select').prettyDropdown({
-        height: 35,
-        width: '100%',
-        classic: true
-    }); */
-    //select_dropdown.refresh();
-
-
-    setTimeout(function () {
-        // mdb selects
-        //$('.mdb-select').materialSelect();
-            //$('select.mdb-select').addClass('initialized');
-
-    }, 1000);
 
     $('.phone').keyup(function () {
         format_phone(this);
     });
+
+
 
     /**************************  STANDARD USE FUNCTIONS ***********************************/
     // Format Phone
@@ -87,6 +79,8 @@ $(document).ready(function () {
 });
 
 /***************  EXPORTED FUNCTIONS - used with js files from /resources/js/ANY FOLDER ****************/
+
+
 
 /*
 PURPOSE: remove duplicates from array

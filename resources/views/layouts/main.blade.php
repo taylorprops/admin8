@@ -13,7 +13,7 @@
         {{-- <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-zrnmn8R8KkWl12rAZFt4yKjxplaDaT7/EUkKm7AovijfrQItFWR7O/JJn4DAa/gx" crossorigin="anonymous"> --}}
         {{-- <script src="https://kit.fontawesome.com/880f60729b.js" crossorigin="anonymous"></script> --}}
         <link href="/vendor/fontawesome/fontawesome/css/all.css" rel="stylesheet">
-        <link href="/resources/select/css/prettydropdowns.css" rel="stylesheet">
+
 
     </head>
 
@@ -29,7 +29,7 @@
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="/resources/mdbootstrap/js/popper.min.js"></script>
         <script type="text/javascript" src="/resources/mdbootstrap/js/mdb.min.js"></script>
-        <script type="text/javascript" src="/resources/select/js/jquery.prettydropdowns.js"></script>
+
 
         @yield('js')
 

@@ -4,3 +4,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/testing', function() {
     return view('/tests/test');
 });
+Route::get('/form_elements', function() {
+    return view('/tests/form_elements');
+});

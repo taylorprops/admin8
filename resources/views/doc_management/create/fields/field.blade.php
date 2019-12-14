@@ -108,7 +108,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                                                     @if($field['field_type'] != 'checkbox' && $field['field_type'] != 'radio')
                                                     <div class="col-12">
                                                         <div class="my-1">
-                                                            <select class="form-select field-data-name form-select-searchable" id="name_select_{{$field['field_id']}}" data-field-type="common" data-default-value="{{$common_name}}" data-label="Select Common Name (Shared)">
+                                                            <select class="form-select field-data-name" id="name_select_{{$field['field_id']}}" data-field-type="common" data-default-value="{{$common_name}}" data-label="Select Common Name (Shared)">
                                                                 <option value="">&nbsp;</option>
                                                                 @foreach ($common_fields as $field_type => $field_names)
                                                                     @if($field['field_type'] == $field_type)
