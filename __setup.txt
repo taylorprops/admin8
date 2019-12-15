@@ -12,9 +12,9 @@ sudo chown -R $USER:www-data /var/www/admin/bootstrap/cache
 
 
 JUST USED THESE AND IT WORKED
-sudo chown -R mike:mike /var/www/taylorproperties-local
-sudo find /var/www/taylorproperties-local -type f -exec chmod 644 {} \;
-sudo find /var/www/taylorproperties-local -type d -exec chmod 755 {} \;
+sudo chown -R www-data:www-data /var/www/taylorproperties-local
+sudo find /var/www/admin/storage -type f -exec chmod 644 {} \;
+sudo find /var/www/admin/storage -type d -exec chmod 755 {} \;
 sudo chgrp -R www-data storage bootstrap/cache
 sudo chmod -R ug+rwx storage bootstrap/cache
 

@@ -197,9 +197,11 @@ export function form_elements() {
                             $('.form-select-dropdown').fadeOut();
                             $('.form-select-search-input').val('').trigger('change');
                         });
+
+                        set_multiple_select_value(wrapper, input);
                     }
 
-                    set_multiple_select_value(wrapper, input);
+
 
                     // remove cancel option if class form-select-no-cancel is set
                     if (!element.hasClass('form-select-no-cancel')) {
@@ -410,7 +412,7 @@ function set_multiple_select_value(wrapper, input) {
         value = selected_checks.join(', ');
     }
     // shorten value if bigger than input
-    let max_chars = Math.round(parseInt(input.width()) * .13);
+    let max_chars = Math.round(parseInt(input.width()) * .12);
     if (value.length > max_chars) {
         value = value.substring(0, max_chars) +'...';
     }

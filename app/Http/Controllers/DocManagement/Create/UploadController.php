@@ -24,21 +24,40 @@ class UploadController extends Controller {
     public function upload_file(Request $request) {
 
         $files = $request -> file('file_upload');
+
         // switch all to linux slashes so it works on windows and linux - use only forward slashes except for various server functions on windows
         $doc_root = $_SERVER['DOCUMENT_ROOT'];
 
         foreach ($files as $file) {
 
-            // get file parts
-            $file_id = date('YmdHis');
             $orig_name = $file -> getClientOriginalName();
-            $name = $file_id . '_' . str_replace(' ', '_', $file -> getClientOriginalName());
+            $date = date('YmdHis');
+            $name = $date . '_' . str_replace(' ', '_', $file -> getClientOriginalName());
             $ext = $file -> getClientOriginalExtension();
+
+            $pages_total = exec('pdftk '.$file.' dump_data | sed -n \'s/^NumberOfPages:\s//p\'');
+
+            // add original file to database
+            $upload = new Upload();
+            $upload -> file_name = $name;
+            $upload -> file_name_orig = $orig_name;
+            $upload -> pages_total = $pages_total;
+            $upload -> save();
+
+            $file_id = $upload -> file_id;
 
             // set directories
             $upload_dir = 'doc_management/uploads/' . $file_id;
             $upload_dir_pages = $upload_dir . '/pages';
             $upload_dir_images = $upload_dir . '/images';
+
+            if (!Storage::disk('public') -> put($upload_dir . '/' . $name, file_get_contents($file))) {
+                return false;
+            }
+
+            $upload -> file_location = 'storage/'.$upload_dir . '/' . $name;
+            $upload -> save();
+
             // create directories
             if (!Storage::disk('public') -> exists($upload_dir_pages)) {
                 Storage::disk('public') -> makeDirectory($upload_dir_pages);
@@ -46,12 +65,13 @@ class UploadController extends Controller {
             if (!Storage::disk('public') -> exists($upload_dir_images)) {
                 Storage::disk('public') -> makeDirectory($upload_dir_images);
             }
-            if (!Storage::disk('public') -> put($upload_dir . '/' . $name, file_get_contents($file))) {
-                return false;
-            }
+
+
+
 
             // new file name
             $new_name = str_replace($ext, 'jpg', $name);
+
             // get full path for pdftk
             $full_path_dir = $doc_root . 'storage/'. $upload_dir;
 
@@ -60,8 +80,8 @@ class UploadController extends Controller {
             $full_path_page_dir = $full_path_dir . '/' . $name;
             $pdf_output_dir = $doc_root . '/storage/'.$upload_dir_pages. '/page_%02d.pdf';
 
-
             exec('pdftk ' . $full_path_page_dir . ' burst output ' . $pdf_output_dir);
+            exec('rm '.$doc_root . '/storage/'.$upload_dir_pages. '/doc_data.txt');
 
             // add individual images to images directory
             $full_path_new_image_dir = $full_path_dir . '/images/' . $new_name;
@@ -76,7 +96,6 @@ class UploadController extends Controller {
             // get all image files images_storage_path to use as file location
             $images_dir = 'public/'.$upload_dir_images;
             $saved_images_directory = Storage::files($images_dir);
-            $images_total = count($saved_images_directory);
             $images_storage_path = Storage::url($images_dir);
 
             foreach ($saved_images_directory as $saved_image) {
@@ -102,7 +121,7 @@ class UploadController extends Controller {
                 $upload -> file_id = $file_id;
                 $upload -> file_name = $images_file_name;
                 $upload -> file_location = $images_storage_path . '/' . $images_file_name;
-                $upload -> pages_total = $images_total;
+                $upload -> pages_total = $pages_total;
                 $upload -> page_number = $page_number;
                 $upload -> save();
 
@@ -110,7 +129,6 @@ class UploadController extends Controller {
 
             $pages_dir = 'public/'.$upload_dir_pages;
             $saved_pages_directory = Storage::files($pages_dir);
-            $pages_total = count($saved_pages_directory);
             $pages_storage_path = Storage::url($pages_dir);
 
             foreach ($saved_pages_directory as $saved_page) {
@@ -140,14 +158,7 @@ class UploadController extends Controller {
                 }
 
             }
-            // add original file to database
-            $upload = new Upload();
-            $upload -> file_id = $file_id;
-            $upload -> file_location = 'storage/'.$upload_dir . '/' . $name;
-            $upload -> file_name = $name;
-            $upload -> file_name_orig = $orig_name;
-            $upload -> pages_total = $pages_total;
-            $upload -> save();
+
 
         }
 

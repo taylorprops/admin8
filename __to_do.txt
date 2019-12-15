@@ -27,3 +27,4 @@ INSTALL ON SERVER
     pdftk
     wkhtmltopdf
     maybe html2canvas
+    sudo apt-get install -y xpdf

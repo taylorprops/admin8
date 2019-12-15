@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Zips extends Model
 {
-    public $table = 'zips';
+    public $table = 'docs_zips';
 
     public function scopeStates() {
         $states = Zips::select('state') -> groupBy('state') -> get() -> toArray();
