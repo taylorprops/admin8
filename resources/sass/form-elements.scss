@@ -1,0 +1,123 @@
+.form-ele {
+    position: relative;
+
+    .disabled {
+        opacity: 0.3;
+    }
+
+    .form-input, .form-textarea, .form-select-value-input {
+        width: 100%;
+        padding: 15px  5px 5px 10px;
+        //border: none;
+        //border-bottom: 1px solid #ccc;
+        border: 1px solid #ccc;
+        color: #686767;
+        font-size: 1rem;
+    }
+
+    .form-select {
+        display: none;
+    }
+    .form-input-label, .form-textarea-label, .form-select-label {
+        position: absolute;
+        top: 15px;
+        left: 10px;
+        background: #fff;
+        padding: 0 5px;
+        font-size: 1rem;
+        color: #b9b5b5;
+        transition: all .3s;
+        //z-index: 5;
+    }
+    // .form-select-label {
+    //     width: 100%;
+    // }
+    .form-input-label.active, .form-textarea-label.active, .form-select-label.active {
+        position: absolute;
+        top: -5px;
+        font-size: .8rem;
+        color: $blue;
+        line-height: .6rem;
+        border-radius: 10px;
+    }
+
+    .form-textarea {
+        width: 100%;
+        height: auto;
+    }
+
+    .form-select-wrapper {
+        position: relative;
+        height: 60px;
+    }
+    .form-select-value-cancel {
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        top: 35%;
+        right: 15px;
+        cursor: pointer;
+        z-index: 2;
+    }
+    .form-select-value-input:hover {
+        cursor: pointer;
+    }
+    .form-select-dropdown {
+        display: none;
+        position: absolute;
+        top: 45px;
+        left: 0px;
+        background: #fff;
+        border: 1px solid #ccc;
+        width: 100%;
+        border-top: none;
+        z-index: 1;
+    }
+    .form-select-save-div {
+        background: $blue-light;
+    }
+    .form-select-value-cancel {
+        display: none;
+    }
+    .form-select-search-div {
+        width: 100%;
+        padding: 4px;
+        background: $blue-light;
+    }
+    .form-select-search-input {
+        width: 90%;
+        font-size: .8rem;
+        padding-left: 5px;
+    }
+
+    .form-select-options-div {
+        padding-top: 5px;
+        max-height: 200px;
+        overflow: auto;
+    }
+    .form-select-ul {
+        list-style: none;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+    }
+    .form-select-li {
+        margin: 0px;
+        padding: 5px 0 5px 10px;
+        color: #494949;
+        border-bottom: 1px solid #e9e8e8;
+    }
+    .form-select-li:hover {
+        background: $blue-light;
+        cursor: pointer;
+    }
+    .form-select-li.active {
+        color: $blue;
+        font-weight: bold;
+    }
+    .form-select-matched-option {
+        background: $blue-light;
+        color: $blue;
+        font-weight: bold;
+    }
+}

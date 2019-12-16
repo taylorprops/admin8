@@ -1,0 +1,26 @@
+
+PERMISSIONS
+sudo chown -R mike:www-data /var/www/admin/
+sudo find /var/www/admin/ -maxdepth 1 -type f ! -name 'artisan' ! -name 'server.php' ! -name '*env' -exec grep -rl '[a-zA-Z]+*$' {} \; -exec chown mike:www-data  {} \;
+
+sudo chown -R www-data:www-data /var/www/admin/server.php
+sudo chown -R www-data:www-data /var/www/admin/artisan
+sudo chmod 0775 /var/www/admin/artisan
+
+sudo chown -R $USER:www-data /var/www/admin/storage
+sudo chown -R $USER:www-data /var/www/admin/bootstrap/cache
+
+
+JUST USED THESE AND IT WORKED
+sudo chown -R www-data:www-data /var/www/taylorproperties-local
+sudo find /var/www/admin/storage -type f -exec chmod 644 {} \;
+sudo find /var/www/admin/storage/* -type d -exec chmod 755 {} \;
+sudo chgrp -R www-data storage bootstrap/cache
+sudo chmod -R ug+rwx storage bootstrap/cache
+
+
+git remote set-url origin git@github.com:taylorprops/taylorproperties-finaldev.git
+git config --global user.email "mike@taylorprops.com"
+git config --global user.name "mike-taylorprops"
+
+

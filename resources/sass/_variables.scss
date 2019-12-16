@@ -1,5 +1,5 @@
 // Body
-$body-bg: #f8fafc;
+$body-bg: #ffffff;
 
 // Typography
 $font-family-sans-serif: 'Nunito', sans-serif;
@@ -7,13 +7,60 @@ $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 
 // Colors
-$blue: #3490dc;
+$blue: #1f6bbd;
+$blue-dark: #1c5694;
+$blue-light: #ebf1f7;
 $indigo: #6574cd;
 $purple: #9561e2;
 $pink: #f66d9b;
 $red: #e3342f;
-$orange: #f6993f;
+$orange: #ee5a46;
+$orange-light: #f8e5e3;
+$orange-dark: #943d31;
 $yellow: #ffed4a;
-$green: #38c172;
+$green: #30a730;
+$green-dark: #1b631b;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
+$default: #c2d9f1;
+
+$theme-colors: (
+    "primary": $blue,
+    "secondary": $orange,
+    "danger": $red,
+    "default": $default
+);
+
+$primary-color: $blue;
+$secondary-color: $orange;
+$danger-color: $red;
+
+.text-primary-dark {
+    color: $blue-dark;
+}
+
+.text-orange {
+    color: $orange;
+}
+a.text-orange:hover {
+    color: $orange-dark;
+}
+.text-green {
+    color: $green;
+}
+a.text-green:hover {
+    color: $green-dark;
+}
+
+.bg-primary-light {
+    background: rgba($primary-color, .1);
+}
+.bg-secondary-light {
+    background: rgba($secondary-color, .1);
+}
+.bg-orange-light {
+    background: $orange-light;
+}
+.bg-orange {
+    background: $orange;
+}

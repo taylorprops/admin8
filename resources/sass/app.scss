@@ -6,3 +6,23 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+@import 'global.scss';
+@import 'form-elements.scss';
+
+@import '~js-datepicker/src/datepicker';
+
+// SECTIONS
+
+/////////////// DOC MANAGEMENT ///////////////
+
+// Pages
+@import 'nav/nav.scss';
+// doc_management
+@import 'doc_management/create/files.scss';
+@import 'doc_management/create/upload.scss';
+@import 'doc_management/create/add_fields.scss';
+
+@import 'doc_management/fill/fill_fields.scss';
+
+
