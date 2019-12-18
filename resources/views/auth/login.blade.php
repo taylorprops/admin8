@@ -1,7 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('content')
-<div class="container">
+{{ Auth::logout() }}
+<div class="container mt-5">
+
+    @if(\Session::has('error'))
+        <div class="alert alert-danger">
+        {{\Session::get('error')}}
+        </div>
+    @endif
+
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">

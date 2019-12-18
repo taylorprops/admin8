@@ -18,6 +18,7 @@
     .form-select {
         display: none;
     }
+
     .form-input-label, .form-textarea-label, .form-select-label {
         position: absolute;
         top: 15px;
@@ -120,4 +121,50 @@
         color: $blue;
         font-weight: bold;
     }
+
+
+}
+
+// datepicker
+.qs-datepicker-container {
+    width: 300px !important;
+    height: 300px !important;
+}
+.qs-datepicker .qs-controls {
+    background: $primary-color;
+    color: #fff;
+}
+.qs-datepicker .qs-arrow.qs-left::after {
+    border-right-color: white;
+}
+.qs-datepicker .qs-arrow.qs-right::after {
+    border-left-color: white;
+}
+.qs-datepicker .qs-arrow:hover {
+    background: rgba(white, 0.1);
+}
+
+.qs-datepicker .qs-arrow:hover.qs-right::after {
+    border-left-color: white;
+}
+.qs-datepicker .qs-arrow:hover.qs-left::after {
+    border-right-color: white;
+}
+.qs-datepicker .qs-month, .qs-datepicker .qs-year {
+    font-size: 1rem;
+}
+.qs-datepicker .qs-square.qs-day {
+    font-weight: normal !important;
+    font-size: .7rem !important;
+}
+.qs-datepicker .qs-square {
+    height: 40px;
+}
+.qs-datepicker .qs-overlay {
+    background: rgba($primary-color, .8) !important;
+    color: #fff !important;
+}
+.qs-datepicker .qs-overlay .qs-submit.qs-disabled {
+    color: rgba(255,255,255,.3);
+    border-color:  rgba(255,255,255,.3);
 }

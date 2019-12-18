@@ -21,19 +21,28 @@ a.text-green:hover {
 }
 
 .bg-primary-light {
-  background: rgba(31, 107, 189, 0.1);
+  background: rgba(31, 107, 189, 0.1) !important;
+  background-color: rgba(31, 107, 189, 0.1) !important;
 }
 
 .bg-secondary-light {
-  background: rgba(238, 90, 70, 0.1);
+  background: rgba(238, 90, 70, 0.1) !important;
+  background-color: rgba(238, 90, 70, 0.1) !important;
 }
 
 .bg-orange-light {
-  background: #f8e5e3;
+  background: #f8e5e3 !important;
+  background-color: #f8e5e3 !important;
 }
 
 .bg-orange {
-  background: #ee5a46;
+  background: #ee5a46 !important;
+  background-color: #ee5a46 !important;
+}
+
+.bg-blue-light {
+  background: #ebf1f7 !important;
+  background-color: #ebf1f7 !important;
 }
 
 /*!
@@ -11575,151 +11584,6 @@ a.text-default:focus {
   color: #fff;
 }
 
-/* .prettydropdown > ul {
-    color: #495057 !important;
-    border: 1px solid #ced4da !important;
-    font-size: 0.9rem !important;
-} */
-
-.form-ele {
-  position: relative;
-}
-
-.form-ele .disabled {
-  opacity: 0.3;
-}
-
-.form-ele .form-input,
-.form-ele .form-textarea,
-.form-ele .form-select-value-input {
-  width: 100%;
-  padding: 15px 5px 5px 10px;
-  border: 1px solid #ccc;
-  color: #686767;
-  font-size: 1rem;
-}
-
-.form-ele .form-select {
-  display: none;
-}
-
-.form-ele .form-input-label,
-.form-ele .form-textarea-label,
-.form-ele .form-select-label {
-  position: absolute;
-  top: 15px;
-  left: 10px;
-  background: #fff;
-  padding: 0 5px;
-  font-size: 1rem;
-  color: #b9b5b5;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-}
-
-.form-ele .form-input-label.active,
-.form-ele .form-textarea-label.active,
-.form-ele .form-select-label.active {
-  position: absolute;
-  top: -5px;
-  font-size: 0.8rem;
-  color: #1f6bbd;
-  line-height: 0.6rem;
-  border-radius: 10px;
-}
-
-.form-ele .form-textarea {
-  width: 100%;
-  height: auto;
-}
-
-.form-ele .form-select-wrapper {
-  position: relative;
-  height: 60px;
-}
-
-.form-ele .form-select-value-cancel {
-  width: 15px;
-  height: 15px;
-  position: absolute;
-  top: 35%;
-  right: 15px;
-  cursor: pointer;
-  z-index: 2;
-}
-
-.form-ele .form-select-value-input:hover {
-  cursor: pointer;
-}
-
-.form-ele .form-select-dropdown {
-  display: none;
-  position: absolute;
-  top: 45px;
-  left: 0px;
-  background: #fff;
-  border: 1px solid #ccc;
-  width: 100%;
-  border-top: none;
-  z-index: 1;
-}
-
-.form-ele .form-select-save-div {
-  background: #ebf1f7;
-}
-
-.form-ele .form-select-value-cancel {
-  display: none;
-}
-
-.form-ele .form-select-search-div {
-  width: 100%;
-  padding: 4px;
-  background: #ebf1f7;
-}
-
-.form-ele .form-select-search-input {
-  width: 90%;
-  font-size: 0.8rem;
-  padding-left: 5px;
-}
-
-.form-ele .form-select-options-div {
-  padding-top: 5px;
-  max-height: 200px;
-  overflow: auto;
-}
-
-.form-ele .form-select-ul {
-  list-style: none;
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
-}
-
-.form-ele .form-select-li {
-  margin: 0px;
-  padding: 5px 0 5px 10px;
-  color: #494949;
-  border-bottom: 1px solid #e9e8e8;
-}
-
-.form-ele .form-select-li:hover {
-  background: #ebf1f7;
-  cursor: pointer;
-}
-
-.form-ele .form-select-li.active {
-  color: #1f6bbd;
-  font-weight: bold;
-}
-
-.form-ele .form-select-matched-option {
-  background: #ebf1f7;
-  color: #1f6bbd;
-  font-weight: bold;
-}
-
 /*
   All a user has to do to change the calendar size is
   change the font-size on the container and everything
@@ -12068,12 +11932,222 @@ a.text-default:focus {
   background: #cce4ff;
 }
 
-.navbar .dropdown-item {
+.form-ele {
+  position: relative;
+}
+
+.form-ele .disabled {
+  opacity: 0.3;
+}
+
+.form-ele .form-input,
+.form-ele .form-textarea,
+.form-ele .form-select-value-input {
+  width: 100%;
+  padding: 15px 5px 5px 10px;
+  border: 1px solid #ccc;
+  color: #686767;
+  font-size: 1rem;
+}
+
+.form-ele .form-select {
+  display: none;
+}
+
+.form-ele .form-input-label,
+.form-ele .form-textarea-label,
+.form-ele .form-select-label {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  background: #fff;
+  padding: 0 5px;
+  font-size: 1rem;
+  color: #b9b5b5;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.form-ele .form-input-label.active,
+.form-ele .form-textarea-label.active,
+.form-ele .form-select-label.active {
+  position: absolute;
+  top: -5px;
+  font-size: 0.8rem;
+  color: #1f6bbd;
+  line-height: 0.6rem;
+  border-radius: 10px;
+}
+
+.form-ele .form-textarea {
+  width: 100%;
+  height: auto;
+}
+
+.form-ele .form-select-wrapper {
+  position: relative;
+  height: 60px;
+}
+
+.form-ele .form-select-value-cancel {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  top: 35%;
+  right: 15px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.form-ele .form-select-value-input:hover {
+  cursor: pointer;
+}
+
+.form-ele .form-select-dropdown {
+  display: none;
+  position: absolute;
+  top: 45px;
+  left: 0px;
+  background: #fff;
+  border: 1px solid #ccc;
+  width: 100%;
+  border-top: none;
+  z-index: 1;
+}
+
+.form-ele .form-select-save-div {
+  background: #ebf1f7;
+}
+
+.form-ele .form-select-value-cancel {
+  display: none;
+}
+
+.form-ele .form-select-search-div {
+  width: 100%;
+  padding: 4px;
+  background: #ebf1f7;
+}
+
+.form-ele .form-select-search-input {
+  width: 90%;
+  font-size: 0.8rem;
+  padding-left: 5px;
+}
+
+.form-ele .form-select-options-div {
+  padding-top: 5px;
+  max-height: 200px;
+  overflow: auto;
+}
+
+.form-ele .form-select-ul {
+  list-style: none;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.form-ele .form-select-li {
+  margin: 0px;
+  padding: 5px 0 5px 10px;
+  color: #494949;
+  border-bottom: 1px solid #e9e8e8;
+}
+
+.form-ele .form-select-li:hover {
+  background: #ebf1f7;
+  cursor: pointer;
+}
+
+.form-ele .form-select-li.active {
+  color: #1f6bbd;
+  font-weight: bold;
+}
+
+.form-ele .form-select-matched-option {
+  background: #ebf1f7;
+  color: #1f6bbd;
+  font-weight: bold;
+}
+
+.qs-datepicker-container {
+  width: 300px !important;
+  height: 300px !important;
+}
+
+.qs-datepicker .qs-controls {
+  background: #1f6bbd;
   color: #fff;
 }
 
-.navbar .dropdown-item:hover {
-  color: #1f6bbd;
+.qs-datepicker .qs-arrow.qs-left::after {
+  border-right-color: white;
+}
+
+.qs-datepicker .qs-arrow.qs-right::after {
+  border-left-color: white;
+}
+
+.qs-datepicker .qs-arrow:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.qs-datepicker .qs-arrow:hover.qs-right::after {
+  border-left-color: white;
+}
+
+.qs-datepicker .qs-arrow:hover.qs-left::after {
+  border-right-color: white;
+}
+
+.qs-datepicker .qs-month,
+.qs-datepicker .qs-year {
+  font-size: 1rem;
+}
+
+.qs-datepicker .qs-square.qs-day {
+  font-weight: normal !important;
+  font-size: 0.7rem !important;
+}
+
+.qs-datepicker .qs-square {
+  height: 40px;
+}
+
+.qs-datepicker .qs-overlay {
+  background: rgba(31, 107, 189, 0.8) !important;
+  color: #fff !important;
+}
+
+.qs-datepicker .qs-overlay .qs-submit.qs-disabled {
+  color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar .dropdown-toggle::after {
+  display: none;
+}
+
+.navbar .form-input-search {
+  border: none;
+  border-bottom: 1px solid #fff;
+  font-size: 1.2rem;
+  width: 500px;
+  padding: 5px;
+  color: #fff;
+  background: transparent;
+}
+
+.navbar #navbar_main_menu .mega-dropdown .dropdown-menu ul li a {
+  color: #1f6bbd !important;
+  width: 100%;
+}
+
+.navbar #navbar_main_menu .mega-dropdown .dropdown-menu ul li a:hover {
+  background-color: white !important;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
 }
 
 .page-add-fields {

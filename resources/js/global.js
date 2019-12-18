@@ -1,8 +1,12 @@
 import SimpleBar from 'simplebar';
-//import 'simplebar';
 import 'simplebar/dist/simplebar.css';
+import { form_elements, select_refresh } from '@/form_elements.js';
+
 $(document).ready(function () {
 
+
+    // init form_elements
+    form_elements();
 
     // send csrf with every ajax request
     window._token = $('meta[name="csrf-token"]').attr('content');
@@ -15,6 +19,34 @@ $(document).ready(function () {
     window.axios_options = {
         headers: {'X-CSRF-TOKEN': _token}
     };
+
+    // show search on ctrl + s
+    window.addEventListener("keydown", function (event) {
+        if ((window.navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)  && event.keyCode == 83) {
+            event.preventDefault();
+            $('.dropdown-menu').removeClass('show');
+            $('.nav-item.dropdown').removeClass('show active');
+            $('#main_search').focus();
+        }
+    }, false);
+
+    // show menu on ctrl + m
+    window.addEventListener("keydown", function (event) {
+        if ((window.navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)  && event.keyCode == 77) {
+            event.preventDefault();
+            $('#navbar_menu_link').trigger('click');
+            $('#navbar_main_menu').find('.dropdown-menu a').first().focus();
+        }
+    }, false);
+
+    // go to dashboard on ctrl + d
+    window.addEventListener("keydown", function (event) {
+        if ((window.navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)  && event.keyCode == 68) {
+            event.preventDefault();
+            window.location='/dashboard';
+        }
+    }, false);
+
 
 
     $('.phone').keyup(function () {

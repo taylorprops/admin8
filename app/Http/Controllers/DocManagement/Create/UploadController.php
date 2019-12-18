@@ -8,12 +8,11 @@ use App\Models\DocManagement\UploadImages;
 use App\Models\DocManagement\UploadPages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\DocManagement\Zips;
 
 
 class UploadController extends Controller {
-    public function delete_upload(Request $request) {
-        $delete_file = Upload::where('file_id', $request -> file_id) -> delete();
-    }
+
 
     public function get_docs(Request $request) {
 
@@ -21,19 +20,28 @@ class UploadController extends Controller {
         return view('/doc_management/create/upload/files', ['files' => $files]);
     }
 
+    public function upload_file_page() {
+
+        $states = Zips::States();
+        return view('/doc_management/create/upload/upload', ['states' => $states]);
+    }
+
     public function upload_file(Request $request) {
 
-        $files = $request -> file('file_upload');
+        // $files = $request -> file('file_upload');
+        $file = $request -> file('file_upload');
 
-        // switch all to linux slashes so it works on windows and linux - use only forward slashes except for various server functions on windows
-        $doc_root = $_SERVER['DOCUMENT_ROOT'];
+        if($file) {
 
-        foreach ($files as $file) {
+            // switch all to linux slashes so it works on windows and linux - use only forward slashes except for various server functions on windows
+            $doc_root = $_SERVER['DOCUMENT_ROOT'];
 
             $orig_name = $file -> getClientOriginalName();
             $date = date('YmdHis');
             $name = $date . '_' . str_replace(' ', '_', $file -> getClientOriginalName());
             $ext = $file -> getClientOriginalExtension();
+            $state = $request['state'];
+            $association = $request['association'];
 
             $pages_total = exec('pdftk '.$file.' dump_data | sed -n \'s/^NumberOfPages:\s//p\'');
 
@@ -42,8 +50,10 @@ class UploadController extends Controller {
             $upload -> file_name = $name;
             $upload -> file_name_orig = $orig_name;
             $upload -> pages_total = $pages_total;
+            $upload -> state = $state;
+            $upload -> association = $association;
+            $upload -> pages_total = $pages_total;
             $upload -> save();
-
             $file_id = $upload -> file_id;
 
             // set directories
@@ -159,10 +169,9 @@ class UploadController extends Controller {
 
             }
 
+            return ('success');
 
         }
-
-        return ('success');
 
     }
 }

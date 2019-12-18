@@ -1,8 +1,25 @@
 .navbar {
-    .dropdown-item {
-        color: #fff;
+    .dropdown-toggle::after {
+        display: none;
     }
-    .dropdown-item:hover {
-        color: $primary-color;
+    .form-input-search {
+        border: none;
+        border-bottom: 1px solid #fff;
+        font-size: 1.2rem;
+        width: 500px;
+        padding: 5px;
+        color: #fff;
+        background: transparent;
+    }
+
+    // nav links color
+    #navbar_main_menu .mega-dropdown .dropdown-menu ul li a {
+        color: $primary-color !important;
+        width: 100%;
+    }
+    #navbar_main_menu .mega-dropdown .dropdown-menu ul li a:hover {
+        background-color: white !important;
+        -webkit-transition: .3s;
+        transition: .3s;
     }
 }

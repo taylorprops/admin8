@@ -17,9 +17,7 @@
                             </div>
                         </div>
                         <div class="col-2">
-                            <div class="float-right">
-                                <a class="btn btn-danger btn-sm delete-upload" href="javascript:void(0)" data-file-id="{{ $file['file_id'] }}">Delete</a>
-                            </div>
+
                         </div>
                     </div><!-- ./ .row -->
                 </div><!-- ./ .container -->

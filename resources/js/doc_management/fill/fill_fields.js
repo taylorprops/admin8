@@ -8,43 +8,26 @@ if (document.URL.match(/create\/fill_fields/)) {
 
     $(document).ready(function () {
 
-        window.picker = datepicker('.field-datepicker', {
-            onSelect: (instance, date) => {
-                const value = date.toLocaleDateString();
-                $('#'+instance.el.id).prev('div.data-div').html(value);
-            },
-            onHide: instance => {
-                $('.field-div').removeClass('active');
-            },
-            formatter: (input, date, instance) => {
-                const value = date.toLocaleDateString();
-                input.value = value;
-            },
-            showAllDates: true,
-        });
-
-
-
-
-        /* $('#to_pdf').click(function () {
-            let pages = [];
-            $('.field-container').each(function () {
-                pages.push($(this).html());
+        if ($('.field-datepicker').length > 0) {
+            window.picker = datepicker('.field-datepicker', {
+                onSelect: (instance, date) => {
+                    const value = date.toLocaleDateString();
+                    $('#' + instance.el.id).prev('div.data-div').html(value);
+                },
+                onHide: instance => {
+                    $('.field-div').removeClass('active');
+                },
+                formatter: (input, date, instance) => {
+                    const value = date.toLocaleDateString();
+                    input.value = value;
+                },
+                showAllDates: true,
             });
-            let formData = new FormData();
-            formData.append('pages', pages);
-            axios.post('/save_pdf_server_side', formData, axios_options)
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-        }); */
-
+        }
 
 
         $('#to_pdf').off('click').on('click', function () {
+            // fields that css will be changed during export to pdf. They will be reset after
             let els = '.data-div-shrink-font, .file-image-bg, .field-div, .data-div-radio-check';
             let styles;
             $(els).each(function () {
@@ -58,9 +41,9 @@ if (document.URL.match(/create\/fill_fields/)) {
             $('.data-div').css({ color: '#1c5694' });
             $('.data-div-shrink-font').css({ 'font-size': '.8em', 'line-height': '140%', 'font-weight': 'bold', 'padding-left': '5px' });
             $('.file-image-bg').css({ opacity: '0.0' });
-            $('.field-div').css({ background: 'transparent' });
-            $('.data-div-checkbox').css({ 'margin-left': '1px', 'font-size': '1.2em', 'line-height': '70%', 'font-weight': 'bold' });
-            $('.data-div-radio').css({ 'font-weight': 'bold' });
+            $('.field-div').css({ background: 'none' });
+            $('.data-div-radio-check').css({ 'margin-left': '1px', 'font-size': '1.2em', 'line-height': '80%', 'font-weight': 'bold' });
+
 
             let file_id = $('#file_id').val();
             let file_name = $('#file_name').val();
@@ -76,8 +59,9 @@ if (document.URL.match(/create\/fill_fields/)) {
                 let page_html = container.clone();
                 page_html.find(elements_remove).remove();
                 page_html = page_html.wrap('<div>').parent().html();
-                formData.append('page_'+c, page_html);
+                formData.append('page_' + c, page_html);
             });
+
             formData.append('page_count', c);
             formData.append('file_id', file_id);
             formData.append('file_name', file_name);

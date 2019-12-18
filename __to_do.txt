@@ -1,3 +1,6 @@
+make keyboard short cuts
+    ctrl - m = menu
+
 
 !!!!!!!!!!!!!!!!!!!
 

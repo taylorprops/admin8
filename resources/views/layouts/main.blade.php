@@ -10,8 +10,6 @@
 
         <link href="/resources/mdbootstrap/css/mdb.min.css" rel="stylesheet">
         <link href="/css/app.css" rel="stylesheet">
-        {{-- <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-zrnmn8R8KkWl12rAZFt4yKjxplaDaT7/EUkKm7AovijfrQItFWR7O/JJn4DAa/gx" crossorigin="anonymous"> --}}
-        {{-- <script src="https://kit.fontawesome.com/880f60729b.js" crossorigin="anonymous"></script> --}}
         <link href="/vendor/fontawesome/fontawesome/css/all.css" rel="stylesheet">
 
 
@@ -19,9 +17,13 @@
 
     <body>
 
+        <header>
         @include('layouts.includes.header')
+        </header>
 
+        <main>
         @yield('content')
+        </main>
 
         @include('layouts.includes.common_includes.modals.modals')
 

@@ -108,9 +108,9 @@ class FieldsController extends Controller
         $fields = Fields::where('file_id', $file_id) -> orderBy('id') -> get() -> toArray();
         $field_inputs = FieldInputs::where('file_id', $file_id) -> orderBy('id') -> get() -> toArray();
         $field_values = FilledFields::where('file_id', $file_id) -> get() -> toArray();
-        $states = Zips::States();
+        // $states = Zips::States();
         //$file_id = $file_id;
-        return view('/doc_management/fill/fill_fields', compact('file', 'images', 'fields', 'field_inputs', 'states', 'file_id', 'field_values'));
+        return view('/doc_management/fill/fill_fields', compact('file', 'images', 'fields', 'field_inputs', 'file_id', 'field_values'));
 
     }
 
@@ -165,7 +165,7 @@ class FieldsController extends Controller
                     'margin-left'   => 0,
                     //'disable-smart-shrinking',
                     'page-size' => 'Letter',
-                    //'encoding' => 'UTF-8',
+                    'encoding' => 'UTF-8',
                     'dpi' => 96,
                 );
 
@@ -183,7 +183,8 @@ class FieldsController extends Controller
                 }
                 $layer1 = $full_path_dir . '/pages/page_'.$page_number.'.pdf';
                 $layer2 = $full_path_dir . '/layers/layer_'.$c.'.pdf';
-                exec('pdftk '.$layer1.' background '.$layer2.' output '.$pdf_output_dir.'/'.date('YmdHis').'_combined_'.$c.'.pdf');
+                exec('convert -quality 100 -density 300 '.$layer2.' -transparent white -background none '.$layer2);
+                exec('pdftk '.$layer2.' background '.$layer1.' output '.$pdf_output_dir.'/'.date('YmdHis').'_combined_'.$c.'.pdf');
 
             }
 

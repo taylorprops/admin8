@@ -1,5 +1,5 @@
-import { filter_array } from '../../global.js';
-import { form_elements, select_refresh } from '../../form_elements.js';
+import { filter_array } from '@/global.js';
+import { form_elements, select_refresh } from '@/form_elements.js';
 
 if (document.URL.match(/create\/add_fields/)) {
 
@@ -190,8 +190,11 @@ if (document.URL.match(/create\/add_fields/)) {
         function reset_field_properties() {
             // reset name fields
             $('.form-div').each(function () {
-                $(this).find('select, input').not('input.form-select-search-input').each(function () {
+                $(this).find('select, input').not('input.form-select-search-input, input.form-select-value-input').each(function () {
                     $(this).val($(this).data('default-value')).trigger('change');
+                    if ($(this).hasClass('form-select')) {
+                        select_refresh($(this));
+                    }
                 });
             });
             //select_dropdown.refresh();
@@ -370,7 +373,7 @@ if (document.URL.match(/create\/add_fields/)) {
                         let y_perc = pix_2_perc_xy('y', y,container);
 
                         // drop the new line height of ele below the original
-                        let spacing = 1.1;
+                        let spacing = 1.2;
                         if (field_type == 'radio' || field_type == 'checkbox') {
                             spacing = 1.3;
                         }
@@ -438,6 +441,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                 keep_in_view(new_ele, new_w_perc, new_x_perc, new_y_perc, field_type);
                                 set_field_options(field_type, new_ele, id, rect, container);
                                 field_status();
+                                select_refresh(new_ele.find('.form-select.field-data-name'));
                             }, 500);
 
                             let inputs_div = ele.find('.field-data-inputs-container');
@@ -651,6 +655,7 @@ if (document.URL.match(/create\/add_fields/)) {
                             $(this).find('.form-div').each(function () {
                                 $(this).find('.form-select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
                                 $(this).find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
+                                select_refresh($(this).find('.form-select.field-data-name'));
                             });
                         });
 
@@ -1485,15 +1490,6 @@ if (document.URL.match(/create\/add_fields/)) {
             });
 
         });
-
-        /* function select_menu() {
-            select_dropdown = $('select').prettyDropdown({
-                height: 35,
-                width: '100%',
-                classic: true
-            });
-            //select_dropdown.refresh();
-        } */
 
 
     });

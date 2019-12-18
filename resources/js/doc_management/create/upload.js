@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
     $('#upload_file_form').submit(function (e) {
         e.preventDefault();

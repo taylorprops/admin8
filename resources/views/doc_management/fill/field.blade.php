@@ -27,7 +27,8 @@ $data_div_classes = 'data-div-shrink-font';
 $data_div_styles = 'font-family: Helvetica, Arial, sans-serif;';
 
 if($field_type == 'radio' || $field_type == 'checkbox') {
-    $data_div_classes = 'd-flex justify-content-center data-div-radio-check';
+    //$data_div_classes = 'd-flex justify-content-center data-div-radio-check';
+    $data_div_classes = 'data-div-radio-check';
     if($field_type == 'checkbox') {
         $data_div_classes = $data_div_classes.' data-div-checkbox';
     }

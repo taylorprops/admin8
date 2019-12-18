@@ -27,7 +27,7 @@ export function form_elements() {
         const form_element = $('.' + form_type);
 
         // add container and label
-        form_element.each(function () {
+        form_element.not('.pre').each(function () {
 
             const element = $(this);
 
@@ -52,9 +52,9 @@ export function form_elements() {
 
 
                 // wrap element with form-ele
-                //add labels on all except: select and file input
-                //select label is added in select_html
-                //file label is added in file_html
+                // add labels on all except: select and file input
+                // select label is added in select_html
+                // file label is added in file_html
                 let label = $(this).data('label');
                 if (form_type == 'form-input' || form_type == 'form-textarea') {
 
@@ -78,18 +78,19 @@ export function form_elements() {
                     let file_html = ' \
                     <div class="form-ele md-form my-0 mt-2"> \
                         <div class="file-field"> \
-                            <a class="btn-floating blue-gradient mt-0 float-left"> \
-                                <i class="fad fa-upload"></i> \
-                                '+clone+' \
-                            </a> \
+                            <i class="fad fa-upload mt-3 float-left"></i> \
+                            '+clone+' \
                             <div class="file-path-wrapper"> \
-                            <input class="file-path" type="text" placeholder="'+label+'"> \
+                                <input class="file-path" type="text" placeholder="'+label+'"> \
                             </div> \
                         </div> \
                     </div> \
                     ';
-                    element.parent().html(file_html);
+
+                    let parent = element.parent();
                     element.remove();
+                    parent.html(file_html);
+
 
                 } else if (form_type == 'form-checkbox') {
 
@@ -326,7 +327,9 @@ export function form_elements() {
 
                             $('.form-select-matched-option').removeClass('form-select-matched-option');
                             // set input value
-                            input.val(text).trigger('change');
+                            input.val(text);
+                            shorten_value(input, text, false);
+                            input.trigger('change');
 
                             // remove active from all li and add to selected
                             dropdown.find('.form-select-li').removeClass('active');
@@ -411,13 +414,23 @@ function set_multiple_select_value(wrapper, input) {
     if (selected_checks.length > 0) {
         value = selected_checks.join(', ');
     }
+
+    shorten_value(input, value, true);
+
+
+}
+
+function shorten_value(input, value, multiple) {
     // shorten value if bigger than input
-    let max_chars = Math.round(parseInt(input.width()) * .12);
+    let perc = .12;
+    if (multiple == false) {
+        perc = .14;
+    }
+    let max_chars = Math.round(parseInt(input.width()) * perc);
     if (value.length > max_chars) {
         value = value.substring(0, max_chars) +'...';
     }
     input.val(value).trigger('change');
-
 }
 
 export function select_refresh(select) {
