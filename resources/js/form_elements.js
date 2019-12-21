@@ -14,7 +14,7 @@ export function form_elements() {
         disabled | functions as expected
     select
         .form-select-no-search | removes search option
-        .form-select-value-cancel | removes cancel option
+        .form-select-no-cancel | removes cancel option
 
         multiple select uses mdbootstrap checkboxes
 
@@ -61,7 +61,7 @@ export function form_elements() {
                     element.wrap('<div class="form-ele"></div>').parent('.form-ele').append('<label for="' + id + '" class="' + form_type + '-label ' + active_label + '">' + element.data('label') + '</label>');
 
                     // hide any open select dropdowns
-                    element.click(function () {
+                    element.bind('click, blur', function () {
                         $('.form-select-dropdown').fadeOut();
                         $('.form-select-search-input').val('').trigger('change');
                     });
@@ -97,7 +97,6 @@ export function form_elements() {
                     element.addClass('form-check-input');
                     element.wrap('<div class="form-ele form-check"></div>').parent('.form-ele').append('<label for="' + id + '" class="form-check-label ' + form_type + '-label ' + active_label + ' w-100">' + element.data('label') + '</label>');
 
-
                 }
 
                 // get wrapper to append to
@@ -106,8 +105,6 @@ export function form_elements() {
                 if (form_type == 'form-select') {
                     // hide select element
                     element.hide();
-
-
 
                     let disabled = '';
                     if (element.prop('disabled') == true) {
@@ -147,17 +144,22 @@ export function form_elements() {
                     let input = wrapper.find('.form-select-value-input');
 
                     // add dropdown html
+                    let input_text = '';
                     element.children('option').map(function (index, option) {
                         option = $(option);
                         let value = option.prop('value');
-                        let selected = '';
-                        if (option.prop('selected')) {
-                            selected = (option.prop('selected') == 'selected' || option.prop('selected') == true) ? 'active' : '';
-                        }
 
                         if (value != '') {
 
+                            let selected = '';
                             let text = option.text();
+
+                            if (option.prop('selected') == true || option.prop('selected') == 'selected') {
+                                selected = 'active';
+                                input_text = text;
+                            }
+
+
                             let li_html = text;
                             let multiple_li_class = '';
 
@@ -177,19 +179,20 @@ export function form_elements() {
 
                         }
 
-
-                        if (element.val() != '') {
-                            setTimeout(function () {
-                                if (!multiple) {
-                                    // add value to input if selected
-                                    input.val(value).trigger('change');
-                                }
-                                // show cancel option
-                                wrapper.find('.form-select-value-cancel').show();
-                            }, 100);
-                        }
-
                     });
+
+                    if (element.val() != '') {
+                        setTimeout(function () {
+                            if (!multiple) {
+                                // add value to input if selected
+                                input.val(input_text).trigger('change');
+                            }
+                            // show cancel option
+                            if (!element.hasClass('form-select-no-cancel')) {
+                                wrapper.find('.form-select-value-cancel').show();
+                            }
+                        }, 300);
+                    }
 
                     // add save button to exit out of multiple select
                     if (multiple) {
@@ -201,8 +204,6 @@ export function form_elements() {
 
                         set_multiple_select_value(wrapper, input);
                     }
-
-
 
                     // remove cancel option if class form-select-no-cancel is set
                     if (!element.hasClass('form-select-no-cancel')) {
@@ -279,17 +280,15 @@ export function form_elements() {
                     }
 
                     // when a checkbox in a multiple select is changed
-                    wrapper.find('.form-check-input').change(function (e) {
+                    wrapper.find('.form-check-input').off('change').on('change', function (e) {
 
                         let li = $(this);
                         let input = li.closest('.form-ele').find('.form-select-value-input');
                         let form_ele = li.closest('.form-ele').find('.form-select');
                         let selected_checks = [];
-
                         wrapper.find('.form-select-li').removeClass('active');
-                        form_ele.find('option').attr('selected', false);
-                        wrapper.find('input[type="checkbox"]:checked').each(function () {
-
+                        form_ele.find('option').prop('selected', false);
+                        wrapper.find('.form-check-input:checked').each(function () {
                             let checked = $(this);
                             let index = checked.data('index');
                             selected_checks.push(checked.data('value'));
@@ -298,8 +297,7 @@ export function form_elements() {
                             // $(this).closest('li').addClass('active').prependTo('.form-select-ul');
 
                             // set select element value
-                            form_ele.find('option').eq(index).attr('selected', true).trigger('change');
-
+                            form_ele.find('option').eq(index).prop('selected', true).trigger('change');
                         });
 
                         form_ele.trigger('change');
@@ -310,8 +308,6 @@ export function form_elements() {
 
                         // shorten input value if too long
                         set_multiple_select_value(wrapper, input);
-
-
 
                     });
                     // when a single li is clicked
@@ -350,13 +346,9 @@ export function form_elements() {
 
             } // end if (!element.parent().hasClass('form-ele')) {
 
-
         }); // end form_element.each(function () {
 
-
-
     }); // end form_elements.map(function (form_type) {
-
 
     // show dropdown on focus
     $('.form-select-value-input').unbind('focus').bind('focus', function (e) {
@@ -375,7 +367,6 @@ export function form_elements() {
         }
 
     });
-
 
     // hide select dropdown on blur
     $(document).on('mousedown', function (e) {
@@ -397,28 +388,97 @@ export function form_elements() {
     });
 
 
-
-
-
 }
 
-function set_multiple_select_value(wrapper, input) {
-    // add value to multiple select
-    let selected_checks = [];
-    wrapper.find('input[type="checkbox"]:checked').each(function () {
-        let checked = $(this);
-        selected_checks.push(checked.data('value'));
-    });
+export function validate_form(form) {
+    // TODO: add checkbox and radio validation
+    let pass = 'yes';
+    // remove all current invalid
+    $('.invalid-label').removeClass('invalid-label');
+    $('.invalid-i').removeClass('invalid-i');
 
-    let value = '';
-    if (selected_checks.length > 0) {
-        value = selected_checks.join(', ');
+    form.find('.required').each(function () {
+
+        let ele, classname;
+        let required = $(this);
+
+        if (required.hasClass('form-radio')) {
+
+
+
+        } else if (required.hasClass('form-input-file')) {
+            // get visible file input
+            ele = required.next('div').find('.file-path');
+            classname = 'invalid invalid-input-file';
+            if (required.val() == '') {
+                ele.addClass(classname);
+                ele.next('label').addClass('invalid-label');
+                required.prev('i').addClass('invalid-i');
+                pass = 'no';
+            } else {
+                ele.removeClass(classname);
+            }
+
+        } else if (required.hasClass('form-input')) {
+
+            ele = required;
+            classname = 'invalid invalid-input';
+            if (required.val() == '') {
+                ele.addClass(classname);
+                ele.next('label').addClass('invalid-label');
+                pass = 'no';
+            } else {
+                ele.removeClass(classname);
+            }
+
+        } else if (required.hasClass('form-select')) {
+
+            ele = required.next('div').find('.form-select-value-input');
+            classname = 'invalid invalid-input';
+            let has_val = 'no';
+            if (required.prop('multiple')) {
+                if (required.find('option:checked').length > 0) {
+                    has_val = 'yes';
+                }
+            } else {
+                if (required.val() != '') {
+                    has_val = 'yes';
+                }
+            }
+            if (has_val == 'no') {
+                ele.addClass(classname);
+                ele.prev('label').addClass('invalid-label');
+                pass = 'no';
+            } else {
+                ele.removeClass(classname);
+            }
+
+        }
+        // on change if ele has value remove invalid
+        ele.change(function () {
+            if (ele.val() != '') {
+                ele.removeClass(classname);
+                ele.prev('label').removeClass('invalid-label');
+                ele.next('label').removeClass('invalid-label');
+                required.prev('i').removeClass('invalid-i');
+            }
+        });
+
+
+    });
+    // focus on first invalid
+    let invalid_focus = form.find('.invalid').first();
+    if (invalid_focus.hasClass('file-path')) {
+        invalid_focus.parent().prev('input').trigger('click');
+    } else {
+        invalid_focus.focus();
     }
 
-    shorten_value(input, value, true);
-
+    return pass;
 
 }
+
+
 
 function shorten_value(input, value, multiple) {
     // shorten value if bigger than input
@@ -433,17 +493,56 @@ function shorten_value(input, value, multiple) {
     input.val(value).trigger('change');
 }
 
-export function select_refresh(select) {
-    let wrapper = select.closest('.form-ele');
-    let input = wrapper.find('.form-select-value-input');
-    input.val(select.val()).trigger('change');
-    wrapper.find('.form-select-li').removeClass('active').each(function () {
-        if ($(this).text() == select.val()) {
-            $(this).addClass('active');
+/* export function select_refresh() {
+    $('.form-select').each(function () {
+        let select = $(this);
+        let wrapper = select.closest('.form-ele');
+        let input = wrapper.find('.form-select-value-input');
+        input.val(select.find('option:selected').text()).trigger('change');
+        wrapper.find('.form-select-li').removeClass('active').each(function () {
+            if ($(this).text() == select.val()) {
+                $(this).addClass('active');
+            }
+        });
+    });
+} */
+export function select_refresh() {
+    $('.form-select').each(function () {
+        let select = $(this);
+        let wrapper = select.closest('.form-ele');
+        let input = wrapper.find('.form-select-value-input');
+
+        if (select.prop('multiple') == false) {
+            input.val(select.find('option:selected').text()).trigger('change');
+            wrapper.find('.form-select-li').removeClass('active').each(function () {
+                if ($(this).text() == select.val()) {
+                    $(this).addClass('active');
+                }
+            });
+        } else {
+            $.each(select.val(), function (index, value) {
+                wrapper.find('[data-value="' + value + '"]').prop('checked', true).trigger('change');
+            });
         }
     });
 }
 
+function set_multiple_select_value(wrapper, input) {
+
+    // add value to multiple select
+    let selected_checks = [];
+    wrapper.find('input[type="checkbox"]:checked').each(function () {
+        selected_checks.push($(this).data('text'));
+    });
+
+    let value = '';
+    if (selected_checks.length > 0) {
+        value = selected_checks.join(', ');
+    }
+
+    shorten_value(input, value, true);
+
+}
 
 export function reset_select() {
     $('.form-select-dropdown').fadeOut();

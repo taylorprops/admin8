@@ -4,47 +4,46 @@
 
 <div class="container-fluid page-add-fields file-view-container p-0">
     <div class="container-fluid">
-        <div class="row bg-default">
-            <div class="col-11 pl-5">
-                <div class="d-flex flex-row field-select-container p-2">
-                    <div class="field-wrapper mr-4" data-type="textline">
-                        <div class="textline-div-field rounded mt-1">
+        <div class="row bg-blue-light">
+            <div class="col-12 ml-1">
+                <div class="d-flex justify-content-center field-select-container">
+                    <div class="field-wrapper pt-3 px-3" data-type="textline">
+                        <div class="textline-div-field rounded my-auto">
                             <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-text fa-lg mr-2"></i> General Text</div>
                         </div>
                     </div>
-                    <div class="field-wrapper mr-4" data-type="name">
-                        <div class="textline-div-field rounded mt-1">
+                    <div class="field-wrapper pt-3 px-3" data-type="name">
+                        <div class="textline-div-field rounded my-auto">
                             <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-user-alt fa-lg mr-2"></i> Name</div>
                         </div>
                     </div>
-                    <div class="field-wrapper mr-4" data-type="address">
-                        <div class="textline-div-field rounded mt-1">
+                    <div class="field-wrapper pt-3 px-3" data-type="address">
+                        <div class="textline-div-field rounded my-auto">
                             <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-map-marker-alt fa-lg mr-2"></i> Address</div>
                         </div>
                     </div>
-                    <div class="field-wrapper mr-4" data-type="date">
-                        <div class="textline-div-field rounded mt-1">
+                    <div class="field-wrapper pt-3 px-3" data-type="date">
+                        <div class="textline-div-field rounded my-auto">
                             <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-calendar-alt fa-lg mr-2"></i> Date</div>
                         </div>
                     </div>
-                    <div class="field-wrapper mr-4" data-type="number">
-                        <div class="textline-div-field rounded mt-1">
+                    <div class="field-wrapper pt-3 px-3" data-type="number">
+                        <div class="textline-div-field rounded my-auto">
                             <div class="textline-html text-white ml-3 pt-1"><span class="text-white mr-2">0-9</span> Number</div>
                         </div>
                     </div>
-                    <div class="field-wrapper mr-4 d-flex justify-content-center" data-type="checkbox">
-                        <div class="checkbox-div-field mt-2"></div>
-                        <div class="mt-2 ml-1 text-primary"> Check Box</div>
+                    <div class="field-wrapper pt-2 px-3 d-flex justify-content-center" data-type="checkbox">
+                        <div class="checkbox-div-field my-auto"></div>
+                        <div class="my-auto ml-1 text-primary"> Check Box</div>
                     </div>
-                    <div class="field-wrapper mr-4 d-flex justify-content-center" data-type="radio">
-                        <div class="radio-div-field mt-2"></div>
-                        <div class="mt-2 ml-1 text-primary"> Radio Buttons</div>
+                    <div class="field-wrapper pt-2 px-3 d-flex justify-content-center" data-type="radio">
+                        <div class="radio-div-field my-auto"></div>
+                        <div class="my-auto ml-1 text-primary"> Radio Buttons</div>
+                    </div>
+                    <div class="mr-1 pl-2">
+                        <div><a href="javascript:void(0)" class="btn btn-success" id="save_add_fields">Save</a></div>
                     </div>
                 </div>
-            </div>
-            <div class="col-1 mt-3">
-                <div><a href="javascript:void(0)" class="btn btn-success" id="save_add_fields">Save</a></div>
-                <!--<div class="float-right text-center mr-4 zoom-container">Zoom<input type="range" class="form-control-range" id="zoom_control" min="50" max="100" value="100"></div>-->
             </div>
         </div>
     </div>
@@ -96,7 +95,7 @@
             <div class="col-2 p-0">
 
                 <div class="file-view" id="thumb_viewer">
-                    <div class="h3 text-white bg-orange p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
+                    <div class="h3 text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
                     @foreach($images as $image)
                         <?php $c = $image['page_number']; ?>
                         <div class="file-view-thumb-container  w-50 mx-auto" <?php echo($c == 1) ? 'active' : ''; ?>" id="thumb_{{ $c }}" data-id="{{ $c }}">
@@ -123,7 +122,7 @@
     @php
 
     $field = $fields['field_type'];
-    $heightp = '1.3';
+    $heightp = '1.1';
     $widthp = '15';
     if($field == 'date') {
         $widthp = '10';

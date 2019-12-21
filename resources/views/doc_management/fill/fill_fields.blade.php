@@ -25,7 +25,7 @@
             <div class="col-8 p-0">
 
                 <div class="container-fluid p-0">
-                    <div class="file-viewer-container w-100">
+                    <div class="file-viewer-container mx-auto">
                         <div class="file-view" id="file_viewer">
 
 
@@ -58,10 +58,10 @@
                     </div> <!-- end file-viewer-container -->
 
                 </div> <!-- end container-fluid p-0 -->
-            </div> <!-- col-11 -->
+            </div> <!-- col-8 -->
             <div class="col-2 pl-0">
                 <div class="file-view" id="thumb_viewer">
-                    <div class="h3 text-white bg-orange p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
+                    <div class="h3 text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
                     @foreach($images as $image)
                         <?php $c = $image['page_number']; ?>
                         <div class="file-view-thumb-container  w-50 mx-auto <?php echo($c == 1) ? 'active' : ''; ?>" id="thumb_{{ $c }}" data-id="{{ $c }}">

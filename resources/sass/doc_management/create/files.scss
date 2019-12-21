@@ -1,3 +1,12 @@
 .page-files {
+    overflow: hidden;
 
+    #associations_list_container, #associations_container {
+        max-height: 75VH;
+        overflow: auto;
+    }
+
+    .tab-content {
+        padding: 0px !important
+    }
 }

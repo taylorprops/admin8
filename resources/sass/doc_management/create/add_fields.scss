@@ -3,13 +3,19 @@
     max-width: 100% !important;
     overflow-x: hidden;
 
+    .file-viewer-container {
+        width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     .file-view {
         position: relative;
         width: 100%;
-        height: calc(100vh - 125px);
+        height: calc(100vh - 140px);
         overflow-y: scroll;
-        margin-left: auto;
-        margin-right: auto;
+        // margin-left: auto;
+        // margin-right: auto;
     }
 
 
@@ -62,8 +68,9 @@
     .textline-div-field, .number-div-field, .date-div-field {
         resize: none;
         height: 30px;
-        width: 150px;
+        width: auto;
         background: rgba($blue, .8);
+        padding-right: 15px;
     }
 
     .checkbox-div-field {

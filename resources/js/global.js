@@ -1,12 +1,9 @@
 import SimpleBar from 'simplebar';
-import 'simplebar/dist/simplebar.css';
-import { form_elements, select_refresh } from '@/form_elements.js';
+// import 'simplebar/dist/simplebar.css'; included local file in app.scss so it can be edited
+// import { form_elements, select_refresh } from '@/form_elements.js';
 
 $(document).ready(function () {
 
-
-    // init form_elements
-    form_elements();
 
     // send csrf with every ajax request
     window._token = $('meta[name="csrf-token"]').attr('content');
@@ -47,7 +44,7 @@ $(document).ready(function () {
         }
     }, false);
 
-
+    $('.draggable').draggable()
 
     $('.phone').keyup(function () {
         format_phone(this);
@@ -91,7 +88,7 @@ $(document).ready(function () {
     }
 
     // Numbers Only
-    $('.numbers-only').keydown(function (event) {
+    $(document).on('keydown', '.numbers-only', function (event) {
         // Allow special chars + arrows
         if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 190 || event.keyCode == 110
             || event.keyCode == 27 || event.keyCode == 13

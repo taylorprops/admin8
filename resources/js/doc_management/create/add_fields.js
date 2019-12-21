@@ -193,7 +193,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 $(this).find('select, input').not('input.form-select-search-input, input.form-select-value-input').each(function () {
                     $(this).val($(this).data('default-value')).trigger('change');
                     if ($(this).hasClass('form-select')) {
-                        select_refresh($(this));
+                        select_refresh();
                     }
                 });
             });
@@ -441,7 +441,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                 keep_in_view(new_ele, new_w_perc, new_x_perc, new_y_perc, field_type);
                                 set_field_options(field_type, new_ele, id, rect, container);
                                 field_status();
-                                select_refresh(new_ele.find('.form-select.field-data-name'));
+                                select_refresh();
                             }, 500);
 
                             let inputs_div = ele.find('.field-data-inputs-container');
@@ -496,7 +496,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 edit_div.find('.form-input.field-data-name').change(function () {
                     if ($(this).val() != '') {
                         select.val('');
-                        select_refresh(select);
+                        select_refresh();
                         inputs_container.html('').next('.add-input').trigger('click');
                     }
                 });
@@ -559,7 +559,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                             }
                         }
-                        select_refresh(select);
+                        select_refresh();
 
                     });
 
@@ -655,7 +655,7 @@ if (document.URL.match(/create\/add_fields/)) {
                             $(this).find('.form-div').each(function () {
                                 $(this).find('.form-select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
                                 $(this).find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
-                                select_refresh($(this).find('.form-select.field-data-name'));
+                                select_refresh();
                             });
                         });
 
@@ -1218,7 +1218,7 @@ if (document.URL.match(/create\/add_fields/)) {
         function set_common_fields() {
             $.ajax({
                 type: 'get',
-                url: '/common_fields',
+                url: '/doc_management/common_fields',
                 dataType: "json",
                 success: function (data) {
                     $.each(data, function (k) {
@@ -1236,7 +1236,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
         function field_list() {
             $('.field-list-container').html('');
-            $('.field-list-container').append('<div class="h3 text-white bg-orange p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>');
+            $('.field-list-container').append('<div class="h3 text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>');
             $('.file-view-page-container').each(function () {
                 let page_number = $(this).data('id');
                 $('.field-list-container').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
@@ -1439,7 +1439,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 $.ajax({
                     type: 'POST',
-                    url: '/save_add_fields',
+                    url: '/doc_management/save_add_fields',
                     data: { data: JSON.stringify(data) },
                     success: function (response) {
                         $('#modal_success').modal().find('.modal-body').html('Fields Successfully Saved');

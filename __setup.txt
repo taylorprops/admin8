@@ -20,7 +20,8 @@ sudo chmod -R ug+rwx storage bootstrap/cache
 
 
 
-sudo chown -R www-data:www-data /var/www/admin-test/storage/logs
+sudo chown -R www-data:www-data /var/www/admin/storage/logs
+sudo chmod 0775 /var/www/admin/storage/logs
 sudo chown -R www-data:www-data /var/www/admin-test/storage/framework
 sudo chown -R $USER /var/www/admin-test/bootstrap/cache
 
@@ -31,3 +32,4 @@ git config --global user.email "mike@taylorprops.com"
 git config --global user.name "mike-taylorprops"
 
 
+sass public/resources/mdbootstrap/scss/mdb-pro.scss public/resources/mdbootstrap/css/mdb.min.css

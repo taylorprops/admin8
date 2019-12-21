@@ -5,6 +5,22 @@
         opacity: 0.3;
     }
 
+    .invalid-label {
+        color: $danger !important;
+    }
+    .invalid-input-file::placeholder {
+        color: $danger !important;
+    }
+    .invalid-i {
+        color: $danger !important;
+    }
+    .invalid-input {
+        border: 1px solid $danger !important;
+    }
+    .invalid-input-file {
+        border-bottom: 1px solid $danger !important;
+    }
+
     .form-input, .form-textarea, .form-select-value-input {
         width: 100%;
         padding: 15px  5px 5px 10px;

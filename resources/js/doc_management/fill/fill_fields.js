@@ -2,11 +2,16 @@ import { filter_array, format_number } from '../../global.js';
 const writtenNumber = require('written-number');
 const axios = require('axios');
 import datepicker from 'js-datepicker';
-
+import { form_elements, select_refresh } from '@/form_elements.js';
 
 if (document.URL.match(/create\/fill_fields/)) {
 
     $(document).ready(function () {
+
+        form_elements();
+
+        $('[data-address-type="state"]').addClass('uppercase').attr('maxlength', 2);
+        $('[data-address-type="zip"]').addClass('numbers-only').attr('maxlength', 5);
 
         if ($('.field-datepicker').length > 0) {
             window.picker = datepicker('.field-datepicker', {
@@ -39,7 +44,7 @@ if (document.URL.match(/create\/fill_fields/)) {
             });
 
             $('.data-div').css({ color: '#1c5694' });
-            $('.data-div-shrink-font').css({ 'font-size': '.8em', 'line-height': '140%', 'font-weight': 'bold', 'padding-left': '5px' });
+            $('.data-div-shrink-font').css({ 'padding-left': '5px' }); // removed 'font-size': '.8em', 'line-height': '140%', 'font-weight': 'bold',
             $('.file-image-bg').css({ opacity: '0.0' });
             $('.field-div').css({ background: 'none' });
             $('.data-div-radio-check').css({ 'margin-left': '1px', 'font-size': '1.2em', 'line-height': '80%', 'font-weight': 'bold' });
@@ -67,7 +72,7 @@ if (document.URL.match(/create\/fill_fields/)) {
             formData.append('file_name', file_name);
 
             axios_options['header'] = { 'content-type': 'multipart/form-data' };
-            axios.post('/save_pdf_client_side', formData, axios_options)
+            axios.post('/doc_management/save_pdf_client_side', formData, axios_options)
                 .then(function (response) {
                     //console.log(response);
                 })
@@ -134,7 +139,7 @@ if (document.URL.match(/create\/fill_fields/)) {
                     file_id: file_id
                 });
             });
-            axios.post('/save_fill_fields', field_data, axios_options)
+            axios.post('/doc_management/save_fill_fields', field_data, axios_options)
                 .then(function (response) {
                     $('#modal_success').modal().find('.modal-body').html('Fields Successfully Saved');
                 })
@@ -408,7 +413,7 @@ if (document.URL.match(/create\/fill_fields/)) {
 
         function field_list() {
             $('.field-list-container').html('');
-            $('.field-list-container').append('<div class="h3 text-white bg-orange p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>');
+            $('.field-list-container').append('<div class="h3 text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>');
             $('.file-view-page-container').each(function () {
                 let page_number = $(this).data('id');
                 $('.field-list-container').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');

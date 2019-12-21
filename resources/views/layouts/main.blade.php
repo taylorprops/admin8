@@ -8,10 +8,18 @@
 
         <title>@yield('title', 'title here')</title>
 
+        <link href="https://fonts.googleapis.com/css?family=Baskervville|Karma|Lato|Maitree|Roboto&display=swap" rel="stylesheet">
         <link href="/resources/mdbootstrap/css/mdb.min.css" rel="stylesheet">
         <link href="/css/app.css" rel="stylesheet">
         <link href="/vendor/fontawesome/fontawesome/css/all.css" rel="stylesheet">
-
+        <noscript>
+            <style>
+              /* simplebar Reinstate scrolling for non-JS clients */
+                .simplebar-content-wrapper {
+                    overflow: auto;
+                }
+            </style>
+          </noscript>
 
     </head>
 

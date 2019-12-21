@@ -25,13 +25,8 @@
                                 <h6 class="sub-title text-uppercase font-weight-bold text-primary">Create Docs</h6>
                                 <ul class="list-unstyled">
                                     <li>
-                                        <a class="menu-item pl-0" href="/create/upload">
-                                            <i class="fas fa-caret-right pl-2 pr-3"></i>Upload Files
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="menu-item pl-0" href="/create/upload/files">
-                                            <i class="fas fa-caret-right pl-2 pr-3"></i>View Uploaded Files
+                                        <a class="menu-item pl-0" href="/doc_management/create/upload/files">
+                                            <i class="fas fa-caret-right pl-2 pr-3"></i>View/Add Uploaded Files
                                         </a>
                                     </li>
                                 </ul>
@@ -40,7 +35,7 @@
                                 <h6 class="sub-title text-uppercase font-weight-bold text-primary">Fill Docs</h6>
                                 <ul class="list-unstyled">
                                     <li>
-                                        <a class="menu-item pl-0" href="/create/fill/fillable_files">
+                                        <a class="menu-item pl-0" href="/doc_management/create/fill/fillable_files">
                                             <i class="fas fa-caret-right pl-2 pr-3"></i>Fillable Files
                                         </a>
                                     </li>
@@ -114,8 +109,8 @@
                 <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-chevron-right"></i> Create Docs <i class="fas fa-angle-down rotate-icon"></i></a>
                     <div class="collapsible-body">
                         <ul>
-                            <li><a class="waves-effect" href="/create/upload">Add Files</a></li>
-                            <li><a class="waves-effect" href="/create/upload/files">Uploaded Files</a></li>
+                            <li><a class="waves-effect" href="/doc_management/create/upload">Add Files</a></li>
+                            <li><a class="waves-effect" href="/doc_management/create/upload/files">Uploaded Files</a></li>
                             </li>
                         </ul>
                     </div>
@@ -123,7 +118,7 @@
                 <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-chevron-right"></i> Fill Files <i class="fas fa-angle-down rotate-icon"></i></a>
                     <div class="collapsible-body">
                         <ul>
-                            <li><a class="waves-effect" href="/create/fill/fillable_files">Fillable Files</a></li>
+                            <li><a class="waves-effect" href="/doc_management/create/fill/fillable_files">Fillable Files</a></li>
                             </li>
                         </ul>
                     </div>

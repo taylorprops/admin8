@@ -1,5 +1,5 @@
-make keyboard short cuts
-    ctrl - m = menu
+page - add/edit associations
+    add helper text i.e. AACAR | Anne Arundel Association of Realtors
 
 
 !!!!!!!!!!!!!!!!!!!

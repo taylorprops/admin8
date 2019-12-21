@@ -14,11 +14,12 @@ class Agent
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {
-        if(auth() -> user() -> group == 'agent' || auth() -> user() -> group == 'admin'){
+    {   if(auth() -> user()) {
+            if(auth() -> user() -> group == 'agent' || auth() -> user() -> group == 'admin'){
 
-            return $next($request);
+                return $next($request);
+            }
         }
-        return redirect('/') -> with('error','You do not have access');
+        return redirect('/') -> with('error','Your session expired, please log back in');
     }
 }
