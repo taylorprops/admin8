@@ -19,6 +19,7 @@ $orange: #c75748;
 $orange-light: #f8e5e3;
 $orange-dark: #943d31;
 $yellow: #ffed4a;
+$yellow-light: #f7efae;
 $green: #30a730;
 $green-dark: #1b631b;
 $teal: #4dc0b5;
@@ -29,6 +30,7 @@ $theme-colors: (
     "primary": $blue,
     "secondary": $orange,
     "danger": $red,
+    "success": $green-dark,
     "default": $default,
     "primary-dark": $blue-dark
 );
@@ -40,7 +42,12 @@ $danger-color: $red;
 .text-primary-dark {
     color: $blue-dark;
 }
-
+.text-blue-light {
+    color: $blue-light;
+}
+.text-yellow-light {
+    color: $yellow-light;
+}
 .text-orange {
     color: $orange;
 }
@@ -79,4 +86,7 @@ a.text-green:hover {
 }
 
 
+.btn-primary {
+    background: $blue !important;
+}
 

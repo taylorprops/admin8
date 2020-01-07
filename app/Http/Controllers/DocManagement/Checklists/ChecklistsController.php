@@ -1,0 +1,145 @@
+<?php
+
+namespace App\Http\Controllers\DocManagement\Checklists;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\DocManagement\Checklists\Checklists;
+use App\Models\DocManagement\Checklists\ChecklistsItems;
+use App\Models\DocManagement\ResourceItems;
+use App\Models\DocManagement\Upload;
+
+class ChecklistsController extends Controller
+{
+
+    public function get_checklist_items(Request $request) {
+        $checklist_id = $request -> checklist_id;
+        $checklist = Checklists::whereId($checklist_id) -> first();
+        $checklist_items = ChecklistsItems::whereId($checklist_id) -> get();
+        $form_groups = ResourceItems::where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
+        $files = new Upload();
+        $resource_items = new ResourceItems();
+        return view('/doc_management/checklists/add_checklist_items_html', compact('checklist', 'checklist_items', 'form_groups', 'files', 'resource_items', 'checklist_groups'));
+    }
+
+    public function checklists() {
+
+        $property_types = ResourceItems::where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
+        $property_sub_types = ResourceItems::where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
+        $locations = ResourceItems::where('resource_type', 'checklist_locations') -> orderBy('resource_order') -> get();
+        $checklists = Checklists::orderBy('checklist_order') -> get();
+
+        $checklist_property_types = $checklists -> mapToGroups(function ($item, $key) {
+            return [
+                $item['checklist_property_type'] => [
+                    'checklist_type' => $item['checklist_type'],
+                    'checklist_represent' => $item['checklist_represent'],
+                    'checklist_property_type' => $item['checklist_property_type'],
+                    'checklist_property_sub_type' => $item['checklist_property_sub_type'],
+                    'checklist_sale_rent' => $item['checklist_sale_rent'],
+                    'checklist_location_id' => $item['checklist_location_id'],
+                    'checklist_state' => $item['checklist_state'],
+                    'checklist_order' => $item['checklist_order']
+                ]
+            ];
+        });
+
+        $checklist_property_types_items = [];
+        foreach($property_types as $property_type) {
+            $type = $property_type -> resource_name;
+            if($checklist_property_types -> get($type)) {
+                $checklist_property_types_items[] = $checklist_property_types -> get($type) -> all();
+            }/*  else {
+                $checklist_property_types_items[][0]['checklist_property_type'] = $type;
+            } */
+        }
+
+        return view('/doc_management/checklists/checklists', compact('property_types', 'property_sub_types', 'locations', 'checklist_property_types_items'));
+
+    }
+
+    public function get_checklists(Request $request) {
+
+        $checklist_location_id = $request -> checklist_location_id;
+        // $checklist_type = $request -> checklist_type;
+        $checklists = Checklists::where('checklist_location_id', $checklist_location_id) -> orderBy('checklist_order') -> get();
+        $checklists_count = count($checklists);
+
+        $checklist_property_types = $checklists -> mapToGroups(function ($item, $key) {
+            return [
+                $item['checklist_property_type'] => [
+                    'checklist_id' => $item['id'],
+                    'checklist_type' => $item['checklist_type'],
+                    'checklist_represent' => $item['checklist_represent'],
+                    'checklist_property_type' => $item['checklist_property_type'],
+                    'checklist_property_sub_type' => $item['checklist_property_sub_type'],
+                    'checklist_sale_rent' => $item['checklist_sale_rent'],
+                    'checklist_location_id' => $item['checklist_location_id'],
+                    'checklist_state' => $item['checklist_state'],
+                    'checklist_order' => $item['checklist_order']
+                ]
+            ];
+        });
+
+        $property_types = ResourceItems::where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
+
+        $checklist_property_types_items = [];
+        foreach($property_types as $property_type) {
+            $type = $property_type -> resource_name;
+            if($checklist_property_types -> get($type)) {
+                $checklist_property_types_items[] = $checklist_property_types -> get($type) -> all();
+            }/*  else {
+                $checklist_property_types_items[][0]['checklist_property_type'] = $type;
+            } */
+        }
+
+        return view('/doc_management/checklists/get_checklists_html', compact('checklist_property_types_items', 'checklists_count'));
+
+    }
+
+    public function add_checklist(Request $request) {
+        $checklist = new Checklists();
+        $checklist -> checklist_location_id = $request -> checklist_location_id;
+        $checklist -> checklist_represent = $request -> checklist_represent;
+        $checklist -> checklist_type = $request -> checklist_type;
+        $checklist -> checklist_sale_rent = $request -> checklist_sale_rent;
+        $checklist -> checklist_property_type = $request -> checklist_property_type;
+        $checklist -> checklist_property_sub_type = $request -> checklist_property_sub_type;
+        $checklist -> checklist_state = $request -> checklist_state;
+        $checklist -> checklist_order = 0;
+        $checklist -> save();
+    }
+
+    public function edit_checklist(Request $request) {
+        $checklist = Checklists::where('id', $request -> checklist_id) -> first();
+        $checklist -> checklist_location_id = $request -> checklist_location_id;
+        $checklist -> checklist_represent = $request -> checklist_represent;
+        $checklist -> checklist_type = $request -> checklist_type;
+        $checklist -> checklist_sale_rent = $request -> checklist_sale_rent;
+        $checklist -> checklist_property_type = $request -> checklist_property_type;
+        $checklist -> checklist_property_sub_type = $request -> checklist_property_sub_type;
+        $checklist -> checklist_state = $request -> checklist_state;
+        $checklist -> save();
+    }
+
+    public function delete_checklist(Request $request) {
+        $checklist = Checklists::where('id', $request -> checklist_id) -> delete();
+        // TODO will have to delete all checklist items too
+    }
+
+    public function reorder_checklists(Request $request) {
+
+        $data = json_decode($request['data'], true);
+        $data = $data['checklist'];
+
+        foreach($data as $item) {
+            $checklist_id = $item['checklist_id'];
+            $checklist_order = $item['checklist_index'];
+            $reorder = Checklists::whereId($checklist_id) -> first();
+            $reorder -> checklist_order = $checklist_order;
+            $reorder -> save();
+        }
+
+    }
+}

@@ -1,0 +1,451 @@
+if (document.URL.match(/checklists/)) {
+
+    $(document).ready(function () {
+
+        let data_count = $('.checklist-data').length;
+        $('.checklist-data').each(function (index) {
+            let location_id = $(this).data('location-id');
+            get_checklists(location_id, 'listing');
+            // load form elements and options after all divs are loaded
+            if (index === data_count - 1) {
+
+                setTimeout(function() {
+                    init();
+                }, 500);
+            }
+        });
+
+    });
+
+    // functions to run on load and after adding elements
+    function init() {
+        form_elements();
+        // show add/edit modal to edit checklist details
+        $('.add-checklist-button, .edit-checklist-button').off('click').on('click', show_add_edit_checklist);
+        // delete checklist
+        $('.delete-checklist-button').off('click').on('click', confirm_delete_checklist);
+        // add items to checklist
+        $('.add-items-button').off('click').on('click', checklist_items);
+        // toggle listing and contract checklists
+        $('.checklist-type-option').unbind('change').bind('change', function () {
+            $(this).closest('.list-div').find('.checklist-items-listing').toggle();
+            $(this).closest('.list-div').find('.checklist-items-contract').toggle();
+        });
+
+        sortable_checklists();
+
+
+    }
+
+    function sortable_checklists() {
+        // checklists are sortable
+        $('.sortable-checklist').sortable({
+            placeholder: 'bg-orange-sortable',
+            handle: '.list-item-handle',
+            stop: function (event, ui) {
+                // get details and update new order
+                let els = $(ui.item).parent('.sortable').children('.checklist-items-container');
+                let checklists = {
+                    checklist: []
+                }
+
+                els.each(function () {
+                    let el, checklist_id, checklist_index;
+                    el = $(this);
+                    checklist_id = el.data('checklist-id');
+                    checklist_index = el.index();
+                    checklists.checklist.push(
+                        {
+                            'checklist_id': checklist_id,
+                            'checklist_index': checklist_index
+                        }
+                    );
+                });
+                let formData = new FormData();
+                checklists = JSON.stringify(checklists);
+                formData.append('data', checklists);
+                axios.post('/doc_management/reorder_checklists', formData, axios_options)
+                    .then(function (response) {
+                        toastr['success']('Checklist Reordered');
+                    })
+                    .catch(function (error) {
+
+                    });
+            }
+
+        });
+        $('.sortable-checklist').disableSelection();
+    }
+
+    function sortable_checklist_items() {
+        // checklist items are sortable and saved after sort
+        $('.sortable-checklist-items').sortable({
+            handle: '.checklist-item-handle',
+            placeholder: 'bg-orange-sortable-big',
+            receive: function (event, ui) {
+                forms_status();
+            },
+            revert: true
+        });
+        $('.sortable-checklist-items').disableSelection();
+    }
+
+
+    // search forms in add items modal
+    function form_search() {
+        let v = $('#form_search').val();
+        if (v.length == 0) {
+            // hide all containers with header and name inside
+            $('.form-group-div').hide();
+            // make sure all headers and names are visible if searched for
+            $('.list-group-header, .form-name').show();
+            // get value of selected form group to reset list
+            let form_group = $('.select-form-group').val();
+            if (form_group == 'all') {
+                $('.form-group-div, .list-group-header, .form-name').show();
+            } else {
+                $('[data-form-group-id="' + form_group + '"]').show().find('.form-name').show();
+            }
+        } else {
+            // show all containers with header and name inside
+            $('.form-group-div').show();
+            // hide all headers
+            $('.list-group-header').hide();
+            // hide all names
+            $('.form-name').hide().each(function () {
+                if ($(this).data('text').match(new RegExp(v, 'i'))) {
+                    // show name
+                    $(this).show();
+                    // show header
+                    $(this).closest('.form-group-div').find('.list-group-header').show();
+                }
+            });
+        }
+    }
+
+    // add/edit checklist items
+    function checklist_items() {
+
+        let checklist_id = $(this).data('checklist-id');
+        // get checklist details html to add to modal
+        axios.get('/doc_management/get_checklist_items', {
+            params: {
+                checklist_id: checklist_id
+            },
+            // added html headers since returning html
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+            // show modal
+            $('#checklist_items_modal').modal();
+            // add html from response
+            $('#checklist_items_div').html(response.data);
+            form_elements();
+            // add title to modal
+            $('#checklist_items_modal_title').html('Checklist Items | <span class="text-yellow-light">' + $('#checklist_header_val').val() + '</span>');
+            // hide all form-group-div and show the first (MAR)
+            $('.form-group-div').hide();
+            $('.form-group-div').eq(0).show();
+            // search forms
+            $('#form_search').keyup(form_search);
+            // select and show form groups
+            $('.select-form-group').change(function () {
+                // clear search input
+                $('#form_search').val('').trigger('change');
+                // if all show everything or just the selected group
+                if ($(this).val() == 'all') {
+                    $('.form-group-div, .list-group-header, .form-name').show();
+                } else {
+                    $('.list-group-header, .form-name').show();
+                    $('.form-group-div').hide();
+                    $('[data-form-group-id="' + $(this).val() + '"]').show();
+                }
+            });
+
+
+            // delete checklist items
+            $('.delete-checklist-item').click(delete_checklist_item);
+
+            $('.add-to-checklist').not('disabled').click(add_to_checklist);
+
+            sortable_checklist_items();
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function add_to_checklist() {
+        let form_id = $(this).data('form-id');
+        let text_orig = $(this).data('text');
+        let text = text_orig;
+        if (text_orig.length > 40) {
+            text = text_orig.slice(0, 40) + '...';
+        }
+
+        // options are saved in a hidden div on load since they are dynamic
+        let checklist_groups_options = $('#checklist_groups_options').html();
+        // this is the helper dragged and inserted in checklist items container
+        let checklist_item = ' \
+            <li class="list-group-item checklist-item w-100" data-form-id="' + form_id + '"> \
+                <div class="row"> \
+                    <div class="col-4"> \
+                        <div class="row"> \
+                            <div class="col-1"> \
+                                <i class="fas fa-sort fa-lg mr-1 mt-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
+                            </div> \
+                            <div class="col-11"> \
+                                <input type="text" class="form-input checklist-item-name required" value="'+ text + '" data-label="Form Display Name"> \
+                            </div> \
+                        </div> \
+                    </div> \
+                    <div class="col-4"> \
+                        <span class="small text-secondary">Form</span> \
+                        <div class="h5 text-primary" title="' + text_orig + '">' + text + '</div> \
+                    </div> \
+                    <div class="col-4"> \
+                        <div class="row"> \
+                            <div class="col"> \
+                                <select class="form-select form-select-no-search form-select-no-cancel checklist-item-required required" data-label="Required"> \
+                                    <option value=""></option> \
+                                    <option value="yes">Yes</option> \
+                                    <option value="no">No</option> \
+                                </select> \
+                            </div> \
+                            <div class="col-6"> \
+                                <select class="form-select form-select-no-search form-select-no-cancel checklist-item-from-group required" data-label="From Group"> \
+                                    <option value=""></option> \
+                                    ' + checklist_groups_options + ' \
+                                </select> \
+                            </div> \
+                            <div class="col"> \
+                                <a class="btn btn-danger delete-checklist-item ml-3 mt-1"><i class="fa fa-trash"></i></a> \
+                            </div> \
+                        </div> \
+                </div> \
+            </li> \
+        ';
+        $('.sortable-checklist-items').append(checklist_item);
+        $('.delete-checklist-item').click(delete_checklist_item);
+        form_elements();
+        forms_status();
+        sortable_checklist_items();
+
+    }
+
+    function delete_checklist_item() {
+        let button = $(this);
+        $('#confirm_remove_file_modal').modal();
+        $('#confirm_remove_file').click(function () {
+            button.closest('li').remove();
+            forms_status();
+            $('#confirm_remove_file_modal').modal('hide');
+        });
+    }
+
+    function forms_status() {
+
+        $('.form-name').removeClass('form-selected');
+        $('.add-to-checklist').removeClass('disabled');
+
+        let form_ids = [];
+        $('.checklist-item').each(function () {
+            form_ids.push($(this).data('form-id'));
+        });
+        $.map(form_ids, function (value, index) {
+            $('.form-name[data-form-id="' + value + '"]').addClass('form-selected').find('.add-to-checklist').addClass('disabled');
+        });
+    }
+
+    function show_add_edit_checklist() {
+
+        $('#checklist_modal').modal();
+
+        let checklist_type = $(this).closest('.list-div').find('.checklist-type-option').val();
+
+        let location_id = $(this).data('location-id');
+        let property_type = $(this).data('property-type');
+        let property_sub_type = $(this).data('property-sub-type');
+        let state = $(this).data('state');
+        let form_type = $(this).data('form-type');
+        let sale_rent = $(this).data('sale-rent');
+        let represent = $(this).data('represent');
+
+        // assign form input values
+        $('#checklist_location_id').val(location_id).trigger('change');
+        $('#checklist_type').val(checklist_type).trigger('change');
+        $('#checklist_property_type').val(property_type).trigger('change');
+        $('#checklist_property_sub_type').val(property_sub_type).trigger('change');
+        $('#checklist_sale_rent').val(sale_rent).trigger('change');
+        $('#checklist_represent').val(represent).trigger('change');
+
+        if (checklist_type== 'listing') {
+            $('#checklist_represent').val('seller').trigger('change');
+        }
+        select_refresh();
+
+        // assign hidden input values
+        $('#checklist_id').val($(this).data('checklist-id'));
+        $('#checklist_state').val(state);
+        $('#form_type').val(form_type);
+
+
+        // ######### these are based on resource values and could possibly be changed by user
+        let select_checklist_type = $('#checklist_type');
+        let select_checklist_property_type = $('#checklist_property_type');
+        let select_checklist_sale_rent = $('#checklist_sale_rent');
+        let select_checklist_property_sub_type = $('#checklist_property_sub_type');
+        let select_checklist_represent = $('#checklist_represent');
+
+        show_hide_options();
+
+        let els = [select_checklist_type, select_checklist_property_type, select_checklist_sale_rent, select_checklist_represent, select_checklist_property_sub_type];
+        els.forEach(function (el) {
+            el.change(function () {
+                show_hide_options();
+
+            });
+        });
+
+
+        $('#save_checklist_button').on('click', save_checklist);
+
+    }
+
+    function show_hide_options() {
+
+        let select_checklist_type = $('#checklist_type');
+        let select_checklist_property_type = $('#checklist_property_type');
+        let select_checklist_sale_rent = $('#checklist_sale_rent');
+        let select_checklist_property_sub_type = $('#checklist_property_sub_type');
+        let select_checklist_represent = $('#checklist_represent');
+
+        // ######### these are based on resource values and could possibly be changed by user
+
+        if (select_checklist_type.val() == 'listing') {
+            select_checklist_represent.val('seller').prop('disabled', true);
+        } else {
+            select_checklist_represent.prop('disabled', false);
+        }
+
+        // if residential show property_sub_types | but not if rental
+        if (select_checklist_property_type.val() == 'Residential') {
+            if (select_checklist_sale_rent.val() == 'rental') {
+                select_checklist_property_sub_type.val('').addClass('hidden').removeClass('required').closest('.col-12').removeClass('py-3');
+            } else {
+                select_checklist_property_sub_type.removeClass('hidden').addClass('required').closest('.col-12').addClass('py-3');
+            }
+        } else {
+            select_checklist_property_sub_type.val('').addClass('hidden').removeClass('required').closest('.col-12').removeClass('py-3');
+        }
+        // if fsbo you must be representing the buyer, must be a contract and for sale
+        if (select_checklist_property_sub_type.val() == 'For Sale By Owner') {
+            select_checklist_represent.val('buyer');
+            select_checklist_sale_rent.val('sale');
+        }
+
+        if (select_checklist_represent.val() == 'buyer') {
+            select_checklist_type.val('contract');
+        }
+
+
+
+        select_refresh();
+
+    }
+
+    function save_checklist() {
+        let form = $('#checklist_form');
+        let validate = validate_form(form);
+
+        if (validate == 'yes') {
+            let formData = new FormData();
+            formData.append('checklist_id', $('#checklist_id').val());
+            formData.append('checklist_location_id', $('#checklist_location_id').val());
+            formData.append('checklist_represent', $('#checklist_represent').val());
+            formData.append('checklist_type', $('#checklist_type').val());
+            formData.append('checklist_sale_rent', $('#checklist_sale_rent').val());
+            formData.append('checklist_property_type', $('#checklist_property_type').val());
+            formData.append('checklist_property_sub_type', $('#checklist_property_sub_type').val());
+            formData.append('checklist_state', $('#checklist_state').val());
+
+            let form_type = $('#form_type').val();
+
+            let url = '/doc_management/edit_checklist';
+            if (form_type == 'add') {
+                url = '/doc_management/add_checklist';
+            }
+
+            axios.post(url, formData, axios_options)
+                .then(function (response) {
+                    get_checklists($('#checklist_location_id').val(), $('#checklist_type').val());
+                    setTimeout(function() {
+                        init();
+                    }, 500);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    }
+
+    function get_checklists(checklist_location_id, checklist_type) {
+        let options = {
+            params: {
+                checklist_location_id: checklist_location_id
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        }
+
+        axios.get('/doc_management/get_checklists', options)
+            .then(function (response) {
+                $('#list_div_' + checklist_location_id + '_files').html($(response.data));
+                // $('#list_div_' + checklist_location_id + '_file_count').text($('#files_count').val());
+                $('.checklist-items-container').hide();
+                $('.checklist-items-' + checklist_type).show();
+                $('#checklist_modal').modal('hide');
+            })
+            .catch(function (error) {
+
+            });
+    }
+
+    function confirm_delete_checklist() {
+        let ele = $(this);
+        $('#confirm_delete_checklist_modal').modal();
+        $('#confirm_delete_checklist').off('click').on('click', function () {
+            delete_checklist(ele);
+        });
+
+    }
+
+    function delete_checklist(ele) {
+        let checklist_id = ele.data('checklist-id');
+        let checklist_location_id = ele.data('checklist-location-id');
+        let checklist_type = ele.data('checklist-type');
+        let formData = new FormData();
+        formData.append('checklist_id', checklist_id);
+        axios.post('/doc_management/delete_checklist', formData, axios_options)
+        .then(function (response) {
+            get_checklists(checklist_location_id, checklist_type);
+            setTimeout(function() {
+                init();
+            }, 500);
+            $('#confirm_delete_checklist_modal').modal('hide');
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+}
+

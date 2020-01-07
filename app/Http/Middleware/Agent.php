@@ -16,10 +16,12 @@ class Agent
     public function handle($request, Closure $next)
     {   if(auth() -> user()) {
             if(auth() -> user() -> group == 'agent' || auth() -> user() -> group == 'admin'){
-
                 return $next($request);
             }
         }
-        return redirect('/') -> with('error','Your session expired, please log back in');
+
+        return response() -> json([
+            'dismiss' => __('Session expired due to inactivity'),
+        ]);
     }
 }

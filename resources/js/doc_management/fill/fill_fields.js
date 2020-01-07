@@ -1,8 +1,6 @@
-import { filter_array, format_number } from '../../global.js';
 const writtenNumber = require('written-number');
-const axios = require('axios');
 import datepicker from 'js-datepicker';
-import { form_elements, select_refresh } from '@/form_elements.js';
+
 
 if (document.URL.match(/create\/fill_fields/)) {
 
@@ -18,6 +16,7 @@ if (document.URL.match(/create\/fill_fields/)) {
                 onSelect: (instance, date) => {
                     const value = date.toLocaleDateString();
                     $('#' + instance.el.id).prev('div.data-div').html(value);
+                    console.log(instance.el.id);
                 },
                 onHide: instance => {
                     $('.field-div').removeClass('active');
@@ -74,7 +73,7 @@ if (document.URL.match(/create\/fill_fields/)) {
             axios_options['header'] = { 'content-type': 'multipart/form-data' };
             axios.post('/doc_management/save_pdf_client_side', formData, axios_options)
                 .then(function (response) {
-                    //console.log(response);
+                    toastr['success']('PDF Exported Successfully');
                 })
                 .catch(function (error) {
                     //console.log(error);
@@ -142,6 +141,7 @@ if (document.URL.match(/create\/fill_fields/)) {
             axios.post('/doc_management/save_fill_fields', field_data, axios_options)
                 .then(function (response) {
                     $('#modal_success').modal().find('.modal-body').html('Fields Successfully Saved');
+                    //toastr['success']('Fields Successfully Saved');
                 })
                 .catch(function (error) {
                     console.log(error);

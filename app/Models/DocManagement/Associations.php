@@ -16,7 +16,7 @@ class Associations extends Model
     }
 
     public function getCountAssociationForms($id) {
-        $uploads = Upload::where('association_id', $id) -> get() -> count();
+        $uploads = Upload::where('form_group_id', $id) -> get() -> count();
         return $uploads;
     }
 }

@@ -1,0 +1,78 @@
+.page-checklists {
+
+    .list-group-container {
+        max-height: 77VH;
+        overflow: auto;
+    }
+    .list-group-divs {
+        max-height: 70VH;
+        overflow: auto;
+    }
+    .tab-content {
+        padding: 0px !important
+    }
+    .checklist-items div {
+        font-size: 1rem;
+    }
+
+    .checklist-items-container {
+        background: rgba(255, 255, 255, 0.8);
+    }
+    .list-item-handle, .ui-sortable-handle {
+        cursor: row-resize;
+    }
+    .bg-orange-sortable {
+        border: 2px dashed $orange;
+        height: 50px;
+    }
+    .bg-orange-sortable-big {
+        border: 2px dashed $orange;
+        height: 70px;
+    }
+
+    .modal-xl {
+        max-width: 98VW !important;
+        width: 98VW !important;
+    }
+
+    .checklist-items-selected {
+        width: 100%;
+        height: 70VH;
+    }
+    .sortable-checklist-items {
+        width: 100%;
+        height: 68VH;
+    }
+    .form-groups-container {
+        height: 55VH;
+        overflow: auto;
+    }
+    .list-group-header {
+        background: $blue-light;
+        color: $blue;
+        padding: 5px;
+    }
+
+    .form-name {
+        cursor: move;
+    }
+    .form-selected {
+        opacity: 0.5;
+        cursor: default;
+    }
+    .checklist-item {
+        height: 70px;
+    }
+    .checklist-item-helper {
+        width: 600px;
+        padding: 15px;
+        font-size: 1.1rem;
+        color: $blue;
+        text-align: center;
+        background: #fff;
+        border: 3px solid $blue;
+        opacity: 0.8;
+    }
+
+
+}

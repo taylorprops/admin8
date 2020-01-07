@@ -1,3 +1,5 @@
+{{-- @php header('Location: /'); @endphp --}}
+
 @extends('errors::minimal')
 
 @section('title', __('Page Expired'))

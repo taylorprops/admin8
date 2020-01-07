@@ -21,4 +21,5 @@ mix.copy('resources/sass/_variables.scss', 'public/resources/mdbootstrap/scss/_c
                 '@': __dirname + '/resources/js'
             },
         },
-    });
+    })
+    .disableNotifications();

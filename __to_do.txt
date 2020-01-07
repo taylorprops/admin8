@@ -1,6 +1,26 @@
 page - add/edit associations
     add helper text i.e. AACAR | Anne Arundel Association of Realtors
 
+on add_fields
+    number fields | on save verify there are two fields for the group
+
+    possibly on other pages too
+    change Buyer Name to Buyer/Renter Name
+
+
+fill_fields.js and anything else with import or const
+    add these to app.js
+    example from fill_fields.js of what to move from this file to app.js
+        import { filter_array, format_number } from '../../global.js';
+        const writtenNumber = require('written-number');
+        const axios = require('axios');
+        import datepicker from 'js-datepicker';
+        import { form_elements, select_refresh } from '@/form_elements.js';
+
+on upload file list show first as active in form group list to left
+
+
+
 
 !!!!!!!!!!!!!!!!!!!
 

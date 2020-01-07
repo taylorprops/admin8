@@ -20,7 +20,8 @@ class RedirectIfAuthenticated
 
         if (Auth::guard($guard) -> check()) {
             Auth::logout();
-            return redirect('/');
+            return redirect('/'); // original
+            //return redirect() -> route('login');
         }
 
 

@@ -32,4 +32,7 @@ git config --global user.email "mike@taylorprops.com"
 git config --global user.name "mike-taylorprops"
 
 
+// compile mdbootstrap
 sass public/resources/mdbootstrap/scss/mdb-pro.scss public/resources/mdbootstrap/css/mdb.min.css
+or add to webpack
+.sass('public/resources/mdbootstrap/scss/mdb-pro.scss', 'public/resources/mdbootstrap/css/mdb.min.css')

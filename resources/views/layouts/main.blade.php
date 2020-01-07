@@ -41,6 +41,7 @@
         <script type="text/javascript" src="/resources/mdbootstrap/js/mdb.min.js"></script>
 
 
+
         @yield('js')
 
     </body>

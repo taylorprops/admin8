@@ -2,7 +2,7 @@
     position: relative;
 
     .disabled {
-        opacity: 0.3;
+        background: rgba($primary-color, .1);
     }
 
     .invalid-label {
@@ -38,7 +38,7 @@
     .form-input-label, .form-textarea-label, .form-select-label {
         position: absolute;
         top: 15px;
-        left: 10px;
+        left: 5px;
         background: #fff;
         padding: 0 5px;
         font-size: 1rem;
@@ -53,9 +53,10 @@
         position: absolute;
         top: -5px;
         font-size: .8rem;
-        color: $blue;
+        color: $secondary-color;
         line-height: .6rem;
-        border-radius: 10px;
+        border-radius: 0px;
+        padding-bottom: 3px;
     }
 
     .form-textarea {
@@ -109,6 +110,7 @@
 
     .form-select-options-div {
         padding-top: 5px;
+        min-height: 75px;
         max-height: 200px;
         overflow: auto;
     }
@@ -136,6 +138,27 @@
         background: $blue-light;
         color: $blue;
         font-weight: bold;
+    }
+
+    .colorpicker {
+        visibility: hidden;
+    }
+    .colorpicker-div {
+        border: 1px solid $primary-color;
+        padding: 2px 2px 2px 10px;
+    }
+    .colorpicker-text {
+        color: $primary-color;
+        margin-top: .8rem;
+    }
+    .colorpicker-label {
+        height: 40px;
+        width: 40px;
+        margin-bottom: 0px !important;
+        cursor: pointer;
+    }
+    .colorpicker-text:hover {
+        cursor: pointer;
     }
 
 

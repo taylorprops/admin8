@@ -1,17 +1,5 @@
 <?php
 
-function directory($directory) {
-    $results = array();
-    $handler = opendir($directory);
-    while ($file = readdir($handler)) {
-        if ($file != '.' && $file != '..') {
-            $results[] = $file;
-        }
-    }
-    closedir($handler);
-    return $results;
-}
-
 function get_value($values, $id) {
     foreach($values as $value) {
         if($value['input_id'] == $id) {

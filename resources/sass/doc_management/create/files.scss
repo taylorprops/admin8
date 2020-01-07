@@ -1,12 +1,20 @@
 .page-files {
     overflow: hidden;
 
-    #associations_list_container, #associations_container {
+    .list-group-container {
         max-height: 75VH;
+        overflow: auto;
+    }
+    .list-group-divs {
+        max-height: 66VH;
         overflow: auto;
     }
 
     .tab-content {
         padding: 0px !important
+    }
+
+    .published {
+        background: rgba($blue-med, .1);
     }
 }

@@ -1,6 +1,3 @@
-import { filter_array } from '@/global.js';
-import { form_elements, select_refresh } from '@/form_elements.js';
-
 if (document.URL.match(/create\/add_fields/)) {
 
     $(document).ready(function () {
@@ -144,9 +141,9 @@ if (document.URL.match(/create\/add_fields/)) {
                     $('.add-input').off('click').on('click', add_input);
                     $('.delete-input').click(delete_input);
                     field_list();
-                    setTimeout(function() {
+                    /* setTimeout(function() {
                         check_fields();
-                    }, 500);
+                    }, 500); */
                 }, 500);
 
                 // clear other field when changing name
@@ -726,16 +723,18 @@ if (document.URL.match(/create\/add_fields/)) {
             let field_id = $(this).data('field-id');
 
             let new_input = ' \
-            <div class="row p-2 border border-secondary mb-1 field-data-inputs-div"> \
-                <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
-                <div class="col-12 mt-3"> \
-                    <div class="my-1"> \
-                        <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Name"> \
-                    </div> \
-                </div> \
+            <div class="row field-data-inputs-div"> \
                 <div class="col-12"> \
-                    <div class="my-1"> \
-                        <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Helper Text"> \
+                    <div class="border border-primary p-2 mb-4"> \
+                        <div class="clearfix"> \
+                            <a href="javascript: void(0)" class="delete-input float-right mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
+                        </div> \
+                        <div class="mt-1"> \
+                            <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Name"> \
+                        </div> \
+                        <div class="mt-3 mb-2"> \
+                            <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Helper Text"> \
+                        </div> \
                     </div> \
                 </div> \
             </div> \
@@ -764,17 +763,17 @@ if (document.URL.match(/create\/add_fields/)) {
                     </button> \
                 </div> \
                 <div class="modal-body"> \
-                    <h5 class="text-primary">Type -'+ type.toUpperCase() + '</h5> \
+                    <h5 class="text-primary mt-4 mb-2">Type -'+ type.toUpperCase() + '</h5> \
                     <div class="form-div"> \
                         <div class="container"> \
-                            <div class="row p-2 border border-secondary mb-1"> \
+                            <div class="row"> \
                                 <div class="col-12"> \
-                                    <h5 class="text-secondary mb-0">Field Name</h5> \
+                                    <h5 class="text-primary mt-4 mb-2">Field Name</h5> \
                                 </div> \
             ';
             if (type != 'checkbox' && type != 'radio') {
                 properties = properties + ' \
-                                <div class="col-12 my-1"> \
+                                <div class="col-12"> \
                                     <select class="form-select field-data-name" id="name_select_'+ field_id + '" data-field-type="common" data-label="Select Common Name (Shared)"> \
                                         <option value="">&nbsp;</option> \
                                         ' + $('#' + type + '_select_options').val() + ' \
@@ -784,18 +783,18 @@ if (document.URL.match(/create\/add_fields/)) {
                 ';
             }
             properties = properties + ' \
-                                <div class="col-12 my-1"> \
+                                <div class="col-12"> \
                                     <input type="text" class="form-input field-data-name" id="name_input_'+ field_id + '" data-field-type="custom" data-label="' + custom_name_heading + '"> \
                                 </div> \
                             </div> \
             ';
             if (type == 'number') {
                 properties = properties + ' \
-                            <div class="row p-2 border border-secondary mb-1"> \
+                            <div class="row"> \
                                 <div class="col-12"> \
-                                    <h5 class="text-secondary mb-0">Number Type</h5> \
+                                    <h5 class="text-primary mt-4 mb-2">Number Type</h5> \
                                 </div> \
-                                <div class="col-12 my-1"> \
+                                <div class="col-12"> \
                                     <select class="form-select field-data-number-type" id="number_select_'+ field_id + '" data-field-type="number-type" data-label="Number Type"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="numeric">Numeric - 3,000</option> \
@@ -806,11 +805,11 @@ if (document.URL.match(/create\/add_fields/)) {
                 ';
             } else if (type == 'textline') {
                 properties = properties + ' \
-                            <div class="row p-2 border border-secondary mb-1"> \
+                            <div class="row"> \
                                 <div class="col-12"> \
-                                    <h5 class="text-secondary mb-0">Text Type <small>(Optional - Use to format the value)</small></h5> \
+                                    <h5 class="text-primary mt-4 mb-2">Text Type <small>(Optional - Use to format the value)</small></h5> \
                                 </div> \
-                                <div class="col-12 my-1" > \
+                                <div class="col-12"> \
                                     <select class="form-select field-data-textline-type" id="textline_select_'+ field_id + '" data-field-type="textline-type" data-label="Text Type"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="number numbers-only">Number</option> \
@@ -821,11 +820,11 @@ if (document.URL.match(/create\/add_fields/)) {
                 ';
             } else if (type == 'address') {
                 properties = properties + ' \
-                            <div class="row p-2 border border-secondary mb-1"> \
+                            <div class="row"> \
                                 <div class="col-12"> \
-                                    <h5 class="text-secondary mb-0">Address Type</h5> \
+                                    <h5 class="text-primary mt-4 mb-2">Address Type</h5> \
                                 </div> \
-                                <div class="col-12 my-1"> \
+                                <div class="col-12"> \
                                     <select class="form-select field-data-address-type" id="address_select_'+ field_id + '" data-field-type="address-type" data-label="Address Type"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="full">Full Address</option> \
@@ -840,58 +839,60 @@ if (document.URL.match(/create\/add_fields/)) {
                 ';
             } else if (type == 'radio') {
                 properties = properties + ' \
-                            <div class="row p-2 border border-secondary mb-1"> \
+                            <div class="row> \
                                 <div class="col-12"> \
-                                    <h5 class="text-secondary mb-0">Radio Input Value</h5> \
+                                    <h5 class="text-primary mt-4 mb-2">Radio Input Value</h5> \
                                 </div> \
-                                <div class="col-12 my-1"> \
+                                <div class="col-12"> \
                                     <input type="text" class="form-input field-data-radio-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
                                 </div> \
                             </div> \
                 ';
             } else if (type == 'checkbox') {
                 properties = properties + ' \
-                            <div class="row p-2 border border-secondary mb-1"> \
+                            <div class="row"> \
                                 <div class="col-12"> \
-                                    <h5 class="text-secondary mb-0">Checkbox Value</h5> \
+                                    <h5 class="text-primary mt-4 mb-2">Checkbox Value</h5> \
                                 </div> \
-                                <div class="col-12 my-1"> \
+                                <div class="col-12"> \
                                     <input type="text" class="form-input field-data-checkbox-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
                                 </div> \
                             </div> \
                 ';
             }
             properties = properties + ' \
-                            <div class="row p-2 border border-secondary mb-1"> \
+                            <div class="row"> \
                                 <div class="col-12"> \
-                                    <h5 class="text-secondary mb-0">Helper Text</h5> \
+                                    <h5 class="text-primary mt-4 mb-2">Helper Text</h5> \
                                 </div> \
-                                <div class="col-12 my-1"> \
+                                <div class="col-12"> \
                                     <input type="text" class="form-input field-data-helper-text" id="helper_text_input_'+ field_id + '" data-label="Helper Text"> \
                                 </div> \
                             </div> \
             ';
             if (type == 'address' || type == 'name') {
                 properties = properties + ' \
-                            <div class="row p-2 border border-secondary mb-1"> \
+                            <div class="row"> \
                                 <div class="col-12"> \
-                                    <h5 class="text-secondary mb-0">Inputs</h5> \
+                                    <h5 class="text-primary mt-4 mb-2">Inputs</h5> \
                                 </div> \
                                 <div class="col-12"> \
                                     <div class="container field-data-inputs-container"> \
                 ';
                 if (type == 'name') {
                     properties = properties + ' \
-                                        <div class="row p-2 border border-secondary mb-1 field-data-inputs-div"> \
-                                            <div class="col-12 mt-3"> \
-                                                <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
-                                                <div class="my-1"> \
-                                                    <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_'+input_id+'" data-default-value="" data-id="'+input_id+'" data-label="Input Name"> \
-                                                </div> \
-                                            </div> \
+                                        <div class="row field-data-inputs-div"> \
                                             <div class="col-12"> \
-                                                <div class="my-1"> \
-                                                    <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+input_id+'" data-id="'+input_id+'" data-label="Input Helper Text"> \
+                                                <div class="border border-primary p-2 mb-4"> \
+                                                    <div class="clearfix"> \
+                                                        <a href="javascript: void(0)" class="delete-input float-right mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
+                                                    </div> \
+                                                    <div class="mt-1"> \
+                                                        <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_'+input_id+'" data-default-value="" data-id="'+input_id+'" data-label="Input Name"> \
+                                                    </div> \
+                                                    <div class="mt-3 mb-2"> \
+                                                        <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+input_id+'" data-id="'+input_id+'" data-label="Input Helper Text"> \
+                                                    </div> \
                                                 </div> \
                                             </div> \
                                         </div> \
@@ -929,16 +930,18 @@ if (document.URL.match(/create\/add_fields/)) {
                         let inputs_ids = input_id + c;
 
                         properties = properties + ' \
-                                        <div class="row p-2 border border-secondary mb-1 field-data-inputs-div"> \
-                                            <div class="col-12 mt-3"> \
-                                                <a href="javascript: void(0)" class="delete-input"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
-                                                <div class="my-1"> \
-                                                    <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_'+inputs_ids+'" value="'+input_name+'" data-default-value="'+input_name+'" data-id="'+inputs_ids+'" data-label="Input Name"> \
-                                                </div> \
-                                            </div> \
+                                        <div class="row field-data-inputs-div"> \
                                             <div class="col-12"> \
-                                                <div class="my-1"> \
-                                                    <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+inputs_ids+'" value="'+input_helper_text+'" data-default-value="'+input_helper_text+'" data-id="'+inputs_ids+'" data-label="Input Helper Text"> \
+                                                <div class="border border-primary p-2 mb-4"> \
+                                                    <div class="clearfix"> \
+                                                        <a href="javascript: void(0)" class="delete-input float-right mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
+                                                    </div> \
+                                                    <div class="mt-4"> \
+                                                        <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_'+inputs_ids+'" value="'+input_name+'" data-default-value="'+input_name+'" data-id="'+inputs_ids+'" data-label="Input Name"> \
+                                                    </div> \
+                                                    <div class="mt-3 mb-2"> \
+                                                        <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+inputs_ids+'" value="'+input_helper_text+'" data-default-value="'+input_helper_text+'" data-id="'+inputs_ids+'" data-label="Input Helper Text"> \
+                                                    </div> \
                                                 </div> \
                                             </div> \
                                         </div> \
@@ -1052,7 +1055,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                         <i class="fal fa-info-circle fa-lg text-primary"></i> \
                                     </div> \
                                     <div class="modal fade edit-properties-div" id="edit_properties_modal" tabindex="-1" role="dialog" aria-labelledby="edit_properties_modal_title" aria-hidden="true"> \
-                                        <div class="modal-dialog modal-dialog-centered" role="document"> \
+                                        <div class="modal-dialog modal-md modal-dialog-centered" role="document"> \
                                             <div class="modal-content">'+ properties_html + ' \
                                             </div> \
                                         </div> \
