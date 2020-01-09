@@ -123,6 +123,7 @@ if (document.URL.match(/checklists/)) {
         }
     }
 
+
     // add/edit checklist items
     function checklist_items() {
 
@@ -142,7 +143,7 @@ if (document.URL.match(/checklists/)) {
         .then(function (response) {
             // show modal
             $('#checklist_items_modal').modal();
-            // add html from response
+            // add html form response
             $('#checklist_items_div').html(response.data);
             form_elements();
             // add title to modal
@@ -168,9 +169,13 @@ if (document.URL.match(/checklists/)) {
 
 
             // delete checklist items
-            $('.delete-checklist-item').click(delete_checklist_item);
+            $('.delete-checklist-item-button').click(delete_checklist_item);
 
-            $('.add-to-checklist').not('disabled').click(add_to_checklist);
+            $('.add-to-checklist-button').not('disabled').click(add_to_checklist);
+
+            $('.add-checklist-item-no-form-button').click(add_to_checklist_no_form);
+
+            $('#save_checklist_items_button').off('click').on('click', save_checklist_items);
 
             sortable_checklist_items();
 
@@ -178,6 +183,106 @@ if (document.URL.match(/checklists/)) {
         .catch(function (error) {
             console.log(error);
         });
+    }
+
+    function save_checklist_items() {
+        let form = $('#checklist_items_form');
+
+        let validate = validate_form(form);
+
+        if (validate == 'yes') {
+
+            if ($('.checklist-item').length > 0) {
+
+                let checklist_items = [];
+                let checklist_id = $('#checklist_id').val();
+
+                $('.checklist-item').each(function (index) {
+
+                    let checklist_item = {};
+
+                    let checklist_form_id = $(this).data('form-id');
+                    let checklist_item_name = $(this).find('.checklist-item-name').val();
+                    let checklist_item_required = $(this).find('.checklist-item-required').val();
+                    let checklist_item_group_id = $(this).find('.checklist-item-form-group-id').val();
+                    let checklist_item_order = index;
+
+                    checklist_item['checklist_id'] = checklist_id;
+                    checklist_item['checklist_form_id'] = checklist_form_id;
+                    checklist_item['checklist_item_name'] = checklist_item_name;
+                    checklist_item['checklist_item_required'] = checklist_item_required;
+                    checklist_item['checklist_item_group_id'] = checklist_item_group_id;
+                    checklist_item['checklist_item_order'] = checklist_item_order;
+
+                    checklist_items.push(checklist_item);
+
+                });
+
+                let formData = new FormData();
+                formData.append('checklist_id', checklist_id);
+                formData.append('checklist_items', JSON.stringify(checklist_items));
+                axios.post('/doc_management/add_checklist_items', formData, axios_options)
+                .then(function (response) {
+                    $('#checklist_items_modal').modal('hide');
+                    toastr['success']('Checklist Items Saved');
+                    get_checklists($('#add_item_checklist_location_id').val(), $('#add_item_checklist_type').val());
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            }
+        }
+
+    }
+
+    function add_to_checklist_no_form() {
+
+        // options are saved in a hidden div on load since they are dynamic
+        let checklist_groups_options = $('#checklist_groups_options').html();
+        // this is the helper dragged and inserted in checklist items container
+        let checklist_item = ' \
+            <li class="list-group-item checklist-item w-100" data-form-id=""> \
+                <div class="row"> \
+                    <div class="col-4"> \
+                        <div class="row"> \
+                            <div class="col-1"> \
+                                <i class="fas fa-sort fa-lg mr-1 mt-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
+                            </div> \
+                            <div class="col-11"> \
+                                <input type="text" class="form-input checklist-item-name required" value="" data-label="Form Display Name"> \
+                            </div> \
+                        </div> \
+                    </div> \
+                    <div class="col-4"></div> \
+                    <div class="col-4"> \
+                        <div class="row"> \
+                            <div class="col"> \
+                                <select class="form-select form-select-no-cancel checklist-item-required required" data-label="Required"> \
+                                    <option value=""></option> \
+                                    <option value="yes">Yes</option> \
+                                    <option value="no">No</option> \
+                                </select> \
+                            </div> \
+                            <div class="col-6"> \
+                                <select class="form-select form-select-no-cancel checklist-item-form-group-id required" data-label="Form Group"> \
+                                    <option value=""></option> \
+                                    ' + checklist_groups_options + ' \
+                                </select> \
+                            </div> \
+                            <div class="col"> \
+                                <a class="btn btn-danger delete-checklist-item-button ml-3 mt-1"><i class="fa fa-trash"></i></a> \
+                            </div> \
+                        </div> \
+                    </div> \
+                </div> \
+            </li> \
+        ';
+        $('.sortable-checklist-items').append(checklist_item);
+        $('.delete-checklist-item-button').click(delete_checklist_item);
+        form_elements();
+        forms_status();
+        sortable_checklist_items();
     }
 
     function add_to_checklist() {
@@ -200,7 +305,7 @@ if (document.URL.match(/checklists/)) {
                                 <i class="fas fa-sort fa-lg mr-1 mt-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
                             </div> \
                             <div class="col-11"> \
-                                <input type="text" class="form-input checklist-item-name required" value="'+ text + '" data-label="Form Display Name"> \
+                                <input type="text" class="form-input checklist-item-name required" value="'+ text_orig + '" data-label="Form Display Name"> \
                             </div> \
                         </div> \
                     </div> \
@@ -211,27 +316,28 @@ if (document.URL.match(/checklists/)) {
                     <div class="col-4"> \
                         <div class="row"> \
                             <div class="col"> \
-                                <select class="form-select form-select-no-search form-select-no-cancel checklist-item-required required" data-label="Required"> \
+                                <select class="form-select form-select-no-cancel checklist-item-required required" data-label="Required"> \
                                     <option value=""></option> \
                                     <option value="yes">Yes</option> \
                                     <option value="no">No</option> \
                                 </select> \
                             </div> \
                             <div class="col-6"> \
-                                <select class="form-select form-select-no-search form-select-no-cancel checklist-item-from-group required" data-label="From Group"> \
+                                <select class="form-select form-select-no-cancel checklist-item-form-group-id required" data-label="Form Group"> \
                                     <option value=""></option> \
                                     ' + checklist_groups_options + ' \
                                 </select> \
                             </div> \
                             <div class="col"> \
-                                <a class="btn btn-danger delete-checklist-item ml-3 mt-1"><i class="fa fa-trash"></i></a> \
+                                <a class="btn btn-danger delete-checklist-item-button ml-3 mt-1"><i class="fa fa-trash"></i></a> \
                             </div> \
                         </div> \
+                    </div> \
                 </div> \
             </li> \
         ';
         $('.sortable-checklist-items').append(checklist_item);
-        $('.delete-checklist-item').click(delete_checklist_item);
+        $('.delete-checklist-item-button').click(delete_checklist_item);
         form_elements();
         forms_status();
         sortable_checklist_items();
@@ -251,14 +357,14 @@ if (document.URL.match(/checklists/)) {
     function forms_status() {
 
         $('.form-name').removeClass('form-selected');
-        $('.add-to-checklist').removeClass('disabled');
+        $('.add-to-checklist-button').removeClass('disabled');
 
         let form_ids = [];
         $('.checklist-item').each(function () {
             form_ids.push($(this).data('form-id'));
         });
         $.map(form_ids, function (value, index) {
-            $('.form-name[data-form-id="' + value + '"]').addClass('form-selected').find('.add-to-checklist').addClass('disabled');
+            $('.form-name[data-form-id="' + value + '"]').addClass('form-selected').find('.add-to-checklist-button').addClass('disabled');
         });
     }
 
@@ -413,6 +519,7 @@ if (document.URL.match(/checklists/)) {
                 $('.checklist-items-container').hide();
                 $('.checklist-items-' + checklist_type).show();
                 $('#checklist_modal').modal('hide');
+                init();
             })
             .catch(function (error) {
 
@@ -438,7 +545,7 @@ if (document.URL.match(/checklists/)) {
         .then(function (response) {
             get_checklists(checklist_location_id, checklist_type);
             setTimeout(function() {
-                init();
+                c
             }, 500);
             $('#confirm_delete_checklist_modal').modal('hide');
         })

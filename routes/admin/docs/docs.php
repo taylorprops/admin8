@@ -85,6 +85,9 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     /* Reorder Checklists */
     Route::post('/doc_management/reorder_checklists', 'DocManagement\Checklists\ChecklistsController@reorder_checklists');
 
+    /* Add Checklist Items */
+    Route::post('/doc_management/add_checklist_items', 'DocManagement\Checklists\ChecklistsController@add_checklist_items');
+
 
     /**********  DATA - GET /**********/
 

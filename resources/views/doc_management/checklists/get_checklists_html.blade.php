@@ -44,6 +44,9 @@
                     </div>
                     <div class="col-6">
                         <div class="d-flex justify-content-start">
+                            <div>
+                                <span class="badge badge-primary mr-2 mt-2">{{ $checklist_property_type['checklist_count'] }}</span>
+                            </div>
                             <a href="javascript: void(0)"
                                 data-checklist-id="{{ $checklist_property_type['checklist_id'] }}"
                                 class="btn btn-sm btn-primary float-right add-items-button mx-2">
@@ -83,4 +86,6 @@
 
 @endforeach
 <input type="hidden" id="files_count" value="{{ $checklists_count }}">
+<input type="hidden" id="add_item_checklist_location_id" value="{{ $checklist_property_types[0]['checklist_location_id'] }}">
+<input type="hidden" id="add_item_checklist_type" value="{{ $checklist_property_types[0]['checklist_type'] }}">
 

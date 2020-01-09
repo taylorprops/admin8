@@ -20,6 +20,8 @@ fill_fields.js and anything else with import or const
 on upload file list show first as active in form group list to left
 
 
+agents - on doc management
+    allow them to request credit report if they have their application uploaded
 
 
 !!!!!!!!!!!!!!!!!!!

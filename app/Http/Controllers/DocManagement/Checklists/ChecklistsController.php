@@ -15,7 +15,7 @@ class ChecklistsController extends Controller
     public function get_checklist_items(Request $request) {
         $checklist_id = $request -> checklist_id;
         $checklist = Checklists::whereId($checklist_id) -> first();
-        $checklist_items = ChecklistsItems::whereId($checklist_id) -> get();
+        $checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> get();
         $form_groups = ResourceItems::where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
         $files = new Upload();
@@ -40,7 +40,8 @@ class ChecklistsController extends Controller
                     'checklist_sale_rent' => $item['checklist_sale_rent'],
                     'checklist_location_id' => $item['checklist_location_id'],
                     'checklist_state' => $item['checklist_state'],
-                    'checklist_order' => $item['checklist_order']
+                    'checklist_order' => $item['checklist_order'],
+                    'checklist_count' => $item['checklist_count']
                 ]
             ];
         });
@@ -77,7 +78,8 @@ class ChecklistsController extends Controller
                     'checklist_sale_rent' => $item['checklist_sale_rent'],
                     'checklist_location_id' => $item['checklist_location_id'],
                     'checklist_state' => $item['checklist_state'],
-                    'checklist_order' => $item['checklist_order']
+                    'checklist_order' => $item['checklist_order'],
+                    'checklist_count' => $item['checklist_count']
                 ]
             ];
         });
@@ -95,6 +97,36 @@ class ChecklistsController extends Controller
         }
 
         return view('/doc_management/checklists/get_checklists_html', compact('checklist_property_types_items', 'checklists_count'));
+
+    }
+
+    public function add_checklist_items(Request $request) {
+
+        $checklist_id = $request -> checklist_id;
+        // delete current checklist items
+        $delete_checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> delete();
+
+        $checklist_array = json_decode($request -> checklist_items);
+
+        foreach($checklist_array as $checklist_items) {
+
+            $add_checklist_items = new ChecklistsItems();
+
+            $add_checklist_items -> checklist_id = $checklist_id;
+            $add_checklist_items -> checklist_form_id = $checklist_items -> checklist_form_id ?? null;
+            $add_checklist_items -> checklist_item_name = $checklist_items -> checklist_item_name;
+            $add_checklist_items -> checklist_item_required = $checklist_items -> checklist_item_required;
+            $add_checklist_items -> checklist_item_group_id = $checklist_items -> checklist_item_group_id;
+            $add_checklist_items -> checklist_item_order = $checklist_items -> checklist_item_order;
+
+            $add_checklist_items -> save();
+
+        }
+
+        $checklist_item_count = count($checklist_array);
+        $update_count = Checklists::where('id', $checklist_id) -> first();
+        $update_count -> checklist_count = $checklist_item_count;
+        $update_count -> save();
 
     }
 
