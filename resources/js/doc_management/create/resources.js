@@ -105,13 +105,13 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
             <form> \
                 <div class="row py-3"> \
                     <div class="col-5"> \
-                        <input type="text" class="form-input edit-resource-input" value="' + resource_name + '" data-default-value="' + resource_name + '" data-label="Enter Association Name"> \
+                        <input type="text" class="custom-form-element form-input edit-resource-input" value="' + resource_name + '" data-default-value="' + resource_name + '" data-label="Enter Association Name"> \
                     </div> \
     ';
     if (resource_state != '') {
         resource_html += ' \
                     <div class="col"> \
-                        <select class="form-select edit-resource-state form-select-no-cancel form-select-no-search required" data-label="State" data-default-value="' + resource_state + '"> \
+                        <select class="custom-form-element form-select edit-resource-state form-select-no-cancel form-select-no-search required" data-label="State" data-default-value="' + resource_state + '"> \
                             <option value=""></option> \
         ';
         let states = active_states.split(',');
@@ -130,7 +130,7 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
     if (resource_association != '') {
         resource_html += ' \
                     <div class="col"> \
-                        <select class="form-select edit-resource-association form-select-no-cancel form-select-no-search required" data-label="Association" data-default-value="' + resource_association + '"> \
+                        <select class="custom-form-element form-select edit-resource-association form-select-no-cancel form-select-no-search required" data-label="Association" data-default-value="' + resource_association + '"> \
                             <option value=""></option> \
         ';
         let selected = '';
@@ -150,7 +150,7 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
     if (resource_color != '') {
         resource_html += ' \
                     <div class="col"> \
-                        <input type="color" class="form-input-color edit-resource-color colorpicker" value="' + resource_color + '" data-default-value="' + resource_color + '" data-label="Tag Color"> \
+                        <input type="color" class="custom-form-element form-input-color   edit-resource-color colorpicker" value="' + resource_color + '" data-default-value="' + resource_color + '" data-label="Tag Color"> \
                     </div> \
         ';
     }

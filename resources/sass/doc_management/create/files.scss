@@ -6,7 +6,7 @@
         overflow: auto;
     }
     .list-group-divs {
-        max-height: 66VH;
+        max-height: 67VH;
         overflow: auto;
     }
 
@@ -15,6 +15,9 @@
     }
 
     .published {
-        background: rgba($blue-med, .1);
+        background: rgba($success, .2);
+    }
+    .notpublished {
+        background: rgba($blue, .1);
     }
 }

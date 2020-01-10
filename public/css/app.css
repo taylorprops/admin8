@@ -13339,6 +13339,18 @@ a:hover {
   display: none;
 }
 
+.font-9 {
+  font-size: 0.9rem;
+}
+
+.font-8 {
+  font-size: 0.8rem;
+}
+
+.font-7 {
+  font-size: 0.7rem;
+}
+
 .modal-content {
   border: 1px solid #fff;
   border-radius: 0px;
@@ -13710,6 +13722,8 @@ a:hover {
 
 .form-ele {
   position: relative;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .form-ele .disabled {
@@ -14225,7 +14239,7 @@ a:hover {
 }
 
 .page-files .list-group-divs {
-  max-height: 66VH;
+  max-height: 67VH;
   overflow: auto;
 }
 
@@ -14234,7 +14248,11 @@ a:hover {
 }
 
 .page-files .published {
-  background: rgba(108, 178, 235, 0.1);
+  background: rgba(48, 167, 48, 0.2);
+}
+
+.page-files .notpublished {
+  background: rgba(76, 155, 219, 0.1);
 }
 
 .page-add-fields {
@@ -14673,6 +14691,12 @@ a:hover {
   overflow: auto;
 }
 
+.page-checklists {
+  /* .checklist-item {
+      height: 70px;
+  } */
+}
+
 .page-checklists .list-group-container {
   max-height: 77VH;
   overflow: auto;
@@ -14743,10 +14767,6 @@ a:hover {
 .page-checklists .form-selected {
   opacity: 0.5;
   cursor: default;
-}
-
-.page-checklists .checklist-item {
-  height: 70px;
 }
 
 .page-checklists .checklist-item-helper {

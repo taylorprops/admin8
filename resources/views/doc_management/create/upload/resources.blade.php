@@ -24,11 +24,11 @@
                             <form>
                                 <div class="row">
                                     <div class="col-5">
-                                        <input type="text" class="form-input add-resource-input" data-label="Resource Name">
+                                        <input type="text" class="custom-form-element form-input add-resource-input" data-label="Resource Name">
                                     </div>
                                     @if($resource -> resource_state != '')
                                     <div class="col">
-                                        <select class="form-select add-resource-state form-select-no-cancel form-select-no-search required" data-label="State">
+                                        <select class="custom-form-element form-select add-resource-state form-select-no-cancel form-select-no-search required" data-label="State">
                                             <option value=""></option>
                                             @foreach($states as $state)
                                             <option value="{{ $state }}">{{ $state }}</option>
@@ -38,7 +38,7 @@
                                     @endif
                                     @if($resource -> resource_association != '')
                                     <div class="col">
-                                        <select class="form-select add-resource-association form-select-no-cancel form-select-no-search required" data-label="Association">
+                                        <select class="custom-form-element form-select add-resource-association form-select-no-cancel form-select-no-search required" data-label="Association">
                                             <option value=""></option>
                                             <option value="yes">Yes</option>
                                             <option value="no">No</option>
@@ -47,12 +47,12 @@
                                     @endif
                                     @if($resource -> resource_color != '')
                                     <div class="col">
-                                        <input type="color" class="form-input-color add-resource-color colorpicker" value="#4C9BDB" data-default-value="#4C9BDB" data-label="Tag Color">
+                                        <input type="color" class="custom-form-element form-input-color   add-resource-color colorpicker" value="#4C9BDB" data-default-value="#4C9BDB" data-label="Tag Color">
                                     </div>
                                     @endif
                                     @if($resource -> resource_county_abbr != '')
                                     <div class="col">
-                                        <input type="text" class="form-input add-resource-county-abbr" value="" data-default-value="" data-label="County Abbr">
+                                        <input type="text" class="custom-form-element form-input add-resource-county-abbr" value="" data-default-value="" data-label="County Abbr">
                                     </div>
                                     @endif
                                     <div class="col">
@@ -84,11 +84,11 @@
                                     <form>
                                         <div class="row  py-3">
                                             <div class="col p-0">
-                                                <input type="text" class="form-input edit-resource-input required" value="{{ $resources_item -> resource_name }}" data-default-value="{{ $resources_item -> resource_name }}" data-label="Resource Name">
+                                                <input type="text" class="custom-form-element form-input edit-resource-input required" value="{{ $resources_item -> resource_name }}" data-default-value="{{ $resources_item -> resource_name }}" data-label="Resource Name">
                                             </div>
                                             @if($resources_item -> resource_state != '')
                                             <div class="col-2">
-                                                <select class="form-select edit-resource-state form-select-no-cancel form-select-no-search required" data-label="State" data-default-value="{{ $resources_item -> resource_state }}">
+                                                <select class="custom-form-element form-select edit-resource-state form-select-no-cancel form-select-no-search required" data-label="State" data-default-value="{{ $resources_item -> resource_state }}">
                                                     <option value=""></option>
                                                     @foreach($states as $state)
                                                     <option value="{{ $state }}" @if( $resources_item -> resource_state == $state) selected @endif>{{ $state }}</option>
@@ -98,7 +98,7 @@
                                             @endif
                                             @if($resources_item -> resource_association != '')
                                             <div class="col-2">
-                                                <select class="form-select edit-resource-association form-select-no-cancel form-select-no-search required" data-label="Association" data-default-value="{{ $resources_item -> resource_association }}">
+                                                <select class="custom-form-element form-select edit-resource-association form-select-no-cancel form-select-no-search required" data-label="Association" data-default-value="{{ $resources_item -> resource_association }}">
                                                     <option value=""></option>
                                                     <option value="yes" @if( $resources_item -> resource_association == 'yes') selected @endif>Yes</option>
                                                     <option value="no" @if( $resources_item -> resource_association == 'no') selected @endif>No</option>
@@ -107,12 +107,12 @@
                                             @endif
                                             @if($resources_item -> resource_color != '')
                                             <div class="col-3">
-                                                <input type="color" class="form-input-color edit-resource-color colorpicker" value="{{ $resources_item -> resource_color }}" data-default-value="{{ $resources_item -> resource_color }}" data-label="Tag Color">
+                                                <input type="color" class="custom-form-element form-input-color   edit-resource-color colorpicker" value="{{ $resources_item -> resource_color }}" data-default-value="{{ $resources_item -> resource_color }}" data-label="Tag Color">
                                             </div>
                                             @endif
                                             @if($resources_item -> resource_county_abbr != '')
                                             <div class="col">
-                                                <input type="text" class="form-input edit-resource-county-abbr" value="{{ $resources_item -> resource_county_abbr }}" data-default-value="{{ $resources_item -> resource_county_abbr }}" data-label="County Abbr">
+                                                <input type="text" class="custom-form-element form-input edit-resource-county-abbr" value="{{ $resources_item -> resource_county_abbr }}" data-default-value="{{ $resources_item -> resource_county_abbr }}" data-label="County Abbr">
                                             </div>
                                             @endif
                                             <div class="col-1">

@@ -26,15 +26,33 @@ if (document.URL.match(/checklists/)) {
         $('.delete-checklist-button').off('click').on('click', confirm_delete_checklist);
         // add items to checklist
         $('.add-items-button').off('click').on('click', checklist_items);
+
         // toggle listing and contract checklists
         $('.checklist-type-option').unbind('change').bind('change', function () {
-            $(this).closest('.list-div').find('.checklist-items-listing').toggle();
-            $(this).closest('.list-div').find('.checklist-items-contract').toggle();
+            checklist_type($(this));
         });
 
         sortable_checklists();
 
 
+    }
+
+    function checklist_type(ele = null) {
+        $('.checklist-items-container').hide();
+        if (ele) {
+            if (ele.val() == 'listing') {
+                $('.checklist-items-listing').show();
+            } else {
+                $('.checklist-items-contract').show();
+            }
+            $('.checklist-type-option').val(ele.val());
+            select_refresh();
+
+            let type = ele.val().charAt(0).toUpperCase() + ele.val().slice(1);
+            $('.checklist-type').text(type);
+        } else {
+
+        }
     }
 
     function sortable_checklists() {
@@ -250,7 +268,7 @@ if (document.URL.match(/checklists/)) {
                                 <i class="fas fa-sort fa-lg mr-1 mt-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
                             </div> \
                             <div class="col-11"> \
-                                <input type="text" class="form-input checklist-item-name required" value="" data-label="Form Display Name"> \
+                                <input type="text" class="custom-form-element form-input checklist-item-name required" value="" data-label="Form Display Name"> \
                             </div> \
                         </div> \
                     </div> \
@@ -258,14 +276,14 @@ if (document.URL.match(/checklists/)) {
                     <div class="col-4"> \
                         <div class="row"> \
                             <div class="col"> \
-                                <select class="form-select form-select-no-cancel checklist-item-required required" data-label="Required"> \
+                                <select class="custom-form-element form-select form-select-no-cancel checklist-item-required required" data-label="Required"> \
                                     <option value=""></option> \
                                     <option value="yes">Yes</option> \
                                     <option value="no">No</option> \
                                 </select> \
                             </div> \
                             <div class="col-6"> \
-                                <select class="form-select form-select-no-cancel checklist-item-form-group-id required" data-label="Form Group"> \
+                                <select class="custom-form-element form-select form-select-no-cancel checklist-item-form-group-id required" data-label="Form Group"> \
                                     <option value=""></option> \
                                     ' + checklist_groups_options + ' \
                                 </select> \
@@ -305,7 +323,7 @@ if (document.URL.match(/checklists/)) {
                                 <i class="fas fa-sort fa-lg mr-1 mt-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
                             </div> \
                             <div class="col-11"> \
-                                <input type="text" class="form-input checklist-item-name required" value="'+ text_orig + '" data-label="Form Display Name"> \
+                                <input type="text" class="custom-form-element form-input checklist-item-name required" value="'+ text_orig + '" data-label="Form Display Name"> \
                             </div> \
                         </div> \
                     </div> \
@@ -316,14 +334,14 @@ if (document.URL.match(/checklists/)) {
                     <div class="col-4"> \
                         <div class="row"> \
                             <div class="col"> \
-                                <select class="form-select form-select-no-cancel checklist-item-required required" data-label="Required"> \
+                                <select class="custom-form-element form-select form-select-no-cancel checklist-item-required required" data-label="Required"> \
                                     <option value=""></option> \
                                     <option value="yes">Yes</option> \
                                     <option value="no">No</option> \
                                 </select> \
                             </div> \
                             <div class="col-6"> \
-                                <select class="form-select form-select-no-cancel checklist-item-form-group-id required" data-label="Form Group"> \
+                                <select class="custom-form-element form-select form-select-no-cancel checklist-item-form-group-id required" data-label="Form Group"> \
                                     <option value=""></option> \
                                     ' + checklist_groups_options + ' \
                                 </select> \
@@ -402,7 +420,7 @@ if (document.URL.match(/checklists/)) {
 
 
         // ######### these are based on resource values and could possibly be changed by user
-        let select_checklist_type = $('#checklist_type');
+        /* let select_checklist_type = $('#checklist_type');
         let select_checklist_property_type = $('#checklist_property_type');
         let select_checklist_sale_rent = $('#checklist_sale_rent');
         let select_checklist_property_sub_type = $('#checklist_property_sub_type');
@@ -412,14 +430,17 @@ if (document.URL.match(/checklists/)) {
 
         let els = [select_checklist_type, select_checklist_property_type, select_checklist_sale_rent, select_checklist_represent, select_checklist_property_sub_type];
         els.forEach(function (el) {
-            el.change(function () {
+            el.unbind('change').bind('change', function () {
                 show_hide_options();
-
             });
-        });
+        }); */
+
+        show_hide_options();
+
+        $('#checklist_type, #checklist_property_type, #checklist_sale_rent, #checklist_property_sub_type, #checklist_represent').unbind('change').bind('change', show_hide_options);
 
 
-        $('#save_checklist_button').on('click', save_checklist);
+        $('#save_checklist_button').off('click').on('click', save_checklist);
 
     }
 
@@ -442,12 +463,12 @@ if (document.URL.match(/checklists/)) {
         // if residential show property_sub_types | but not if rental
         if (select_checklist_property_type.val() == 'Residential') {
             if (select_checklist_sale_rent.val() == 'rental') {
-                select_checklist_property_sub_type.val('').addClass('hidden').removeClass('required').closest('.col-12').removeClass('py-3');
+                select_checklist_property_sub_type.val('').addClass('hidden').removeClass('required');
             } else {
-                select_checklist_property_sub_type.removeClass('hidden').addClass('required').closest('.col-12').addClass('py-3');
+                select_checklist_property_sub_type.removeClass('hidden').addClass('required');
             }
         } else {
-            select_checklist_property_sub_type.val('').addClass('hidden').removeClass('required').closest('.col-12').removeClass('py-3');
+            select_checklist_property_sub_type.val('').addClass('hidden').removeClass('required');
         }
         // if fsbo you must be representing the buyer, must be a contract and for sale
         if (select_checklist_property_sub_type.val() == 'For Sale By Owner') {
@@ -458,8 +479,6 @@ if (document.URL.match(/checklists/)) {
         if (select_checklist_represent.val() == 'buyer') {
             select_checklist_type.val('contract');
         }
-
-
 
         select_refresh();
 
@@ -519,6 +538,9 @@ if (document.URL.match(/checklists/)) {
                 $('.checklist-items-container').hide();
                 $('.checklist-items-' + checklist_type).show();
                 $('#checklist_modal').modal('hide');
+                // make sure correct checklist type is shown
+                $('.checklist-type-option').val(checklist_type);
+                select_refresh();
                 init();
             })
             .catch(function (error) {
@@ -545,7 +567,7 @@ if (document.URL.match(/checklists/)) {
         .then(function (response) {
             get_checklists(checklist_location_id, checklist_type);
             setTimeout(function() {
-                c
+                init();
             }, 500);
             $('#confirm_delete_checklist_modal').modal('hide');
         })

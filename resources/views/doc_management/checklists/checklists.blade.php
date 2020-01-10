@@ -36,15 +36,21 @@
 
                         <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $location -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $location -> resource_id }}">
 
-                            <div class="d-flex justify-content-between mb-3">
+                            <div class="d-flex justify-content-between">
                                 <div class="h3 text-primary">{{ $location -> resource_name }} @if($location -> resource_name != $location -> resource_state) | {{ $location -> resource_state }} @endif</div>
                                 <div class="d-flex justify-content-end">
-                                    <select class="form-select form-select-no-search form-select-no-cancel checklist-type-option" data-label="Checklist Type">
-                                        <option value="listing">Listing</option>
-                                        <option value="contract">Contract</option>
-                                    </select>
-                                    <a href="javascript: void(0)" class="btn btn-primary float-right ml-5 duplicate-checklist-button"><i class="fad fa-clone mr-2"></i> Copy Checklist</a>
-                                    <a href="javascript: void(0)" data-location-id="{{ $location -> resource_id }}" data-state="{{ $location -> resource_state }}" data-form-type="add" class="btn btn-success float-right add-checklist-button ml-5"><i class="fal fa-plus mr-2"></i> Add Checklist</a>
+                                    <div>
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel checklist-type-option" data-label="Checklist Type">
+                                            <option value="listing">Listing</option>
+                                            <option value="contract">Contract</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <a href="javascript: void(0)" class="btn btn-primary float-right ml-5 duplicate-checklist-button"><i class="fad fa-clone mr-2"></i> Copy Checklist</a>
+                                    </div>
+                                    <div>
+                                        <a href="javascript: void(0)" data-location-id="{{ $location -> resource_id }}" data-state="{{ $location -> resource_state }}" data-form-type="add" class="btn btn-success float-right add-checklist-button ml-5"><i class="fal fa-plus mr-2"></i> Add Checklist</a>
+                                    </div>
                                 </div>
                             </div>
 
@@ -174,23 +180,23 @@
                         @csrf
                         <div class="container">
                             <div class="row">
-                                <div class="col-12 py-3">
-                                    <select id="checklist_location_id" class="form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Location">
+                                <div class="col-12">
+                                    <select id="checklist_location_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Location">
                                         <option value=""></option>
                                         @foreach($locations as $location)
                                         <option value="{{ $location -> resource_id }}">@if ($location -> resource_state != $location -> resource_name){{ $location -> resource_state }}  | @endif{{ $location -> resource_name }} </option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-12 py-3">
-                                    <select id="checklist_sale_rent" class="form-select form-select-no-cancel form-select-no-search required" data-label="For Sale/Rental">
+                                <div class="col-12">
+                                    <select id="checklist_sale_rent" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="For Sale/Rental">
                                         <option value=""></option>
                                         <option value="sale">For Sale</option>
                                         <option value="rental">Rental</option>
                                     </select>
                                 </div>
-                                <div class="col-12 py-3">
-                                    <select id="checklist_property_type" class="form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Property Type">
+                                <div class="col-12">
+                                    <select id="checklist_property_type" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Property Type">
                                         <option value=""></option>
                                         @foreach($property_types as $property_type)
                                         <option value="{{ $property_type -> resource_name }}">{{ $property_type -> resource_name }}</option>
@@ -198,22 +204,22 @@
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <select id="checklist_property_sub_type" class="form-select form-select-no-cancel form-select-no-search hidden required" data-label="Checklist Property Sub Type">
+                                    <select id="checklist_property_sub_type" class="custom-form-element form-select form-select-no-cancel form-select-no-search hidden required" data-label="Checklist Property Sub Type">
                                         <option value=""></option>
                                         @foreach($property_sub_types as $property_sub_type)
                                         <option value="{{ $property_sub_type -> resource_name }}">{{ $property_sub_type -> resource_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-12 py-3">
-                                    <select id="checklist_type" class="form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Type">
+                                <div class="col-12">
+                                    <select id="checklist_type" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Type">
                                         <option value=""></option>
                                         <option value="listing">Listing</option>
                                         <option value="contract">Contract/Lease</option>
                                     </select>
                                 </div>
-                                <div class="col-12 py-3">
-                                    <select id="checklist_represent" class="form-select form-select-no-cancel form-select-no-search required" data-label="Represent">
+                                <div class="col-12">
+                                    <select id="checklist_represent" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Represent">
                                         <option value=""></option>
                                         <option value="seller">Seller/Owner</option>
                                         <option value="buyer">Buyer/Renter</option>

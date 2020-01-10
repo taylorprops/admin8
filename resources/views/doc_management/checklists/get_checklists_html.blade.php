@@ -1,3 +1,4 @@
+<div class="h3 text-secondary mb-4"><span class="checklist-type">Listing</span> Checklists</div>
 @foreach($checklist_property_types_items as $checklist_property_types)
 
 <div class="property-type-div mb-4 mt-1 pb-3">
@@ -45,7 +46,7 @@
                     <div class="col-6">
                         <div class="d-flex justify-content-start">
                             <div>
-                                <span class="chip bg-primary text-white">{{ $checklist_property_type['checklist_count'] }}</span>
+                                <span class="chip bg-primary text-white">{{ $checklist_property_type['checklist_count'] ?? 0 }}</span>
                             </div>
                             <div>
                                 <a href="javascript: void(0)"
@@ -92,6 +93,5 @@
 
 @endforeach
 <input type="hidden" id="files_count" value="{{ $checklists_count }}">
-<input type="hidden" id="add_item_checklist_location_id" value="{{ $checklist_property_types[0]['checklist_location_id'] }}">
-<input type="hidden" id="add_item_checklist_type" value="{{ $checklist_property_types[0]['checklist_type'] }}">
+
 

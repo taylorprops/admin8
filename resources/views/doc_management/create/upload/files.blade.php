@@ -33,15 +33,19 @@
 
                 <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $resource -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $resource -> resource_id }}">
 
-                    <div class="d-flex justify-content-between mt-3 mb-3">
+                    <div class="d-flex justify-content-between">
                         <div class="h3 text-primary">{{ $resource -> resource_name }}</div>
                         <div class="d-flex justify-content-end">
-                            <select class="form-select form-select-no-search form-select-no-search uploads-filter-options" data-label="Filter Results">
-                                <option value="all">Show All</option>
-                                <option value="published">Show Published</option>
-                                <option value="notpublished">Show Unpublished</option>
-                            </select>
-                            <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success upload-file-button ml-5"><i class="fal fa-plus mr-2"></i> Add Form</a>
+                            <div>
+                                <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-options" data-label="Filter Results">
+                                    <option value="all">Show All</option>
+                                    <option value="published">Show Published</option>
+                                    <option value="notpublished">Show Unpublished</option>
+                                </select>
+                            </div>
+                            <div>
+                                <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success upload-file-button ml-5"><i class="fal fa-plus mr-2"></i> Add Form</a>
+                            </div>
                         </div>
                     </div>
 
@@ -137,13 +141,13 @@
                     @csrf
                     <div class="container">
                         <div class="row">
-                            <div class="col-12 my-3">
-                                <input type="text" class="form-input required" name="edit_file_name_display" id="edit_file_name_display" data-label="Form Name">
+                            <div class="col-12">
+                                <input type="text" class="custom-form-element form-input required" name="edit_file_name_display" id="edit_file_name_display" data-label="Form Name">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 my-3">
-                                <select name="edit_sale_type[]" id="edit_sale_type" class="form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
+                            <div class="col-12">
+                                <select name="edit_sale_type[]" id="edit_sale_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
                                     <option value=""></option>
                                     @foreach($resources as $resource)
                                     @if($resource -> resource_type == 'form_tags')
@@ -154,8 +158,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 my-3">
-                                <select name="edit_form_group_id" id="edit_form_group_id" class="form-select form-select-no-cancel required" data-label="Select From Group">
+                            <div class="col-12">
+                                <select name="edit_form_group_id" id="edit_form_group_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Select From Group">
                                     <option value=""></option>
                                     @foreach($resources as $resource)
                                     @if($resource -> resource_type == 'form_groups')
@@ -166,8 +170,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 my-3">
-                                <select name="edit_state" id="edit_state" class="form-select form-select-no-cancel required" data-label="Select State">
+                            <div class="col-12">
+                                <select name="edit_state" id="edit_state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
                                     <option value=""></option>
                                     @foreach($states as $state)
                                     <option value="{{ $state }}">{{ $state }}</option>
@@ -205,18 +209,18 @@
                     @csrf
                     <div class="container">
                         <div class="row">
-                            <div class="col-12 my-3">
-                                <input type="file" class="form-input-file required" name="file_upload" id="file_upload" data-label="Select File">
+                            <div class="col-12">
+                                <input type="file" class="custom-form-element form-input-file  required" name="file_upload" id="file_upload" data-label="Select File">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 my-3">
-                                <input type="text" class="form-input required" name="file_name_display" id="file_name_display" data-label="Form Name">
+                            <div class="col-12">
+                                <input type="text" class="custom-form-element form-input required" name="file_name_display" id="file_name_display" data-label="Form Name">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 my-3">
-                                <select name="sale_type[]" id="sale_type" class="form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
+                            <div class="col-12">
+                                <select name="sale_type[]" id="sale_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
                                     <option value=""></option>
                                     @foreach($resources as $resource)
                                     @if($resource -> resource_type == 'form_tags')
@@ -227,8 +231,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 my-3">
-                                <select name="form_group_id" id="form_group_id" class="form-select form-select-no-cancel required" data-label="Select Form Group">
+                            <div class="col-12">
+                                <select name="form_group_id" id="form_group_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Group">
                                     <option value=""></option>
                                     @foreach($resources as $resource)
                                     @if($resource -> resource_type == 'form_groups')
@@ -239,8 +243,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 my-3">
-                                <select name="state" id="state" class="form-select form-select-no-cancel required" data-label="Select State">
+                            <div class="col-12">
+                                <select name="state" id="state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
                                     <option value=""></option>
                                     @foreach($states as $state)
                                     <option value="{{ $state }}">{{ $state }}</option>

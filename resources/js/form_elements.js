@@ -1,4 +1,4 @@
-window.form_elements = function() {
+window.form_elements = function () {
 
 
     /*
@@ -68,6 +68,7 @@ window.form_elements = function() {
                 // select label is added in select_html
                 // file label is added in file_html
                 let label = $(this).data('label');
+
                 if (form_type == 'form-input' || form_type == 'form-textarea') {
 
                     element.wrap('<div class="form-ele"></div>').parent('.form-ele').append('<label for="' + id + '" class="' + form_type + '-label ' + active_label + '">' + label + '</label>');
@@ -78,10 +79,6 @@ window.form_elements = function() {
                         $('.form-select-search-input').val('').trigger('change');
                     });
 
-                } else if (form_type == 'form-select') {
-
-                    element.wrap('<div class="form-ele"></div>');
-
                 } else if (form_type == 'form-input-file') {
 
                     let clone = element.wrap('<div></div>').parent().html();
@@ -91,9 +88,9 @@ window.form_elements = function() {
                     <div class="form-ele md-form my-0 mt-2"> \
                         <div class="file-field"> \
                             <i class="fad fa-upload mt-3 float-left"></i> \
-                            '+clone+' \
+                            '+ clone + ' \
                             <div class="file-path-wrapper"> \
-                                <input class="file-path" type="text" placeholder="'+label+'"> \
+                                <input class="file-path" type="text" placeholder="'+ label + '"> \
                             </div> \
                         </div> \
                     </div> \
@@ -120,8 +117,8 @@ window.form_elements = function() {
                     let color_html = ' \
                     <div class="form-ele"> \
                         <div class="colorpicker-div d-flex justify-content-between"> \
-                            <div class="colorpicker-text">'+label+'</div> \
-                            <label class="colorpicker-label"><input type="color" class="'+classname+' colorpicker" value="'+color+'" data-default-value="'+color+'"></label> \
+                            <div class="colorpicker-text">'+ label + '</div> \
+                            <label class="colorpicker-label"><input type="color" class="'+ classname + ' colorpicker" value="' + color + '" data-default-value="' + color + '"></label> \
                         </div> \
                     </div> \
                     ';
@@ -130,11 +127,9 @@ window.form_elements = function() {
                     element.remove();
                     parent.html(color_html);
 
-                }
+                } else if (form_type == 'form-select') {
 
-
-                if (form_type == 'form-select') {
-
+                    element.wrap('<div class="form-ele"></div>');
                     // get wrapper to append to
                     let wrapper = element.parent();
 
@@ -156,7 +151,7 @@ window.form_elements = function() {
                     <div class=form-select-wrapper"> \
                         ' + clear_value + ' \
                         <label class="' + form_type + '-label" for="select_value_' + select_input_id + '">' + label + '</label> \
-                        <input type="text" class="form-select-value-input '+disabled+'" id="select_value_'+ select_input_id + '" readonly '+disabled+'> \
+                        <input type="text" class="form-select-value-input '+ disabled + '" id="select_value_' + select_input_id + '" readonly ' + disabled + '> \
                         <div class="form-select-dropdown z-depth-1"> \
                             <div class="form-select-search-div"> \
                                 <div class="w-100 d-flex justify-content-center"> \
@@ -322,7 +317,7 @@ window.form_elements = function() {
 
                     });
 
-                } // end if (form_type == 'form-select') {
+                } // end else if (form_type == 'form-select') {
 
             } // end if (!element.parent().hasClass('form-ele')) {
 
@@ -355,8 +350,30 @@ window.form_elements = function() {
 
     });
 
-
 }
+
+
+
+
+/* setTimeout(function() {
+    let mut = new MutationObserver(function (mutations) {
+        console.log(mutations);
+        mutations.forEach(function(mutation) {
+            console.log(mutation);
+        });
+    });
+    mut.observe(document.getElementsByClassName('custom-form-element'), {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+}, 1000); */
+
+setInterval(function () {
+    $('.form-ele').removeClass('hidden');
+    $('.custom-form-element.hidden').each(function () {
+        $(this).closest('.form-ele').addClass('hidden');
+    });
+}, 500);
 
 function show_dropdown(input) {
     // prevent labels from becoming active until after a selection is made
@@ -371,25 +388,13 @@ function show_dropdown(input) {
         input.prev('label').addClass('active');
     }
 
-    $(document).mouseup(function(e) {
+    $(document).mouseup(function (e) {
         var container = $('.form-select-dropdown');
         if (!container.is(e.target) && container.has(e.target).length === 0) {
             container.hide();
         }
     });
 }
-
-setInterval(function () {
-    $('.form-input', '.form-textarea', '.form-select', '.form-checkbox', '.form-radio', '.form-input-file', '.form-input-color').each(function () {
-        if ($(this).hasClass('hidden')) {
-            $(this).closest('.form-ele').addClass('hidden');
-        } else {
-            $(this).closest('.form-ele').removeClass('hidden');
-        }
-    });
-}, 1000);
-
-
 
 function dropdown_search(wrapper, input, element, multiple) {
     let search_input = wrapper.find('.form-select-search-input');
@@ -537,8 +542,6 @@ window.validate_form = function (form) {
 
 }
 
-
-
 function shorten_value(input, value, multiple) {
     if (value != '') {
         // shorten value if bigger than input
@@ -554,8 +557,7 @@ function shorten_value(input, value, multiple) {
     }
 }
 
-
-window.select_refresh = function() {
+window.select_refresh = function () {
     $('.form-select').each(function () {
         let select = $(this);
         let wrapper = select.closest('.form-ele');
@@ -603,9 +605,12 @@ function set_multiple_select_value(wrapper, input) {
 
 }
 
-window.reset_select = function() {
+window.reset_select = function () {
     $('.form-select-dropdown').fadeOut();
     $('.form-select-search-input').val('').trigger('change');
     $('.form-select-li').removeClass('matched').show();
     $('.form-select-value-input').trigger('change');
 }
+
+
+

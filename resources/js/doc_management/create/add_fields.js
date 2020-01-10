@@ -730,10 +730,10 @@ if (document.URL.match(/create\/add_fields/)) {
                             <a href="javascript: void(0)" class="delete-input float-right mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
                         </div> \
                         <div class="mt-1"> \
-                            <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Name"> \
+                            <input type="text" class="custom-form-element form-input field-data-input" id="input_name_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Name"> \
                         </div> \
                         <div class="mt-3 mb-2"> \
-                            <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Helper Text"> \
+                            <input type="text" class="custom-form-element form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Helper Text"> \
                         </div> \
                     </div> \
                 </div> \
@@ -774,7 +774,7 @@ if (document.URL.match(/create\/add_fields/)) {
             if (type != 'checkbox' && type != 'radio') {
                 properties = properties + ' \
                                 <div class="col-12"> \
-                                    <select class="form-select field-data-name" id="name_select_'+ field_id + '" data-field-type="common" data-label="Select Common Name (Shared)"> \
+                                    <select class="custom-form-element form-select field-data-name" id="name_select_'+ field_id + '" data-field-type="common" data-label="Select Common Name (Shared)"> \
                                         <option value="">&nbsp;</option> \
                                         ' + $('#' + type + '_select_options').val() + ' \
                                     </select> \
@@ -784,7 +784,7 @@ if (document.URL.match(/create\/add_fields/)) {
             }
             properties = properties + ' \
                                 <div class="col-12"> \
-                                    <input type="text" class="form-input field-data-name" id="name_input_'+ field_id + '" data-field-type="custom" data-label="' + custom_name_heading + '"> \
+                                    <input type="text" class="custom-form-element form-input field-data-name" id="name_input_'+ field_id + '" data-field-type="custom" data-label="' + custom_name_heading + '"> \
                                 </div> \
                             </div> \
             ';
@@ -795,7 +795,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-primary mt-4 mb-2">Number Type</h5> \
                                 </div> \
                                 <div class="col-12"> \
-                                    <select class="form-select field-data-number-type" id="number_select_'+ field_id + '" data-field-type="number-type" data-label="Number Type"> \
+                                    <select class="custom-form-element form-select field-data-number-type" id="number_select_'+ field_id + '" data-field-type="number-type" data-label="Number Type"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="numeric">Numeric - 3,000</option> \
                                         <option value="written">Written - Three Thousand</option> \
@@ -810,7 +810,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-primary mt-4 mb-2">Text Type <small>(Optional - Use to format the value)</small></h5> \
                                 </div> \
                                 <div class="col-12"> \
-                                    <select class="form-select field-data-textline-type" id="textline_select_'+ field_id + '" data-field-type="textline-type" data-label="Text Type"> \
+                                    <select class="custom-form-element form-select field-data-textline-type" id="textline_select_'+ field_id + '" data-field-type="textline-type" data-label="Text Type"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="number numbers-only">Number</option> \
                                         <option value="phone numbers-only">Phone Number</option> \
@@ -825,7 +825,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-primary mt-4 mb-2">Address Type</h5> \
                                 </div> \
                                 <div class="col-12"> \
-                                    <select class="form-select field-data-address-type" id="address_select_'+ field_id + '" data-field-type="address-type" data-label="Address Type"> \
+                                    <select class="custom-form-element form-select field-data-address-type" id="address_select_'+ field_id + '" data-field-type="address-type" data-label="Address Type"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="full">Full Address</option> \
                                         <option value="street">Street Address</option> \
@@ -844,7 +844,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-primary mt-4 mb-2">Radio Input Value</h5> \
                                 </div> \
                                 <div class="col-12"> \
-                                    <input type="text" class="form-input field-data-radio-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
+                                    <input type="text" class="custom-form-element form-input field-data-radio-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
                                 </div> \
                             </div> \
                 ';
@@ -855,7 +855,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-primary mt-4 mb-2">Checkbox Value</h5> \
                                 </div> \
                                 <div class="col-12"> \
-                                    <input type="text" class="form-input field-data-checkbox-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
+                                    <input type="text" class="custom-form-element form-input field-data-checkbox-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
                                 </div> \
                             </div> \
                 ';
@@ -866,7 +866,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                     <h5 class="text-primary mt-4 mb-2">Helper Text</h5> \
                                 </div> \
                                 <div class="col-12"> \
-                                    <input type="text" class="form-input field-data-helper-text" id="helper_text_input_'+ field_id + '" data-label="Helper Text"> \
+                                    <input type="text" class="custom-form-element form-input field-data-helper-text" id="helper_text_input_'+ field_id + '" data-label="Helper Text"> \
                                 </div> \
                             </div> \
             ';
@@ -888,10 +888,10 @@ if (document.URL.match(/create\/add_fields/)) {
                                                         <a href="javascript: void(0)" class="delete-input float-right mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
                                                     </div> \
                                                     <div class="mt-1"> \
-                                                        <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_'+input_id+'" data-default-value="" data-id="'+input_id+'" data-label="Input Name"> \
+                                                        <input type="text" class="custom-form-element form-input field-data-input" id="input_name_'+ field_id + '_'+input_id+'" data-default-value="" data-id="'+input_id+'" data-label="Input Name"> \
                                                     </div> \
                                                     <div class="mt-3 mb-2"> \
-                                                        <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+input_id+'" data-id="'+input_id+'" data-label="Input Helper Text"> \
+                                                        <input type="text" class="custom-form-element form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+input_id+'" data-id="'+input_id+'" data-label="Input Helper Text"> \
                                                     </div> \
                                                 </div> \
                                             </div> \
@@ -937,10 +937,10 @@ if (document.URL.match(/create\/add_fields/)) {
                                                         <a href="javascript: void(0)" class="delete-input float-right mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
                                                     </div> \
                                                     <div class="mt-4"> \
-                                                        <input type="text" class="form-input field-data-input" id="input_name_'+ field_id + '_'+inputs_ids+'" value="'+input_name+'" data-default-value="'+input_name+'" data-id="'+inputs_ids+'" data-label="Input Name"> \
+                                                        <input type="text" class="custom-form-element form-input field-data-input" id="input_name_'+ field_id + '_'+inputs_ids+'" value="'+input_name+'" data-default-value="'+input_name+'" data-id="'+inputs_ids+'" data-label="Input Name"> \
                                                     </div> \
                                                     <div class="mt-3 mb-2"> \
-                                                        <input type="text" class="form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+inputs_ids+'" value="'+input_helper_text+'" data-default-value="'+input_helper_text+'" data-id="'+inputs_ids+'" data-label="Input Helper Text"> \
+                                                        <input type="text" class="custom-form-element form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+inputs_ids+'" value="'+input_helper_text+'" data-default-value="'+input_helper_text+'" data-id="'+inputs_ids+'" data-label="Input Helper Text"> \
                                                     </div> \
                                                 </div> \
                                             </div> \

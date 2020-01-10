@@ -122,7 +122,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                         <div class="row p-3 mb-1">
                             <div class="col-12">
                                 <div class="my-3">
-                                    <textarea class="form-textarea fillable-field-input {{ $textline_class }}" id="{{ $input_id }}" data-label="{{ $field['field_name'] }}" rows="3" data-default-value="{{ $value }}">{{  $value }}</textarea>
+                                    <textarea class="custom-form-element form-textarea fillable-field-input {{ $textline_class }}" id="{{ $input_id }}" data-label="{{ $field['field_name'] }}" rows="3" data-default-value="{{ $value }}">{{  $value }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -142,7 +142,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                             <div class="col-12">
                                 <div class=" my-3">
 
-                                    <input type="text" class="form-input fillable-field-input" id="{{ $input_id }}" data-label="{{ $input['input_name'] }}" data-type="{{ $input['input_name'] }}" data-address-type="{{ $address_type }}" value="{{ $value }}" data-default-value="{{ $value }}">
+                                    <input type="text" class="custom-form-element form-input fillable-field-input" id="{{ $input_id }}" data-label="{{ $input['input_name'] }}" data-type="{{ $input['input_name'] }}" data-address-type="{{ $address_type }}" value="{{ $value }}" data-default-value="{{ $value }}">
 
                                 </div>
                             </div>
@@ -163,7 +163,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                             <div class="col-12">
 
                                 <div class="my-1">
-                                    <input type="text" class="form-input numbers-only fillable-field-input" id="{{ $input_id }}" data-label="{{ $field['field_name'] }}" value="{{ $value }}">
+                                    <input type="text" class="custom-form-element form-input numbers-only fillable-field-input" id="{{ $input_id }}" data-label="{{ $field['field_name'] }}" value="{{ $value }}">
                                 </div>
                             </div>
                         </div>
