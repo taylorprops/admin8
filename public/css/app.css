@@ -13311,6 +13311,7 @@ a:hover {
 .btn,
 .btn:hover {
   border: 1px transparent;
+  border-radius: 0px;
 }
 
 .btn.btn-sm,
@@ -13351,6 +13352,12 @@ a:hover {
 
 .card-header:first-child {
   border-radius: 0px !important;
+}
+
+.chip {
+  height: 30px;
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
 }
 
 /*

@@ -43,19 +43,19 @@ if (document.URL.match(/create\/upload\/files/)) {
                 $('#list_div_' + form_group_id + '_files').html($(response.data));
                 $('#list_div_' + form_group_id + '_file_count').text($('#files_count').val());
 
-                $('.edit-upload').not('clickready').off('click').on('click', function () {
+                $('.edit-upload').not('.clickready').off('click').on('click', function () {
                     edit_upload($(this));
                 }).addClass('clickready');
 
-                $('.duplicate-upload').not('clickready').off('click').on('click', function () {
+                $('.duplicate-upload').not('.clickready').off('click').on('click', function () {
                     duplicate_upload($(this));
                 }).addClass('clickready');
 
-                $('.publish-upload').not('clickready').off('click').on('click', function () {
+                $('.publish-upload').not('.clickready').off('click').on('click', function () {
                     confirm_publish_upload($(this));
                 }).addClass('clickready');
 
-                $('.delete-upload').not('clickready').off('click').on('click', function () {
+                $('.delete-upload').not('.clickready').off('click').on('click', function () {
                     confirm_delete_upload($(this));
                 }).addClass('clickready');
             })
@@ -110,7 +110,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         $('#confirm_publish_modal').modal();
 
-        $('#confirm_publish').click(function () {
+        $('#confirm_publish').off('click').on('click', function () {
             publish_upload(upload_id, form_group_id, state);
         });
     }

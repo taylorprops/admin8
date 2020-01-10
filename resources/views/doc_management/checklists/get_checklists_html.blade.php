@@ -45,35 +45,41 @@
                     <div class="col-6">
                         <div class="d-flex justify-content-start">
                             <div>
-                                <span class="badge badge-primary mr-2 mt-2">{{ $checklist_property_type['checklist_count'] }}</span>
+                                <span class="chip bg-primary text-white">{{ $checklist_property_type['checklist_count'] }}</span>
                             </div>
-                            <a href="javascript: void(0)"
-                                data-checklist-id="{{ $checklist_property_type['checklist_id'] }}"
-                                class="btn btn-sm btn-primary float-right add-items-button mx-2">
-                                <i class="fal fa-plus mr-2"></i>
-                                Add Items
-                            </a>
-                            <a href="javascript: void(0)"
-                                data-checklist-id="{{ $checklist_property_type['checklist_id'] }}"
-                                data-location-id="{{ $checklist_property_type['checklist_location_id'] }}"
-                                data-state="{{ $checklist_property_type['checklist_state'] }}"
-                                data-property-type="{{ $checklist_property_type['checklist_property_type'] }}"
-                                data-sale-rent="{{ $checklist_property_type['checklist_sale_rent'] }}"
-                                data-represent="{{ $checklist_property_type['checklist_represent'] }}"
-                                data-property-sub-type="{{ $checklist_property_type['checklist_property_sub_type'] }}"
-                                data-form-type="edit"
-                                class="btn btn-sm btn-primary float-right edit-checklist-button mx-2">
-                                <i class="fad fa-edit mr-2"></i>
-                                Edit
-                            </a>
-                            <a href="javascript: void(0)"
-                                data-checklist-id="{{ $checklist_property_type['checklist_id'] }}"
-                                data-checklist-location-id="{{ $checklist_property_type['checklist_location_id'] }}"
-                                data-checklist-type="{{ $checklist_property_type['checklist_type'] }}"
-                                class="btn btn-sm btn-danger float-right delete-checklist-button mx-2">
-                                <i class="fad fa-trash mr-2"></i>
-                                Delete
-                            </a>
+                            <div>
+                                <a href="javascript: void(0)"
+                                    data-checklist-id="{{ $checklist_property_type['checklist_id'] }}"
+                                    class="btn btn-sm btn-primary float-right add-items-button mx-2">
+                                    <i class="fal fa-plus mr-2"></i>
+                                    Add Items
+                                </a>
+                            </div>
+                            <div>
+                                <a href="javascript: void(0)"
+                                    data-checklist-id="{{ $checklist_property_type['checklist_id'] }}"
+                                    data-location-id="{{ $checklist_property_type['checklist_location_id'] }}"
+                                    data-state="{{ $checklist_property_type['checklist_state'] }}"
+                                    data-property-type="{{ $checklist_property_type['checklist_property_type'] }}"
+                                    data-sale-rent="{{ $checklist_property_type['checklist_sale_rent'] }}"
+                                    data-represent="{{ $checklist_property_type['checklist_represent'] }}"
+                                    data-property-sub-type="{{ $checklist_property_type['checklist_property_sub_type'] }}"
+                                    data-form-type="edit"
+                                    class="btn btn-sm btn-primary float-right edit-checklist-button mx-2">
+                                    <i class="fad fa-edit mr-2"></i>
+                                    Edit
+                                </a>
+                            </div>
+                            <div>
+                                <a href="javascript: void(0)"
+                                    data-checklist-id="{{ $checklist_property_type['checklist_id'] }}"
+                                    data-checklist-location-id="{{ $checklist_property_type['checklist_location_id'] }}"
+                                    data-checklist-type="{{ $checklist_property_type['checklist_type'] }}"
+                                    class="btn btn-sm btn-danger float-right delete-checklist-button mx-2">
+                                    <i class="fad fa-trash mr-2"></i>
+                                    Delete
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

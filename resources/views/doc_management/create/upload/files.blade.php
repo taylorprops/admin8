@@ -277,7 +277,7 @@
                 <div class="alert alert-danger"><i class="fad fa-exclamation-triangle mr-2 text-danger"></i> Once published you can no longer add or edit fields</div>
             </div>
             <div class="modal-footer d-flex justify-content-around">
-                <a class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
                 <a class="btn btn-success" id="confirm_publish"><i class="fad fa-check mr-2"></i> Confirm</a>
             </div>
         </div>
@@ -301,7 +301,7 @@
                 Are you sure you want to permanently delete this form?
             </div>
             <div class="modal-footer d-flex justify-content-around">
-                <a class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
                 <a class="btn btn-success" id="confirm_delete"><i class="fad fa-check mr-2"></i> Confirm</a>
             </div>
         </div>
