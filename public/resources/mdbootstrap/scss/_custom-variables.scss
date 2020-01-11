@@ -14,8 +14,8 @@ $blue-light: #ebf1f7;
 $indigo: #6574cd;
 $purple: #9561e2;
 $pink: #f66d9b;
-$red: #861e1a;
-$orange: #c75748;
+$red: #b64341;
+$orange: #c0703b;
 $orange-light: #f8e5e3;
 $orange-dark: #943d31;
 $yellow: #ffed4a;
@@ -88,5 +88,9 @@ a.text-green:hover {
 
 .btn-primary {
     background: $blue !important;
+}
+
+.btn-danger {
+    background: $danger-color !important;
 }
 

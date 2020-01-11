@@ -46,7 +46,7 @@
                     <div class="col-6">
                         <div class="d-flex justify-content-start">
                             <div>
-                                <span class="chip bg-primary text-white">{{ $checklist_property_type['checklist_count'] ?? 0 }}</span>
+                                <span class="chip bg-primary-light text-primary-dark">{{ $checklist_property_type['checklist_count'] ?? 0 }}</span>
                             </div>
                             <div>
                                 <a href="javascript: void(0)"

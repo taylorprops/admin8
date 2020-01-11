@@ -20,7 +20,7 @@ class ChecklistsController extends Controller
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
         $files = new Upload();
         $resource_items = new ResourceItems();
-        return view('/doc_management/checklists/add_checklist_items_html', compact('checklist', 'checklist_items', 'form_groups', 'files', 'resource_items', 'checklist_groups'));
+        return view('/doc_management/checklists/get_add_checklist_items_html', compact('checklist', 'checklist_items', 'form_groups', 'files', 'resource_items', 'checklist_groups'));
     }
 
     public function checklists() {
