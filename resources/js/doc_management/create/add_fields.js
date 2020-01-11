@@ -196,7 +196,7 @@ if (document.URL.match(/create\/add_fields/)) {
             });
             //select_dropdown.refresh();
             $('.field-div').removeClass('active');
-            $('.focused, .field-popup, .mini-slider').hide();
+            $('.focused, .mini-slider-div').hide();
 
         }
 
@@ -225,15 +225,6 @@ if (document.URL.match(/create\/add_fields/)) {
                 aspect_ratio = '4 / 4';
             }
 
-            // let h = ele.height();
-            // let w = ele.width();
-            // let h_perc = pix_2_perc_hw('height', h, container);
-            // let w_perc = pix_2_perc_hw('width', w, container);
-            // let y = ele.position().top;
-            // let x = ele.position().left;
-            // let x_perc = pix_2_perc_xy('x', x, container);
-            // let y_perc = pix_2_perc_xy('y', y,container);
-
             ele.click(function (e) {
 
                 if (e.target === this) {
@@ -255,12 +246,6 @@ if (document.URL.match(/create\/add_fields/)) {
                     aspectRatio: aspect_ratio,
                     stop: function (e, ui) {
                         let resized_ele = $(e.target);
-                        // let resized_x = ui.position.left;
-                        // let resized_y = ui.position.top;
-                        // let resized_h = resized_ele.height();
-                        // let resized_w = resized_ele.width();
-                        // let resized_h_perc = pix_2_perc_hw('height', resized_h, container);
-                        // let resized_w_perc = pix_2_perc_hw('width', resized_w, container);
                         setTimeout(function() {
                             set_hwxy(resized_ele, '', field_type);
                         }, 500);
@@ -342,121 +327,114 @@ if (document.URL.match(/create\/add_fields/)) {
                 // add items to group
                 ele.find('.field-add-item').off('click').on('click', function () {
 
-                    // add line confirm div
-                    let add_item = $(this).next('.add-item-div');
-                    add_item.toggle();
-                    $('.field-close-add-item').click(function () {
-                        add_item.hide();
-                    });
-                    // after confirming
-                    ele.find('.add-item').off('click').on('click', function () {
-                        // assign group id for original field
-                        let group_id = $(this).data('group-id');
+                    // assign group id for original field
+                    let group_id = $(this).data('group-id');
 
-                        let common_name = $('.group_' + group_id).data('commonname');
-                        let custom_name = $('.group_' + group_id).data('customname');
-                        $('.group_' + group_id).removeClass('standard').addClass('group');
+                    let common_name = $('.group_' + group_id).data('commonname');
+                    let custom_name = $('.group_' + group_id).data('customname');
+                    $('.group_' + group_id).removeClass('standard').addClass('group');
 
 
-                        // get h,w, x, y etc. incase it was changed during a drag or resize
-                        let field_div = ele.closest('.field-div');
-                        let h = field_div.height();
-                        let w = field_div.width();
-                        let h_perc = pix_2_perc_hw('height', h, container);
-                        let w_perc = pix_2_perc_hw('width', w, container);
-                        let x = field_div.position().left;
-                        let y = field_div.position().top;
-                        let x_perc = pix_2_perc_xy('x', x, container);
-                        let y_perc = pix_2_perc_xy('y', y,container);
+                    // get h,w, x, y etc. incase it was changed during a drag or resize
+                    let field_div = ele.closest('.field-div');
+                    let h = field_div.height();
+                    let w = field_div.width();
+                    let h_perc = pix_2_perc_hw('height', h, container);
+                    let w_perc = pix_2_perc_hw('width', w, container);
+                    let x = field_div.position().left;
+                    let y = field_div.position().top;
+                    let x_perc = pix_2_perc_xy('x', x, container);
+                    let y_perc = pix_2_perc_xy('y', y,container);
 
-                        // drop the new line height of ele below the original
-                        let spacing = 1.2;
-                        if (field_type == 'radio' || field_type == 'checkbox') {
-                            spacing = 1.3;
-                        }
-                        y_perc = y_perc + (h_perc * spacing);
+                    // drop the new line height of ele below the original
+                    let spacing = 1.2;
+                    if (field_type == 'radio' || field_type == 'checkbox') {
+                        spacing = 1.3;
+                    }
+                    y_perc = y_perc + (h_perc * spacing);
 
+                    $('.field-div').removeClass('active');
+                    // create new id for new field in group
+                    id = Date.now();
+                    let field = field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, $('#active_page').val(), field_type);
+                    // append new field
+                    ele.closest('.field-container').append(field);
+
+                    setTimeout(function () {
+                        //$('select.mdb-select').not('.initialized').materialSelect();
+                        field_list();
+                        setTimeout(function() {
+                            check_fields();
+                        }, 500);
+                    }, 500);
+
+                    let new_ele = $('#field_' + id);
+
+
+                    setTimeout(function () {
+                        $('.focused').fadeOut();
                         $('.field-div').removeClass('active');
-                        // create new id for new field in group
-                        id = Date.now();
-                        let field = field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, $('#active_page').val(), field_type);
-                        // append new field
-                        ele.closest('.field-container').append(field);
+                        new_ele.addClass('active').find('.focused').fadeIn();
+                        let new_h = new_ele.height();
+                        let new_w = new_ele.width();
+                        let new_h_perc = pix_2_perc_hw('height', new_h, container);
+                        let new_w_perc = pix_2_perc_hw('width', new_w, container);
+                        let new_x = new_ele.position().left;
+                        let new_y = new_ele.position().top;
+                        let new_x_perc = pix_2_perc_xy('x', new_x, container);
+                        let new_y_perc = pix_2_perc_xy('y', new_y,container);
+
+                        if ((parseFloat(new_y_perc) + parseFloat(new_h_perc)) > 99) {
+                            new_ele.css({ border: '3px dotted #900' });
+                            setTimeout(function () {
+                                new_ele.remove();
+                            }, 1000);
+                            return false;
+                        }
+
+                        set_hwxy(new_ele, '', field_type);
+
+                        // assign group id to new field
+                        new_ele.data('group-id', group_id).removeClass('standard').addClass('group').addClass('group_' + group_id);
+
+                        // move add line option to last line
+                        $('.group_' + group_id).find('.add-item-container').hide();
+                        $('.group_' + group_id).find('.add-item-container').last().show();
+
+                        // clear other field when changing name
+                        /* if (new_ele.data('type') != 'checkbox') {
+                            clear_fields_on_change(group_id);
+                        } */
 
                         setTimeout(function () {
-                            //$('select.mdb-select').not('.initialized').materialSelect();
-                            field_list();
-                            setTimeout(function() {
-                                check_fields();
-                            }, 500);
+                            // set values for field name
+                            if (field_type != 'checkbox') {
+                                new_ele.find('.form-select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
+                                new_ele.find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
+                            }
+                            keep_in_view(new_ele, new_w_perc, new_x_perc, new_y_perc, field_type);
+                            set_field_options(field_type, new_ele, id, rect, container);
+                            field_status();
+                            select_refresh();
                         }, 500);
 
-                        let new_ele = $('#field_' + id);
+                        let inputs_div = ele.find('.field-data-inputs-container');
+                        add_inputs_to_group(group_id, inputs_div);
 
-                        add_item.toggle();
-                        setTimeout(function () {
-                            $('.focused').fadeOut();
-                            $('.field-div').removeClass('active');
-                            new_ele.addClass('active').find('.focused').fadeIn();
-                            let new_h = new_ele.height();
-                            let new_w = new_ele.width();
-                            let new_h_perc = pix_2_perc_hw('height', new_h, container);
-                            let new_w_perc = pix_2_perc_hw('width', new_w, container);
-                            let new_x = new_ele.position().left;
-                            let new_y = new_ele.position().top;
-                            let new_x_perc = pix_2_perc_xy('x', new_x, container);
-                            let new_y_perc = pix_2_perc_xy('y', new_y,container);
-
-                            if ((parseFloat(new_y_perc) + parseFloat(new_h_perc)) > 98) {
-                                new_ele.css({ border: '3px dotted #900' });
-                                setTimeout(function () {
-                                    new_ele.remove();
-                                }, 1000);
-                                return false;
-                            }
-
-                            set_hwxy(new_ele, '', field_type);
-
-                            // assign group id to new field
-                            new_ele.data('group-id', group_id).removeClass('standard').addClass('group').addClass('group_' + group_id);
-
-                            // move add line option to last line
-                            $('.group_' + group_id).find('.add-item-container').hide();
-                            $('.group_' + group_id).find('.add-item-container').last().show();
-
-                            // clear other field when changing name
-                            /* if (new_ele.data('type') != 'checkbox') {
-                                clear_fields_on_change(group_id);
-                            } */
-
-                            setTimeout(function () {
-                                // set values for field name
-                                if (field_type != 'checkbox') {
-                                    new_ele.find('.form-select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
-                                    new_ele.find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
-                                }
-                                keep_in_view(new_ele, new_w_perc, new_x_perc, new_y_perc, field_type);
-                                set_field_options(field_type, new_ele, id, rect, container);
-                                field_status();
-                                select_refresh();
-                            }, 500);
-
-                            let inputs_div = ele.find('.field-data-inputs-container');
-                            add_inputs_to_group(group_id, inputs_div);
-
-                            //select_menu();
+                        //select_menu();
 
 
-                        }, 100);
+                    }, 100);
 
 
-                    });
+
                 });
             }
 
             // mini-slider
-            $('.mini-slider-icon').off('click').on('click', function () {
-                $('.mini-slider').show();
+            $('.mini-slider-button').off('click').on('click', function () {
+                let minislider = $(this).closest('.field-options-holder').siblings('.mini-slider-div');
+                minislider.show();
                 $('.mini-slider-option').off('click').on('click', function () {
                     let dir = $(this).data('direction');
                     let operator = (dir == 'up') ? '-' : '+';
@@ -466,20 +444,22 @@ if (document.URL.match(/create\/add_fields/)) {
                     // set new h,w,x,y after moving up and down
                     set_hwxy(field_div, '', field_type);
                 });
-                $('.mini-slider').blur(function () {
-                    $('.mini-slider').hide();
+                $(document).mouseup(function (e) {
+                    if (!minislider.is(e.target) && minislider.has(e.target).length === 0) {
+                        minislider.hide();
+                    }
                 });
             });
 
             // add properties
             $('.field-properties').unbind('click').bind('click', function () {
                 let field_type = $(this).data('field-type');
-                let edit_div = $(this).next('.edit-properties-div');
+                let edit_div = $(this).closest('.field-options-holder').siblings('.edit-properties-div');
 
                 //store inputs html in input to be restored on cancel
                 $('#inputs_html').val(edit_div.find('.field-data-inputs-container').html());
                 edit_div.modal('show');
-                $('.modal-backdrop').appendTo(edit_div.closest('.properties-container'));
+                $('.modal-backdrop').appendTo(edit_div.closest('.field-div'));
 
                 // prevent new field being created
                 $('.edit-properties-div *').dblclick(function (event) {
@@ -970,63 +950,34 @@ if (document.URL.match(/create\/add_fields/)) {
             return properties
         }
 
-        function add_option(group_id, type) {
-            let icon;
-            if (type == 'textline') {
-                icon = '<i class="fas fa-horizontal-rule fa-lg text-primary"></i>';
-            } else if (type == 'radio') {
-                icon = '<i class="fas fa-circle fa-lg text-primary"></i>';
-            } else if (type == 'checkbox') {
-                icon = '<i class="fal fa-square-full fa-lg text-primary"></i>';
-            }
-            let option = ' \
-            <div class="add-item-container mr-2" > \
-                <div class="field-add-item mr-3 h-100"> \
-                    '+ icon + ' \
-                    <i class="fal fa-plus fa-xs ml-1 text-primary add-item-plus"></i> \
-                </div> \
-                <div class="add-item-div shadow-lg field-popup"> \
-                    <div class="add-item-content"> \
-                        Add Item To Group? \
-                        <div class="d-flex justify-content-around"> \
-                            <a href="javascript: void(0);" class="btn btn-success btn-sm add-item shadow" data-group-id="'+ group_id + '">Confirm</a> \
-                            <a href="javascript:void(0);" class="btn btn-danger btn-sm field-close-add-item">Cancel</a> \
-                        </div> \
-                    </div> \
-                </div> \
-            </div> \
-        ';
-            return option;
-        }
+
 
         function field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, page, type) {
 
             let properties_html = field_properties(type, group_id, id);
 
-            let options = '';
             let field_class = '';
             let field_html = '';
+            let hide_add_option = '';
             let handles = ' \
             <div class="ui-resizable-handle ui-resizable-e focused"></div> \
             <div class="ui-resizable-handle ui-resizable-w focused"></div> \
             ';
             if (type == 'textline' || type == 'name' || type == 'address' || type == 'number') {
-                options = add_option(group_id, 'textline');
                 field_class = 'textline-div standard';
                 field_html = '<div class="textline-html"></div>';
             } else if (type == 'radio') {
                 handles = '';
-                options = add_option(group_id, 'radio');
                 field_class = type + '-div standard';
                 field_html = '<div class="radio-html"></div>';
             } else if (type == 'checkbox') {
                 handles = '';
-                options = add_option(group_id, 'checkbox');
                 field_class = type + '-div standard';
                 field_html = '<div class="checkbox-html"></div>';
             } else if (type == 'date') {
                 field_class = 'textline-div standard';
                 field_html = '<div class="textline-html"></div>';
+                hide_add_option = 'hidden';
             }
 
             return ' \
@@ -1035,36 +986,24 @@ if (document.URL.match(/create\/add_fields/)) {
                     <div class="field-status-name-div"></div> \
                     <div class="field-status-group-div float-right"></div> \
                 </div> \
-                <div class="field-options-holder focused shadow container"> \
-                    <div class="row m-0 p-0"> \
-                        <div class="col-2 p-0"> \
-                            <div class="field-handle"><i class="fal fa-arrows fa-lg text-primary"></i></div> \
-                        </div> \
-                        <div class="col-8 p-0"> \
-                            <div class="d-flex justify-content-center"> \
-                                <div class="mini-slide-container w-100"> \
-                                    <a href="javascript: void(0);" class="mini-slider-icon d-block h-100 text-center"><i class="fal fa-arrows-v text-primary"></i></a> \
-                                    <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
-                                        <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
-                                        <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li> \
-                                    </ul> \
-                                </div> \
-                                '+ options + ' \
-                                <div class="properties-container mr-3"> \
-                                    <div class="field-properties" data-group-id="'+ group_id + '" data-field-type="'+type+'"> \
-                                        <i class="fal fa-info-circle fa-lg text-primary"></i> \
-                                    </div> \
-                                    <div class="modal fade edit-properties-div" id="edit_properties_modal" tabindex="-1" role="dialog" aria-labelledby="edit_properties_modal_title" aria-hidden="true"> \
-                                        <div class="modal-dialog modal-md modal-dialog-centered" role="document"> \
-                                            <div class="modal-content">'+ properties_html + ' \
-                                            </div> \
-                                        </div> \
-                                    </div> \
-                                </div> \
-                            </div> \
-                        </div> \
-                        <div class="col-2 p-0"> \
-                            <div class="remove-field"><i class="fal fa-times-circle fa-lg text-danger"></i></div> \
+                <div class="field-options-holder focused"> \
+                    <div class="btn-group" role="group" aria-label="Field Options"> \
+                        <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
+                        <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
+                        <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
+                        <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a> \
+                        <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
+                    </div> \
+                </div> \
+                <div class="mini-slider-div"> \
+                    <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
+                        <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
+                        <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li> \
+                    </ul> \
+                </div> \
+                <div class="modal fade edit-properties-div" id="edit_properties_modal" tabindex="-1" role="dialog" aria-labelledby="edit_properties_modal_title" aria-hidden="true"> \
+                    <div class="modal-dialog modal-md modal-dialog-centered" role="document"> \
+                        <div class="modal-content">'+ properties_html + ' \
                         </div> \
                     </div> \
                 </div> \
@@ -1192,7 +1131,7 @@ if (document.URL.match(/create\/add_fields/)) {
             let cw = 100;
             let cd_adjusted = '';
             if (type == 'textline' || type == 'name' || type == 'address' || type == 'date' || type == 'number') {
-                dist = .7;
+                dist = 3;
                 cd_adjusted = cw;
             } else if (type == 'radio' || type == 'checkbox') {
                 dist = 3;

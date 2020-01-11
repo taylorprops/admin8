@@ -14390,17 +14390,31 @@ a:hover {
   overflow: visible;
   z-index: 3;
   cursor: default;
+  /* .field-options-holder {
+      position: absolute;
+      top: -55px;
+      width: 200px;
+      overflow: visible;
+      background: #fff;
+      border: 1px solid $primary-color;
+      border-radius: 2px;
+      padding: 5px;
+  } */
 }
 
 .page-add-fields .field-div .field-options-holder {
   position: absolute;
-  top: -55px;
-  width: 200px;
-  overflow: visible;
-  background: #fff;
-  border: 1px solid #4c9bdb;
-  border-radius: 2px;
-  padding: 5px;
+  top: -50px;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0%);
+          transform: translate(-50%, 0%);
+  width: auto;
+  background: transparent;
+}
+
+.page-add-fields .field-div .btn-group .btn {
+  margin-right: 2px;
+  width: 45px;
 }
 
 .page-add-fields .field-div .field-handle {
@@ -14434,61 +14448,24 @@ a:hover {
           transform: rotate(180deg);
 }
 
-.page-add-fields .field-div .form-div .col-12 {
+.page-add-fields .field-div .field-data-inputs-container .col-12 {
   padding-left: 0px;
   padding-right: 0px;
-}
-
-.page-add-fields .field-div .field-add-item {
-  cursor: pointer;
-}
-
-.page-add-fields .field-div .add-item-plus {
-  position: absolute;
-  top: 6px;
-}
-
-.page-add-fields .field-div .add-item-div {
-  display: none;
-  position: absolute;
-  width: auto;
-  top: -25px;
-  left: -20px;
-  background: #fff;
-  border: 1px solid #4c9bdb;
-  padding: 10px;
-  z-index: 5;
-}
-
-.page-add-fields .field-div .add-item-content {
-  text-align: center;
-}
-
-.page-add-fields .field-div .field-properties,
-.page-add-fields .field-div .remove-field {
-  cursor: pointer;
-}
-
-.page-add-fields .field-div .mini-slider-icon {
-  width: 40px;
-}
-
-.page-add-fields .field-div .mini-slide-container {
-  position: relative;
 }
 
 .page-add-fields .field-div .mini-slider-option:hover {
   cursor: pointer;
 }
 
-.page-add-fields .field-div .mini-slider {
+.page-add-fields .field-div .mini-slider-div {
   position: absolute;
-  left: -20px;
-  bottom: -10px;
+  bottom: 15px;
+  left: 0px;
   display: none;
   width: 60px;
   height: auto;
   padding: 5px;
+  z-index: 1600;
 }
 
 .page-add-fields .field-div .mini-slider-option {
@@ -14536,11 +14513,6 @@ a:hover {
 
 .page-add-fields .field-div.active {
   z-index: 5;
-}
-
-.page-add-fields .checkbox-div .field-options-holder,
-.page-add-fields .radio-div .field-options-holder {
-  left: -50px;
 }
 
 .page-add-fields .form-div h5 {

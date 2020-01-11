@@ -197,6 +197,8 @@ if (document.URL.match(/checklists/)) {
 
             sortable_checklist_items();
 
+            forms_status();
+
         })
         .catch(function (error) {
             console.log(error);
@@ -381,6 +383,7 @@ if (document.URL.match(/checklists/)) {
         $('.checklist-item').each(function () {
             form_ids.push($(this).data('form-id'));
         });
+
         $.map(form_ids, function (value, index) {
             $('.form-name[data-form-id="' + value + '"]').addClass('form-selected').find('.add-to-checklist-button').addClass('disabled');
         });
@@ -411,29 +414,14 @@ if (document.URL.match(/checklists/)) {
         if (checklist_type== 'listing') {
             $('#checklist_represent').val('seller').trigger('change');
         }
-        select_refresh();
+
 
         // assign hidden input values
         $('#checklist_id').val($(this).data('checklist-id'));
         $('#checklist_state').val(state);
         $('#form_type').val(form_type);
 
-
-        // ######### these are based on resource values and could possibly be changed by user
-        /* let select_checklist_type = $('#checklist_type');
-        let select_checklist_property_type = $('#checklist_property_type');
-        let select_checklist_sale_rent = $('#checklist_sale_rent');
-        let select_checklist_property_sub_type = $('#checklist_property_sub_type');
-        let select_checklist_represent = $('#checklist_represent');
-
-        show_hide_options();
-
-        let els = [select_checklist_type, select_checklist_property_type, select_checklist_sale_rent, select_checklist_represent, select_checklist_property_sub_type];
-        els.forEach(function (el) {
-            el.unbind('change').bind('change', function () {
-                show_hide_options();
-            });
-        }); */
+        select_refresh();
 
         show_hide_options();
 

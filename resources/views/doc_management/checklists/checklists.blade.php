@@ -46,10 +46,10 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <a href="javascript: void(0)" class="btn btn-primary float-right ml-5 duplicate-checklist-button"><i class="fad fa-clone mr-2"></i> Copy Checklist</a>
+                                        <a href="javascript: void(0)" class="btn btn-primary ml-5 mt-3 duplicate-checklist-button"><i class="fad fa-clone mr-2"></i> Copy Checklist</a>
                                     </div>
                                     <div>
-                                        <a href="javascript: void(0)" data-location-id="{{ $location -> resource_id }}" data-state="{{ $location -> resource_state }}" data-form-type="add" class="btn btn-success float-right add-checklist-button ml-5"><i class="fal fa-plus mr-2"></i> Add Checklist</a>
+                                        <a href="javascript: void(0)" data-location-id="{{ $location -> resource_id }}" data-state="{{ $location -> resource_state }}" data-form-type="add" class="btn btn-success add-checklist-button ml-5 mt-3"><i class="fal fa-plus mr-2"></i> Add Checklist</a>
                                     </div>
                                 </div>
                             </div>
@@ -240,7 +240,7 @@
         </div>
     </div>
 
-    <div class="modal fade draggable" id="confirm_delete_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_delete_checklist_modal_title" aria-hidden="true">
+    <div class="modal fade draggable modal-confirm" id="confirm_delete_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_delete_checklist_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal" role="document">
             <div class="modal-content">
                 <form id="confirm_delete_checklist_form">
@@ -254,8 +254,8 @@
                         Are you sure you want to permanently delete this checklist?
                     </div>
                     <div class="modal-footer d-flex justify-content-around">
-                        <a class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</a>
-                        <a class="btn btn-success" id="confirm_delete_checklist"><i class="fad fa-check"></i> Confirm</a>
+                        <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</a>
+                        <a class="btn btn-success modal-confirm-button" id="confirm_delete_checklist"><i class="fad fa-check"></i> Confirm</a>
                     </div>
                 </form>
             </div>
@@ -264,7 +264,7 @@
 
 </div>
 
-<div class="modal fade" id="confirm_remove_file_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_remove_file_modal_title"
+<div class="modal fade modal-confirm" id="confirm_remove_file_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_remove_file_modal_title"
     aria-hidden="true">
 
     <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
@@ -282,7 +282,7 @@
             </div>
             <div class="modal-footer d-flex justify-content-around">
                 <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success" id="confirm_remove_file"><i class="fad fa-check mr-2"></i> Confirm</a>
+                <a class="btn btn-success modal-confirm-button" id="confirm_remove_file"><i class="fad fa-check mr-2"></i> Confirm</a>
             </div>
         </div>
     </div>

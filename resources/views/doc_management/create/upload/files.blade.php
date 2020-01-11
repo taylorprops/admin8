@@ -44,7 +44,7 @@
                                 </select>
                             </div>
                             <div>
-                                <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success upload-file-button ml-5"><i class="fal fa-plus mr-2"></i> Add Form</a>
+                                <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success upload-file-button ml-5 mt-3"><i class="fal fa-plus mr-2"></i> Add Form</a>
                             </div>
                         </div>
                     </div>
@@ -263,7 +263,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="confirm_publish_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_publish_modal_title"
+<div class="modal fade modal-confirm" id="confirm_publish_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_publish_modal_title"
     aria-hidden="true">
 
     <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
@@ -282,13 +282,13 @@
             </div>
             <div class="modal-footer d-flex justify-content-around">
                 <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success" id="confirm_publish"><i class="fad fa-check mr-2"></i> Confirm</a>
+                <a class="btn btn-success modal-confirm-button" id="confirm_publish"><i class="fad fa-check mr-2"></i> Confirm</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="confirm_delete_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_delete_modal_title"
+<div class="modal fade modal-confirm" id="confirm_delete_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_delete_modal_title"
     aria-hidden="true">
 
     <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
@@ -306,7 +306,7 @@
             </div>
             <div class="modal-footer d-flex justify-content-around">
                 <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success" id="confirm_delete"><i class="fad fa-check mr-2"></i> Confirm</a>
+                <a class="btn btn-success modal-confirm-button" id="confirm_delete"><i class="fad fa-check mr-2"></i> Confirm</a>
             </div>
         </div>
     </div>

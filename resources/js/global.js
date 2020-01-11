@@ -65,6 +65,15 @@ $(document).ready(function () {
         format_phone(this);
     });
 
+    // confirm modals on enter | requires .modal-confirm and .modal-confirm-button
+    $('.modal-confirm').on('show.bs.modal', function () {
+        $('body').on('keyup', function(event) {
+            if (event.keyCode === 13) {
+                $(this).find('.modal-confirm-button').click();
+            }
+        });
+    });
+
 
 
 

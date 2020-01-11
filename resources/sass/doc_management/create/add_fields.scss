@@ -133,7 +133,7 @@
         z-index: 3;
         cursor: default;
 
-        .field-options-holder {
+        /* .field-options-holder {
             position: absolute;
             top: -55px;
             width: 200px;
@@ -142,6 +142,20 @@
             border: 1px solid $primary-color;
             border-radius: 2px;
             padding: 5px;
+        } */
+
+        .field-options-holder {
+            position: absolute;
+            top: -50px;
+            left:50%;
+            transform: translate(-50%, 0%);
+            width: auto;
+            background: transparent;
+        }
+
+        .btn-group .btn {
+            margin-right: 2px;
+            width: 45px;
         }
 
         .field-handle {
@@ -174,57 +188,24 @@
 
 
 
-        .form-div .col-12 {
+        .field-data-inputs-container .col-12 {
             padding-left: 0px;
             padding-right: 0px;
         }
-        // field specific options
 
-        // textlines
-        .field-add-item{
-            cursor: pointer;
-        }
-        .add-item-plus {
-            position: absolute; top: 6px
-        }
 
-        .add-item-div {
-            display: none;
-            position: absolute;
-            width: auto;
-            top: -25px;
-            left: -20px;
-            background: #fff;
-            border: 1px solid $primary-color;
-            padding: 10px;
-            z-index: 5;
-        }
-        .add-item-content {
-            text-align: center;
-        }
-
-        // properties
-        .field-properties, .remove-field {
-            cursor: pointer;
-        }
-
-        .mini-slider-icon {
-            width: 40px;
-        }
-        .mini-slide-container {
-            position: relative;
-        }
         .mini-slider-option:hover {
             cursor: pointer;
         }
-        .mini-slider {
+        .mini-slider-div {
             position: absolute;
-            left: -20px;
-            bottom: -10px;
+            bottom: 15px;
+            left: 0px;
             display: none;
             width: 60px;
             height: auto;
             padding: 5px;
+            z-index: 1600;
         }
         .mini-slider-option {
             width: 40px;
@@ -279,10 +260,6 @@
         z-index: 5;
     }
 
-
-    .checkbox-div .field-options-holder, .radio-div .field-options-holder {
-        left: -50px;
-    }
 
     .form-div h5 {
         padding-bottom: 5px;
