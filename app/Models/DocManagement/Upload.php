@@ -17,8 +17,11 @@ class Upload extends Model
     }
 
     public function scopeGetFormName($query, $form_id) {
-        $form_name = $query -> where('file_id', $form_id) -> first();
-        return $form_name -> file_name_display;
+        if($form_id) {
+            $form_name = $query -> where('file_id', $form_id) -> first();
+            return $form_name -> file_name_display;
+        }
+        return  true;
     }
 
     public function scopeGetFormLocation($query, $form_id) {

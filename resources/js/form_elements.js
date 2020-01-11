@@ -158,7 +158,7 @@ window.form_elements = function () {
                                     <input type="text" class="form-select-search-input" placeholder="Search"> \
                                 </div> \
                             </div> \
-                            <div class="form-select-options-div" data-simplebar data-simplebar-auto-hide="false"> \
+                            <div class="form-select-options-div"> \
                                 <ul class="form-select-ul"></ul> \
                             </div> \
                         </div > \

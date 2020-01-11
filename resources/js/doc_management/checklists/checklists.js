@@ -163,7 +163,7 @@ if (document.URL.match(/checklists/)) {
             $('#checklist_items_modal').modal();
             // add html form response
             $('#checklist_items_div').html(response.data);
-            form_elements();
+
             // add title to modal
             $('#checklist_items_modal_title').html('Checklist Items | <span class="text-yellow-light">' + $('#checklist_header_val').val() + '</span>');
             // hide all form-group-div and show the first (MAR)
@@ -198,6 +198,8 @@ if (document.URL.match(/checklists/)) {
             sortable_checklist_items();
 
             forms_status();
+
+            form_elements();
 
         })
         .catch(function (error) {

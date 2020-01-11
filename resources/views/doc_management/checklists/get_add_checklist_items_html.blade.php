@@ -49,14 +49,14 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                         <div class="col-4">
                             <div class="row">
                                 <div class="col">
-                                    <select class="custom-form-element form-select form-select-no-cancel checklist-item-required required" data-label="Required">
+                                    <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required">
                                         <option value=""></option>
                                         <option value="yes" @if( $checklist_item -> checklist_item_required == 'yes') selected @endif>Yes</option>
                                         <option value="no" @if( $checklist_item -> checklist_item_required == 'no') selected @endif>No</option>
                                     </select>
                                 </div>
                                 <div class="col-6">
-                                    <select class="custom-form-element form-select form-select-no-cancel checklist-item-form-group-id required" data-label="Form Group">
+                                    <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-form-group-id required" data-label="Form Group">
                                         <option value=""></option>
                                         @foreach($checklist_groups as $checklist_group)
                                         <option value="{{ $checklist_group -> resource_id }}" @if( $checklist_item -> checklist_item_group_id == $checklist_group -> resource_id) selected @endif>{{ $checklist_group -> resource_name }}</option>
@@ -89,7 +89,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 
         <div class="mt-3">
             <div class="d-flex justify-content-start">
-                <i class="fal fa-search text-primary mt-2 mr-3 fa-2x"></i>
+                <i class="fal fa-search text-primary mt-4 mr-3 fa-2x"></i>
                 <input type="text" class="custom-form-element form-input mr-5" id="form_search" data-label="Search">
             </div>
         </div>
@@ -109,13 +109,18 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                     @endphp
 
                     @foreach($forms as $form)
-
+                    @php
+                    $form_name = $form -> file_name_display;
+                    if(strlen($form -> file_name_display) > 40) {
+                        $form_name = substr($form -> file_name_display, 0, 40).'...';
+                    }
+                    @endphp
                     <li class="list-group-item form-name" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">
                         <div class="d-flex justify-content-start">
                             <div class="mr-2">
                                 <a href="javascript: void(0)" class="btn btn-sm btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">Add</a>
                             </div>
-                            <div>{{ $form -> file_name_display }}</div>
+                            <div class="mt-2" title="{{ $form -> file_name_display }}">{{ $form_name }}</div>
                         </div>
                     </li>
 
