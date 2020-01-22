@@ -12,7 +12,7 @@ class Upload extends Model
     protected $primaryKey = 'file_id';
 
     public function scopeFormGroupFiles($query, $location_id) {
-        $location = $query -> where('form_group_id', $location_id) -> get();
+        $location = $query -> where('form_group_id', $location_id) -> where('published', 'yes') -> where('active', 'yes') -> get();
         return $location;
     }
 

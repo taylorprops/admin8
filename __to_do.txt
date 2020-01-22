@@ -23,6 +23,14 @@ on upload file list show first as active in form group list to left
 agents - on doc management
     allow them to request credit report if they have their application uploaded
 
+///////////// TABLES AND FIELDS CONNECTED TO docs_resources ////////////////
+docs_checklists
+	checklist_property_type_id
+	checklist_property_sub_type_id
+	checklist_location_id
+docs_uploads
+    form_group_id
+    sale_type
 
 !!!!!!!!!!!!!!!!!!!
 
@@ -51,9 +59,10 @@ TODO
 INSTALL ON SERVER
     pdftk
     wkhtmltopdf
-    maybe html2canvas
+    //maybe html2canvas
     sudo apt-get install -y xpdf
 
 npm install js-datepicker -save
 npm install simplebar --save
 npm install written-number --save
+npm install sortablejs --save

@@ -15,9 +15,14 @@
     }
 
     .published {
-        background: rgba($success, .2);
+        background: rgba($success, .3);
     }
     .notpublished {
         background: rgba($blue, .1);
     }
+    .notactive {
+        background: rgba($success, .1);
+    }
+
+
 }

@@ -214,7 +214,7 @@ if (document.URL.match(/checklists/)) {
 
         if (validate == 'yes') {
 
-            if ($('.checklist-item').length > 0) {
+            //if ($('.checklist-item').length > 0) {
 
                 let checklist_items = [];
                 let checklist_id = $('#checklist_id').val();
@@ -253,7 +253,7 @@ if (document.URL.match(/checklists/)) {
                     console.log(error);
                 });
 
-            }
+            //}
         }
 
     }
@@ -280,14 +280,14 @@ if (document.URL.match(/checklists/)) {
                     <div class="col-4"> \
                         <div class="row"> \
                             <div class="col"> \
-                                <select class="custom-form-element form-select form-select-no-cancel checklist-item-required required" data-label="Required"> \
+                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required"> \
                                     <option value=""></option> \
                                     <option value="yes">Yes</option> \
                                     <option value="no">No</option> \
                                 </select> \
                             </div> \
                             <div class="col-6"> \
-                                <select class="custom-form-element form-select form-select-no-cancel checklist-item-form-group-id required" data-label="Form Group"> \
+                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-form-group-id required" data-label="Form Group"> \
                                     <option value=""></option> \
                                     ' + checklist_groups_options + ' \
                                 </select> \
@@ -338,14 +338,14 @@ if (document.URL.match(/checklists/)) {
                     <div class="col-4"> \
                         <div class="row"> \
                             <div class="col"> \
-                                <select class="custom-form-element form-select form-select-no-cancel checklist-item-required required" data-label="Required"> \
+                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required"> \
                                     <option value=""></option> \
                                     <option value="yes">Yes</option> \
                                     <option value="no">No</option> \
                                 </select> \
                             </div> \
                             <div class="col-6"> \
-                                <select class="custom-form-element form-select form-select-no-cancel checklist-item-form-group-id required" data-label="Form Group"> \
+                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-form-group-id required" data-label="Form Group"> \
                                     <option value=""></option> \
                                     ' + checklist_groups_options + ' \
                                 </select> \
@@ -408,8 +408,8 @@ if (document.URL.match(/checklists/)) {
         // assign form input values
         $('#checklist_location_id').val(location_id).trigger('change');
         $('#checklist_type').val(checklist_type).trigger('change');
-        $('#checklist_property_type').val(property_type).trigger('change');
-        $('#checklist_property_sub_type').val(property_sub_type).trigger('change');
+        $('#checklist_property_type_id').val(property_type).trigger('change');
+        $('#checklist_property_sub_type_id').val(property_sub_type).trigger('change');
         $('#checklist_sale_rent').val(sale_rent).trigger('change');
         $('#checklist_represent').val(represent).trigger('change');
 
@@ -427,7 +427,7 @@ if (document.URL.match(/checklists/)) {
 
         show_hide_options();
 
-        $('#checklist_type, #checklist_property_type, #checklist_sale_rent, #checklist_property_sub_type, #checklist_represent').unbind('change').bind('change', show_hide_options);
+        $('#checklist_type, #checklist_property_type_id, #checklist_sale_rent, #checklist_property_sub_type_id, #checklist_represent').unbind('change').bind('change', show_hide_options);
 
 
         $('#save_checklist_button').off('click').on('click', save_checklist);
@@ -437,9 +437,9 @@ if (document.URL.match(/checklists/)) {
     function show_hide_options() {
 
         let select_checklist_type = $('#checklist_type');
-        let select_checklist_property_type = $('#checklist_property_type');
+        let select_checklist_property_type = $('#checklist_property_type_id');
         let select_checklist_sale_rent = $('#checklist_sale_rent');
-        let select_checklist_property_sub_type = $('#checklist_property_sub_type');
+        let select_checklist_property_sub_type_id = $('#checklist_property_sub_type_id');
         let select_checklist_represent = $('#checklist_represent');
 
         // ######### these are based on resource values and could possibly be changed by user
@@ -451,17 +451,17 @@ if (document.URL.match(/checklists/)) {
         }
 
         // if residential show property_sub_types | but not if rental
-        if (select_checklist_property_type.val() == 'Residential') {
+        if (select_checklist_property_type.find('option:selected').text() == 'Residential') {
             if (select_checklist_sale_rent.val() == 'rental') {
-                select_checklist_property_sub_type.val('').addClass('hidden').removeClass('required');
+                select_checklist_property_sub_type_id.val('').addClass('hidden').removeClass('required');
             } else {
-                select_checklist_property_sub_type.removeClass('hidden').addClass('required');
+                select_checklist_property_sub_type_id.removeClass('hidden').addClass('required');
             }
         } else {
-            select_checklist_property_sub_type.val('').addClass('hidden').removeClass('required');
+            select_checklist_property_sub_type_id.val('').addClass('hidden').removeClass('required');
         }
         // if fsbo you must be representing the buyer, must be a contract and for sale
-        if (select_checklist_property_sub_type.val() == 'For Sale By Owner') {
+        if (select_checklist_property_sub_type_id.find('option:selected').text() == 'For Sale By Owner') {
             select_checklist_represent.val('buyer');
             select_checklist_sale_rent.val('sale');
         }
@@ -485,8 +485,8 @@ if (document.URL.match(/checklists/)) {
             formData.append('checklist_represent', $('#checklist_represent').val());
             formData.append('checklist_type', $('#checklist_type').val());
             formData.append('checklist_sale_rent', $('#checklist_sale_rent').val());
-            formData.append('checklist_property_type', $('#checklist_property_type').val());
-            formData.append('checklist_property_sub_type', $('#checklist_property_sub_type').val());
+            formData.append('checklist_property_type_id', $('#checklist_property_type_id').val());
+            formData.append('checklist_property_sub_type_id', $('#checklist_property_sub_type_id').val());
             formData.append('checklist_state', $('#checklist_state').val());
 
             let form_type = $('#form_type').val();

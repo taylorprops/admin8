@@ -30,13 +30,14 @@ class ChecklistsController extends Controller
         $locations = ResourceItems::where('resource_type', 'checklist_locations') -> orderBy('resource_order') -> get();
         $checklists = Checklists::orderBy('checklist_order') -> get();
 
+
         $checklist_property_types = $checklists -> mapToGroups(function ($item, $key) {
             return [
-                $item['checklist_property_type'] => [
+                $item['checklist_property_type_id'] => [
                     'checklist_type' => $item['checklist_type'],
                     'checklist_represent' => $item['checklist_represent'],
-                    'checklist_property_type' => $item['checklist_property_type'],
-                    'checklist_property_sub_type' => $item['checklist_property_sub_type'],
+                    'checklist_property_type_id' => $item['checklist_property_type_id'],
+                    'checklist_property_sub_type_id' => $item['checklist_property_sub_type_id'],
                     'checklist_sale_rent' => $item['checklist_sale_rent'],
                     'checklist_location_id' => $item['checklist_location_id'],
                     'checklist_state' => $item['checklist_state'],
@@ -52,7 +53,7 @@ class ChecklistsController extends Controller
             if($checklist_property_types -> get($type)) {
                 $checklist_property_types_items[] = $checklist_property_types -> get($type) -> all();
             }/*  else {
-                $checklist_property_types_items[][0]['checklist_property_type'] = $type;
+                $checklist_property_types_items[][0]['checklist_property_type_id'] = $type;
             } */
         }
 
@@ -69,12 +70,12 @@ class ChecklistsController extends Controller
 
         $checklist_property_types = $checklists -> mapToGroups(function ($item, $key) {
             return [
-                $item['checklist_property_type'] => [
+                $item['checklist_property_type_id'] => [
                     'checklist_id' => $item['id'],
                     'checklist_type' => $item['checklist_type'],
                     'checklist_represent' => $item['checklist_represent'],
-                    'checklist_property_type' => $item['checklist_property_type'],
-                    'checklist_property_sub_type' => $item['checklist_property_sub_type'],
+                    'checklist_property_type_id' => $item['checklist_property_type_id'],
+                    'checklist_property_sub_type_id' => $item['checklist_property_sub_type_id'],
                     'checklist_sale_rent' => $item['checklist_sale_rent'],
                     'checklist_location_id' => $item['checklist_location_id'],
                     'checklist_state' => $item['checklist_state'],
@@ -88,15 +89,16 @@ class ChecklistsController extends Controller
 
         $checklist_property_types_items = [];
         foreach($property_types as $property_type) {
-            $type = $property_type -> resource_name;
+            $type = $property_type -> resource_id;
             if($checklist_property_types -> get($type)) {
                 $checklist_property_types_items[] = $checklist_property_types -> get($type) -> all();
             }/*  else {
-                $checklist_property_types_items[][0]['checklist_property_type'] = $type;
+                $checklist_property_types_items[][0]['checklist_property_type_id'] = $type;
             } */
         }
+        $resource_items = new ResourceItems();
 
-        return view('/doc_management/checklists/get_checklists_html', compact('checklist_property_types_items', 'checklists_count'));
+        return view('/doc_management/checklists/get_checklists_html', compact('checklist_property_types_items', 'checklists_count', 'resource_items'));
 
     }
 
@@ -131,13 +133,18 @@ class ChecklistsController extends Controller
     }
 
     public function add_checklist(Request $request) {
+
+        $checklist_property_sub_type_id = 0;
+        if($request -> checklist_property_sub_type_id) {
+            $checklist_property_sub_type_id = $request -> checklist_property_sub_type_id;
+        }
         $checklist = new Checklists();
         $checklist -> checklist_location_id = $request -> checklist_location_id;
         $checklist -> checklist_represent = $request -> checklist_represent;
         $checklist -> checklist_type = $request -> checklist_type;
         $checklist -> checklist_sale_rent = $request -> checklist_sale_rent;
-        $checklist -> checklist_property_type = $request -> checklist_property_type;
-        $checklist -> checklist_property_sub_type = $request -> checklist_property_sub_type;
+        $checklist -> checklist_property_type_id = $request -> checklist_property_type_id;
+        $checklist -> checklist_property_sub_type_id = $checklist_property_sub_type_id;
         $checklist -> checklist_state = $request -> checklist_state;
         $checklist -> checklist_order = 0;
         $checklist -> save();
@@ -149,8 +156,8 @@ class ChecklistsController extends Controller
         $checklist -> checklist_represent = $request -> checklist_represent;
         $checklist -> checklist_type = $request -> checklist_type;
         $checklist -> checklist_sale_rent = $request -> checklist_sale_rent;
-        $checklist -> checklist_property_type = $request -> checklist_property_type;
-        $checklist -> checklist_property_sub_type = $request -> checklist_property_sub_type;
+        $checklist -> checklist_property_type_id = $request -> checklist_property_type_id;
+        $checklist -> checklist_property_sub_type_id = $request -> checklist_property_sub_type_id;
         $checklist -> checklist_state = $request -> checklist_state;
         $checklist -> save();
     }

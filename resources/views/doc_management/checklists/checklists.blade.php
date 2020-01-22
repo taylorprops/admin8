@@ -61,66 +61,6 @@
                                         <div class="row">
                                             <div class="col-12 checklist-data" id="list_div_{{ $location -> resource_id }}_files" data-location-id="{{ $location -> resource_id }}">
 
-                                                {{-- @foreach($checklist_property_types_items as $checklist_property_types)
-
-                                                    <div class="property-type-div mb-4 mt-1 pb-3">
-
-                                                        <div class="d-flex justify-content-between">
-
-                                                            <h4 class="text-primary mt-2">{{ $checklist_property_types[0]['checklist_property_type'] }}</h3>
-                                                            <div>
-                                                                <a href="javascript: void(0)"
-                                                                data-location-id="{{ $location -> resource_id }}"
-                                                                data-state="{{ $location -> resource_state }}"
-                                                                data-property-type="{{ $checklist_property_types[0]['checklist_property_type'] ?? null }}"
-                                                                class="btn btn-sm btn-success float-right add-checklist-button">
-                                                                    <i class="fal fa-plus mr-2"></i>
-                                                                    Add Checklist
-                                                                </a>
-                                                            </div>
-                                                        </div>
-
-                                                        @foreach($checklist_property_types as $checklist_property_type)
-
-                                                            @if($checklist_property_type['checklist_location_id'] == $location -> resource_id)
-
-                                                                @php $checklist_type = $checklist_property_type['checklist_type'];  @endphp
-
-                                                                <div class="checklist-items-container border-bottom border-gray checklist-items-{{ $checklist_type }} @if($checklist_type == 'contract') hidden @endif">
-                                                                    <div class="row my-2">
-                                                                        <div class="col-5">
-                                                                            <div class="row">
-                                                                                <div class="col">
-                                                                                    <span class="text-primary-dark font-weight-bold ml-2">
-                                                                                        {{ ucwords($checklist_property_type['checklist_sale_rent']) }}
-                                                                                    </span>
-                                                                                </div>
-                                                                                <div class="col">
-                                                                                    <span class="text-primary">
-                                                                                        Client: <span class="font-weight-bold">{{ ucwords($checklist_property_type['checklist_represent']) }}</span>
-                                                                                    </span>
-                                                                                </div>
-                                                                                <div class="col-5">
-                                                                                    <span class="text-orange">
-                                                                                        {{ $checklist_property_type['checklist_property_sub_type'] ?? 'Standard' }}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-7">
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                            @endif
-
-                                                        @endforeach
-
-                                                    </div> <!-- ./ .property-type-div -->
-
-                                                @endforeach --}}
-
                                             </div>
                                         </div>
                                     </div>
@@ -196,18 +136,18 @@
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <select id="checklist_property_type" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Property Type">
+                                    <select id="checklist_property_type_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Property Type">
                                         <option value=""></option>
                                         @foreach($property_types as $property_type)
-                                        <option value="{{ $property_type -> resource_name }}">{{ $property_type -> resource_name }}</option>
+                                        <option value="{{ $property_type -> resource_id }}">{{ $property_type -> resource_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <select id="checklist_property_sub_type" class="custom-form-element form-select form-select-no-cancel form-select-no-search hidden required" data-label="Checklist Property Sub Type">
+                                    <select id="checklist_property_sub_type_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search hidden required" data-label="Checklist Property Sub Type">
                                         <option value=""></option>
                                         @foreach($property_sub_types as $property_sub_type)
-                                        <option value="{{ $property_sub_type -> resource_name }}">{{ $property_sub_type -> resource_name }}</option>
+                                        <option value="{{ $property_sub_type -> resource_id }}">{{ $property_sub_type -> resource_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

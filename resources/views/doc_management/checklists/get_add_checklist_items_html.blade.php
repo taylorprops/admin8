@@ -139,7 +139,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 <input type="hidden" id="add_item_checklist_type" value="{{ $checklist -> checklist_type }}">
 
 
-<input type="hidden" id="checklist_header_val" value="{{ $checklist -> checklist_state }} @if($checklist -> checklist_state != $location) | {{ $location }} @endif - {{ ucwords($checklist -> checklist_sale_rent) }} - {{ ucwords($checklist -> checklist_type) }} - {{ $checklist -> checklist_property_type }} @if($checklist -> checklist_property_sub_type != '') - {{ $checklist -> checklist_property_sub_type }}  @endif - {{ ucwords($checklist -> checklist_represent) }}">
+<input type="hidden" id="checklist_header_val" value="{{ $checklist -> checklist_state }} @if($checklist -> checklist_state != $location) | {{ $location }} @endif - {{ ucwords($checklist -> checklist_sale_rent) }} - {{ ucwords($checklist -> checklist_type) }} - {{ $checklist -> checklist_property_type_id }} @if($checklist -> checklist_property_sub_type_id != '') - {{ $checklist -> checklist_property_sub_type_id }}  @endif - {{ ucwords($checklist -> checklist_represent) }}">
 
 
 {{-- options for checklist group select --}}

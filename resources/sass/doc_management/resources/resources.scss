@@ -1,0 +1,52 @@
+.page-resources {
+
+    .list-item-handle {
+        cursor: row-resize;
+    }
+
+    .bg-orange-sortable {
+        border: 2px dashed $orange;
+        height: 55px;
+    }
+
+    .resource-div .card-body {
+        max-height: 40VH;
+        overflow: auto;
+    }
+    .resource-div {
+        margin: 0 0 35px 0;
+    }
+
+    .resource-div-edit {
+        display: none;
+    }
+
+    .list-group-item {
+        padding: .5rem .6rem !important;
+    }
+
+    .card-header {
+        position: relative;
+    }
+
+    .add-resource-div {
+        position: absolute;
+        top: 50px;
+        left: 0px;
+        z-index: 100;
+        display: none;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .cancel-add-resource-button {
+        display: none;
+    }
+
+    .resource-color-square {
+        height: 25px;
+        width: 25px;
+    }
+
+
+
+}

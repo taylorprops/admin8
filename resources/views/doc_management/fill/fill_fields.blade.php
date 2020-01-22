@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="file-view-page-container border border-primary w-100" data-id="{{ $c }}">
                                     <div class="field-container w-100 h-100">
-                                        <img class="file-image-bg w-100 h-100" {{-- data-html2canvas-ignore="true" --}} src="{{ $image['file_location'] }}">
+                                        <img class="file-image-bg w-100 h-100" src="{{ $image['file_location'] }}">
 
                                         @foreach($fields as $field)
                                             @if($field['page'] == $c)

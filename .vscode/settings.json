@@ -3,6 +3,7 @@
         "commonname"
     ],
     "cSpell.ignoreWords": [
+        "addendums",
         "askedio",
         "baskervville",
         "classname",
@@ -19,6 +20,7 @@
         "field-id",
         "field-type",
         "fieldlist",
+        "filers",
         "flash",
         "flatpickr",
         "fmtssn",
@@ -37,6 +39,7 @@
         "mikehaertl",
         "mogrify",
         "nbsp",
+        "notactive",
         "notpublished",
         "pdftk",
         "perc",
@@ -56,6 +59,7 @@
         "textlines",
         "toastr",
         "ui",
+        "vals",
         "widthp",
         "wkhtmlto",
         "wkhtmltopdf"

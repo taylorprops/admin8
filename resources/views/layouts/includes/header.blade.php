@@ -30,7 +30,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="menu-item pl-0" href="/doc_management/create/resources">
+                                        <a class="menu-item pl-0" href="/doc_management/resources/resources">
                                             <i class="fas fa-caret-right pl-2 pr-3"></i>Resources
                                         </a>
                                     </li>

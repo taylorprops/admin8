@@ -18,7 +18,7 @@
                             role="tab"
                             data-id="{{ $resource -> resource_id }}">
                             {{ $resource -> resource_name }}
-                            <span class="float-right badge bg-blue-med py-1 px-2" id="list_{{ $resource -> resource_id }}_file_count">{{-- {{ $association -> getCountFormGroup($resource -> resource_id) }} --}}</span>
+                            <span class="float-right badge bg-blue-med py-1 px-2" id="list_div_{{ $resource -> resource_id }}_file_count"></span>
                         </a>
                         @endif
                         @endforeach
@@ -33,83 +33,40 @@
 
                 <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $resource -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $resource -> resource_id }}">
 
+                    <div class="h3 text-primary">{{ $resource -> resource_name }}</div>
                     <div class="d-flex justify-content-between">
-                        <div class="h3 text-primary">{{ $resource -> resource_name }}</div>
-                        <div class="d-flex justify-content-end">
-                            <div>
-                                <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-options" data-label="Filter Results">
-                                    <option value="all">Show All</option>
-                                    <option value="published">Show Published</option>
-                                    <option value="notpublished">Show Unpublished</option>
-                                </select>
-                            </div>
-                            <div>
-                                <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success upload-file-button ml-5 mt-3"><i class="fal fa-plus mr-2"></i> Add Form</a>
-                            </div>
+                        <div class="mr-2">
+                            <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-sort" data-label="Sort By">
+                                <option value="az" selected>A-Z</option>
+                                <option value="added">Recently Added</option>
+                            </select>
+                        </div>
+                        <div class="mr-2">
+                            <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-active" data-label="Active">
+                                <option value="all">Show All</option>
+                                <option value="active">Active</option>
+                                <option value="notactive">Not Active</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-published" data-label="Published">
+                                <option value="all">Show All</option>
+                                <option value="published">Published</option>
+                                <option value="notpublished">Not published</option>
+                            </select>
+                        </div>
+                        <div>
+                            <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success upload-file-button ml-5 mt-3"><i class="fal fa-plus mr-2"></i> Add Form</a>
                         </div>
                     </div>
+
 
                     <div class="border border-gray">
                         <div class="list-group-divs pt-4" data-simplebar data-simplebar-auto-hide="false">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-12 forms-data" id="list_div_{{ $resource -> resource_id }}_files" data-form-group-id="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">
-                                        {{-- @foreach ($files as $file)
 
-                                        @if($file -> form_group_id == $resource -> resource_id)
-                                        <div class="border-bottom border-primary p-1 mb-4 uploads-list @if($file -> published == 'yes') published @else notpublished @endif">
-                                            <div class="container">
-                                                <div class="row">
-                                                    <div class="col-7">
-                                                        <div class="h5 text-secondary">{{ $file -> file_name_display }}</div>
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <div class="d-flex justify-content-end">
-                                                            @php $tags = explode(',', $file -> sale_type); @endphp
-                                                            @foreach($tags as $tag)
-                                                            <span class="badge mr-2" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getTagName($tag) }}</span>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-
-                                                    <div class="col-12 options-holder">
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                @if($file -> published == 'no')
-                                                                <a href="/doc_management/create/add_fields/{{ $file -> file_id }}" class="text-primary"><i class="fal fa-plus mr-2"></i> Add/Edit Fields</a>
-                                                                @endif
-                                                            </div>
-                                                            <div class="col">
-                                                                <a href="javascript:void(0)" class="edit-upload text-primary" data-id="{{ $file -> file_id }}"><i class="fad fa-edit mr-2"></i> Edit Details</a>
-                                                            </div>
-                                                            <div class="col">
-                                                                <a href="javascript:void(0)" class="duplicate-upload text-primary" data-id="{{ $file -> file_id }}" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}"><i class="fad fa-clone mr-2"></i> Duplicate</a>
-                                                            </div>
-                                                            <div class="col">
-                                                                @if($file -> published == 'no')
-                                                                <a href="javascript:void(0)" class="publish-upload text-success" data-id="{{ $file -> file_id }}" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}"><i class="fad fa-file-export mr-2"></i> Publish</a>
-                                                                @else
-                                                                <a href="javascript: void(0" class="material-tooltip-main mr-5" data-toggle="tooltip" title="This form can no longer be edited or deleted"><span class="badge badge-success">Published</span></a>
-                                                                @endif
-                                                            </div>
-                                                            <div class="col">
-                                                                @if($file -> published == 'no')
-                                                                <a href="javascript:void(0)" class="delete-upload text-danger" data-id="{{ $file -> file_id }}" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}"><i class="fad fa-trash-alt mr-2"></i> Delete</a>
-                                                                @endif
-                                                            </div>
-                                                            <div class="col">
-                                                                <div class="small">Added: {{ date('M jS, Y', strtotime($file -> created_at)) }}</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div><!-- ./ .row -->
-                                            </div><!-- ./ .container -->
-                                        </div>
-                                        @endif
-                                        @endforeach --}}
                                     </div>
                                 </div><!-- ./ .row -->
                             </div>
@@ -126,7 +83,7 @@
 <!-- Modals -->
 <div class="modal fade draggable" id="edit_file_modal" tabindex="-1" role="dialog" aria-labelledby="edit_file_modal_title" aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 
         <div class="modal-content">
             <form id="edit_file_form">
@@ -141,6 +98,9 @@
                     @csrf
                     <div class="container">
                         <div class="row">
+                            <div class="col-12">
+                                <span id="edit_form_name" class="h5 text-primary"></span>
+                            </div>
                             <div class="col-12">
                                 <input type="text" class="custom-form-element form-input required" name="edit_file_name_display" id="edit_file_name_display" data-label="Form Name">
                             </div>
@@ -194,7 +154,7 @@
 <div class="modal fade draggable" id="add_upload_modal" tabindex="-1" role="dialog" aria-labelledby="add_upload_modal_title" aria-hidden="true">
 
     <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 
         <div class="modal-content">
             <form id="upload_file_form" enctype="multipart/form-data">

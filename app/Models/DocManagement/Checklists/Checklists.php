@@ -8,5 +8,4 @@ class Checklists extends Model
 {
     public $table = 'docs_checklists';
 
-
 }

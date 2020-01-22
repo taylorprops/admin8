@@ -16,7 +16,7 @@ Route::middleware('admin') -> group(function () {
     Route::get('/doc_management/create/add_fields/{file_id}', 'DocManagement\Fill\FieldsController@add_fields');
 
     /* Resources | Add/remove associations, tags, etc. */
-    Route::get('/doc_management/create/resources', 'DocManagement\Create\UploadController@resources');
+    Route::get('/doc_management/resources/resources', 'DocManagement\Resources\ResourcesController@resources');
 
     /* Checklists  */
     Route::get('/doc_management/checklists', 'DocManagement\Checklists\ChecklistsController@checklists');
@@ -54,19 +54,21 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     Route::post('/doc_management/save_file_edit', 'DocManagement\Create\UploadController@save_file_edit');
     // Duplicate uploaded files
     Route::post('/doc_management/duplicate_upload', 'DocManagement\Create\UploadController@duplicate_upload');
+    // Activate/Deactivate uploaded files
+    Route::post('/doc_management/activate_upload', 'DocManagement\Create\UploadController@activate_upload');
     // Publish upload
     Route::post('/doc_management/publish_upload', 'DocManagement\Create\UploadController@publish_upload');
     // Delete uploaded files
     Route::post('/doc_management/delete_upload', 'DocManagement\Create\UploadController@delete_upload') -> name('doc_management.delete_upload');
 
     /* Add Resource  */
-    Route::post('/doc_management/create/resources/add', 'DocManagement\Create\UploadController@resources_add');
+    Route::post('/doc_management/resources/add', 'DocManagement\Resources\ResourcesController@resources_add');
     /* Save edit Resources | Add/remove associations, tags, etc. */
-    Route::post('/doc_management/create/resources/edit', 'DocManagement\Create\UploadController@resources_edit');
+    Route::post('/doc_management/resources/edit', 'DocManagement\Resources\ResourcesController@resources_edit');
     /* Delete Resources  */
-    Route::post('/doc_management/create/resources/delete', 'DocManagement\Create\UploadController@resources_delete');
+    Route::post('/doc_management/resources/delete', 'DocManagement\Resources\ResourcesController@resources_delete');
     /* Reorder Resources */
-    Route::post('/doc_management/create/resources/reorder', 'DocManagement\Create\UploadController@resources_reorder');
+    Route::post('/doc_management/resources/reorder', 'DocManagement\Resources\ResourcesController@resources_reorder');
 
     // Fields //
     Route::post('/doc_management/save_add_fields', 'DocManagement\Fill\FieldsController@save_add_fields');

@@ -13728,6 +13728,14 @@ a:hover {
   background: #cce4ff;
 }
 
+.form-select,
+.form-checkbox,
+.form-radio,
+.form-input-file,
+.form-input-color {
+  display: none;
+}
+
 .form-ele {
   position: relative;
   margin-top: 0.75rem;
@@ -14256,11 +14264,15 @@ a:hover {
 }
 
 .page-files .published {
-  background: rgba(48, 167, 48, 0.2);
+  background: rgba(48, 167, 48, 0.3);
 }
 
 .page-files .notpublished {
   background: rgba(76, 155, 219, 0.1);
+}
+
+.page-files .notactive {
+  background: rgba(48, 167, 48, 0.1);
 }
 
 .page-add-fields {
