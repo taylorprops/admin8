@@ -114,6 +114,9 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     // get checklist item details
     Route::get('/doc_management/get_checklist_item_details', 'DocManagement\Checklists\ChecklistsController@get_checklist_item_details');
 
+    // get details to replace form in checklist
+    Route::get('/doc_management/get_replace_upload_details', 'DocManagement\Create\UploadController@get_replace_upload_details');
+
 
 });
 

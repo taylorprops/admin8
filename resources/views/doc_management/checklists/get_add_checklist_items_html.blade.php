@@ -5,11 +5,8 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 <div class="row">
     <div class="col-9">
         <div class="row">
-            <div class="col-8">
+            <div class="col-12">
                 <h4>Checklist Items</h4>
-            </div>
-            <div class="col-4">
-                <a href="javascript: void(0);" class="btn btn-sm btn-primary add-checklist-item-no-form-button float-right"><i class="fa fa-plus mr-2"></i>Add Checklist Item</a>
             </div>
         </div>
         <div class="checklist-items-selected border border-primary" data-simplebar data-simplebar-auto-hide="false">
@@ -22,29 +19,21 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                 if($form_id) {
                     $form_name = $files -> getFormName($form_id);
                     $form_name_orig = $form_name;
-                    if(strlen($form_name) > 40) {
-                        $form_name = substr($form_name, 0, 40).'...';
+                    if(strlen($form_name) > 100) {
+                        $form_name = substr($form_name, 0, 100).'...';
                     }
                 }
                 @endphp
 
                 <li class="list-group-item checklist-item w-100 pt-1 pb-0" data-form-id="{{ $checklist_item -> checklist_form_id }}">
                     <div class="row">
-                        <div class="col-4">
-                            <div class="row">
-                                <div class="col-1">
-                                    <i class="fas fa-sort fa-lg mr-1 mt-4 text-primary checklist-item-handle ui-sortable-handle"></i>
+                        <div class="col-8">
+                            <div class="d-flex justify-content-start">
+                                <div class="mt-4">
+                                    <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i>
                                 </div>
-                                <div class="col-11">
-                                    <input type="text" class="custom-form-element form-input checklist-item-name required" value="{{ $checklist_item -> checklist_item_name }}" data-label="Form Display Name">
-                                </div>
+                                <div class="h5 text-primary mt-4" title="{{ $form_name_orig }}"><a href="/{{ $files -> getFormLocation($form_id) }}" target="_blank">{{ $form_name }}</a></div>
                             </div>
-                        </div>
-                        <div class="col-4">
-                            @if($form_name)
-                            <span class="font-8 text-secondary">Form</span>
-                            <div class="h5 text-primary mt-2" title="{{ $form_name_orig }}"><a href="/{{ $files -> getFormLocation($form_id) }}" target="_blank">{{ $form_name }}</a></div>
-                            @endif
                         </div>
                         <div class="col-4">
                             <div class="row">
@@ -118,7 +107,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                     <li class="list-group-item form-name" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">
                         <div class="d-flex justify-content-start">
                             <div class="mr-2">
-                                <a href="javascript: void(0)" class="btn btn-sm btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">Add</a>
+                                <a href="javascript: void(0)" class="btn btn-sm btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="/{{ $form -> file_location }}">Add</a>
                             </div>
                             <div class="mt-2" title="{{ $form -> file_name_display }}">{{ $form_name }}</div>
                         </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DocManagement\Create;
 
 use App\Http\Controllers\Controller;
+use App\Models\DocManagement\Checklists\Checklists;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\DocManagement\FieldInputs;
 use App\Models\DocManagement\Fields;
@@ -16,6 +17,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller {
+
+    public function get_replace_upload_details(Request $request) {
+
+        $form_id = $request -> form_id;
+        // get form details just to display
+        $upload = Upload::where('file_id', $form_id) -> first();
+        // all forms to select replacement from
+        $uploads = Upload::where('form_group_id', $request -> form_group_id) -> where('published', 'yes') -> where('active', 'yes') -> get();
+        // checklists that form is located in to display
+        $checklists = Checklists::whereIn('id', function ($query) use ($form_id) {
+            $query -> select('checklist_id')
+                -> from('docs_checklists_items')
+                -> where('checklist_form_id', $form_id);
+        })
+        -> orderBy('checklist_state', 'ASC')
+        -> orderBy('checklist_location_id', 'ASC')
+        -> orderBy('checklist_type', 'DESC')
+        -> orderBy('checklist_represent', 'DESC')
+        -> orderBy('checklist_sale_rent', 'DESC')
+        -> orderBy('checklist_property_type_id', 'ASC')
+        -> get();
+
+        // to run functions from ResourceItems
+        $resource_items = new ResourceItems();
+
+        return view('/doc_management/create/upload/get_replace_upload_details_html', compact('upload', 'uploads', 'checklists', 'resource_items'));
+
+
+    }
 
     public function replace_upload(Request $request) {
 

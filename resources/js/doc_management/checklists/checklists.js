@@ -191,8 +191,6 @@ if (document.URL.match(/checklists/)) {
 
             $('.add-to-checklist-button').not('disabled').click(add_to_checklist);
 
-            $('.add-checklist-item-no-form-button').click(add_to_checklist_no_form);
-
             $('#save_checklist_items_button').off('click').on('click', save_checklist_items);
 
             sortable_checklist_items();
@@ -224,14 +222,12 @@ if (document.URL.match(/checklists/)) {
                     let checklist_item = {};
 
                     let checklist_form_id = $(this).data('form-id');
-                    let checklist_item_name = $(this).find('.checklist-item-name').val();
                     let checklist_item_required = $(this).find('.checklist-item-required').val();
                     let checklist_item_group_id = $(this).find('.checklist-item-group-id').val();
                     let checklist_item_order = index;
 
                     checklist_item['checklist_id'] = checklist_id;
                     checklist_item['checklist_form_id'] = checklist_form_id;
-                    checklist_item['checklist_item_name'] = checklist_item_name;
                     checklist_item['checklist_item_required'] = checklist_item_required;
                     checklist_item['checklist_item_group_id'] = checklist_item_group_id;
                     checklist_item['checklist_item_order'] = checklist_item_order;
@@ -258,61 +254,14 @@ if (document.URL.match(/checklists/)) {
 
     }
 
-    function add_to_checklist_no_form() {
-
-        // options are saved in a hidden div on load since they are dynamic
-        let checklist_groups_options = $('#checklist_groups_options').html();
-        // this is the helper dragged and inserted in checklist items container
-        let checklist_item = ' \
-            <li class="list-group-item checklist-item w-100" data-form-id=""> \
-                <div class="row"> \
-                    <div class="col-4"> \
-                        <div class="row"> \
-                            <div class="col-1"> \
-                                <i class="fas fa-sort fa-lg mr-1 mt-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
-                            </div> \
-                            <div class="col-11"> \
-                                <input type="text" class="custom-form-element form-input checklist-item-name required" value="" data-label="Form Display Name"> \
-                            </div> \
-                        </div> \
-                    </div> \
-                    <div class="col-4"></div> \
-                    <div class="col-4"> \
-                        <div class="row"> \
-                            <div class="col"> \
-                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required"> \
-                                    <option value=""></option> \
-                                    <option value="yes">Yes</option> \
-                                    <option value="no">No</option> \
-                                </select> \
-                            </div> \
-                            <div class="col-6"> \
-                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-group-id required" data-label="Form Group"> \
-                                    <option value=""></option> \
-                                    ' + checklist_groups_options + ' \
-                                </select> \
-                            </div> \
-                            <div class="col"> \
-                                <a class="btn btn-danger delete-checklist-item-button ml-3 mt-1"><i class="fa fa-trash"></i></a> \
-                            </div> \
-                        </div> \
-                    </div> \
-                </div> \
-            </li> \
-        ';
-        $('.sortable-checklist-items').append(checklist_item);
-        $('.delete-checklist-item-button').click(delete_checklist_item);
-        form_elements();
-        forms_status();
-        sortable_checklist_items();
-    }
 
     function add_to_checklist() {
         let form_id = $(this).data('form-id');
         let text_orig = $(this).data('text');
+        let form_loc = $(this).data('form-loc');
         let text = text_orig;
-        if (text_orig.length > 40) {
-            text = text_orig.slice(0, 40) + '...';
+        if (text_orig.length > 100) {
+            text = text_orig.slice(0, 100) + '...';
         }
 
         // options are saved in a hidden div on load since they are dynamic
@@ -321,19 +270,13 @@ if (document.URL.match(/checklists/)) {
         let checklist_item = ' \
             <li class="list-group-item checklist-item w-100" data-form-id="' + form_id + '"> \
                 <div class="row"> \
-                    <div class="col-4"> \
-                        <div class="row"> \
-                            <div class="col-1"> \
-                                <i class="fas fa-sort fa-lg mr-1 mt-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
+                    <div class="col-8"> \
+                        <div class="d-flex justify-content-start"> \
+                            <div class="mt-4"> \
+                                <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
                             </div> \
-                            <div class="col-11"> \
-                                <input type="text" class="custom-form-element form-input checklist-item-name required" value="'+ text_orig + '" data-label="Form Display Name"> \
-                            </div> \
+                            <div class="h5 text-primary mt-4" title="' + text_orig + '"><a href="' + form_loc + '" target="_blank"> ' + text + '</a></div> \
                         </div> \
-                    </div> \
-                    <div class="col-4"> \
-                        <span class="small text-secondary">Form</span> \
-                        <div class="h5 text-primary" title="' + text_orig + '">' + text + '</div> \
                     </div> \
                     <div class="col-4"> \
                         <div class="row"> \
@@ -370,17 +313,14 @@ if (document.URL.match(/checklists/)) {
         .then(function (response) {
             if (response.data) {
                 let row = $('.sortable-checklist-items').find('.list-group-item').last();
-                row.find('.checklist-item-name').val(response.data.checklist_item_name);
                 row.find('.checklist-item-group-id').val(response.data.checklist_item_group_id);
                 row.find('.checklist-item-required').val(response.data.checklist_item_required);
             }
 
-            setTimeout(function() {
-                select_refresh();
-                form_elements();
-                forms_status();
-                sortable_checklist_items();
-            }, 300);
+            select_refresh();
+            form_elements();
+            forms_status();
+            sortable_checklist_items();
         })
         .catch(function (error) {
             console.log(error);

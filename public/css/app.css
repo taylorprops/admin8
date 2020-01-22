@@ -14272,6 +14272,22 @@ a:hover {
 
 .page-files .notactive {
   background: rgba(48, 167, 48, 0.1);
+  opacity: 0.6;
+}
+
+.page-files .modal-xl {
+  max-width: 80VW !important;
+  width: 80VW !important;
+}
+
+.page-files .replace-current-checklists {
+  height: 60VH;
+  overflow: auto;
+}
+
+.page-files .replace-form-options {
+  height: 60VH;
+  overflow: auto;
 }
 
 .page-add-fields {

@@ -66,7 +66,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 }).addClass('clickready');
 
                 $('.replace-upload').not('.clickready').off('click').on('click', function () {
-                    show_replace_upload($(this).data('id'));
+                    show_replace_upload($(this).data('id'), $(this).data('form-group-id'));
                 }).addClass('clickready');
 
             })
@@ -99,7 +99,7 @@ if (document.URL.match(/create\/upload\/files/)) {
         }).addClass('clickready');
 
         $('.replace-upload').off('click').on('click', function () {
-            show_replace_upload($(this).data('id'));
+            show_replace_upload($(this).data('id'), $(this).data('form-group-id'));
         }).addClass('clickready');
 
 
@@ -113,7 +113,28 @@ if (document.URL.match(/create\/upload\/files/)) {
         });
     }
 
-    function show_replace_upload(form_id) {
+    function show_replace_upload(form_id, form_group_id) {
+        $('#form_replace_modal').modal();
+        axios.get('/doc_management/get_replace_upload_details', {
+            params: {
+                form_id: form_id,
+                form_group_id: form_group_id
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+            $('#form_replace_div').html(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function replace_upload() {
 
     }
 

@@ -22,7 +22,21 @@
     }
     .notactive {
         background: rgba($success, .1);
+        opacity: 0.6;
     }
 
+    .modal-xl {
+        max-width: 80VW !important;
+        width: 80VW !important;
+    }
+
+    .replace-current-checklists {
+        height: 60VH;
+        overflow: auto;
+    }
+    .replace-form-options {
+        height: 60VH;
+        overflow: auto;
+    }
 
 }

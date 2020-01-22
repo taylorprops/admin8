@@ -51,7 +51,7 @@ if(strlen($file -> file_name_display) > 65) {
                         @if($file -> active == 'yes')
                             <div>
                                 <span @if($checklist_count == 0) title="Form is not in any checklists so it cannot be replaced" @else title="Replace this form with another in checklists" @endif>
-                                    <button class="replace-upload btn btn-sm btn-primary" data-id="{{ $file -> file_id }}" @if($checklist_count == 0) disabled @endif><i class="fad fa-retweet-alt mr-2"></i> Replace</button>
+                                    <button class="replace-upload btn btn-sm btn-primary" data-id="{{ $file -> file_id }}" data-form-group-id="{{ $form_group_id }}" @if($checklist_count == 0) disabled @endif><i class="fad fa-retweet-alt mr-2"></i> Replace</button>
                                 </span>
                             </div>
                         @endif

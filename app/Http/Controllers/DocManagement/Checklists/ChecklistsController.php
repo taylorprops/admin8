@@ -120,7 +120,6 @@ class ChecklistsController extends Controller
 
             $add_checklist_items -> checklist_id = $checklist_id;
             $add_checklist_items -> checklist_form_id = $checklist_items -> checklist_form_id ?? null;
-            $add_checklist_items -> checklist_item_name = $checklist_items -> checklist_item_name;
             $add_checklist_items -> checklist_item_required = $checklist_items -> checklist_item_required;
             $add_checklist_items -> checklist_item_group_id = $checklist_items -> checklist_item_group_id;
             $add_checklist_items -> checklist_item_order = $checklist_items -> checklist_item_order;
