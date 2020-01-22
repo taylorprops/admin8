@@ -1,5 +1,0 @@
-ctrl + s | focus on main search input
-ctrl + m | open menu and focus on first link
-ctrl + d | go to Dashboard
-
-
