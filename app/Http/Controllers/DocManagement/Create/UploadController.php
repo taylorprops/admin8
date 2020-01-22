@@ -16,9 +16,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller {
-    /****************** UPLOADS ******************/
 
-    /****************** UPLOADS ******************/
+    public function replace_upload(Request $request) {
+
+    }
 
     public function activate_upload(Request $request) {
         $upload_id = $request -> upload_id;
@@ -145,21 +146,6 @@ class UploadController extends Controller {
         $upload -> save();
     }
 
-    /* public function upload_file_page(Request $request) {
-
-    $state = $request -> state;
-    $id = $request -> id;
-    $association_details = [];
-    $association_details['state'] = $state;
-    $association_details['id'] = $id;
-
-    $states = Zips::States();
-
-    $resources = ResourceItems::orderBy('resource_order') -> get();
-
-    return view('/doc_management/create/upload/upload', compact('states', 'resources', 'association_details'));
-    } */
-
     public function upload_file(Request $request) {
 
         $file = $request -> file('file_upload');
@@ -273,4 +259,6 @@ class UploadController extends Controller {
         }
 
     }
+
 }
+

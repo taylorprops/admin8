@@ -64,6 +64,11 @@ if (document.URL.match(/create\/upload\/files/)) {
                 $('.delete-upload').not('.clickready').off('click').on('click', function () {
                     confirm_delete_upload($(this));
                 }).addClass('clickready');
+
+                $('.replace-upload').not('.clickready').off('click').on('click', function () {
+                    show_replace_upload($(this).data('id'));
+                }).addClass('clickready');
+
             })
             .catch(function (error) {
 
@@ -93,6 +98,10 @@ if (document.URL.match(/create\/upload\/files/)) {
             confirm_delete_upload($(this));
         }).addClass('clickready');
 
+        $('.replace-upload').off('click').on('click', function () {
+            show_replace_upload($(this).data('id'));
+        }).addClass('clickready');
+
 
 
         $('.uploads-filter-published, .uploads-filter-active').change(function () {
@@ -104,6 +113,10 @@ if (document.URL.match(/create\/upload\/files/)) {
         });
     }
 
+    function show_replace_upload(form_id) {
+
+    }
+
     function sort_uploads(ele) {
         let order = ele.val();
         let list_div = ele.closest('.list-div');
@@ -112,7 +125,6 @@ if (document.URL.match(/create\/upload\/files/)) {
         get_forms(form_group_id, state, order);
 
     }
-
 
     function activate_upload(ele) {
         let upload_id = ele.data('id');

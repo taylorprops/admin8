@@ -226,7 +226,7 @@ if (document.URL.match(/checklists/)) {
                     let checklist_form_id = $(this).data('form-id');
                     let checklist_item_name = $(this).find('.checklist-item-name').val();
                     let checklist_item_required = $(this).find('.checklist-item-required').val();
-                    let checklist_item_group_id = $(this).find('.checklist-item-form-group-id').val();
+                    let checklist_item_group_id = $(this).find('.checklist-item-group-id').val();
                     let checklist_item_order = index;
 
                     checklist_item['checklist_id'] = checklist_id;
@@ -287,7 +287,7 @@ if (document.URL.match(/checklists/)) {
                                 </select> \
                             </div> \
                             <div class="col-6"> \
-                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-form-group-id required" data-label="Form Group"> \
+                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-group-id required" data-label="Form Group"> \
                                     <option value=""></option> \
                                     ' + checklist_groups_options + ' \
                                 </select> \
@@ -345,7 +345,7 @@ if (document.URL.match(/checklists/)) {
                                 </select> \
                             </div> \
                             <div class="col-6"> \
-                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-form-group-id required" data-label="Form Group"> \
+                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-group-id required" data-label="Form Group"> \
                                     <option value=""></option> \
                                     ' + checklist_groups_options + ' \
                                 </select> \
@@ -360,9 +360,33 @@ if (document.URL.match(/checklists/)) {
         ';
         $('.sortable-checklist-items').append(checklist_item);
         $('.delete-checklist-item-button').click(delete_checklist_item);
-        form_elements();
-        forms_status();
-        sortable_checklist_items();
+
+        // if the form is already included in another checklist get the details and add it to this one
+        axios.get('/doc_management/get_checklist_item_details', {
+            params: {
+                form_id: form_id
+            },
+        })
+        .then(function (response) {
+            if (response.data) {
+                let row = $('.sortable-checklist-items').find('.list-group-item').last();
+                row.find('.checklist-item-name').val(response.data.checklist_item_name);
+                row.find('.checklist-item-group-id').val(response.data.checklist_item_group_id);
+                row.find('.checklist-item-required').val(response.data.checklist_item_required);
+            }
+
+            setTimeout(function() {
+                select_refresh();
+                form_elements();
+                forms_status();
+                sortable_checklist_items();
+            }, 300);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
 
     }
 

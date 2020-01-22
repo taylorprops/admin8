@@ -56,7 +56,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                                     </select>
                                 </div>
                                 <div class="col-6">
-                                    <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-form-group-id required" data-label="Form Group">
+                                    <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-group-id required" data-label="Form Group">
                                         <option value=""></option>
                                         @foreach($checklist_groups as $checklist_group)
                                         <option value="{{ $checklist_group -> resource_id }}" @if( $checklist_item -> checklist_item_group_id == $checklist_group -> resource_id) selected @endif>{{ $checklist_group -> resource_name }}</option>
@@ -139,7 +139,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 <input type="hidden" id="add_item_checklist_type" value="{{ $checklist -> checklist_type }}">
 
 
-<input type="hidden" id="checklist_header_val" value="{{ $checklist -> checklist_state }} @if($checklist -> checklist_state != $location) | {{ $location }} @endif - {{ ucwords($checklist -> checklist_sale_rent) }} - {{ ucwords($checklist -> checklist_type) }} - {{ $checklist -> checklist_property_type_id }} @if($checklist -> checklist_property_sub_type_id != '') - {{ $checklist -> checklist_property_sub_type_id }}  @endif - {{ ucwords($checklist -> checklist_represent) }}">
+<input type="hidden" id="checklist_header_val" value="{{ $checklist -> checklist_state }} @if($checklist -> checklist_state != $location) | {{ $location }} @endif - {{ ucwords($checklist -> checklist_sale_rent) }} - {{ ucwords($checklist -> checklist_type) }} - {{ $resource_items -> getTagName($checklist -> checklist_property_type_id) }} @if($checklist -> checklist_property_sub_type_id != '') - {{ $resource_items -> getTagName($checklist -> checklist_property_sub_type_id) }}  @endif - {{ ucwords($checklist -> checklist_represent) }}">
 
 
 {{-- options for checklist group select --}}

@@ -59,7 +59,9 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     // Publish upload
     Route::post('/doc_management/publish_upload', 'DocManagement\Create\UploadController@publish_upload');
     // Delete uploaded files
-    Route::post('/doc_management/delete_upload', 'DocManagement\Create\UploadController@delete_upload') -> name('doc_management.delete_upload');
+    Route::post('/doc_management/delete_upload', 'DocManagement\Create\UploadController@delete_upload');
+    // Replace uploaded files in checklists
+    Route::post('/doc_management/replace_upload', 'DocManagement\Create\UploadController@replace_upload');
 
     /* Add Resource  */
     Route::post('/doc_management/resources/add', 'DocManagement\Resources\ResourcesController@resources_add');
@@ -91,6 +93,7 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     Route::post('/doc_management/add_checklist_items', 'DocManagement\Checklists\ChecklistsController@add_checklist_items');
 
 
+
     /**********  DATA - GET /**********/
 
     /* get common fields for select options */
@@ -108,6 +111,8 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     // get checklist items
     Route::get('/doc_management/get_checklist_items', 'DocManagement\Checklists\ChecklistsController@get_checklist_items');
 
+    // get checklist item details
+    Route::get('/doc_management/get_checklist_item_details', 'DocManagement\Checklists\ChecklistsController@get_checklist_item_details');
 
 
 });

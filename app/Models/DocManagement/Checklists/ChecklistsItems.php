@@ -15,4 +15,6 @@ class ChecklistsItems extends Model
         }
         return 0;
     }
+
+
 }

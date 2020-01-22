@@ -41,7 +41,7 @@ if(strlen($file -> file_name_display) > 65) {
                         </div>
                         <div>
                             @if($file -> active == 'yes')
-                                <span @if($checklist_count > 0) title="You can only deactivate a form that is not in any checklists. It must first be removed" @else title="Once deactivated you can no longer add the form to checklists" @endif>
+                                <span @if($checklist_count > 0) title="You can only deactivate a form that is not in any checklists. It must first be removed from all checklists" @else title="Once deactivated you can no longer add the form to checklists" @endif>
                                     <button type="button" class="activate-upload btn btn-sm btn-danger" data-id="{{ $file -> file_id }}" data-active="no" data-state="{{ $state }}" data-form-group-id="{{ $form_group_id }}" @if($checklist_count > 0) disabled @endif><i class="fad fa-toggle-on mr-2"></i> Deactivate</button>
                                 </span>
                             @else
@@ -51,20 +51,20 @@ if(strlen($file -> file_name_display) > 65) {
                         @if($file -> active == 'yes')
                             <div>
                                 <span @if($checklist_count == 0) title="Form is not in any checklists so it cannot be replaced" @else title="Replace this form with another in checklists" @endif>
-                                    <button class="replace-upload btn btn-sm btn-primary" data-id="{{ $file -> file_id }}" @if($checklist_count == 0) disabled @endif><i class="fad fa-retweet-alt mr-2"></i> Replace With</button>
+                                    <button class="replace-upload btn btn-sm btn-primary" data-id="{{ $file -> file_id }}" @if($checklist_count == 0) disabled @endif><i class="fad fa-retweet-alt mr-2"></i> Replace</button>
                                 </span>
                             </div>
                         @endif
                     @endif
                     <div>
-                        <button class="edit-upload btn btn-sm btn-primary" data-id="{{ $file -> file_id }}" title="Edit form details"><i class="fad fa-edit mr-2"></i> Edit Details</button>
+                        <button class="edit-upload btn btn-sm btn-primary" data-id="{{ $file -> file_id }}" title="Edit form details"><i class="fad fa-edit mr-2"></i> Edit</button>
                     </div>
                     <div>
                         <button class="duplicate-upload btn btn-sm btn-primary" data-id="{{ $file -> file_id }}" data-state="{{ $state }}" data-form-group-id="{{ $form_group_id }}" title="Create a duplicate of the file including all added fields"><i class="fad fa-clone mr-2"></i> Duplicate</button>
                     </div>
                     @if($file -> published == 'no')
                         <div>
-                            <button class="publish-upload btn btn-sm btn-success" data-id="{{ $file -> file_id }}" data-state="{{ $state }}" data-form-group-id="{{ $form_group_id }}" title="Once published you can add the form to checklists. It cannot be unpublished!"><i class="fad fa-file-export mr-2"></i> Publish</button>
+                            <button class="publish-upload btn btn-sm btn-success" data-id="{{ $file -> file_id }}" data-state="{{ $state }}" data-form-group-id="{{ $form_group_id }}" title="Once published you can add the form to checklists. It will also be available for agents to access. It cannot be unpublished!"><i class="fad fa-file-export mr-2"></i> Publish</button>
                         </div>
                         <div>
                             <button class="delete-upload btn btn-sm btn-danger" data-id="{{ $file -> file_id }}" data-state="{{ $state }}" data-form-group-id="{{ $form_group_id }}" title="Permantly delete form"><i class="fad fa-trash-alt mr-2"></i> Delete</button>

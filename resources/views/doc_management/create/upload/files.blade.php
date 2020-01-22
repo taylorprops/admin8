@@ -81,6 +81,9 @@
 </div><!-- ./ .container -->
 
 <!-- Modals -->
+
+
+
 <div class="modal fade draggable" id="edit_file_modal" tabindex="-1" role="dialog" aria-labelledby="edit_file_modal_title" aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

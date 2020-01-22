@@ -11,6 +11,10 @@ use App\Models\DocManagement\Upload;
 
 class ChecklistsController extends Controller
 {
+    public function get_checklist_item_details(Request $request) {
+        $details = ChecklistsItems::where('checklist_form_id', $request -> form_id) -> first();
+        return $details ?? null;
+    }
 
     public function get_checklist_items(Request $request) {
         $checklist_id = $request -> checklist_id;
