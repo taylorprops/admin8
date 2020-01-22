@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Models\DocManagement\Checklists;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ChecklistsItems extends Model
+{
+    public $table = 'docs_checklists_items';
+
+    public function ScopeInChecklist($query, $form_id) {
+        $found = $query -> where('checklist_form_id', $form_id) -> get();
+        if($found) {
+            return count($found);
+        }
+        return 0;
+    }
+}

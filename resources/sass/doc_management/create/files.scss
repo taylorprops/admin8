@@ -1,0 +1,28 @@
+.page-files {
+    overflow: hidden;
+
+    .list-group-container {
+        max-height: 75VH;
+        overflow: auto;
+    }
+    .list-group-divs {
+        max-height: 67VH;
+        overflow: auto;
+    }
+
+    .tab-content {
+        padding: 0px !important
+    }
+
+    .published {
+        background: rgba($success, .3);
+    }
+    .notpublished {
+        background: rgba($blue, .1);
+    }
+    .notactive {
+        background: rgba($success, .1);
+    }
+
+
+}

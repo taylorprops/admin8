@@ -1,0 +1,78 @@
+.resizable {
+  outline: 1px solid transparent;
+  /* prevent flickering */
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  word-wrap: break-word;
+}
+
+.resizable.active {
+  outline: 1px dashed blue;
+}
+
+.resizable > :not(.resize-handle) {
+  cursor: default;
+}
+
+.resize-handle {
+  background-color: #fff;
+  border: 1px solid blue;
+  box-sizing: border-box;
+  border-radius: 1px;
+  display: none;
+  height: 10px;
+  position: absolute;
+  width: 10px;
+  z-index: 1000;
+}
+
+.resizable.active .resize-handle {
+  cursor: pointer;
+  display: block;
+}
+
+.resize-handle-rotate {
+  border-radius: 50%;
+  left: calc(50% - 5px);
+  top: -25px;
+}
+
+.resize-handle-n {
+  left: calc(50% - 5px);
+  top: -5px;
+}
+
+.resize-handle-ne {
+  right: -5px;
+  top: -5px;
+}
+
+.resize-handle-e {
+  right: -5px;
+  top: calc(50% - 5px);
+}
+
+.resize-handle-se {
+  bottom: -5px;
+  right: -5px;
+}
+
+.resize-handle-s {
+  bottom: -5px;
+  left: calc(50% - 5px);
+}
+
+.resize-handle-sw {
+  bottom: -5px;
+  left: -5px;
+}
+
+.resize-handle-w {
+  left: -5px;
+  top: calc(50% - 5px);
+}
+
+.resize-handle-nw {
+  left: -5px;
+  top: -5px;
+}

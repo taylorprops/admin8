@@ -1,0 +1,214 @@
+.form-select, .form-checkbox, .form-radio, .form-input-file, .form-input-color {
+    display: none;
+}
+.form-ele {
+    position: relative;
+    margin-top: .75rem;
+    margin-bottom: .75rem;
+
+    .disabled {
+        background: rgba($primary-color, .1);
+    }
+
+    .invalid-label {
+        color: $danger !important;
+    }
+    .invalid-input-file::placeholder {
+        color: $danger !important;
+    }
+    .invalid-i {
+        color: $danger !important;
+    }
+    .invalid-input {
+        border: 1px solid $danger !important;
+    }
+    .invalid-input-file {
+        border-bottom: 1px solid $danger !important;
+    }
+
+    .form-input, .form-textarea, .form-select-value-input {
+        width: 100%;
+        padding: 15px  5px 5px 10px;
+        //border: none;
+        //border-bottom: 1px solid #ccc;
+        border: 1px solid #ccc;
+        color: #686767;
+        font-size: 1rem;
+    }
+
+    .form-select {
+        display: none;
+    }
+
+    .form-input-label, .form-textarea-label, .form-select-label {
+        position: absolute;
+        top: 15px;
+        left: 5px;
+        background: #fff;
+        padding: 0 5px;
+        font-size: 1rem;
+        color: #b9b5b5;
+        transition: all .3s;
+        //z-index: 5;
+    }
+    // .form-select-label {
+    //     width: 100%;
+    // }
+    .form-input-label.active, .form-textarea-label.active, .form-select-label.active {
+        position: absolute;
+        top: -5px;
+        font-size: .8rem;
+        color: $secondary-color;
+        line-height: .6rem;
+        border-radius: 0px;
+        padding-bottom: 3px;
+    }
+
+    .form-textarea {
+        width: 100%;
+        height: auto;
+    }
+
+    .form-select-wrapper {
+        position: relative;
+        height: 60px;
+    }
+    .form-select-value-cancel {
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        top: 35%;
+        right: 15px;
+        cursor: pointer;
+        z-index: 2;
+    }
+    .form-select-value-input:hover {
+        cursor: pointer;
+    }
+    .form-select-dropdown {
+        display: none;
+        position: absolute;
+        top: 45px;
+        left: 0px;
+        background: #fff;
+        border: 1px solid #ccc;
+        width: 100%;
+        border-top: none;
+        z-index: 1;
+    }
+    .form-select-save-div {
+        background: $blue-light;
+    }
+    .form-select-value-cancel {
+        display: none;
+    }
+    .form-select-search-div {
+        width: 100%;
+        padding: 4px;
+        background: $blue-light;
+    }
+    .form-select-search-input {
+        width: 90%;
+        font-size: .8rem;
+        padding-left: 5px;
+    }
+
+    .form-select-options-div {
+        padding-top: 5px;
+        max-height: 400px;
+        overflow: auto;
+    }
+    .form-select-ul {
+        list-style: none;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+    }
+    .form-select-li {
+        margin: 0px;
+        padding: 5px 0 5px 10px;
+        font-size: .9rem;
+        color: #162027;
+        border-bottom: 1px solid #e9e8e8;
+    }
+    .form-select-li:hover {
+        background: $blue-light;
+        cursor: pointer;
+    }
+    .form-select-li.active {
+        color: $blue;
+        font-weight: bold;
+    }
+    .form-select-matched-option {
+        background: $blue-light;
+        color: $blue;
+        font-weight: bold;
+    }
+
+    .colorpicker {
+        visibility: hidden;
+    }
+    .colorpicker-div {
+        border: 1px solid $primary-color;
+        padding: 2px 2px 2px 10px;
+    }
+    .colorpicker-text {
+        color: $primary-color;
+        margin-top: .8rem;
+    }
+    .colorpicker-label {
+        height: 40px;
+        width: 40px;
+        margin-bottom: 0px !important;
+        cursor: pointer;
+    }
+    .colorpicker-text:hover {
+        cursor: pointer;
+    }
+
+
+}
+
+// datepicker
+.qs-datepicker-container {
+    width: 300px !important;
+    height: 300px !important;
+}
+.qs-datepicker .qs-controls {
+    background: $primary-color;
+    color: #fff;
+}
+.qs-datepicker .qs-arrow.qs-left::after {
+    border-right-color: white;
+}
+.qs-datepicker .qs-arrow.qs-right::after {
+    border-left-color: white;
+}
+.qs-datepicker .qs-arrow:hover {
+    background: rgba(white, 0.1);
+}
+
+.qs-datepicker .qs-arrow:hover.qs-right::after {
+    border-left-color: white;
+}
+.qs-datepicker .qs-arrow:hover.qs-left::after {
+    border-right-color: white;
+}
+.qs-datepicker .qs-month, .qs-datepicker .qs-year {
+    font-size: 1rem;
+}
+.qs-datepicker .qs-square.qs-day {
+    font-weight: normal !important;
+    font-size: .7rem !important;
+}
+.qs-datepicker .qs-square {
+    height: 40px;
+}
+.qs-datepicker .qs-overlay {
+    background: rgba($primary-color, .8) !important;
+    color: #fff !important;
+}
+.qs-datepicker .qs-overlay .qs-submit.qs-disabled {
+    color: rgba(255,255,255,.3);
+    border-color:  rgba(255,255,255,.3);
+}
