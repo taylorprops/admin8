@@ -1,4 +1,4 @@
-<div class="h3 text-secondary mb-4"><span class="checklist-type">Listing</span> Checklists</div>
+<div class="h3 text-secondary mb-4 property-type-div-header">{{ ucwords($checklist_type) }} Checklists</div>
 
 @foreach($checklist_property_types_items as $checklist_property_types)
 
@@ -51,7 +51,7 @@
                     <div class="col-6">
                         <div class="d-flex justify-content-start">
                             <div>
-                                <span class="chip bg-primary-light text-primary-dark">{{ $checklist_property_type_details['checklist_count'] ?? 0 }}</span>
+                                <span class="chip checklist-items-chip bg-primary-light text-primary-dark">{{ $checklist_property_type_details['checklist_count'] ?? 0 }}</span>
                             </div>
                             <div>
                                 <a href="javascript: void(0)"

@@ -19,7 +19,7 @@ Route::middleware('admin') -> group(function () {
     Route::get('/doc_management/resources/resources', 'DocManagement\Resources\ResourcesController@resources');
 
     /* Checklists  */
-    Route::get('/doc_management/checklists', 'DocManagement\Checklists\ChecklistsController@checklists');
+    Route::get('/doc_management/checklists/{checklist_id?}/{checklist_location_id?}/{checklist_type?}', 'DocManagement\Checklists\ChecklistsController@checklists');
 
 
 
@@ -60,8 +60,12 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     Route::post('/doc_management/publish_upload', 'DocManagement\Create\UploadController@publish_upload');
     // Delete uploaded files
     Route::post('/doc_management/delete_upload', 'DocManagement\Create\UploadController@delete_upload');
+    // Manage uploaded files in checklists
+    Route::post('/doc_management/manage_upload', 'DocManagement\Create\UploadController@manage_upload');
     // Replace uploaded files in checklists
     Route::post('/doc_management/replace_upload', 'DocManagement\Create\UploadController@replace_upload');
+    // Remove uploaded files in checklists
+    Route::post('/doc_management/remove_upload', 'DocManagement\Create\UploadController@remove_upload');
 
     /* Add Resource  */
     Route::post('/doc_management/resources/add', 'DocManagement\Resources\ResourcesController@resources_add');
@@ -114,9 +118,11 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     // get checklist item details
     Route::get('/doc_management/get_checklist_item_details', 'DocManagement\Checklists\ChecklistsController@get_checklist_item_details');
 
-    // get details to replace form in checklist
-    Route::get('/doc_management/get_replace_upload_details', 'DocManagement\Create\UploadController@get_replace_upload_details');
+    // get details to manage form in checklist
+    Route::get('/doc_management/get_manage_upload_details', 'DocManagement\Create\UploadController@get_manage_upload_details');
 
+    // get details to add to checklists
+    Route::get('/doc_management/get_add_to_checklists_details', 'DocManagement\Create\UploadController@get_add_to_checklists_details');
 
 });
 

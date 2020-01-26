@@ -18,18 +18,51 @@ use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller {
 
-    public function get_replace_upload_details(Request $request) {
+    public function get_add_to_checklists_details(Request $request) {
 
-        $form_id = $request -> form_id;
+        $file_id = $request -> form_id;
         // get form details just to display
-        $upload = Upload::where('file_id', $form_id) -> first();
+        $uploaded_file = Upload::where('file_id', $file_id) -> first();
+        // to run functions from ResourceItems
+        $resource_items = new ResourceItems();
+        // checklists to add to
+        $checklists = Checklists::orderBy('checklist_state', 'ASC')
+        -> orderBy('checklist_location_id', 'ASC')
+        -> orderBy('checklist_type', 'DESC')
+        -> orderBy('checklist_represent', 'DESC')
+        -> orderBy('checklist_sale_rent', 'DESC')
+        -> orderBy('checklist_property_type_id', 'ASC')
+        -> get();
+        // checklist items to view in checklists
+        $checklists_items = new ChecklistsItems();
+        // options for required and form_group
+        $form_groups = ResourceItems::where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
+        // for upload functions
+        $upload = new Upload();
+
+        return view('/doc_management/create/upload/get_add_to_checklists_details_html', compact('file_id', 'uploaded_file', 'resource_items', 'checklists', 'checklists_items', 'form_groups', 'checklist_groups', 'upload'));
+
+    }
+
+    public function get_manage_upload_details(Request $request) {
+
+        $file_id = $request -> form_id;
+        // get form details just to display
+        $uploaded_file = Upload::where('file_id', $file_id) -> first();
         // all forms to select replacement from
-        $uploads = Upload::where('form_group_id', $request -> form_group_id) -> where('published', 'yes') -> where('active', 'yes') -> get();
+        $uploads = Upload::where('form_group_id', $request -> form_group_id) -> where('published', 'yes') -> where('active', 'yes')
+        -> whereNotIn('file_id', function ($query) use ($file_id) {
+            $query -> select('checklist_form_id')
+                -> from('docs_checklists_items')
+                -> groupBy('checklist_form_id');
+        })
+        -> orderBy('file_name_display', 'ASC') -> get();
         // checklists that form is located in to display
-        $checklists = Checklists::whereIn('id', function ($query) use ($form_id) {
+        $checklists = Checklists::whereIn('id', function ($query) use ($file_id) {
             $query -> select('checklist_id')
                 -> from('docs_checklists_items')
-                -> where('checklist_form_id', $form_id);
+                -> where('checklist_form_id', $file_id);
         })
         -> orderBy('checklist_state', 'ASC')
         -> orderBy('checklist_location_id', 'ASC')
@@ -42,13 +75,21 @@ class UploadController extends Controller {
         // to run functions from ResourceItems
         $resource_items = new ResourceItems();
 
-        return view('/doc_management/create/upload/get_replace_upload_details_html', compact('upload', 'uploads', 'checklists', 'resource_items'));
+        return view('/doc_management/create/upload/get_manage_upload_details_html', compact('file_id', 'uploaded_file', 'uploads', 'checklists', 'resource_items'));
+    }
 
-
+    public function remove_upload(Request $request) {
+        $form_id = $request -> form_id;
+        ChecklistsItems::where('checklist_form_id', $form_id)
+            -> delete();
     }
 
     public function replace_upload(Request $request) {
+        $old_id = $request -> old_form_id;
+        $new_id = $request -> new_form_id;
 
+        ChecklistsItems::where('checklist_form_id', $old_id)
+            -> update(['checklist_form_id' => $new_id]);
     }
 
     public function activate_upload(Request $request) {

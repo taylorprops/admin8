@@ -14,6 +14,11 @@
         padding: 0px !important
     }
 
+    .checklist-count-chip {
+        width: 40px;
+        text-align: center;
+    }
+
     .published {
         background: rgba($success, .3);
     }
@@ -21,22 +26,64 @@
         background: rgba($blue, .1);
     }
     .notactive {
+        display: none;
         background: rgba($success, .1);
         opacity: 0.6;
     }
 
     .modal-xl {
-        max-width: 80VW !important;
-        width: 80VW !important;
+        max-width: 95VW !important;
+        width: 95VW !important;
+    }
+    .modal-xl .modal-body {
+        min-height: 400px;
     }
 
-    .replace-current-checklists {
+
+    .manage-current-checklists {
+        height: 63VH;
+        overflow: auto;
+
+        .form-ele {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+    }
+    .manage-form-options {
         height: 60VH;
         overflow: auto;
     }
-    .replace-form-options {
-        height: 60VH;
+
+    .add-to-checklists-div {
+        height: 55VH;
         overflow: auto;
+        overflow-x: hidden !important;
     }
+    #add_to_checklists_table_filter {
+        margin-right: 25px;
+    }
+    #add_to_checklists_table .form-ele {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    #add_to_checklists_table td {
+        vertical-align: middle;
+    }
+    .collapsible-container {
+        position: relative;
+    }
+    .checklist-items-collapsible {
+        background: #fff;
+        width: 91.5VW;
+        position: absolute;
+        left: -5px;
+        top: 15px;
+        z-index: 1600;
+        padding: 10px;
+    }
+    .order-checklist-item-sortable-handle {
+        cursor: move;
+    }
+
 
 }

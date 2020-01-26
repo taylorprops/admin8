@@ -40,14 +40,14 @@ a:hover {
     padding: 0.2rem .6rem !important;
     font-size: 0.75rem !important;
 }
+.btn.disabled, .btn:disabled {
+    opacity: 0.25;
+}
 
+.chip {
+    cursor: default;
+}
 
-/* input, select, textarea {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-bottom: 1px solid #ccc;
-} */
 
 .container {
     max-width: 1500px !important;
@@ -86,6 +86,20 @@ a:hover {
     border-radius: 0px;
     color: #fff;
 }
+
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before {
+    bottom: .5em !important;
+}
+
 
 
 

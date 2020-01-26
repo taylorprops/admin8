@@ -41,18 +41,18 @@
                                 <option value="added">Recently Added</option>
                             </select>
                         </div>
-                        <div class="mr-2">
-                            <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-active" data-label="Active">
-                                <option value="all">Show All</option>
-                                <option value="active">Active</option>
-                                <option value="notactive">Not Active</option>
-                            </select>
-                        </div>
                         <div>
                             <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-published" data-label="Published">
                                 <option value="all">Show All</option>
                                 <option value="published">Published</option>
                                 <option value="notpublished">Not published</option>
+                            </select>
+                        </div>
+                        <div class="mr-2">
+                            <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-active" data-label="Active">
+                                <option value="all">Show All</option>
+                                <option value="active" selected>Active</option>
+                                <option value="notactive">Not Active</option>
                             </select>
                         </div>
                         <div>
@@ -81,25 +81,94 @@
 
     <!-- Modals -->
 
-    <div class="modal fade draggable" id="form_replace_modal" tabindex="-1" role="dialog" aria-labelledby="form_replace_title" aria-hidden="true">
+    <div class="modal fade draggable" id="add_to_checklists_modal" tabindex="-1" role="dialog" aria-labelledby="add_to_checklists_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
-                <form id="form_replace_form">
+                <form id="add_to_checklists_form">
                     <div class="modal-header bg-primary draggable-handle">
-                        <h3 class="modal-title" id="form_replace_title">Replace Form</h3>
+                        <h3 class="modal-title" id="add_to_checklists_modal_title">Add Form to Checklists <span class="text-yellow-light ml-3" id="add_to_checklists_form_name"></span></h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         @csrf
-                        <div id="form_replace_div"> </div>
+                        <div id="add_form_to_checklists_div"> </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-around">
                         <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                        <a class="btn btn-success" id="save_form_replace_button"><i class="fad fa-check mr-2"></i> Save</a>
+                        <a class="btn btn-success" id="save_add_to_checklists_button"><i class="fad fa-check mr-2"></i> Save</a>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade draggable" id="remove_form_modal" tabindex="-1" role="dialog" aria-labelledby="remove_form_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary draggable-handle">
+                    <h3 class="modal-title" id="remove_form_title">Remove Form</h3>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        Are you sure you want to remove this form from all checklists?
+                        <br><br>
+                        <div class="text-danger font-weight-bold" id="remove_form_name"></div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-around">
+                    <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                    <a class="btn btn-success modal-confirm-button" id="confirm_remove_from_checklist_button"><i class="fad fa-check mr-2"></i> Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade draggable" id="replace_form_modal" tabindex="-1" role="dialog" aria-labelledby="replace_form_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary draggable-handle">
+                    <h3 class="modal-title" id="replace_form_title">Replace Form</h3>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        Are you sure you want to replace this form in all checklists?
+                        <br><br>
+                        <div class="font-weight-bold">
+                            <div class="text-danger">Old: <span id="replace_old_form"></span></div>
+                            <div class="text-success">New: <span id="replace_new_form"></span></div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-around">
+                    <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                    <a class="btn btn-success modal-confirm-button" id="confirm_replace_form_button"><i class="fad fa-check mr-2"></i> Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade draggable" id="form_manage_modal" tabindex="-1" role="dialog" aria-labelledby="form_manage_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary draggable-handle">
+                    <h3 class="modal-title" id="form_manage_title">Manage Form</h3>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="form_manage_div"> </div>
+                </div>
             </div>
         </div>
     </div>

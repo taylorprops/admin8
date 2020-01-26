@@ -68,6 +68,9 @@ window.form_elements = function () {
                 // select label is added in select_html
                 // file label is added in file_html
                 let label = $(this).data('label');
+                if(!label) {
+                    label = '';
+                }
 
                 if (form_type == 'form-input' || form_type == 'form-textarea') {
 

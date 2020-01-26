@@ -22,13 +22,17 @@ class ResourceItems extends Model
     }
 
     public function scopeGetTagName($query, $id) {
-        $tags = $query -> where('resource_id', $id) -> first();
-        return $tags -> resource_name;
+        if($id) {
+            $tags = $query -> where('resource_id', $id) -> first();
+            return $tags -> resource_name;
+        }
+        return false;
     }
 
     public function scopeGetTagColor($query, $id) {
         $tags = $query -> where('resource_id', $id) -> first();
         return $tags -> resource_color;
     }
+
 
 }

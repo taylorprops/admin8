@@ -98,18 +98,13 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                     @endphp
 
                     @foreach($forms as $form)
-                    @php
-                    $form_name = $form -> file_name_display;
-                    if(strlen($form -> file_name_display) > 40) {
-                        $form_name = substr($form -> file_name_display, 0, 40).'...';
-                    }
-                    @endphp
+
                     <li class="list-group-item form-name" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">
                         <div class="d-flex justify-content-start">
                             <div class="mr-2">
                                 <a href="javascript: void(0)" class="btn btn-sm btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="/{{ $form -> file_location }}">Add</a>
                             </div>
-                            <div class="mt-2" title="{{ $form -> file_name_display }}">{{ $form_name }}</div>
+                            <div class="mt-2" title="{{ $form -> file_name_display }}">{{ shorten_text($form -> file_name_display, 40) }}</div>
                         </div>
                     </li>
 

@@ -15,6 +15,17 @@ if (document.URL.match(/checklists/)) {
             }
         });
 
+        let show_checklist_id = get_url_parameters('checklist_id');
+        if (show_checklist_id) {
+            add_checklist_items(show_checklist_id);
+            let checklist_location_id = get_url_parameters('checklist_location_id');
+            let type = get_url_parameters('checklist_type');
+            $('#list_' + checklist_location_id).trigger('click');
+            $('#list_div_' + checklist_location_id).find('.checklist-type-option').val(type).trigger('change');
+            checklist_type();
+            select_refresh();
+        }
+
     });
 
     // functions to run on load and after adding elements
@@ -25,11 +36,14 @@ if (document.URL.match(/checklists/)) {
         // delete checklist
         $('.delete-checklist-button').off('click').on('click', confirm_delete_checklist);
         // add items to checklist
-        $('.add-items-button').off('click').on('click', checklist_items);
+        $('.add-items-button').off('click').on('click', function () {
+            add_checklist_items($(this).data('checklist-id'));
+        });
 
         // toggle listing and contract checklists
+        checklist_type();
         $('.checklist-type-option').unbind('change').bind('change', function () {
-            checklist_type($(this));
+            checklist_type();
         });
 
         sortable_checklists();
@@ -37,22 +51,18 @@ if (document.URL.match(/checklists/)) {
 
     }
 
-    function checklist_type(ele = null) {
+    function checklist_type() {
         $('.checklist-items-container').hide();
-        if (ele) {
-            if (ele.val() == 'listing') {
-                $('.checklist-items-listing').show();
+        $('.checklist-type-option').each(function () {
+            let checklist_type = $(this).val().charAt(0).toUpperCase() + $(this).val().slice(1);
+            $(this).closest('.list-div').find('.property-type-div-header').text(checklist_type + ' Checklist');
+            if ($(this).val() == 'listing') {
+                $(this).closest('.list-div').find('.checklist-items-listing').show();
             } else {
-                $('.checklist-items-contract').show();
+                $(this).closest('.list-div').find('.checklist-items-contract').show();
             }
-            $('.checklist-type-option').val(ele.val());
-            select_refresh();
+        });
 
-            let type = ele.val().charAt(0).toUpperCase() + ele.val().slice(1);
-            $('.checklist-type').text(type);
-        } else {
-
-        }
     }
 
     function sortable_checklists() {
@@ -143,9 +153,8 @@ if (document.URL.match(/checklists/)) {
 
 
     // add/edit checklist items
-    function checklist_items() {
+    function add_checklist_items(checklist_id) {
 
-        let checklist_id = $(this).data('checklist-id');
         // get checklist details html to add to modal
         axios.get('/doc_management/get_checklist_items', {
             params: {
@@ -476,7 +485,8 @@ if (document.URL.match(/checklists/)) {
     function get_checklists(checklist_location_id, checklist_type) {
         let options = {
             params: {
-                checklist_location_id: checklist_location_id
+                checklist_location_id: checklist_location_id,
+                checklist_type: checklist_type
             },
             headers: {
                 'Accept-Version': 1,
@@ -493,7 +503,8 @@ if (document.URL.match(/checklists/)) {
                 $('.checklist-items-' + checklist_type).show();
                 $('#checklist_modal').modal('hide');
                 // make sure correct checklist type is shown
-                $('.checklist-type-option').val(checklist_type);
+                //$('.checklist-type-option').val(checklist_type);
+
                 select_refresh();
                 init();
             })

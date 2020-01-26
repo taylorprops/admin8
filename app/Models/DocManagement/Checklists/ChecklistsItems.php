@@ -16,5 +16,10 @@ class ChecklistsItems extends Model
         return 0;
     }
 
+    public function scopeGetChecklistItems($query, $checklist_id) {
+        $checklist_items = $query -> where('checklist_id', $checklist_id) -> orderBy('checklist_item_order', 'ASC') -> get();
+        return $checklist_items;
+    }
+
 
 }

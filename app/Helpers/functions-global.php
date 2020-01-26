@@ -33,4 +33,11 @@ function directory($directory) {
     return $results;
 }
 
+function shorten_text($text, $length) {
+    if(strlen($text) > $length) {
+        return substr($text, 0, $length).'...';
+    }
+    return $text;
+}
+
 ?>

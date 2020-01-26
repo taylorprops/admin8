@@ -2,12 +2,14 @@ if (document.URL.match(/create\/upload\/files/)) {
 
     $(document).ready(function () {
 
+        // get forms for each form group
         let data_count = $('.forms-data').length;
         $('.forms-data').each(function (index) {
             let form_group_id = $(this).data('form-group-id');
             let state = $(this).data('state');
             let order = $('#list_div_' + form_group_id).find('.uploads-filter-sort').val();
             get_forms(form_group_id, state, order);
+            // if all form groups are loaded run init functions
             if (index === data_count - 1) {
                 setTimeout(function () {
                     form_elements();
@@ -16,7 +18,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                     $('.upload-file-button').off('click').on('click', function () {
                         show_upload($(this));
                     });
-
+                    // init functions
                     upload_options();
 
                     $('#upload_file_button').off('click').on('click', upload_file);
@@ -44,30 +46,10 @@ if (document.URL.match(/create\/upload\/files/)) {
             .then(function (response) {
                 $('#list_div_' + form_group_id + '_files').html($(response.data));
                 $('#list_div_' + form_group_id + '_file_count').text($('#list_div_' + form_group_id + '_files').find('.files-count').val());
+                let ele = $('#list_div_' + form_group_id + '_files').find('.activate-upload');
+                filter_uploads(ele);
 
-                $('.edit-upload').not('.clickready').off('click').on('click', function () {
-                    edit_upload($(this));
-                }).addClass('clickready');
-
-                $('.duplicate-upload').not('.clickready').off('click').on('click', function () {
-                    duplicate_upload($(this));
-                }).addClass('clickready');
-
-                $('.publish-upload').not('.clickready').off('click').on('click', function () {
-                    confirm_publish_upload($(this));
-                }).addClass('clickready');
-
-                $('.activate-upload').not('.clickready').off('click').on('click', function () {
-                    activate_upload($(this));
-                }).addClass('clickready');
-
-                $('.delete-upload').not('.clickready').off('click').on('click', function () {
-                    confirm_delete_upload($(this));
-                }).addClass('clickready');
-
-                $('.replace-upload').not('.clickready').off('click').on('click', function () {
-                    show_replace_upload($(this).data('id'), $(this).data('form-group-id'));
-                }).addClass('clickready');
+                upload_options();
 
             })
             .catch(function (error) {
@@ -77,31 +59,29 @@ if (document.URL.match(/create\/upload\/files/)) {
 
     function upload_options() {
 
-
         $('.edit-upload').off('click').on('click', function () {
             edit_upload($(this));
-        }).addClass('clickready');
+        });
 
         $('.duplicate-upload').off('click').on('click', function () {
             duplicate_upload($(this));
-        }).addClass('clickready');
+        });
 
         $('.publish-upload').off('click').on('click', function () {
             confirm_publish_upload($(this));
-        }).addClass('clickready');
+        });
 
         $('.activate-upload').off('click').on('click', function () {
             activate_upload($(this));
-        }).addClass('clickready');
+        });
 
         $('.delete-upload').off('click').on('click', function () {
             confirm_delete_upload($(this));
-        }).addClass('clickready');
+        });
 
-        $('.replace-upload').off('click').on('click', function () {
-            show_replace_upload($(this).data('id'), $(this).data('form-group-id'));
-        }).addClass('clickready');
-
+        $('.manage-upload').off('click').on('click', function () {
+            show_manage_upload($(this).data('id'), $(this).data('form-group-id'));
+        });
 
 
         $('.uploads-filter-published, .uploads-filter-active').change(function () {
@@ -111,11 +91,12 @@ if (document.URL.match(/create\/upload\/files/)) {
         $('.uploads-filter-sort').change(function () {
             sort_uploads($(this));
         });
+        tooltip();
     }
 
-    function show_replace_upload(form_id, form_group_id) {
-        $('#form_replace_modal').modal();
-        axios.get('/doc_management/get_replace_upload_details', {
+    function show_manage_upload(form_id, form_group_id) {
+        $('#form_manage_modal').modal();
+        axios.get('/doc_management/get_manage_upload_details', {
             params: {
                 form_id: form_id,
                 form_group_id: form_group_id
@@ -127,16 +108,150 @@ if (document.URL.match(/create\/upload\/files/)) {
             }
         })
         .then(function (response) {
-            $('#form_replace_div').html(response.data);
+
+            $('#form_manage_div').html(response.data);
+            form_elements();
+
+            let state = $('#manage_form_state').val();
+            let form_name = $('#manage_form_name').val();
+
+            $('.select-form-button').off('click').on('click', function () {
+                show_confirm_replace(form_group_id, state, form_id, form_name, $(this).data('form-id'), $(this).data('form-name'));
+            });
+            $('#remove_from_checklist_button').off('click').on('click', function () {
+                show_confirm_remove(form_id, form_name, form_group_id, state);
+            });
+            $('#add_to_checklists_button').off('click').on('click', function () {
+                show_add_to_checklists(form_id, form_name, form_group_id, state);
+            });
+
+            tooltip();
+
         })
         .catch(function (error) {
             console.log(error);
         });
     }
 
-    function replace_upload() {
+    function show_add_to_checklists(form_id, form_name, form_group_id, state) {
+        $('#add_to_checklists_modal').modal();
+        axios.get('/doc_management/get_add_to_checklists_details', {
+            params: {
+                form_id: form_id,
+                form_group_id: form_group_id
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+
+            $('#add_form_to_checklists_div').html(response.data);
+            $('#add_to_checklists_form_name').text(form_name);
+            form_elements();
+            $('#add_to_checklists_table').DataTable({
+                'paging': false,
+                'toolbar': 'add_to_checklists_table_toolbar',
+                "aaSorting": [],
+                    columnDefs: [{
+                    orderable: false,
+                    targets: [0,1,2,3]
+                }]
+            });
+            // hide all collapsible on open
+            $('.show-checklist-items-collapsible').off('click').on('click', function() {
+                $('.checklist-items-collapsible').collapse('hide');
+            });
+
+            $('.checklist-items-collapsible').sortable({
+                handle: '.order-checklist-item-sortable-handle',
+                stop: function( event, ui ) {
+                    reorder_checklists();
+                    $(ui.item).closest('td').next('td').find('input').val($(ui.item).index() + 1);
+                }
+            });
+            $('.checklist-items-collapsible').disableSelection();
+
+            $('.checklist-order').on('keyup change', function() {
+                let index;
+                if($(this).val() == '') {
+                    index = 0;
+                } else {
+                    index = $(this).val() - 1;
+                }
+                let parent = $(this).closest('td').prev('td').find('.checklist-items-collapsible');
+                let count = parent.find('.order-checklist-item').length;
+
+                if(index == 0) {
+                    parent.find('.order-checklist-item-sortable').prependTo(parent);
+                } else if(index < (count - 1)) {
+                    let clone = parent.find('.order-checklist-item-sortable');
+                    parent.find('.order-checklist-item-sortable').remove();
+                    clone.insertBefore(parent.find('.order-checklist-item').eq(index));
+                } else {
+                    parent.find('.order-checklist-item-sortable').appendTo(parent);
+                }
+                reorder_checklists();
+            });
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 
     }
+
+
+    function reorder_checklists() {
+        $('.order-checklist-item').each(function() {
+            $(this).find('.checklist-item-order').text($(this).index() + 1);
+        });
+    }
+
+    function show_confirm_remove(form_id, form_name, form_group_id, manage_form_state) {
+        $('#remove_form_modal').modal();
+        $('#remove_form_name').text(form_name);
+        $('#confirm_remove_from_checklist_button').off('click').on('click', function () {
+            let formData = new FormData();
+            formData.append('form_id', form_id);
+            axios.post('/doc_management/remove_upload', formData, axios_options)
+            .then(function (response) {
+                $('#remove_form_modal').modal('hide');
+                let order = $('#list_div_' + form_group_id).find('.uploads-filter-sort').val();
+                get_forms(form_group_id, manage_form_state, order);
+                $('#form_manage_modal').modal('hide');
+                toastr['success']('Form Successfully Removed');
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        });
+    }
+
+    function show_confirm_replace(form_group_id, manage_form_state, old_form_id, manage_form_name, new_form_id, new_form_name) {
+        $('#replace_form_modal').modal();
+        $('#replace_old_form').text(manage_form_name);
+        $('#replace_new_form').text(new_form_name);
+        $('#confirm_replace_form_button').off('click').on('click', function () {
+            let formData = new FormData();
+            formData.append('old_form_id', old_form_id);
+            formData.append('new_form_id', new_form_id);
+            axios.post('/doc_management/replace_upload', formData, axios_options)
+            .then(function (response) {
+                $('#replace_form_modal').modal('hide');
+                let order = $('#list_div_' + form_group_id).find('.uploads-filter-sort').val();
+                get_forms(form_group_id, manage_form_state, order);
+                $('#form_manage_modal').modal('hide');
+                toastr['success']('Form Successfully Replaced');
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        });
+    }
+
 
     function sort_uploads(ele) {
         let order = ele.val();
@@ -173,8 +288,6 @@ if (document.URL.match(/create\/upload\/files/)) {
     }
 
     function filter_uploads(ele) {
-
-        // TODO just trying to filter these
 
         let list_div = ele.closest('.list-div');
         list_div.find('.uploads-list').show();

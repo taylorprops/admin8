@@ -102,7 +102,7 @@
                                                     <option value=""></option>
                                                     <option value="All" @if( $resources_item -> resource_state == 'All') selected @endif>All</option>
                                                     @foreach($states as $state)
-                                                    <option value="{{ $state }}" c>{{ $state }}</option>
+                                                    <option value="{{ $state }}" @if( $resources_item -> resource_state == $state) selected @endif>{{ $state }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>

@@ -65,6 +65,9 @@ $(document).ready(function () {
         format_phone(this);
     });
 
+    tooltip();
+
+
 
     // confirm modals on enter | requires .modal-confirm and .modal-confirm-button
     $('.modal-confirm').on('show.bs.modal', function () {
@@ -74,6 +77,15 @@ $(document).ready(function () {
             }
         });
     });
+    // multiple modal stacking
+    $(document).on('show.bs.modal', '.modal', function () {
+        var zIndex = 1040 + (10 * $('.modal:visible').length);
+        $(this).css('z-index', zIndex);
+        setTimeout(function() {
+            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+        }, 0);
+    });
+
 
 
 
@@ -100,6 +112,20 @@ $(document).on('keydown', '.numbers-only', function (event) {
     }
 });
 
+window.tooltip = function() {
+    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="popover"]').popover();
+}
+
+
+window.get_url_parameters = function(key) {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    if (urlParams.has(key)) {
+        return urlParams.get(key);
+    }
+    return false;
+}
 
 // Format Phone
 window.format_phone = function (obj) {

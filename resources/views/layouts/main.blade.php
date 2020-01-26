@@ -12,6 +12,9 @@
         <link href="/resources/mdbootstrap/css/mdb.min.css" rel="stylesheet">
         <link href="/css/app.css" rel="stylesheet">
         <link href="/vendor/fontawesome/fontawesome/css/all.css" rel="stylesheet">
+        <link href="/resources/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet">
+
+
         <noscript>
             <style>
               /* simplebar Reinstate scrolling for non-JS clients */
@@ -39,7 +42,7 @@
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="/resources/mdbootstrap/js/popper.min.js"></script>
         <script type="text/javascript" src="/resources/mdbootstrap/js/mdb.min.js"></script>
-
+        <script type="text/javascript" src="/resources/mdbootstrap/js/addons/datatables.min.js"></script>
 
 
         @yield('js')

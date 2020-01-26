@@ -32,42 +32,16 @@ class ChecklistsController extends Controller
         $property_types = ResourceItems::where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
         $property_sub_types = ResourceItems::where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
         $locations = ResourceItems::where('resource_type', 'checklist_locations') -> orderBy('resource_order') -> get();
-        $checklists = Checklists::orderBy('checklist_order') -> get();
 
 
-        $checklist_property_types = $checklists -> mapToGroups(function ($item, $key) {
-            return [
-                $item['checklist_property_type_id'] => [
-                    'checklist_type' => $item['checklist_type'],
-                    'checklist_represent' => $item['checklist_represent'],
-                    'checklist_property_type_id' => $item['checklist_property_type_id'],
-                    'checklist_property_sub_type_id' => $item['checklist_property_sub_type_id'],
-                    'checklist_sale_rent' => $item['checklist_sale_rent'],
-                    'checklist_location_id' => $item['checklist_location_id'],
-                    'checklist_state' => $item['checklist_state'],
-                    'checklist_order' => $item['checklist_order'],
-                    'checklist_count' => $item['checklist_count']
-                ]
-            ];
-        });
-
-        $checklist_property_types_items = [];
-        foreach($property_types as $property_type) {
-            $type = $property_type -> resource_name;
-            if($checklist_property_types -> get($type)) {
-                $checklist_property_types_items[] = $checklist_property_types -> get($type) -> all();
-            }/*  else {
-                $checklist_property_types_items[][0]['checklist_property_type_id'] = $type;
-            } */
-        }
-
-        return view('/doc_management/checklists/checklists', compact('property_types', 'property_sub_types', 'locations', 'checklist_property_types_items'));
+        return view('/doc_management/checklists/checklists', compact('property_types', 'property_sub_types', 'locations'));
 
     }
 
     public function get_checklists(Request $request) {
 
         $checklist_location_id = $request -> checklist_location_id;
+        $checklist_type = $request -> checklist_type;
         // $checklist_type = $request -> checklist_type;
         $checklists = Checklists::where('checklist_location_id', $checklist_location_id) -> orderBy('checklist_order') -> get();
         $checklists_count = count($checklists);
@@ -102,7 +76,7 @@ class ChecklistsController extends Controller
         }
         $resource_items = new ResourceItems();
 
-        return view('/doc_management/checklists/get_checklists_html', compact('checklist_property_types_items', 'checklists_count', 'resource_items'));
+        return view('/doc_management/checklists/get_checklists_html', compact('checklist_property_types_items', 'checklists_count', 'resource_items', 'checklist_type'));
 
     }
 
@@ -166,8 +140,11 @@ class ChecklistsController extends Controller
     }
 
     public function delete_checklist(Request $request) {
-        $checklist = Checklists::where('id', $request -> checklist_id) -> delete();
-        // TODO will have to delete all checklist items too
+        $checklist_id = $request -> checklist_id;
+        if($checklist_id) {
+            $checklist = Checklists::where('id', $checklist_id) -> delete();
+            $checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> delete();
+        }
     }
 
     public function reorder_checklists(Request $request) {
