@@ -95,6 +95,8 @@ Route::middleware(['admin', 'agent']) -> group(function () {
 
     /* Add Checklist Items */
     Route::post('/doc_management/add_checklist_items', 'DocManagement\Checklists\ChecklistsController@add_checklist_items');
+    /* Add Form to Checklists  */
+    Route::post('/doc_management/save_add_to_checklists', 'DocManagement\Create\UploadController@save_add_to_checklists');
 
 
 

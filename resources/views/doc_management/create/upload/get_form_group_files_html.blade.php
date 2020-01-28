@@ -1,6 +1,6 @@
 @foreach ($files as $file)
 @php
-$checklist_count = $checklists -> inChecklist($file -> file_id);
+$checklist_count = $checklists -> countInChecklist($file -> file_id);
 $show_title = false;
 @endphp
 <div class="p-2 mb-4 uploads-list @if($file -> published == 'yes') published @else notpublished @endif @if($file -> active == 'yes') active @else notactive @endif">

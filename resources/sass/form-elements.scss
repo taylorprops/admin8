@@ -28,7 +28,7 @@
 
     .form-input, .form-textarea, .form-select-value-input {
         width: 100%;
-        padding: 15px  5px 5px 10px;
+        padding: 10px  5px 5px 5px;
         //border: none;
         //border-bottom: 1px solid #ccc;
         border: 1px solid #ccc;
@@ -42,7 +42,7 @@
 
     .form-input-label, .form-textarea-label, .form-select-label {
         position: absolute;
-        top: 15px;
+        top: 10px;
         left: 5px;
         background: #fff;
         padding: 0 5px;
@@ -88,7 +88,7 @@
     .form-select-dropdown {
         display: none;
         position: absolute;
-        top: 45px;
+        top: 40px;
         left: 0px;
         background: #fff;
         border: 1px solid #ccc;

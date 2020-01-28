@@ -15,8 +15,50 @@ use App\Models\DocManagement\UploadPages;
 use App\Models\DocManagement\Zips;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class UploadController extends Controller {
+
+    public function save_add_to_checklists(Request $request) {
+
+        $file_id = $request -> file_id;
+        $checklists = json_decode($request -> checklists);
+        $checklists = $checklists -> checklist;
+        $form_group_id = $request -> form_group_id;
+        $required = $request -> required;
+
+        // delete file from all checklists
+        $delete_from_checklists = ChecklistsItems::where('checklist_form_id', $file_id) -> delete();
+
+        foreach($checklists as $checklist) {
+            if($checklist -> checklist_id != '') {
+                $checklist_order = $checklist -> checklist_order;
+                $checklist_items = new ChecklistsItems();
+                $checklist_items -> checklist_id = $checklist -> checklist_id;
+                $checklist_items -> checklist_form_id = $file_id;
+                $checklist_items -> checklist_item_required = $required;
+                $checklist_items -> checklist_item_order = $checklist_order;
+                $checklist_items -> checklist_item_group_id = $form_group_id;
+                $checklist_items -> save();
+
+                $current_items = new ChecklistsItems();
+
+                $set_order = $current_items -> where('checklist_id', $checklist -> checklist_id) -> where('checklist_item_order', '>=', $checklist_order) -> where('checklist_form_id', '!=', $file_id) -> update(['checklist_item_order' => DB::raw('checklist_item_order + 1')]);
+
+                $current_items -> updateChecklistItemsOrder($checklist -> checklist_id);
+
+                // set checklist count column
+                $checklist_item_count = $current_items -> where('checklist_id', $checklist -> checklist_id) -> count();
+                $update_count = Checklists::where('id', $checklist -> checklist_id) -> first();
+                $update_count -> checklist_count = $checklist_item_count;
+                $update_count -> save();
+
+            }
+        }
+
+
+
+    }
 
     public function get_add_to_checklists_details(Request $request) {
 
@@ -41,7 +83,12 @@ class UploadController extends Controller {
         // for upload functions
         $upload = new Upload();
 
-        return view('/doc_management/create/upload/get_add_to_checklists_details_html', compact('file_id', 'uploaded_file', 'resource_items', 'checklists', 'checklists_items', 'form_groups', 'checklist_groups', 'upload'));
+        // get required and form group id for add to checklists
+        $checklist_item_details = $checklists_items -> where('checklist_form_id', $file_id) -> first();
+        $checklist_item_group_id = $checklist_item_details -> checklist_item_group_id ?? null;
+        $checklist_item_required = $checklist_item_details -> checklist_item_required ?? null;
+
+        return view('/doc_management/create/upload/get_add_to_checklists_details_html', compact('file_id', 'uploaded_file', 'resource_items', 'checklists', 'checklists_items', 'form_groups', 'checklist_groups', 'upload', 'checklist_item_required', 'checklist_item_group_id'));
 
     }
 

@@ -19,7 +19,7 @@ class ChecklistsController extends Controller
     public function get_checklist_items(Request $request) {
         $checklist_id = $request -> checklist_id;
         $checklist = Checklists::whereId($checklist_id) -> first();
-        $checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> get();
+        $checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> orderBy('checklist_item_order') -> get();
         $form_groups = ResourceItems::where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
         $files = new Upload();
@@ -93,7 +93,7 @@ class ChecklistsController extends Controller
             $add_checklist_items = new ChecklistsItems();
 
             $add_checklist_items -> checklist_id = $checklist_id;
-            $add_checklist_items -> checklist_form_id = $checklist_items -> checklist_form_id ?? null;
+            $add_checklist_items -> checklist_form_id = $checklist_items -> checklist_form_id;
             $add_checklist_items -> checklist_item_required = $checklist_items -> checklist_item_required;
             $add_checklist_items -> checklist_item_group_id = $checklist_items -> checklist_item_group_id;
             $add_checklist_items -> checklist_item_order = $checklist_items -> checklist_item_order;
@@ -102,10 +102,14 @@ class ChecklistsController extends Controller
 
         }
 
+        // set checklist count column
         $checklist_item_count = count($checklist_array);
         $update_count = Checklists::where('id', $checklist_id) -> first();
         $update_count -> checklist_count = $checklist_item_count;
         $update_count -> save();
+
+        $reorder_items = new ChecklistsItems();
+        $reorder_items -> updateChecklistItemsOrder($checklist_id);
 
     }
 
@@ -159,6 +163,9 @@ class ChecklistsController extends Controller
             $reorder -> checklist_order = $checklist_order;
             $reorder -> save();
         }
+
+        $reorder_items = new ChecklistsItems();
+        $reorder_items -> updateChecklistItemsOrder($checklist_id);
 
     }
 }

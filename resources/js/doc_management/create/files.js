@@ -155,9 +155,9 @@ if (document.URL.match(/create\/upload\/files/)) {
                 'paging': false,
                 'toolbar': 'add_to_checklists_table_toolbar',
                 "aaSorting": [],
-                    columnDefs: [{
+                columnDefs: [{
                     orderable: false,
-                    targets: [0,1,2,3]
+                    targets: [0,1,2,10]
                 }]
             });
             // hide all collapsible on open
@@ -165,35 +165,20 @@ if (document.URL.match(/create\/upload\/files/)) {
                 $('.checklist-items-collapsible').collapse('hide');
             });
 
-            $('.checklist-items-collapsible').sortable({
-                handle: '.order-checklist-item-sortable-handle',
-                stop: function( event, ui ) {
-                    reorder_checklists();
-                    $(ui.item).closest('td').next('td').find('input').val($(ui.item).index() + 1);
+            sortable();
+            order_checklists();
+
+            // highlight background of selected rows
+            $('.checklist-item-checkbox').change(function() {
+                if($(this).is(':checked')) {
+                    $(this).closest('tr').addClass('bg-blue-light');
+                } else {
+                    $(this).closest('tr').removeClass('bg-blue-light');
                 }
             });
-            $('.checklist-items-collapsible').disableSelection();
 
-            $('.checklist-order').on('keyup change', function() {
-                let index;
-                if($(this).val() == '') {
-                    index = 0;
-                } else {
-                    index = $(this).val() - 1;
-                }
-                let parent = $(this).closest('td').prev('td').find('.checklist-items-collapsible');
-                let count = parent.find('.order-checklist-item').length;
-
-                if(index == 0) {
-                    parent.find('.order-checklist-item-sortable').prependTo(parent);
-                } else if(index < (count - 1)) {
-                    let clone = parent.find('.order-checklist-item-sortable');
-                    parent.find('.order-checklist-item-sortable').remove();
-                    clone.insertBefore(parent.find('.order-checklist-item').eq(index));
-                } else {
-                    parent.find('.order-checklist-item-sortable').appendTo(parent);
-                }
-                reorder_checklists();
+            $('#save_add_to_checklists_button').off('click').on('click', function() {
+                save_add_to_checklists(state, form_id, form_group_id);
             });
 
         })
@@ -201,6 +186,106 @@ if (document.URL.match(/create\/upload\/files/)) {
             console.log(error);
         });
 
+    }
+
+    function save_add_to_checklists(state, checklist_form_id, checklist_item_group_id) {
+
+        let form = $('#add_to_checklists_form');
+        let form_check = validate_form(form);
+
+        if (form_check == 'yes') {
+
+
+            let els = $('.checklist-items-tr');
+            let checklists = {
+                checklist: []
+            }
+
+            els.each(function () {
+                let el, checklist_id_checkbox, checklist_id, checklist_order;
+                el = $(this);
+                checklist_id_checkbox = el.find('.checklist-item-checkbox');
+                checklist_id = '';
+                if(checklist_id_checkbox.is(':checked')) {
+                    checklist_id = checklist_id_checkbox.val();
+                }
+                checklist_order = el.find('.checklist-order').val();
+                checklists.checklist.push(
+                    {
+                        'checklist_id': checklist_id,
+                        'checklist_order': checklist_order
+                    }
+                );
+            });
+            checklists = JSON.stringify(checklists);
+            let file_id = $('#add_to_checklist_file_id').val();
+            let required = $('.checklist-item-required').val();
+            let checklist_items_group_id = $('.checklist-item-group-id').val();
+
+            let formData = new FormData();
+            formData.append('checklists', checklists);
+            formData.append('file_id', file_id);
+            formData.append('required', required);
+            formData.append('form_group_id', checklist_items_group_id);
+
+            axios.post('/doc_management/save_add_to_checklists', formData, axios_options)
+            .then(function (response) {
+                $('#add_to_checklists_modal').modal('hide');
+                let order = $('#list_div_' + checklist_item_group_id).find('.uploads-filter-sort').val();
+                get_forms(checklist_item_group_id, state, order);
+                setTimeout(function() {
+                    show_manage_upload(checklist_form_id, checklist_item_group_id);
+                }, 100);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        }
+    }
+
+    function sortable() {
+        $('.checklist-items-collapsible').sortable({
+            handle: '.order-checklist-item-sortable-handle',
+            stop: function( event, ui ) {
+                reorder_checklists();
+                $(ui.item).closest('tr').find('.checklist-order').val($(ui.item).index() + 1);
+            }
+        });
+    }
+
+    function order_checklists() {
+        $('.show-checklist-items-collapsible').click(function() {
+            if($(this).text() == 'Show Checklist Items') {
+                $('.show-checklist-items-collapsible').text('Show Checklist Items').addClass('btn-primary').removeClass('btn-success');
+                $(this).text('Hide Checklist Items').removeClass('btn-primary').addClass('btn-success');
+            } else {
+                $(this).text('Show Checklist Items').addClass('btn-primary').removeClass('btn-success');
+            }
+        });
+        $('.checklist-items-collapsible').disableSelection();
+
+        $('.checklist-order').on('keyup change', function() {
+            let index;
+            if($(this).val() == '') {
+                index = 0;
+            } else {
+                index = $(this).val() - 1;
+            }
+            let parent = $(this).closest('tr').find('.checklist-items-collapsible');
+            let count = parent.find('.order-checklist-item').length;
+
+            if(index == 0) {
+                parent.find('.order-checklist-item-sortable').prependTo(parent);
+            } else if(index < (count - 1)) {
+                let clone = parent.find('.order-checklist-item-sortable');
+                parent.find('.order-checklist-item-sortable').remove();
+                clone.insertBefore(parent.find('.order-checklist-item').eq(index));
+            } else {
+                parent.find('.order-checklist-item-sortable').appendTo(parent);
+            }
+            reorder_checklists();
+        });
     }
 
 

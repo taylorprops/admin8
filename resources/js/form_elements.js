@@ -526,7 +526,7 @@ window.validate_form = function (form) {
                 ele.removeClass(classname);
                 ele.prev('label').removeClass('invalid-label');
                 ele.next('label').removeClass('invalid-label');
-                required.prev('i').removeClass('invalid-i');
+                required.prev('i').removeClass('invalid-input');
             }
         });
 
@@ -537,7 +537,7 @@ window.validate_form = function (form) {
     if (invalid_focus.hasClass('file-path')) {
         invalid_focus.parent().prev('input').trigger('click');
     } else {
-        invalid_focus.focus();
+        invalid_focus.focus().trigger('click');
     }
 
 

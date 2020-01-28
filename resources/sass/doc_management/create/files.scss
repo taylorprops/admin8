@@ -55,7 +55,7 @@
     }
 
     .add-to-checklists-div {
-        height: 55VH;
+        height: 60VH;
         overflow: auto;
         overflow-x: hidden !important;
     }
@@ -66,12 +66,14 @@
         margin-top: 0px;
         margin-bottom: 0px;
     }
+
     #add_to_checklists_table td {
         vertical-align: middle;
     }
     .collapsible-container {
         position: relative;
     }
+
     .checklist-items-collapsible {
         background: #fff;
         width: 91.5VW;
