@@ -26,7 +26,10 @@ class Upload extends Model
 
     public function scopeGetFormLocation($query, $form_id) {
         $form_name = $query -> where('file_id', $form_id) -> first();
-        return $form_name -> file_location;
+        if($form_name -> file_location) {
+            return $form_name -> file_location;
+        }
+        return '';
     }
 
 

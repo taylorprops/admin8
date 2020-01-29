@@ -9,8 +9,6 @@ if (document.URL.match('/resources')) {
     $(document).ready(function () {
 
 
-
-
         $('.sortable').sortable({
             placeholder: 'bg-orange-sortable',
             handle: '.list-item-handle',

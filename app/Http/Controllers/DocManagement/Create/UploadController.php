@@ -264,6 +264,21 @@ class UploadController extends Controller {
         $upload -> save();
     }
 
+    public function save_add_non_form(Request $request) {
+
+        $file_name_display = $request -> no_form_file_name_display;
+        $state = $request -> no_form_state;
+        $form_group_id = $request -> no_form_form_group_id;
+        $sale_type = implode(',', $request -> no_form_sale_type);
+
+        $upload = new Upload();
+        $upload -> file_name_display = $file_name_display;
+        $upload -> state = $state;
+        $upload -> sale_type = $sale_type;
+        $upload -> form_group_id = $form_group_id;
+        $upload -> save();
+    }
+
     public function upload_file(Request $request) {
 
         $file = $request -> file('file_upload');

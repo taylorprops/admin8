@@ -166,7 +166,7 @@
             <div class="modal-header bg-primary">
                 <h3 class="modal-title" id="confirm_delete_modal_title">Delete Resource</h3>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <i class="fal fa-times fa-2x"></i>
                 </button>
             </div>
             <div class="modal-body">

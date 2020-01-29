@@ -69,6 +69,7 @@ $(document).ready(function () {
 
 
 
+
     // confirm modals on enter | requires .modal-confirm and .modal-confirm-button
     $('.modal-confirm').on('show.bs.modal', function () {
         $('body').off('keyup').on('keyup', function(event) {

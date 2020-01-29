@@ -11,19 +11,81 @@ use App\Models\DocManagement\Upload;
 
 class ChecklistsController extends Controller
 {
+
+    function save_copy_checklists(Request $request) {
+        $copy_from_location_id = $request -> location_id;
+        $copy_to_checklist_location_ids = explode(',', $request -> checklist_location_ids);
+        // get all checklist ids from checklists in checklist_locations_ids
+        $remove_checklist_ids = Checklists::select('id') -> whereIn('checklist_location_id', $copy_to_checklist_location_ids) -> get() -> toArray();
+
+        if(count($remove_checklist_ids) > 0) {
+            // delete all checklist items from target checklists using checklist ids
+            $remove_checklist_items = ChecklistsItems::whereIn('checklist_id', $remove_checklist_ids) -> delete();
+            // delete all target checklists using checklist ids
+            $remove_checklists = Checklists::whereIn('id', $remove_checklist_ids) -> delete();
+        }
+
+        // add checklists and checklist items from source form group
+        // get all target checklists to copy
+        $add_from_checklists = Checklists::where('checklist_location_id', $copy_from_location_id) -> get();
+        // loop through all target locations and add checklists and checklist items
+        foreach($copy_to_checklist_location_ids as $location) {
+            // replicate all checklists from target location to new one
+            $state = ResourceItems::getState($location);
+
+            foreach($add_from_checklists as $add_from_checklist) {
+                $checklist_copy = $add_from_checklist -> replicate();
+                $checklist_copy -> checklist_location_id = $location;
+                $checklist_copy -> checklist_state = $state;
+                $checklist_copy -> save();
+                $new_checklist_id = $checklist_copy -> id;
+
+                // get all checklist items from target checklists to copy
+                $add_from_checklist_items = ChecklistsItems::where('checklist_id', $add_from_checklist -> id) -> get();
+                foreach($add_from_checklist_items as $add_from_item) {
+                    $checklist_item_copy = $add_from_item -> replicate();
+                    $checklist_item_copy -> checklist_id = $new_checklist_id;
+                    $checklist_item_copy -> save();
+                }
+
+            }
+
+        }
+
+    }
+
+    public function copy_checklists(Request $request) {
+        $location_id = $request -> location_id;
+        $checklist_type = $request -> checklist_type;
+
+        $resource_items = new ResourceItems();
+        // form groups to add to
+        $form_groups = $resource_items -> where('resource_type', 'checklist_locations') -> where('resource_id', '!=', $location_id) -> orderBy('resource_order') -> get();
+        $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
+
+        $checklists_functions = new Checklists();
+
+        return view('/doc_management/checklists/get_copy_checklists_html', compact('location_id', 'checklist_type', 'form_groups', 'property_types', 'resource_items', 'checklists_functions'));
+    }
+
     public function get_checklist_item_details(Request $request) {
         $details = ChecklistsItems::where('checklist_form_id', $request -> form_id) -> first();
         return $details ?? null;
     }
 
     public function get_checklist_items(Request $request) {
+
         $checklist_id = $request -> checklist_id;
-        $checklist = Checklists::whereId($checklist_id) -> first();
-        $checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> orderBy('checklist_item_order') -> get();
-        $form_groups = ResourceItems::where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
-        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
+
         $files = new Upload();
         $resource_items = new ResourceItems();
+
+        $checklist = Checklists::whereId($checklist_id) -> first();
+        $checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> orderBy('checklist_item_order') -> get();
+        $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
+        $checklist_groups = $resource_items -> where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
+
+
         return view('/doc_management/checklists/get_add_checklist_items_html', compact('checklist', 'checklist_items', 'form_groups', 'files', 'resource_items', 'checklist_groups'));
     }
 

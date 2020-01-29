@@ -5,22 +5,21 @@
     <h2>Forms</h2>
     <div class="row">
         <div class="col-4">
-
             <div class="border-top border-bottom border-gray">
                 <div class="list-group-container" data-simplebar data-simplebar-auto-hide="false">
                     <div class="list-group" role="tablist">
                         @foreach ($resources as $resource)
-                        @if($resource -> resource_type == 'form_groups')
-                        <a class="list-group-item list-group-item-action @if ($loop -> first) active @endif"
-                            id="list_{{ $resource -> resource_id }}"
-                            data-toggle="list"
-                            href="#list_div_{{ $resource -> resource_id }}"
-                            role="tab"
-                            data-id="{{ $resource -> resource_id }}">
-                            {{ $resource -> resource_name }}
-                            <span class="float-right badge bg-blue-med py-1 px-2" id="list_div_{{ $resource -> resource_id }}_file_count"></span>
-                        </a>
-                        @endif
+                            @if($resource -> resource_type == 'form_groups')
+                            <a class="list-group-item list-group-item-action @if ($loop -> first) active @endif"
+                                id="list_{{ $resource -> resource_id }}"
+                                data-toggle="list"
+                                href="#list_div_{{ $resource -> resource_id }}"
+                                role="tab"
+                                data-id="{{ $resource -> resource_id }}">
+                                {{ $resource -> resource_name }}
+                                <span class="float-right badge bg-blue-med py-1 px-2" id="list_div_{{ $resource -> resource_id }}_file_count"></span>
+                            </a>
+                            @endif
                         @endforeach
                     </div>
                 </div>
@@ -29,58 +28,58 @@
         <div class="col-8">
             <div class="tab-content"{{--  id="association" --}}>
                 @foreach ($resources as $resource)
-                @if($resource -> resource_type == 'form_groups')
-
-                <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $resource -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $resource -> resource_id }}">
-
-                    <div class="h3 text-primary">{{ $resource -> resource_name }}</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="mr-2">
-                            <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-sort" data-label="Sort By">
-                                <option value="az" selected>A-Z</option>
-                                <option value="added">Recently Added</option>
-                            </select>
-                        </div>
-                        <div>
-                            <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-published" data-label="Published">
-                                <option value="all">Show All</option>
-                                <option value="published">Published</option>
-                                <option value="notpublished">Not published</option>
-                            </select>
-                        </div>
-                        <div class="mr-2">
-                            <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-active" data-label="Active">
-                                <option value="all">Show All</option>
-                                <option value="active" selected>Active</option>
-                                <option value="notactive">Not Active</option>
-                            </select>
-                        </div>
-                        <div>
-                            <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success upload-file-button ml-5 mt-3"><i class="fal fa-plus mr-2"></i> Add Form</a>
-                        </div>
-                    </div>
-
-
-                    <div class="border border-gray">
-                        <div class="list-group-divs pt-4" data-simplebar data-simplebar-auto-hide="false">
-                            <div class="container">
+                    @if($resource -> resource_type == 'form_groups')
+                    <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $resource -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $resource -> resource_id }}">
+                        <div class="h3 text-primary">{{ $resource -> resource_name }}</div>
+                        <div class="row">
+                            <div class="col-7">
                                 <div class="row">
-                                    <div class="col-12 forms-data" id="list_div_{{ $resource -> resource_id }}_files" data-form-group-id="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">
-
+                                    <div class="col-4">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-sort" data-label="Sort By">
+                                            <option value="az" selected>A-Z</option>
+                                            <option value="added">Recently Added</option>
+                                        </select>
                                     </div>
-                                </div><!-- ./ .row -->
+                                    <div class="col-4">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-published" data-label="Published">
+                                            <option value="all">Show All</option>
+                                            <option value="published">Published</option>
+                                            <option value="notpublished">Not published</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-search uploads-filter-active" data-label="Active">
+                                            <option value="all">Show All</option>
+                                            <option value="active" selected>Active</option>
+                                            <option value="notactive">Not Active</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5">
+                                <div class="d-flex justify-content-between">
+                                    <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success upload-file-button mt-3"><i class="fal fa-plus mr-2"></i> Add Form</a>
+                                    <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success add-non-form-item-button mt-3"><i class="fal fa-plus mr-2"></i> Add Item - No Form</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border border-gray">
+                            <div class="list-group-divs pt-4" data-simplebar data-simplebar-auto-hide="false">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 forms-data" id="list_div_{{ $resource -> resource_id }}_files" data-form-group-id="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">
+                                        </div>
+                                    </div><!-- ./ .row -->
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                @endif
+                    @endif
                 @endforeach
             </div>
         </div>
     </div>
-
     <!-- Modals -->
-
     <div class="modal fade draggable" id="add_to_checklists_modal" tabindex="-1" role="dialog" aria-labelledby="add_to_checklists_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
@@ -88,30 +87,27 @@
                     <div class="modal-header bg-primary draggable-handle">
                         <h3 class="modal-title" id="add_to_checklists_modal_title">Add Form to Checklists <span class="text-yellow-light ml-3" id="add_to_checklists_form_name"></span></h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <i class="fal fa-times fa-2x"></i>
                         </button>
                     </div>
                     <div class="modal-body">
-                        @csrf
                         <div id="add_form_to_checklists_div"> </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-around">
-                        <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                        <a class="btn btn-success" id="save_add_to_checklists_button"><i class="fad fa-check mr-2"></i> Save</a>
+                        <a class="btn btn-danger btn-lg" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                        <a class="btn btn-success btn-lg" id="save_add_to_checklists_button"><i class="fad fa-check mr-2"></i> Save</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
-
     <div class="modal fade draggable" id="remove_form_modal" tabindex="-1" role="dialog" aria-labelledby="remove_form_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary draggable-handle">
                     <h3 class="modal-title" id="remove_form_title">Remove Form</h3>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <i class="fal fa-times fa-2x"></i>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -128,14 +124,13 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade draggable" id="replace_form_modal" tabindex="-1" role="dialog" aria-labelledby="replace_form_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary draggable-handle">
                     <h3 class="modal-title" id="replace_form_title">Replace Form</h3>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <i class="fal fa-times fa-2x"></i>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -156,14 +151,13 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade draggable" id="form_manage_modal" tabindex="-1" role="dialog" aria-labelledby="form_manage_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary draggable-handle">
                     <h3 class="modal-title" id="form_manage_title">Manage Form</h3>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <i class="fal fa-times fa-2x"></i>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -172,23 +166,17 @@
             </div>
         </div>
     </div>
-
-
     <div class="modal fade draggable" id="edit_file_modal" tabindex="-1" role="dialog" aria-labelledby="edit_file_modal_title" aria-hidden="true">
-
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-
             <div class="modal-content">
                 <form id="edit_file_form">
                     <div class="modal-header bg-primary draggable-handle">
                         <h3 class="modal-title" id="edit_file_modal_title">Edit Form Details</h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <i class="fal fa-times fa-2x"></i>
                         </button>
                     </div>
                     <div class="modal-body">
-
-                        @csrf
                         <div class="container">
                             <div class="row">
                                 <div class="col-12">
@@ -203,9 +191,9 @@
                                     <select name="edit_sale_type[]" id="edit_sale_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
                                         <option value=""></option>
                                         @foreach($resources as $resource)
-                                        @if($resource -> resource_type == 'form_tags')
-                                        <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
-                                        @endif
+                                            @if($resource -> resource_type == 'form_tags')
+                                            <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -215,9 +203,9 @@
                                     <select name="edit_form_group_id" id="edit_form_group_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Select From Group">
                                         <option value=""></option>
                                         @foreach($resources as $resource)
-                                        @if($resource -> resource_type == 'form_groups')
-                                        <option value="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">{{ $resource -> resource_name }}</option>
-                                        @endif
+                                            @if($resource -> resource_type == 'form_groups')
+                                            <option value="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">{{ $resource -> resource_name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -227,13 +215,12 @@
                                     <select name="edit_state" id="edit_state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
                                         <option value=""></option>
                                         @foreach($states as $state)
-                                        <option value="{{ $state }}">{{ $state }}</option>
+                                            <option value="{{ $state }}">{{ $state }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
                         <a class="btn btn-primary" id="save_edit_file_button"><i class="fad fa-save mr-2"></i> Save Details</a>
@@ -243,23 +230,80 @@
             </div>
         </div>
     </div>
-
+!i
+    <div class="modal fade draggable" id="add_item_no_form_modal" tabindex="-1" role="dialog" aria-labelledby="add_item_no_form_modal_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form id="add_item_no_form_form">
+                    <div class="modal-header bg-primary draggable-handle">
+                        <h3 class="modal-title" id="add_item_no_form_modal_title">Add Checklist Item - No Form</h3>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <i class="fal fa-times fa-2x"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <input type="text" class="custom-form-element form-input required" name="no_form_file_name_display" id="no_form_file_name_display" data-label="Form Name">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select name="no_form_sale_type[]" id="no_form_sale_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
+                                        <option value=""></option>
+                                        @foreach($resources as $resource)
+                                            @if($resource -> resource_type == 'form_tags')
+                                            <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select name="no_form_form_group_id" id="no_form_form_group_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Group">
+                                        <option value=""></option>
+                                        @foreach($resources as $resource)
+                                            @if($resource -> resource_type == 'form_groups')
+                                            <option value="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">{{ $resource -> resource_name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select name="no_form_state" id="no_form_state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
+                                        <option value=""></option>
+                                        @foreach($states as $state)
+                                            <option value="{{ $state }}">{{ $state }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-around">
+                        <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                        <a class="btn btn-success" id="save_add_item_no_form_button"><i class="fad fa-check mr-2"></i> Save</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="modal fade draggable" id="add_upload_modal" tabindex="-1" role="dialog" aria-labelledby="add_upload_modal_title" aria-hidden="true">
-
         <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-
             <div class="modal-content">
                 <form id="upload_file_form" enctype="multipart/form-data">
                     <div class="modal-header bg-primary draggable-handle">
                         <h3 class="modal-title" id="add_upload_modal_title">Add Form</h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <i class="fal fa-times fa-2x"></i>
                         </button>
                     </div>
                     <div class="modal-body">
-
-                        @csrf
                         <div class="container">
                             <div class="row">
                                 <div class="col-12">
@@ -276,9 +320,9 @@
                                     <select name="sale_type[]" id="sale_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
                                         <option value=""></option>
                                         @foreach($resources as $resource)
-                                        @if($resource -> resource_type == 'form_tags')
-                                        <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
-                                        @endif
+                                            @if($resource -> resource_type == 'form_tags')
+                                            <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -288,9 +332,9 @@
                                     <select name="form_group_id" id="form_group_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Group">
                                         <option value=""></option>
                                         @foreach($resources as $resource)
-                                        @if($resource -> resource_type == 'form_groups')
-                                        <option value="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">{{ $resource -> resource_name }}</option>
-                                        @endif
+                                            @if($resource -> resource_type == 'form_groups')
+                                            <option value="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">{{ $resource -> resource_name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -306,7 +350,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
                         <a class="btn btn-primary" id="upload_file_button"><i class="fad fa-upload mr-2"></i> Upload Form</a>
@@ -315,18 +358,15 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade modal-confirm" id="confirm_publish_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_publish_modal_title"
         aria-hidden="true">
-
         <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
         <div class="modal-dialog modal-dialog-centered" role="document">
-
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h3 class="modal-title" id="confirm_publish_modal_title">Delete Form</h3>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <i class="fal fa-times fa-2x"></i>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -340,18 +380,15 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade modal-confirm" id="confirm_delete_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_delete_modal_title"
         aria-hidden="true">
-
         <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
         <div class="modal-dialog modal-dialog-centered" role="document">
-
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h3 class="modal-title" id="confirm_delete_modal_title">Delete Form</h3>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <i class="fal fa-times fa-2x"></i>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -364,7 +401,5 @@
             </div>
         </div>
     </div>
-
 </div><!-- ./ .container -->
-
 @endsection

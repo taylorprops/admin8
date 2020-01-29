@@ -18,6 +18,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                     $('.upload-file-button').off('click').on('click', function () {
                         show_upload($(this));
                     });
+                    $('.add-non-form-item-button').off('click').on('click', show_add_non_form_item);
                     // init functions
                     upload_options();
 
@@ -44,9 +45,11 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         axios.get('/doc_management/get_form_group_files', options)
             .then(function (response) {
+
                 $('#list_div_' + form_group_id + '_files').html($(response.data));
                 $('#list_div_' + form_group_id + '_file_count').text($('#list_div_' + form_group_id + '_files').find('.files-count').val());
                 let ele = $('#list_div_' + form_group_id + '_files').find('.activate-upload');
+
                 filter_uploads(ele);
 
                 upload_options();
@@ -171,7 +174,7 @@ if (document.URL.match(/create\/upload\/files/)) {
             // highlight background of selected rows
             $('.checklist-item-checkbox').change(function() {
                 if($(this).is(':checked')) {
-                    $(this).closest('tr').addClass('bg-blue-light');
+                    $(this).closest('tr').addClass('bg-blue-light').find('.checklist-order').focus();
                 } else {
                     $(this).closest('tr').removeClass('bg-blue-light');
                 }
@@ -236,6 +239,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 setTimeout(function() {
                     show_manage_upload(checklist_form_id, checklist_item_group_id);
                 }, 100);
+                toastr['success']('Form Successfully Added To Checklists');
             })
             .catch(function (error) {
                 console.log(error);
@@ -520,6 +524,42 @@ if (document.URL.match(/create\/upload\/files/)) {
             .catch(function (error) {
                 console.log(error);
             });
+    }
+
+    function show_add_non_form_item() {
+        $('#add_item_no_form_modal').modal();
+        $('#save_add_item_no_form_button').off('click').on('click', save_non_form_item);
+    }
+
+    function save_non_form_item() {
+
+        let form = $('#add_item_no_form_form');
+        let form_check = validate_form(form);
+
+        if (form_check == 'yes') {
+
+            let form_group_id = $('#no_form_form_group_id').val();
+            let order = $('#list_div_' + form_group_id).find('.uploads-filter-sort').val();
+            let state = $('#no_form_state').val();
+
+            $('#save_add_item_no_form_button').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Saving');
+
+            let formData = new FormData(form[0]);
+
+            axios.post('/doc_management/save_add_non_form', formData)
+                .then(function (response) {
+                    $('#add_item_no_form_modal').modal('hide');
+                    get_forms(form_group_id, state, order);
+                    $('#save_add_item_no_form_button').prop('disabled', false).html('<i class="fad fa-upload mr-2"></i> Save Details');
+                    toastr['success']('Item Added Successfully');
+                    $('#list_' + form_group_id).trigger('click');
+                })
+                .catch(function (error) {
+                    //console.log(error);
+                });
+
+        }
+
     }
 
     function save_edit_file() {

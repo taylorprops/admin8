@@ -34,6 +34,10 @@
         max-width: 98VW !important;
         width: 98VW !important;
     }
+    .modal-xl-sm {
+        max-width: 70VW !important;
+        width: 70VW !important;
+    }
 
     .checklist-items-chip {
         width: 40px;
@@ -78,6 +82,25 @@
         border: 3px solid $blue;
         opacity: 0.8;
     }
+
+    .checklists-to-export-div, .export-to-form-groups-div {
+        max-height: 65VH;
+        overflow: auto;
+        overflow-x: hidden !important;
+
+        .form-ele {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+
+    .addendums_yes {
+        color: $green;
+    }
+    .addendums_no {
+        color: $red;
+    }
+
 
 
 }

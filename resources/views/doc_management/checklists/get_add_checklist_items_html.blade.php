@@ -19,13 +19,12 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                 if($form_id) {
                     $form_name = $files -> getFormName($form_id);
                     $form_name_orig = $form_name;
-                    if(strlen($form_name) > 100) {
-                        $form_name = substr($form_name, 0, 100).'...';
-                    }
+                    $form_name = shorten_text($form_name, 100);
                 }
+
                 @endphp
 
-                <li class="list-group-item checklist-item w-100 pt-1 pb-0" data-form-id="{{ $checklist_item -> checklist_form_id }}">
+                <li class="list-group-item checklist-item w-100 pt-1 pb-0" data-form-id="{{ $checklist_item -> checklist_form_id ?? null }}">
                     <div class="row">
                         <div class="col-8">
                             <div class="d-flex justify-content-start">

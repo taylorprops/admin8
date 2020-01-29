@@ -52,6 +52,8 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     Route::post('/doc_management/upload_file', 'DocManagement\Create\UploadController@upload_file') -> name('doc_management.upload_file');
     // Edit uploaded File
     Route::post('/doc_management/save_file_edit', 'DocManagement\Create\UploadController@save_file_edit');
+    // Add non form checklist item
+    Route::post('/doc_management/save_add_non_form', 'DocManagement\Create\UploadController@save_add_non_form');
     // Duplicate uploaded files
     Route::post('/doc_management/duplicate_upload', 'DocManagement\Create\UploadController@duplicate_upload');
     // Activate/Deactivate uploaded files
@@ -92,12 +94,15 @@ Route::middleware(['admin', 'agent']) -> group(function () {
     Route::post('/doc_management/delete_checklist', 'DocManagement\Checklists\ChecklistsController@delete_checklist');
     /* Reorder Checklists */
     Route::post('/doc_management/reorder_checklists', 'DocManagement\Checklists\ChecklistsController@reorder_checklists');
+    /* Copy Checklists */
+    Route::get('/doc_management/copy_checklists', 'DocManagement\Checklists\ChecklistsController@copy_checklists');
 
     /* Add Checklist Items */
     Route::post('/doc_management/add_checklist_items', 'DocManagement\Checklists\ChecklistsController@add_checklist_items');
     /* Add Form to Checklists  */
     Route::post('/doc_management/save_add_to_checklists', 'DocManagement\Create\UploadController@save_add_to_checklists');
-
+    /* Save Copy Checklists  */
+    Route::post('/doc_management/save_copy_checklists', 'DocManagement\Checklists\ChecklistsController@save_copy_checklists');
 
 
     /**********  DATA - GET /**********/

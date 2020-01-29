@@ -21,6 +21,11 @@ class ResourceItems extends Model
         return $location -> resource_name;
     }
 
+    public function scopeGetState($query, $resource_id) {
+        $location = $query -> where('resource_id', $resource_id) -> first();
+        return $location -> resource_state;
+    }
+
     public function scopeGetTagName($query, $id) {
         if($id) {
             $tags = $query -> where('resource_id', $id) -> first();

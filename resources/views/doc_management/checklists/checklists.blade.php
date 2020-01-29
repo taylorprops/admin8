@@ -19,7 +19,7 @@
                                 role="tab"
                                 data-id="{{ $location -> resource_id }}">
                                 @if($location -> resource_name != $location -> resource_state) {{ $location -> resource_state }} | @endif {{ $location -> resource_name }}
-                                <span class="float-right badge bg-blue-med py-1 px-2" id="list_{{ $location -> resource_id }}_file_count">{{-- {{ $association -> getCountFormGroup($resource -> resource_id) }} --}}</span>
+                                <span class="float-right badge bg-blue-med py-1 px-2" id="list_{{ $location -> resource_id }}_file_count"></span>
                             </a>
 
                             @endforeach
@@ -46,7 +46,7 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <a href="javascript: void(0)" class="btn btn-primary ml-5 mt-3 duplicate-checklist-button"><i class="fad fa-clone mr-2"></i> Copy Checklist</a>
+                                        <a href="javascript: void(0)" class="btn btn-primary ml-5 mt-3 copy-checklist-button" data-location-id="{{ $location -> resource_id }}" data-toggle="tooltip" title="Copy all checklists from this form group to another"><i class="fad fa-clone mr-2"></i> Copy Checklists</a>
                                     </div>
                                     <div>
                                         <a href="javascript: void(0)" data-location-id="{{ $location -> resource_id }}" data-state="{{ $location -> resource_state }}" data-form-type="add" class="btn btn-success add-checklist-button ml-5 mt-3"><i class="fal fa-plus mr-2"></i> Add Checklist</a>
@@ -79,6 +79,50 @@
 
     </div><!-- ./ .container -->
 
+    <div class="modal fade draggable" id="confirm_copy_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_copy_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary draggable-handle">
+                    <h3 class="modal-title" id="confirm_copy_title">Confirm Copy</h3>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <i class="fal fa-times fa-2x"></i>
+                    </button>
+                </div>
+                <div class="modal-body py-5">
+                    <div class="text-center"><i class="fad fa-exclamation-circle fa-2x mr-2 text-danger"></i> This will replace all checklists in all locations selected. Continue?</div>
+                </div>
+                <div class="modal-footer d-flex justify-content-around">
+                    <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                    <a class="btn btn-success modal-confirm-button" id="confirm_copy_button"><i class="fad fa-check mr-2"></i> Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade draggable" id="copy_checklists_modal" tabindex="-1" role="dialog" aria-labelledby="copy_checklists_modal_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl-sm" role="document">
+            <div class="modal-content">
+                <form id="copy_checklists_form">
+                    <div class="modal-header bg-primary draggable-handle">
+                        <h3 class="modal-title" id="copy_checklists_modal_title">Copy Checklists To Another Form Group</h3>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <i class="fal fa-times fa-2x"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="copy_checklists_div"></div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-around">
+                        <a class="btn btn-danger btn-lg" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                        <a class="btn btn-success btn-lg" id="save_copy_checklists_button"><i class="fad fa-check mr-2"></i> Export Checklists</a>
+                    </div>
+                    <input type="hidden" id="copy_checklists_location_id">
+                    <input type="hidden" id="copy_checklists_checklist_type">
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="checklist_items_modal" tabindex="-1" role="dialog" aria-labelledby="checklist_items_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
@@ -86,7 +130,7 @@
                     <div class="modal-header bg-primary">
                         <h3 class="modal-title text-white" id="checklist_items_modal_title"></h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <i class="fal fa-times fa-2x"></i>
                         </button>
                     </div>
                     <div class="modal-body">
@@ -113,7 +157,7 @@
                     <div class="modal-header bg-primary draggable-handle">
                         <h3 class="modal-title" id="checklist_modal_title">Add/Edit Checklist</h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <i class="fal fa-times fa-2x"></i>
                         </button>
                     </div>
                     <div class="modal-body">
@@ -187,7 +231,7 @@
                     <div class="modal-header bg-danger draggable-handle">
                         <h3 class="modal-title" id="confirm_delete_checklist_modal_title">Delete Checklist</h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <i class="fal fa-times fa-2x"></i>
                         </button>
                     </div>
                     <div class="modal-body">
@@ -214,7 +258,7 @@
             <div class="modal-header bg-primary">
                 <h3 class="modal-title" id="confirm_remove_file_modal_title">Remove Form From Checklist</h3>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <i class="fal fa-times fa-2x"></i>
                 </button>
             </div>
             <div class="modal-body">

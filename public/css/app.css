@@ -1576,6 +1576,11 @@ a.text-green:hover {
   background: #6cb2eb !important;
 }
 
+.bg-green-light {
+  background: rgba(48, 167, 48, 0.1) !important;
+  background-color: rgba(48, 167, 48, 0.1) !important;
+}
+
 .btn-primary {
   background: #4c9bdb !important;
 }
@@ -13316,6 +13321,7 @@ a:hover {
 .btn:hover {
   border: 1px transparent;
   border-radius: 0px;
+  white-space: nowrap;
 }
 
 .btn.btn-sm,
@@ -14282,6 +14288,11 @@ table.dataTable thead .sorting_desc_disabled:before {
   overflow: auto;
 }
 
+.page-files .list-group .badge {
+  width: 30px;
+  text-align: center;
+}
+
 .page-files .tab-content {
   padding: 0px !important;
 }
@@ -14289,6 +14300,12 @@ table.dataTable thead .sorting_desc_disabled:before {
 .page-files .checklist-count-chip {
   width: 40px;
   text-align: center;
+}
+
+.page-files .uploads-filter-sort,
+.page-files .uploads-filter-published,
+.page-files .uploads-filter-active {
+  width: 100px;
 }
 
 .page-files .published {
@@ -14822,6 +14839,11 @@ table.dataTable thead .sorting_desc_disabled:before {
   width: 98VW !important;
 }
 
+.page-checklists .modal-xl-sm {
+  max-width: 70VW !important;
+  width: 70VW !important;
+}
+
 .page-checklists .checklist-items-chip {
   width: 40px;
   text-align: center;
@@ -14866,5 +14888,26 @@ table.dataTable thead .sorting_desc_disabled:before {
   background: #fff;
   border: 3px solid #4c9bdb;
   opacity: 0.8;
+}
+
+.page-checklists .checklists-to-export-div,
+.page-checklists .export-to-form-groups-div {
+  max-height: 65VH;
+  overflow: auto;
+  overflow-x: hidden !important;
+}
+
+.page-checklists .checklists-to-export-div .form-ele,
+.page-checklists .export-to-form-groups-div .form-ele {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.page-checklists .addendums_yes {
+  color: #30a730;
+}
+
+.page-checklists .addendums_no {
+  color: #b64341;
 }
 

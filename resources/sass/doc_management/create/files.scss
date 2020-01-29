@@ -9,6 +9,10 @@
         max-height: 67VH;
         overflow: auto;
     }
+    .list-group .badge {
+        width: 30px;
+        text-align: center;
+    }
 
     .tab-content {
         padding: 0px !important
@@ -17,6 +21,10 @@
     .checklist-count-chip {
         width: 40px;
         text-align: center;
+    }
+
+    .uploads-filter-sort, .uploads-filter-published, .uploads-filter-active {
+        width: 100px;
     }
 
     .published {
