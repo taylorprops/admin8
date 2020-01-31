@@ -71,13 +71,13 @@ $(document).ready(function () {
 
 
     // confirm modals on enter | requires .modal-confirm and .modal-confirm-button
-    $('.modal-confirm').on('show.bs.modal', function () {
+    /* $('.modal-confirm').on('show.bs.modal', function () {
         $('body').off('keyup').on('keyup', function(event) {
             if (event.keyCode === 13) {
                 $(this).find('.modal-confirm-button').trigger('click');
             }
         });
-    });
+    }); */
     // multiple modal stacking
     $(document).on('show.bs.modal', '.modal', function () {
         var zIndex = 1040 + (10 * $('.modal:visible').length);
@@ -88,10 +88,29 @@ $(document).ready(function () {
     });
 
 
-
+    transition();
 
 
 });
+
+// page transitions
+window.transition = function() {
+
+    if (document.location.pathname !== '/') {
+
+
+        var tl = new TimelineMax();
+
+        tl.to(CSSRulePlugin.getRule('body:before'), 0, { cssRule: { top: '50%' }, ease: Power2.easeOut }, 'close')
+            .to(CSSRulePlugin.getRule('body:after'), 0, { cssRule: { bottom: '50%' }, ease: Power2.easeOut }, 'close')
+            .to($('.loader'), 0, { opacity: 1 })
+            .to(CSSRulePlugin.getRule('body:before'), 0.2, { cssRule: { top: '0%' }, ease: Power2.easeOut }, '+=1.5', 'open')
+            .to(CSSRulePlugin.getRule('body:after'), 0.2, { cssRule: { bottom: '0%' }, ease: Power2.easeOut }, '-=0.2', 'open')
+            .to($('.loader'), 0.2, { opacity: 0, display: 'none' }, '-=0.2');
+
+    }
+
+}
 
 
 /**************************  STANDARD USE FUNCTIONS ***********************************/

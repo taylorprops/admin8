@@ -1,6 +1,7 @@
 .form-select, .form-checkbox, .form-radio, .form-input-color {
     display: none;
 }
+
 .form-ele {
     position: relative;
     margin-top: .75rem;
@@ -94,7 +95,7 @@
         border: 1px solid #ccc;
         width: 100%;
         border-top: none;
-        z-index: 1;
+        z-index: 1500;
     }
     .form-select-save-div {
         background: $blue-light;

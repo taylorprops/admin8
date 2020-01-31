@@ -8,29 +8,26 @@
             <div class="border-top border-bottom border-gray">
                 <div class="list-group-container" data-simplebar data-simplebar-auto-hide="false">
                     <div class="list-group" role="tablist">
-                        @foreach ($resources as $resource)
-                            @if($resource -> resource_type == 'form_groups')
+                        @foreach ($form_groups as $form_group)
                             <a class="list-group-item list-group-item-action @if ($loop -> first) active @endif"
-                                id="list_{{ $resource -> resource_id }}"
+                                id="list_{{ $form_group -> resource_id }}"
                                 data-toggle="list"
-                                href="#list_div_{{ $resource -> resource_id }}"
+                                href="#list_div_{{ $form_group -> resource_id }}"
                                 role="tab"
-                                data-id="{{ $resource -> resource_id }}">
-                                {{ $resource -> resource_name }}
-                                <span class="float-right badge bg-blue-med py-1 px-2" id="list_div_{{ $resource -> resource_id }}_file_count"></span>
+                                data-id="{{ $form_group -> resource_id }}">
+                                {{ $form_group -> resource_name }}
+                                <span class="float-right badge bg-blue-med py-1 px-2" id="list_div_{{ $form_group -> resource_id }}_file_count"></span>
                             </a>
-                            @endif
                         @endforeach
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-8">
-            <div class="tab-content"{{--  id="association" --}}>
-                @foreach ($resources as $resource)
-                    @if($resource -> resource_type == 'form_groups')
-                    <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $resource -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $resource -> resource_id }}">
-                        <div class="h3 text-primary">{{ $resource -> resource_name }}</div>
+            <div class="tab-content">
+                @foreach ($form_groups as $form_group)
+                    <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $form_group -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $form_group -> resource_id }}">
+                        <div class="h3 text-primary">{{ $form_group -> resource_name }}</div>
                         <div class="row">
                             <div class="col-7">
                                 <div class="row">
@@ -58,8 +55,8 @@
                             </div>
                             <div class="col-5">
                                 <div class="d-flex justify-content-between">
-                                    <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success upload-file-button mt-3"><i class="fal fa-plus mr-2"></i> Add Form</a>
-                                    <a href="javascript: void(0)" data-state="{{ $resource -> resource_state }}" data-form-group-id="{{ $resource -> resource_id }}" class="btn btn-success add-non-form-item-button mt-3"><i class="fal fa-plus mr-2"></i> Add Item - No Form</a>
+                                    <a href="javascript: void(0)" data-state="{{ $form_group -> resource_state }}" data-form-group-id="{{ $form_group -> resource_id }}" class="btn btn-success upload-file-button mt-3"><i class="fal fa-plus mr-2"></i> Add Form Item</a>
+                                    <a href="javascript: void(0)" data-state="{{ $form_group -> resource_state }}" data-form-group-id="{{ $form_group -> resource_id }}" class="btn btn-success add-non-form-item-button mt-3"><i class="fal fa-plus mr-2"></i> Add Non-Form Item</a>
                                 </div>
                             </div>
                         </div>
@@ -67,14 +64,13 @@
                             <div class="list-group-divs pt-4" data-simplebar data-simplebar-auto-hide="false">
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-12 forms-data" id="list_div_{{ $resource -> resource_id }}_files" data-form-group-id="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">
+                                        <div class="col-12 forms-data" id="list_div_{{ $form_group -> resource_id }}_files" data-form-group-id="{{ $form_group -> resource_id }}" data-state="{{ $form_group -> resource_state }}">
                                         </div>
                                     </div><!-- ./ .row -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                    @endif
                 @endforeach
             </div>
         </div>
@@ -202,10 +198,8 @@
                                 <div class="col-12">
                                     <select name="edit_form_group_id" id="edit_form_group_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Select From Group">
                                         <option value=""></option>
-                                        @foreach($resources as $resource)
-                                            @if($resource -> resource_type == 'form_groups')
-                                            <option value="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">{{ $resource -> resource_name }}</option>
-                                            @endif
+                                        @foreach($form_groups as $form_group)
+                                            <option value="{{ $form_group -> resource_id }}" data-state="{{ $form_group -> resource_state }}">{{ $form_group -> resource_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -230,7 +224,7 @@
             </div>
         </div>
     </div>
-!i
+
     <div class="modal fade draggable" id="add_item_no_form_modal" tabindex="-1" role="dialog" aria-labelledby="add_item_no_form_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">

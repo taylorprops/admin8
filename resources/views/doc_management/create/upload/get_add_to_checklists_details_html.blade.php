@@ -31,10 +31,77 @@
                         <h5 class="text-primary">Checklists</h5>
                         <div class="border">
                             <div class="add-to-checklists-div">
+                                <div class="checklist-filter-div d-flex justify-content-start">
+                                    <div class="ml-2 mt-4 nowrap">
+                                        <h5 class="text-orange">Filter Checklists</h5>
+                                    </div>
+                                    <div class="ml-2">
+                                        <select class="custom-form-element form-select form-select-no-search checklist-filter" data-type="state" data-label="State">
+                                            <option value="">All</option>
+                                            @foreach($states as $state)
+                                                @if($state != 'All')
+                                                    <option value="{{ $state }}">{{ $state }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="ml-2">
+                                        <select class="custom-form-element form-select form-select-no-search checklist-filter" data-type="region" data-label="Region">
+                                            <option value="">All</option>
+                                            @foreach($checklist_locations as $checklist_location)
+                                                <option value="{{ $checklist_location -> resource_id }}">{{ $checklist_location -> resource_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="ml-2">
+                                        <select class="custom-form-element form-select form-select-no-search checklist-filter" data-type="type" data-label="Type">
+                                            <option value="">All</option>
+                                            <option value="listing">Listing</option>
+                                            <option value="contract">Contract</option>
+                                        </select>
+                                    </div>
+                                    <div class="ml-2">
+                                        <select class="custom-form-element form-select form-select-no-search checklist-filter" data-type="represent" data-label="Represent">
+                                            <option value="">All</option>
+                                            <option value="seller">Seller/Owner</option>
+                                            <option value="buyer">Buyer/Renter</option>
+                                        </select>
+                                    </div>
+                                    <div class="ml-2">
+                                        <select class="custom-form-element form-select form-select-no-search checklist-filter" data-type="sale-rent" data-label="Sale/Rental">
+                                            <option value="">All</option>
+                                            <option value="sale">Sale</option>
+                                            <option value="rental">Rental</option>
+                                        </select>
+                                    </div>
+                                    <div class="ml-2">
+                                        <select class="custom-form-element form-select form-select-no-search checklist-filter" data-type="property-type" data-label="Property Type">
+                                            <option value="">All</option>
+                                            @foreach($property_types as $property_type)
+                                                <option value="{{ $property_type -> resource_id }}">{{ $property_type -> resource_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="ml-2">
+                                        <select class="custom-form-element form-select form-select-no-search checklist-filter" data-type="property-sub-type" data-label="Property Sub Type">
+                                            <option value="">All</option>
+                                            @foreach($property_sub_types as $property_sub_type)
+                                                <option value="{{ $property_sub_type -> resource_id }}">{{ $property_sub_type -> resource_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="ml-2 mr-3">
+                                        <select class="custom-form-element form-select form-select-no-search" id="filter_selected" data-label="Selected">
+                                            <option value="">All</option>
+                                            <option value="selected">Selected</option>
+                                            <option value="not_selected">Not Selected</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <table class="table table-hover table-sm" id="add_to_checklists_table">
                                     <thead>
                                         <tr class="sticky-top">
-                                            <th>Add</th>
+                                            <th class="my-0 py-0"><input type="checkbox" class="custom-form-element form-checkbox text-white" id="select_all_checklists" data-label=""></th>
                                             <th></th>
                                             <th>Order</th>
                                             <th>State</th>
@@ -57,7 +124,14 @@
                                                 $order = $checklist_order -> checklist_item_order + 1;
                                             }
                                             @endphp
-                                            <tr class="checklist-items-tr @if($in_checklist) bg-blue-light @endif")>
+                                            <tr class="checklist-items-tr filter-active @if($in_checklist) bg-blue-light @endif"
+                                            data-state="{{ $checklist -> checklist_state }}"
+                                            data-region="{{ $checklist -> checklist_location_id }}"
+                                            data-type="{{ $checklist -> checklist_type }}"
+                                            data-represent="{{ $checklist -> checklist_represent }}"
+                                            data-sale-rent="{{ $checklist -> checklist_sale_rent }}"
+                                            data-property-type="{{ $checklist -> checklist_property_type_id }}"
+                                            data-property-sub-type="{{ $checklist -> checklist_property_sub_type_id }}">
                                                 <td>
                                                     <input type="checkbox" class="custom-form-element form-checkbox checklist-item-checkbox" value="{{ $checklist -> id }}" data-label="" @if($in_checklist) checked @endif>
                                                     <div class="collapsible-container">

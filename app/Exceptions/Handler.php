@@ -38,9 +38,7 @@ class Handler extends ExceptionHandler {
 
         if ($exception instanceof TokenMismatchException) {
             // axios requests
-            return response() -> json([
-                'dismiss' => __('Session expired due to inactivity'),
-            ]);
+            return redirect('/') -> with('error','Session Has Expired');
 
         }
 

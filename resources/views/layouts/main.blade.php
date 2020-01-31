@@ -14,6 +14,15 @@
         <link href="/vendor/fontawesome/fontawesome/css/all.css" rel="stylesheet">
         <link href="/resources/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet">
 
+        <script src="/js/app.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="/resources/mdbootstrap/js/popper.min.js"></script>
+        <script type="text/javascript" src="/resources/mdbootstrap/js/mdb.min.js"></script>
+        <script type="text/javascript" src="/resources/mdbootstrap/js/addons/datatables.min.js"></script>
+        {{-- page transitions --}}
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.12.1/plugins/CSSRulePlugin.min.js"></script>
+
 
         <noscript>
             <style>
@@ -22,7 +31,7 @@
                     overflow: auto;
                 }
             </style>
-          </noscript>
+        </noscript>
 
     </head>
 
@@ -32,17 +41,22 @@
         @include('layouts.includes.header')
         </header>
 
+        <div class="loader">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+            <div class="bar4"></div>
+            <div class="bar5"></div>
+            <div class="bar6"></div>
+        </div>
+
         <main>
         @yield('content')
         </main>
 
         @include('layouts.includes.common_includes.modals.modals')
 
-        <script src="/js/app.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="/resources/mdbootstrap/js/popper.min.js"></script>
-        <script type="text/javascript" src="/resources/mdbootstrap/js/mdb.min.js"></script>
-        <script type="text/javascript" src="/resources/mdbootstrap/js/addons/datatables.min.js"></script>
+
 
 
         @yield('js')

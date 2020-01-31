@@ -2,18 +2,7 @@ if (document.URL.match(/checklists/)) {
 
     $(document).ready(function () {
 
-        let data_count = $('.checklist-data').length;
-        $('.checklist-data').each(function (index) {
-            let location_id = $(this).data('location-id');
-            get_checklists(location_id, 'listing');
-            // load form elements and options after all divs are loaded
-            if (index === data_count - 1) {
-
-                setTimeout(function() {
-                    init();
-                }, 500);
-            }
-        });
+        load_checklists();
 
         let show_checklist_id = get_url_parameters('checklist_id');
         if (show_checklist_id) {
@@ -27,6 +16,14 @@ if (document.URL.match(/checklists/)) {
         }
 
     });
+
+    function load_checklists() {
+        // get first location to load. others will be loaded when location is selected from menu
+        let location_id = $('.checklist-data').eq(0).data('location-id');
+        get_checklists(location_id, 'listing');
+        init();
+
+    }
 
     // functions to run on load and after adding elements
     function init() {
@@ -51,6 +48,12 @@ if (document.URL.match(/checklists/)) {
         });
 
         sortable_checklists();
+
+        $('.checklist-location').not('.loaded').off('click').on('click',function() {
+            $(this).addClass('loaded');
+            let location_id = $(this).data('id');
+            get_checklists(location_id, 'listing');
+        });
 
 
     }
@@ -90,11 +93,12 @@ if (document.URL.match(/checklists/)) {
 
             $('#save_copy_checklists_button').off('click').on('click', function() {
                 if($('.export-to-form-group:checked').length == 0) {
-                    $('#modal_danger').modal().find('.modal-body').html('You must select at least one region to export the checklists to');
+                    $('#modal_danger').modal().find('.modal-body').html('You must select at least one region to copy the checklists to');
                     return false;
                 }
                 $('#confirm_copy_modal').modal();
                 $('#confirm_copy_button').off('click').on('click', function() {
+                    $('#save_copy_checklists_button').prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2"></span> Copying Checklists');
                     save_copy_checklists(location_id, checklist_type);
                 });
             });
@@ -109,6 +113,11 @@ if (document.URL.match(/checklists/)) {
 
         $('#confirm_copy_modal').modal('hide');
 
+        let checklists_to_copy_ids = [];
+        $('.checklists-to-export-id:checked').each(function() {
+            checklists_to_copy_ids.push($(this).val());
+        });
+
         let checklist_location_ids = [];
         $('.export-to-form-group:checked').each(function () {
             checklist_location_ids.push($(this).val());
@@ -117,12 +126,17 @@ if (document.URL.match(/checklists/)) {
         let formData = new FormData();
         formData.append('location_id', location_id);
         formData.append('checklist_location_ids', checklist_location_ids);
+        formData.append('checklists_to_copy_ids', checklists_to_copy_ids);
+        formData.append('checklist_type', checklist_type);
 
         axios.post('/doc_management/save_copy_checklists', formData, axios_options)
         .then(function (response) {
+            transition();
             $('#copy_checklists_modal').modal('hide');
-            toastr['success']('Checklists Exported Successfully');
+            toastr['success']('Checklists Copied Successfully');
+            load_checklists();
             get_checklists(location_id, checklist_type);
+            $('#save_copy_checklists_button').prop('disabled', false).html('<i class="fad fa-check mr-2"></i> Copy Checklists');
         })
         .catch(function (error) {
             console.log(error);
@@ -169,6 +183,7 @@ if (document.URL.match(/checklists/)) {
             el = $(this);
             checklist_id = el.data('checklist-id');
             checklist_index = el.index();
+            console.log(checklist_id, checklist_index);
             checklists.checklist.push(
                 {
                     'checklist_id': checklist_id,
@@ -349,7 +364,10 @@ if (document.URL.match(/checklists/)) {
     function add_to_checklist() {
         let form_id = $(this).data('form-id');
         let text_orig = $(this).data('text');
-        let form_loc = $(this).data('form-loc');
+        let form_loc = 'javascript:void(0)';
+        if($(this).data('form-loc') != '') {
+            form_loc = '/'+$(this).data('form-loc');
+        }
         let text = text_orig;
         if (text_orig.length > 100) {
             text = text_orig.slice(0, 100) + '...';

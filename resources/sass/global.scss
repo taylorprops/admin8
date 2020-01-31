@@ -4,6 +4,7 @@
     // font-family: 'Maitree', serif;
 }
 
+
 h1,
 h2,
 h3,
@@ -27,6 +28,10 @@ h2 {
 
 a:hover {
     text-decoration: none;
+}
+
+.nowrap {
+    white-space: nowrap;
 }
 
 
@@ -90,6 +95,8 @@ a:hover {
 .modal-dialog {
     margin: 1rem auto !important;
 }
+
+
 
 table.dataTable thead .sorting:after,
 table.dataTable thead .sorting:before,

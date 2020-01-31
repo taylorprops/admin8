@@ -12,7 +12,7 @@
                     <div class="list-group-container" data-simplebar data-simplebar-auto-hide="false">
                         <div class="list-group" role="tablist">
                             @foreach ($locations as $location)
-                            <a class="list-group-item list-group-item-action @if ($loop -> first) active @endif"
+                            <a class="list-group-item list-group-item-action @if ($loop -> first) active loaded @endif checklist-location"
                                 id="list_{{ $location -> resource_id }}"
                                 data-toggle="list"
                                 href="#list_div_{{ $location -> resource_id }}"
@@ -114,7 +114,7 @@
                     </div>
                     <div class="modal-footer d-flex justify-content-around">
                         <a class="btn btn-danger btn-lg" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                        <a class="btn btn-success btn-lg" id="save_copy_checklists_button"><i class="fad fa-check mr-2"></i> Export Checklists</a>
+                        <a class="btn btn-success btn-lg" id="save_copy_checklists_button"><i class="fad fa-check mr-2"></i> Copy Checklists</a>
                     </div>
                     <input type="hidden" id="copy_checklists_location_id">
                     <input type="hidden" id="copy_checklists_checklist_type">

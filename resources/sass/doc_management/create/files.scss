@@ -19,7 +19,7 @@
     }
 
     .checklist-count-chip {
-        width: 40px;
+        width: 50px;
         text-align: center;
     }
 
@@ -93,6 +93,19 @@
     }
     .order-checklist-item-sortable-handle {
         cursor: move;
+    }
+
+    // check all checkbox on add form to checklists
+    #add_to_checklists_table th {
+        .form-check-input[type="checkbox"] + label::before, .form-check-input[type="checkbox"]:not(.filled-in) + label::after, label.btn input[type="checkbox"] + label::before, label.btn input[type="checkbox"]:not(.filled-in) + label::after {
+            border: 2px solid #fff;
+        }
+        .form-check-input[type="checkbox"]:checked + label::before, label.btn input[type="checkbox"]:checked + label::before {
+            border-top: 2px solid transparent;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            border-left: 2px solid transparent;
+        }
     }
 
 

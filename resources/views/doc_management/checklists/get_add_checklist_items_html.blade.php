@@ -21,6 +21,10 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                     $form_name_orig = $form_name;
                     $form_name = shorten_text($form_name, 100);
                 }
+                $form_link = 'javascript:void(0)';
+                if($checklist_item -> file_location != '') {
+                    $form_link = '/'.$files -> getFormLocation($form_id);
+                }
 
                 @endphp
 
@@ -31,7 +35,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                                 <div class="mt-4">
                                     <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i>
                                 </div>
-                                <div class="h5 text-primary mt-4" title="{{ $form_name_orig }}"><a href="/{{ $files -> getFormLocation($form_id) }}" target="_blank">{{ $form_name }}</a></div>
+                                <div class="h5 text-primary mt-4" title="{{ $form_name_orig }}"><a href="{{ $form_link }}" target="_blank">{{ $form_name }}</a></div>
                             </div>
                         </div>
                         <div class="col-4">
@@ -101,7 +105,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                     <li class="list-group-item form-name" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">
                         <div class="d-flex justify-content-start">
                             <div class="mr-2">
-                                <a href="javascript: void(0)" class="btn btn-sm btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="/{{ $form -> file_location }}">Add</a>
+                                <a href="javascript: void(0)" class="btn btn-sm btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="{{ $form -> file_location }}">Add</a>
                             </div>
                             <div class="mt-2" title="{{ $form -> file_name_display }}">{{ shorten_text($form -> file_name_display, 40) }}</div>
                         </div>

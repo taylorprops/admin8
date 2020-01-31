@@ -8,6 +8,13 @@ class ChecklistsItems extends Model
 {
     public $table = 'docs_checklists_items';
 
+    public static function boot() {
+        parent::boot();
+        static::addGlobalScope(function ($query) {
+            $query -> where('checklist_item_active', 'yes');
+        });
+    }
+
     public function ScopeCountInChecklist($query, $form_id) {
         $found = $query -> where('checklist_form_id', $form_id) -> get();
         if($found) {

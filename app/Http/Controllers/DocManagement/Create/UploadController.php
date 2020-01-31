@@ -14,131 +14,10 @@ use App\Models\DocManagement\UploadImages;
 use App\Models\DocManagement\UploadPages;
 use App\Models\DocManagement\Zips;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller {
-
-    public function save_add_to_checklists(Request $request) {
-
-        $file_id = $request -> file_id;
-        $checklists = json_decode($request -> checklists);
-        $checklists = $checklists -> checklist;
-        $form_group_id = $request -> form_group_id;
-        $required = $request -> required;
-
-        // delete file from all checklists
-        $delete_from_checklists = ChecklistsItems::where('checklist_form_id', $file_id) -> delete();
-
-        foreach($checklists as $checklist) {
-            if($checklist -> checklist_id != '') {
-                $checklist_order = $checklist -> checklist_order;
-                $checklist_items = new ChecklistsItems();
-                $checklist_items -> checklist_id = $checklist -> checklist_id;
-                $checklist_items -> checklist_form_id = $file_id;
-                $checklist_items -> checklist_item_required = $required;
-                $checklist_items -> checklist_item_order = $checklist_order;
-                $checklist_items -> checklist_item_group_id = $form_group_id;
-                $checklist_items -> save();
-
-                $current_items = new ChecklistsItems();
-
-                $set_order = $current_items -> where('checklist_id', $checklist -> checklist_id) -> where('checklist_item_order', '>=', $checklist_order) -> where('checklist_form_id', '!=', $file_id) -> update(['checklist_item_order' => DB::raw('checklist_item_order + 1')]);
-
-                $current_items -> updateChecklistItemsOrder($checklist -> checklist_id);
-
-                // set checklist count column
-                $checklist_item_count = $current_items -> where('checklist_id', $checklist -> checklist_id) -> count();
-                $update_count = Checklists::where('id', $checklist -> checklist_id) -> first();
-                $update_count -> checklist_count = $checklist_item_count;
-                $update_count -> save();
-
-            }
-        }
-
-
-
-    }
-
-    public function get_add_to_checklists_details(Request $request) {
-
-        $file_id = $request -> form_id;
-        // get form details just to display
-        $uploaded_file = Upload::where('file_id', $file_id) -> first();
-        // to run functions from ResourceItems
-        $resource_items = new ResourceItems();
-        // checklists to add to
-        $checklists = Checklists::orderBy('checklist_state', 'ASC')
-        -> orderBy('checklist_location_id', 'ASC')
-        -> orderBy('checklist_type', 'DESC')
-        -> orderBy('checklist_represent', 'DESC')
-        -> orderBy('checklist_sale_rent', 'DESC')
-        -> orderBy('checklist_property_type_id', 'ASC')
-        -> get();
-        // checklist items to view in checklists
-        $checklists_items = new ChecklistsItems();
-        // options for required and form_group
-        $form_groups = ResourceItems::where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
-        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
-        // for upload functions
-        $upload = new Upload();
-
-        // get required and form group id for add to checklists
-        $checklist_item_details = $checklists_items -> where('checklist_form_id', $file_id) -> first();
-        $checklist_item_group_id = $checklist_item_details -> checklist_item_group_id ?? null;
-        $checklist_item_required = $checklist_item_details -> checklist_item_required ?? null;
-
-        return view('/doc_management/create/upload/get_add_to_checklists_details_html', compact('file_id', 'uploaded_file', 'resource_items', 'checklists', 'checklists_items', 'form_groups', 'checklist_groups', 'upload', 'checklist_item_required', 'checklist_item_group_id'));
-
-    }
-
-    public function get_manage_upload_details(Request $request) {
-
-        $file_id = $request -> form_id;
-        // get form details just to display
-        $uploaded_file = Upload::where('file_id', $file_id) -> first();
-        // all forms to select replacement from
-        $uploads = Upload::where('form_group_id', $request -> form_group_id) -> where('published', 'yes') -> where('active', 'yes')
-        -> whereNotIn('file_id', function ($query) use ($file_id) {
-            $query -> select('checklist_form_id')
-                -> from('docs_checklists_items')
-                -> groupBy('checklist_form_id');
-        })
-        -> orderBy('file_name_display', 'ASC') -> get();
-        // checklists that form is located in to display
-        $checklists = Checklists::whereIn('id', function ($query) use ($file_id) {
-            $query -> select('checklist_id')
-                -> from('docs_checklists_items')
-                -> where('checklist_form_id', $file_id);
-        })
-        -> orderBy('checklist_state', 'ASC')
-        -> orderBy('checklist_location_id', 'ASC')
-        -> orderBy('checklist_type', 'DESC')
-        -> orderBy('checklist_represent', 'DESC')
-        -> orderBy('checklist_sale_rent', 'DESC')
-        -> orderBy('checklist_property_type_id', 'ASC')
-        -> get();
-
-        // to run functions from ResourceItems
-        $resource_items = new ResourceItems();
-
-        return view('/doc_management/create/upload/get_manage_upload_details_html', compact('file_id', 'uploaded_file', 'uploads', 'checklists', 'resource_items'));
-    }
-
-    public function remove_upload(Request $request) {
-        $form_id = $request -> form_id;
-        ChecklistsItems::where('checklist_form_id', $form_id)
-            -> delete();
-    }
-
-    public function replace_upload(Request $request) {
-        $old_id = $request -> old_form_id;
-        $new_id = $request -> new_form_id;
-
-        ChecklistsItems::where('checklist_form_id', $old_id)
-            -> update(['checklist_form_id' => $new_id]);
-    }
-
     public function activate_upload(Request $request) {
         $upload_id = $request -> upload_id;
         $upload = Upload::where('file_id', $upload_id) -> first();
@@ -164,39 +43,85 @@ class UploadController extends Controller {
         $upload = Upload::find($upload_id);
         $upload_copy = $upload -> replicate();
         $upload_copy -> save();
-        $file_id = $upload_copy -> file_id;
 
-        $uploads_path = base_path() . '/storage/app/public/doc_management/uploads';
-        exec('cp -r ' . $uploads_path . '/' . $upload_id . ' ' . $uploads_path . '/' . $file_id);
+        if ($upload -> file_location != '') {
 
-        $copy_path = str_replace('/' . $upload_id . '/', '/' . $file_id . '/', $upload -> file_location);
-        // update file location
-        $upload_copy -> file_location = $copy_path;
-        $upload_copy -> published = 'no';
-        $upload_copy -> save();
+            $file_id = $upload_copy -> file_id;
+            $uploads_path = base_path() . '/storage/app/public/doc_management/uploads';
+            exec('cp -r ' . $uploads_path . '/' . $upload_id . ' ' . $uploads_path . '/' . $file_id);
 
-        // copy db data for admin.docs_fields, admin.docs_filled_fields_values, admin.docs_fields_inputs
-        $data_sets = [UploadImages::where('file_id', $upload_id) -> get(), UploadPages::where('file_id', $upload_id) -> get()];
+            $copy_path = str_replace('/' . $upload_id . '/', '/' . $file_id . '/', $upload -> file_location);
+            // update file location
+            $upload_copy -> file_location = $copy_path;
+            $upload_copy -> published = 'no';
+            $upload_copy -> save();
 
-        foreach ($data_sets as $data_set) {
-            foreach ($data_set as $row) {
-                $copy = $row -> replicate();
-                $copy -> file_id = $file_id;
-                $path = str_replace('/' . $upload_id . '/', '/' . $file_id . '/', $row -> file_location);
-                $copy -> file_location = $path;
-                $copy -> save();
+            // copy db data for admin.docs_fields, admin.docs_filled_fields_values, admin.docs_fields_inputs
+            $data_sets = [UploadImages::where('file_id', $upload_id) -> get(), UploadPages::where('file_id', $upload_id) -> get()];
+
+            foreach ($data_sets as $data_set) {
+                foreach ($data_set as $row) {
+                    $copy = $row -> replicate();
+                    $copy -> file_id = $file_id;
+                    $path = str_replace('/' . $upload_id . '/', '/' . $file_id . '/', $row -> file_location);
+                    $copy -> file_location = $path;
+                    $copy -> save();
+                }
             }
+
+            $data_sets = [Fields::where('file_id', $upload_id) -> get(), FieldInputs::where('file_id', $upload_id) -> get()];
+
+            foreach ($data_sets as $data_set) {
+                foreach ($data_set as $row) {
+                    $copy = $row -> replicate();
+                    $copy -> file_id = $file_id;
+                    $copy -> save();
+                }
+            }
+
+        } else {
+
+            $upload_copy -> published = 'no';
+            $upload_copy -> save();
+
         }
 
-        $data_sets = [Fields::where('file_id', $upload_id) -> get(), FieldInputs::where('file_id', $upload_id) -> get()];
+    }
 
-        foreach ($data_sets as $data_set) {
-            foreach ($data_set as $row) {
-                $copy = $row -> replicate();
-                $copy -> file_id = $file_id;
-                $copy -> save();
-            }
-        }
+    public function get_add_to_checklists_details(Request $request) {
+
+        $file_id = $request -> form_id;
+        // get form details just to display
+        $uploaded_file = Upload::where('file_id', $file_id) -> first();
+        // to run functions from ResourceItems
+        $resource_items = new ResourceItems();
+        // checklists to add to
+        $checklists = Checklists::orderBy('checklist_state', 'ASC')
+            -> orderBy('checklist_location_id', 'ASC')
+            -> orderBy('checklist_type', 'DESC')
+            -> orderBy('checklist_represent', 'DESC')
+            -> orderBy('checklist_sale_rent', 'DESC')
+            -> orderBy('checklist_property_type_id', 'ASC')
+            -> get();
+        // checklist items to view in checklists
+        $checklists_items = new ChecklistsItems();
+        // options for required and form_group
+        $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
+        $checklist_groups = $resource_items -> where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
+        $checklist_locations = $resource_items -> where('resource_type', 'checklist_locations') -> orderBy('resource_order') -> get();
+        $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
+        $property_sub_types = $resource_items -> where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
+        // for upload functions
+        $upload = new Upload();
+
+        // get required and form group id for add to checklists
+        $checklist_item_details = $checklists_items -> where('checklist_form_id', $file_id) -> first();
+        $checklist_item_group_id = $checklist_item_details -> checklist_item_group_id ?? null;
+        $checklist_item_required = $checklist_item_details -> checklist_item_required ?? null;
+
+        $states = Zips::States();
+
+        return view('/doc_management/create/upload/get_add_to_checklists_details_html', compact('file_id', 'uploaded_file', 'resource_items', 'checklists', 'checklists_items', 'form_groups', 'checklist_groups', 'checklist_locations', 'property_types', 'property_sub_types', 'upload', 'checklist_item_required', 'checklist_item_group_id', 'states'));
 
     }
 
@@ -208,11 +133,12 @@ class UploadController extends Controller {
 
         $order_by = 'file_name_display';
         $dir = 'ASC';
-        if($order == 'added') {
+        if ($order == 'added') {
             $order_by = 'created_at';
             $dir = 'DESC';
         }
         $resource_items = new ResourceItems();
+
         $files = Upload::where('form_group_id', $form_group_id) -> orderBy($order_by, $dir) -> get();
 
         $files_count = count($files);
@@ -220,6 +146,39 @@ class UploadController extends Controller {
         $checklists = new ChecklistsItems();
 
         return view('/doc_management/create/upload/get_form_group_files_html', compact('files', 'files_count', 'form_group_id', 'state', 'resource_items', 'checklists'));
+    }
+
+    public function get_manage_upload_details(Request $request) {
+
+        $file_id = $request -> form_id;
+        // get form details just to display
+        $uploaded_file = Upload::where('file_id', $file_id) -> first();
+        // all forms to select replacement from
+        $uploads = Upload::where('form_group_id', $request -> form_group_id) -> where('published', 'yes') -> where('active', 'yes')
+        -> whereNotIn('file_id', function ($query) use ($file_id) {
+            $query -> select('checklist_form_id')
+                -> from('docs_checklists_items')
+                -> groupBy('checklist_form_id');
+        })
+        -> orderBy('file_name_display', 'ASC') -> get();
+        // checklists that form is located in to display
+        $checklists = Checklists::whereIn('id', function ($query) use ($file_id) {
+            $query -> select('checklist_id')
+                -> from('docs_checklists_items')
+                -> where('checklist_form_id', $file_id);
+            })
+            -> orderBy('checklist_state', 'ASC')
+            -> orderBy('checklist_location_id', 'ASC')
+            -> orderBy('checklist_type', 'DESC')
+            -> orderBy('checklist_represent', 'DESC')
+            -> orderBy('checklist_sale_rent', 'DESC')
+            -> orderBy('checklist_property_type_id', 'ASC')
+            -> get();
+
+        // to run functions from ResourceItems
+        $resource_items = new ResourceItems();
+
+        return view('/doc_management/create/upload/get_manage_upload_details_html', compact('file_id', 'uploaded_file', 'uploads', 'checklists', 'resource_items'));
     }
 
     public function get_upload_details(Request $request) {
@@ -237,8 +196,9 @@ class UploadController extends Controller {
         //dd(ResourceItems::getTagName('11'));
         $resource_items = new ResourceItems();
         $resources = ResourceItems::orderBy('resource_order') -> get();
+        $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
 
-        return view('/doc_management/create/upload/files', compact('files', 'states', 'resources', 'form_group_id', 'resource_items'));
+        return view('/doc_management/create/upload/files', compact('files', 'states', 'resources', 'form_group_id', 'resource_items', 'form_groups'));
         //  -> withModel($associations)
     }
 
@@ -249,19 +209,18 @@ class UploadController extends Controller {
         $upload -> save();
     }
 
-    public function save_file_edit(Request $request) {
-        $file_id = $request -> edit_file_id;
-        $file_name_display = $request -> edit_file_name_display;
-        $state = $request -> edit_state;
-        $form_group_id = $request -> edit_form_group_id;
-        $sale_type = implode(',', $request -> edit_sale_type);
+    public function remove_upload(Request $request) {
+        $form_id = $request -> form_id;
+        ChecklistsItems::where('checklist_form_id', $form_id)
+            -> delete();
+    }
 
-        $upload = Upload::where('file_id', $file_id) -> first();
-        $upload -> file_name_display = $file_name_display;
-        $upload -> state = $state;
-        $upload -> sale_type = $sale_type;
-        $upload -> form_group_id = $form_group_id;
-        $upload -> save();
+    public function replace_upload(Request $request) {
+        $old_id = $request -> old_form_id;
+        $new_id = $request -> new_form_id;
+
+        ChecklistsItems::where('checklist_form_id', $old_id)
+            -> update(['checklist_form_id' => $new_id]);
     }
 
     public function save_add_non_form(Request $request) {
@@ -272,6 +231,60 @@ class UploadController extends Controller {
         $sale_type = implode(',', $request -> no_form_sale_type);
 
         $upload = new Upload();
+        $upload -> file_name_display = $file_name_display;
+        $upload -> state = $state;
+        $upload -> sale_type = $sale_type;
+        $upload -> form_group_id = $form_group_id;
+        $upload -> save();
+    }
+
+    public function save_add_to_checklists(Request $request) {
+
+        $file_id = $request -> file_id;
+        $checklists = json_decode($request -> checklists);
+        $checklists = $checklists -> checklist;
+        $form_group_id = $request -> form_group_id;
+        $required = $request -> required;
+
+        // delete file from all checklists
+        $delete_from_checklists = ChecklistsItems::where('checklist_form_id', $file_id) -> delete();
+
+        foreach ($checklists as $checklist) {
+            if ($checklist -> checklist_id != '') {
+                $checklist_order = $checklist -> checklist_order;
+                $checklist_items = new ChecklistsItems();
+                $checklist_items -> checklist_id = $checklist -> checklist_id;
+                $checklist_items -> checklist_form_id = $file_id;
+                $checklist_items -> checklist_item_required = $required;
+                $checklist_items -> checklist_item_order = $checklist_order;
+                $checklist_items -> checklist_item_group_id = $form_group_id;
+                $checklist_items -> save();
+
+                $current_items = new ChecklistsItems();
+
+                $set_order = $current_items -> where('checklist_id', $checklist -> checklist_id) -> where('checklist_item_order', '>=', $checklist_order) -> where('checklist_form_id', '!=', $file_id) -> update(['checklist_item_order' => DB::raw('checklist_item_order + 1')]);
+
+                $current_items -> updateChecklistItemsOrder($checklist -> checklist_id);
+
+                // set checklist count column
+                $checklist_item_count = $current_items -> where('checklist_id', $checklist -> checklist_id) -> count();
+                $update_count = Checklists::where('id', $checklist -> checklist_id) -> first();
+                $update_count -> checklist_count = $checklist_item_count;
+                $update_count -> save();
+
+            }
+        }
+
+    }
+
+    public function save_file_edit(Request $request) {
+        $file_id = $request -> edit_file_id;
+        $file_name_display = $request -> edit_file_name_display;
+        $state = $request -> edit_state;
+        $form_group_id = $request -> edit_form_group_id;
+        $sale_type = implode(',', $request -> edit_sale_type);
+
+        $upload = Upload::where('file_id', $file_id) -> first();
         $upload -> file_name_display = $file_name_display;
         $upload -> state = $state;
         $upload -> sale_type = $sale_type;
@@ -392,6 +405,4 @@ class UploadController extends Controller {
         }
 
     }
-
 }
-

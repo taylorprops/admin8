@@ -13,9 +13,11 @@ class ResourcesController extends Controller
 
     public function resources() {
         $states = Zips::States();
-        $resources = ResourceItems::groupBy('resource_type') -> get();
-        $resources_items = ResourceItems::orderBy('resource_order') -> get();
-        return view('/doc_management/resources/resources', compact('resources', 'resources_items', 'states'));
+        $resources_items_model = new ResourceItems();
+        $resources = $resources_items_model -> groupBy('resource_type') -> get();
+        $resources_items = $resources_items_model -> orderBy('resource_order') -> get();
+
+        return view('/doc_management/resources/resources', compact('resources', 'resources_items', 'states', 'resources_items_model'));
     }
 
     public function resources_reorder(Request $request) {

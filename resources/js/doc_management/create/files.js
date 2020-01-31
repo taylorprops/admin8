@@ -2,6 +2,11 @@ if (document.URL.match(/create\/upload\/files/)) {
 
     $(document).ready(function () {
 
+        init();
+
+    });
+
+    function init() {
         // get forms for each form group
         let data_count = $('.forms-data').length;
         $('.forms-data').each(function (index) {
@@ -18,7 +23,9 @@ if (document.URL.match(/create\/upload\/files/)) {
                     $('.upload-file-button').off('click').on('click', function () {
                         show_upload($(this));
                     });
-                    $('.add-non-form-item-button').off('click').on('click', show_add_non_form_item);
+                    $('.add-non-form-item-button').off('click').on('click', function() {
+                        show_add_non_form_item($(this));
+                    });
                     // init functions
                     upload_options();
 
@@ -26,8 +33,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 }, 500);
             }
         });
-
-    });
+    }
 
     function get_forms(form_group_id, state, order=null) {
         let options = {
@@ -156,8 +162,9 @@ if (document.URL.match(/create\/upload\/files/)) {
             form_elements();
             $('#add_to_checklists_table').DataTable({
                 'paging': false,
-                'toolbar': 'add_to_checklists_table_toolbar',
                 "aaSorting": [],
+                "searching": false,
+                "info": false,
                 columnDefs: [{
                     orderable: false,
                     targets: [0,1,2,10]
@@ -171,24 +178,75 @@ if (document.URL.match(/create\/upload\/files/)) {
             sortable();
             order_checklists();
 
-            // highlight background of selected rows
             $('.checklist-item-checkbox').change(function() {
-                if($(this).is(':checked')) {
-                    $(this).closest('tr').addClass('bg-blue-light').find('.checklist-order').focus();
-                } else {
-                    $(this).closest('tr').removeClass('bg-blue-light');
-                }
+                highlight_selected($(this));
             });
 
             $('#save_add_to_checklists_button').off('click').on('click', function() {
                 save_add_to_checklists(state, form_id, form_group_id);
             });
 
+            $('.checklist-filter').change(checklist_filter);
+            $('#filter_selected').change(filter_selected);
+
+            $('#select_all_checklists').click(check_all);
+
         })
         .catch(function (error) {
             console.log(error);
         });
 
+    }
+
+    function filter_selected() {
+        if($(this).val() == 'selected') {
+            $('.checklist-items-tr').hide();
+            $('.checklist-item-checkbox:checked').closest('.checklist-items-tr').show();
+        } else {
+            $('.checklist-items-tr').show();
+            $('.checklist-item-checkbox:checked').closest('.checklist-items-tr').hide();
+        }
+    }
+
+    function highlight_selected(ele) {
+        // highlight background of selected rows
+        if(ele.is(':checked')) {
+            ele.closest('tr').addClass('bg-blue-light');
+        } else {
+            ele.closest('tr').removeClass('bg-blue-light');
+        }
+    }
+
+    function check_all() {
+        if($('#select_all_checklists').is(':checked')) {
+            $('.filter-active').find('.checklist-item-checkbox').each(function() {
+                $(this).prop('checked', true);
+                highlight_selected($(this));
+            });
+        }  else {
+            $('.filter-active').find('.checklist-item-checkbox').each(function() {
+                $(this).prop('checked', false);
+                highlight_selected($(this));
+            });
+        }
+
+    }
+
+    function checklist_filter() {
+        $('#select_all_checklists').prop('checked', false);
+        $('.checklist-items-tr').show().addClass('filter-active');
+        $('.checklist-filter').each(function() {
+            let filter_val = $(this).val();
+            let filter_type = $(this).data('type');
+            if(filter_val != '') {
+                $('.checklist-items-tr').each(function() {
+                    if($(this).data(filter_type) != filter_val) {
+                        $(this).hide().removeClass('filter-active');
+                    }
+                });
+            }
+
+        });
     }
 
     function save_add_to_checklists(state, checklist_form_id, checklist_item_group_id) {
@@ -234,6 +292,7 @@ if (document.URL.match(/create\/upload\/files/)) {
             axios.post('/doc_management/save_add_to_checklists', formData, axios_options)
             .then(function (response) {
                 $('#add_to_checklists_modal').modal('hide');
+                $('#add_form_to_checklists_div').html('');
                 let order = $('#list_div_' + checklist_item_group_id).find('.uploads-filter-sort').val();
                 get_forms(checklist_item_group_id, state, order);
                 setTimeout(function() {
@@ -292,7 +351,6 @@ if (document.URL.match(/create\/upload\/files/)) {
         });
     }
 
-
     function reorder_checklists() {
         $('.order-checklist-item').each(function() {
             $(this).find('.checklist-item-order').text($(this).index() + 1);
@@ -340,7 +398,6 @@ if (document.URL.match(/create\/upload\/files/)) {
             });
         });
     }
-
 
     function sort_uploads(ele) {
         let order = ele.val();
@@ -526,9 +583,24 @@ if (document.URL.match(/create\/upload\/files/)) {
             });
     }
 
-    function show_add_non_form_item() {
+    function show_add_non_form_item(ele) {
+        // show modal
         $('#add_item_no_form_modal').modal();
+
+        // set values for from group and state
+        let state = ele.data('state');
+        let form_group_id = ele.data('form-group-id');
+        $('#no_form_form_group_id').val(form_group_id);
+        $('#no_form_state').val(state);
+
         $('#save_add_item_no_form_button').off('click').on('click', save_non_form_item);
+
+        select_refresh();
+
+        $('#no_form_form_group_id').change(function () {
+            $('#no_form_state').val(ele.find('option:selected').data('state'));
+            select_refresh();
+        });
     }
 
     function save_non_form_item() {

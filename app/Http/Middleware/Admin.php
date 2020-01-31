@@ -26,9 +26,7 @@ class Admin
             return redirect($redirect_url) -> with('error','You do not have access');
         }
 
-        return response() -> json([
-            'dismiss' => __('Session expired due to inactivity'),
-        ]);
+        return redirect('/') -> with('error','Session Has Expired');
 
     }
 }

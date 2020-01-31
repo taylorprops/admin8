@@ -347,7 +347,7 @@ window.form_elements = function () {
 
 
     // show dropdown on focus
-    $('.form-ele').off().on('click', '.form-select-value-input', function (e) {
+    $('.form-ele').not('.form-check').off().on('click', '.form-select-value-input', function (e) {
         e.stopPropagation();
         show_dropdown($(this));
 

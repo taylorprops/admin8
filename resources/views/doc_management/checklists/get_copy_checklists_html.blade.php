@@ -7,13 +7,13 @@
                 <h5 class="text-primary mt-3">{{ $property_type -> resource_name }}</h5>
                     <div class="list-group">
                         @php
-                        $property_type_checklists = $checklists_functions -> getChecklistsByPropertyType($property_type -> resource_id, $checklist_type);
+                        $property_type_checklists = $checklists_functions -> getChecklistsByPropertyType($property_type -> resource_id, $location_id, $checklist_type);
                         @endphp
                         @foreach($property_type_checklists as $checklist)
                             <div class="list-group-item list-group-item-action pt-1 pb-0 px-0">
                                 <div class="row">
                                     <div class="col-2">
-                                        <input type="checkbox" class="custom-form-element form-checkbox checklists-to-export-id" data-checklist-id="{{ $checklist -> id }}" data-label="" checked>
+                                        <input type="checkbox" class="custom-form-element form-checkbox checklists-to-export-id" value="{{ $checklist -> id }}" data-label="" checked>
                                     </div>
                                     <div class="col-2">
                                         <span class="text-primary-dark font-weight-bold ml-2">
@@ -54,7 +54,7 @@
                     @foreach($form_groups as $form_group)
                         <div class="list-group-item pt-1 pb-0 px-0">
                             <div class="row">
-                                <div class="col-1">
+                                <div class="col-2">
                                     <input type="checkbox" class="custom-form-element form-checkbox export-to-form-group" value="{{ $form_group -> resource_id }}">
                                 </div>
                                 <div class="col-3">
