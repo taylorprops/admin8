@@ -20,6 +20,6 @@ class Agent
             }
         }
 
-        return redirect('/') -> with('error','Session Has Expired');
+        return response() -> view('/auth/login', [], 404);
     }
 }

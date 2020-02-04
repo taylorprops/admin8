@@ -40,7 +40,7 @@
                             </div>
                             <div class="col">
                                 <span class="text-primary list-item-handle">
-                                    Client: <span class="font-weight-bold">{{ ucwords($checklist -> checklist_represent) }}</span>
+                                    {{ ($checklist -> checklist_represent == 'seller' ? 'Seller/Owner' : 'Buyer/Renter') }}
                                 </span>
                             </div>
                             <div class="col-5">

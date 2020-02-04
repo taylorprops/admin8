@@ -31,9 +31,12 @@ class ChecklistsItems extends Model
         return false;
     }
 
-    public function scopeGetChecklistItems($query, $checklist_id) {
-        $checklist_items = $query -> where('checklist_id', $checklist_id) -> orderBy('checklist_item_order', 'ASC') -> get();
-        return $checklist_items;
+    public function scopeGetChecklistItemsCount($query, $checklist_id) {
+        if($checklist_id) {
+            $checklist_items = $query -> where('checklist_id', $checklist_id) -> count();
+            return $checklist_items;
+        }
+        return '0';
     }
 
     public function updateChecklistItemsOrder($checklist_id) {

@@ -57,7 +57,7 @@ class ChecklistsController extends Controller
 
     }
 
-    public function copy_checklists(Request $request) {
+    public function get_copy_checklists(Request $request) {
         $location_id = $request -> location_id;
         $checklist_type = $request -> checklist_type;
 
@@ -86,10 +86,10 @@ class ChecklistsController extends Controller
         $checklist = Checklists::whereId($checklist_id) -> first();
         $checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> orderBy('checklist_item_order') -> get();
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
-        $checklist_groups = $resource_items -> where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
+        $checklist_groups = $resource_items -> where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', [$checklist -> checklist_type, 'both']) -> orderBy('resource_order') -> get();
 
 
-        return view('/doc_management/checklists/get_add_checklist_items_html', compact('checklist', 'checklist_items', 'form_groups', 'files', 'resource_items', 'checklist_groups'));
+        return view('/doc_management/checklists/get_add_checklist_items_html', compact('checklist', 'checklist_items', 'form_groups', 'files', 'resource_items', 'checklist_groups', 'checklist_type'));
     }
 
     public function checklists() {
@@ -109,7 +109,7 @@ class ChecklistsController extends Controller
         $checklist_type = $request -> checklist_type;
 
         $checklists_model = new Checklists();
-        $checklists = Checklists::where('checklist_location_id', $checklist_location_id) -> orderBy('checklist_order') -> get();
+        $checklists = Checklists::where('checklist_location_id', $checklist_location_id) -> orderBy('checklist_order', 'ASC') -> get();
         $checklists_count = count($checklists);
         $checklists_data = $checklists -> first();
         $checklist_state = $checklists_data -> checklist_state;

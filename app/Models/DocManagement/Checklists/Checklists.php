@@ -24,13 +24,11 @@ class Checklists extends Model
     } */
 
     public function scopeGetChecklistsByPropertyType($query, $checklist_property_type_id, $checklist_location_id, $checklist_type) {
-        $checklists = $query -> where('checklist_property_type_id', $checklist_property_type_id) -> where('checklist_location_id', $checklist_location_id);
+        $checklists = $query -> where('checklist_location_id', $checklist_location_id) -> where('checklist_property_type_id', $checklist_property_type_id);
         if($checklist_type != '') {
             $checklists = $query -> where('checklist_type', $checklist_type);
         }
-        $checklists = $query -> orderBy('checklist_represent', 'DESC')
-        -> orderBy('checklist_sale_rent', 'DESC')
-        -> orderBy('checklist_property_type_id', 'ASC') -> get();
+        $checklists = $query -> orderBy('checklist_order') -> get();
         return $checklists;
     }
 

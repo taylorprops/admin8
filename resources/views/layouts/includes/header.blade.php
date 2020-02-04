@@ -1,103 +1,25 @@
 @unless (Auth::check())
     @php return redirect('/'); @endphp
 @endunless
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-
-    <!-- Collapse button -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_main_menu"
-        aria-controls="navbar_main_menu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- Collapsible content -->
-    <div class="collapse navbar-collapse d-flex justify-content-between" id="navbar_main_menu">
-
-        <div class="mr-auto">
-            <!-- Links -->
-            <ul class="navbar-nav">
-                @if(auth() -> user() -> group == 'admin')
-                    @include('layouts.includes/menus/admin')
-                @elseif(auth() -> user() -> group == 'agent')
-                    @include('layouts.includes/menus/agent')
-                @endif
-                <li>
-                    <!-- Navbar brand -->
-                    <a class="navbar-brand text-uppercase" href="/dashboard"><img src="/images/logo/logo.png" height="40"></a>
-                </li>
-            </ul>
-            <!-- Links -->
-
+<nav class="navbar sticky-top navbar-expand-lg bg-primary w-100">
+    <div class="menu">
+        <div class="nav-layer"></div>
+        <div class="nav-menu-container">
+            @if(auth() -> user() -> group == 'admin')
+                @include('layouts.includes/menus/admin')
+            @elseif(auth() -> user() -> group == 'agent')
+                @include('layouts.includes/menus/agent')
+            @endif
         </div>
-        @if(auth() -> user() -> group == 'admin')
-        <!-- Search form -->
-        <div class="mx-auto">
-            <input class="form-input-search" id="main_search" type="text" placeholder="Search" aria-label="Search">
-        </div>
-        @endif
-        <div class="ml-auto"><a href="/logout" class="text-white">Logout</a></div>
-
     </div>
-    <!-- Collapsible content -->
-
-</nav>
-<!-- Navbar -->
-
-
-
-{{-- <nav class="navbar navbar-expand-lg bg-primary">
-    <!-- SideNav slide-out button -->
-    <a href="#" data-activates="slide-out" class="button-collapse"><i class="fal fa-bars fa-2x text-white"></i></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon text-white"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-
+    <div class="d-flex justify-content-between w-100">
+        <a class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </a>
+        <a href="/dashboard"><img src="/images/logo/logos.png" height="30"></a>
+        <a href="/logout" class="text-white mr-3 mt-1">Logout</a>
     </div>
-    <div class="float-right"><a href="/logout" class="text-white">Logout</a></div>
 </nav>
 
-<!-- Sidebar navigation -->
-<div id="slide-out" class="side-nav">
-    <ul class="custom-scrollbar">
-        <li>
-            <div class="logo-wrapper waves-light">
-                <a href="#"><img src="https://mdbootstrap.com/img/logo/mdb-transparent.png"
-                        class="img-fluid flex-center"></a>
-            </div>
-        </li>
-        <!--Search Form-->
-        <li>
-            <form class="search-form" role="search">
-                <div class="form-group md-form mt-0 pt-1 waves-light">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div>
-            </form>
-        </li>
-        <!--/.Search Form-->
-        <li>
-            <ul class="collapsible collapsible-accordion">
-                <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-chevron-right"></i> Create Docs <i class="fas fa-angle-down rotate-icon"></i></a>
-                    <div class="collapsible-body">
-                        <ul>
-                            <li><a class="waves-effect" href="/doc_management/create/upload">Add Files</a></li>
-                            <li><a class="waves-effect" href="/doc_management/create/upload/files">Uploaded Files</a></li>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-chevron-right"></i> Fill Files <i class="fas fa-angle-down rotate-icon"></i></a>
-                    <div class="collapsible-body">
-                        <ul>
-                            <li><a class="waves-effect" href="/doc_management/create/fill/fillable_files">Fillable Files</a></li>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-        </li>
-    </ul>
-    <div class="sidenav-bg rgba-blue-strong"></div>
-</div>
-<!--/. Sidebar navigation -->
- --}}

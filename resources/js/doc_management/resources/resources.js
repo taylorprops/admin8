@@ -65,15 +65,15 @@ function options() {
         show_edit_resource($(this));
     });
 
-    $('.delete-resource-button').off('click').on('click', function () {
-        confirm_delete_resource($(this));
+    $('.delete-deactivate-resource-button').off('click').on('click', function () {
+        confirm_delete_deactivate_resource($(this));
     });
 
     form_elements();
 
 }
 
-function added_item_html(resource_id, resource_type, resource_name, resource_state, resource_color, resource_association, resource_addendums, resource_county_abbr) {
+function added_item_html(resource_id, resource_type, resource_name, resource_state, resource_color, resource_association, resource_addendums, resource_form_group_type, resource_county_abbr) {
 
     let resource_html = ' \
     <li class="list-group-item" data-resource-id="' + resource_id + '" data-resource-type="' + resource_type + '"> \
@@ -97,19 +97,19 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
     }
     resource_html += ' \
             ' + resource_name_display + '</span > \
-            <a href="javascript: void(0)" class="delete-resource-button text-danger float-right ml-3" data-resource-id="' + resource_id + '" data-resource-name="' + resource_name + '"><i class="fad fa-trash-alt fa-lg"></i></a> \
+            <a href="javascript: void(0)" class="delete-deactivate-resource-button text-danger float-right ml-3" data-resource-id="' + resource_id + '" data-resource-name="' + resource_name + '" data-action="delete"><i class="fad fa-trash-alt fa-lg"></i></a> \
             <a href="javascript: void(0)" class="edit-resource-button text-primary float-right" data-resource-type="' + resource_type + '"><i class="fad fa-edit fa-lg"></i></a> \
         </div> \
         <div class="resource-div-edit container-fluid"> \
             <form> \
                 <div class="row py-3"> \
-                    <div class="col-5"> \
+                    <div class="col-4 px-1"> \
                         <input type="text" class="custom-form-element form-input edit-resource-input" value="' + resource_name + '" data-default-value="' + resource_name + '" data-label="Resource Name"> \
                     </div> \
     ';
     if (resource_state != '') {
         resource_html += ' \
-                    <div class="col"> \
+                    <div class="col px-1"> \
                         <select class="custom-form-element form-select edit-resource-state form-select-no-cancel form-select-no-search required" data-label="State" data-default-value="' + resource_state + '"> \
                             <option value=""></option> \
         ';
@@ -128,7 +128,7 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
     }
     if (resource_association != '') {
         resource_html += ' \
-                    <div class="col"> \
+                    <div class="col px-1"> \
                         <select class="custom-form-element form-select edit-resource-association form-select-no-cancel form-select-no-search required" data-label="Association" data-default-value="' + resource_association + '"> \
                             <option value=""></option> \
         ';
@@ -149,7 +149,7 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
     }
     if (resource_addendums != '') {
         resource_html += ' \
-                    <div class="col"> \
+                    <div class="col px-1"> \
                         <select class="custom-form-element form-select edit-resource-addendums form-select-no-cancel form-select-no-search required" data-label="Addenda" data-default-value="' + resource_addendums + '"> \
                             <option value=""></option> \
         ';
@@ -168,25 +168,50 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
                     </div> \
         ';
     }
+    if (resource_form_group_type != '') {
+        resource_html += ' \
+                    <div class="col px-1"> \
+                        <select class="custom-form-element form-select edit-resource-form-group-type form-select-no-cancel form-select-no-search required" data-label="Form Type" data-default-value="' + resource_form_group_type + '"> \
+                            <option value=""></option> \
+        ';
+        let selected = '';
+        if (resource_form_group_type == 'listing') {
+            selected = 'selected';
+        }
+        resource_html += '<option value="listing" ' + selected + '>Listing</option>';
+        selected = '';
+        if (resource_form_group_type == 'contract') {
+            selected = 'selected';
+        }
+        selected = '';
+        if (resource_form_group_type == 'both') {
+            selected = 'selected';
+        }
+        resource_html += '<option value="both" ' + selected + '>Both</option>';
+        resource_html += ' \
+                        </select> \
+                    </div> \
+        ';
+    }
     if (resource_color != '') {
         resource_html += ' \
-                    <div class="col"> \
+                    <div class="col px-1"> \
                         <input type="color" class="custom-form-element form-input-color   edit-resource-color colorpicker" value="' + resource_color + '" data-default-value="' + resource_color + '" data-label="Tag Color"> \
                     </div> \
         ';
     }
     if (resource_county_abbr != '') {
         resource_html += ' \
-                    <div class="col"> \
+                    <div class="col px-1"> \
                         <input type="text" class="form-input" value="' + resource_county_abbr + '" data-default-value="' + resource_county_abbr + '" data-label="County Abbr"> \
                     </div> \
         ';
     }
     resource_html += ' \
-                    <div class="col-1"> \
+                    <div class="col-1 pl-2"> \
                         <a href="javascript: void(0)" class="save-edit-resource-button" data-resource-id="' + resource_id + '" data-resource-type="' + resource_type + '"><i class="fad fa-save text-primary fa-2x mt-3"></i></a> \
                     </div> \
-                    <div class="col-1"> \
+                    <div class="col-1 px-1"> \
                         <a href="javascript: void(0)" class="close-edit-resource-button"><i class="fal fa-times text-danger fa-2x mt-3"></i></a> \
                     </div> \
                 </div> \
@@ -216,6 +241,8 @@ function show_add_resource(ele) {
     let resource_association = '';
     let resource_addendums_select = '';
     let resource_addendums = '';
+    let resource_form_group_type_select = '';
+    let resource_form_group_type = '';
     let resource_county_abbr_input = '';
     let resource_county_abbr = '';
 
@@ -230,6 +257,9 @@ function show_add_resource(ele) {
     }
     if (add_resource_div.find('.add-resource-addendums').length > 0) {
         resource_addendums_select = add_resource_div.find('.add-resource-addendums');
+    }
+    if (add_resource_div.find('.add-resource-form-group-type').length > 0) {
+        resource_form_group_type_select = add_resource_div.find('.add-resource-form-group-type');
     }
     if (add_resource_div.find('.add-resource-county-abbr').length > 0) {
         resource_county_abbr_input = add_resource_div.find('.add-resource-county-abbr');
@@ -255,6 +285,9 @@ function show_add_resource(ele) {
         }
         if (resource_addendums_select) {
             resource_addendums_select.val('').trigger('change');
+        }
+        if (resource_form_group_type_select) {
+            resource_form_group_type_select.val('').trigger('change');
         }
         if (resource_county_abbr_input) {
             resource_county_abbr_input.val('').trigger('change');
@@ -292,6 +325,9 @@ function show_add_resource(ele) {
             if (resource_addendums_select) {
                 resource_addendums = resource_addendums_select.val();
             }
+            if (resource_form_group_type_select) {
+                resource_form_group_type = resource_form_group_type_select.val();
+            }
             if (resource_county_abbr_input) {
                 resource_county_abbr = resource_county_abbr_input.val();
             }
@@ -302,6 +338,7 @@ function show_add_resource(ele) {
             formData.append('resource_color', resource_color);
             formData.append('resource_association', resource_association);
             formData.append('resource_addendums', resource_addendums);
+            formData.append('resource_form_group_type', resource_form_group_type);
             formData.append('resource_county_abbr', resource_county_abbr);
 
             axios.post('/doc_management/resources/add', formData, axios_options)
@@ -309,7 +346,7 @@ function show_add_resource(ele) {
                     cancel_button.trigger('click');
                     toastr['success']('Resource Added Successfully');
                     let resource_id = response.data;
-                    let new_resource_html = added_item_html(resource_id, resource_type, resource_name, resource_state, resource_color, resource_association, resource_addendums, resource_county_abbr);
+                    let new_resource_html = added_item_html(resource_id, resource_type, resource_name, resource_state, resource_color, resource_association, resource_addendums, resource_form_group_type, resource_county_abbr);
                     $(new_resource_html).prependTo(prepend_to);
                     options();
                 })
@@ -358,6 +395,10 @@ function show_edit_resource(ele) {
     if (resource_div.find('.edit-resource-addendums').length > 0) {
         resource_addendums_select = resource_div.find('.edit-resource-addendums');
     }
+    let resource_form_group_type_select = '';
+    if (resource_div.find('.edit-resource-form-group-type').length > 0) {
+        resource_form_group_type_select = resource_div.find('.edit-resource-form-group-type');
+    }
     let resource_county_abbr_input = '';
     if (resource_div.find('.edit-resource-county-abbr').length > 0) {
         resource_county_abbr_input = resource_div.find('.edit-resource-county-abbr');
@@ -372,19 +413,19 @@ function show_edit_resource(ele) {
 
     save.off('click').on('click', function () {
 
-        save_edit_resource($(this), resource_input, resource_state_select, resource_input_color, resource_association_select, resource_addendums_select, resource_county_abbr_input, list_group_item, resource_div, resource_type);
+        save_edit_resource($(this), resource_input, resource_state_select, resource_input_color, resource_association_select, resource_addendums_select, resource_form_group_type_select, resource_county_abbr_input, list_group_item, resource_div, resource_type);
 
     });
 
     close.click(function () {
 
-        reset_edit_resource_div(list_group_item, resource_div, resource_input, resource_state_select, resource_association_select, resource_addendums_select, resource_input_color, resource_county_abbr_input);
+        reset_edit_resource_div(list_group_item, resource_div, resource_input, resource_state_select, resource_association_select, resource_addendums_select, resource_form_group_type_select, resource_input_color, resource_county_abbr_input);
 
     });
 
 }
 
-function reset_edit_resource_div(list_group_item, resource_div, resource_input, resource_state_select, resource_association_select, resource_addendums_select, resource_input_color, resource_county_abbr_input) {
+function reset_edit_resource_div(list_group_item, resource_div, resource_input, resource_state_select, resource_association_select, resource_addendums_select, resource_form_group_type_select, resource_input_color, resource_county_abbr_input) {
     list_group_item.show();
     resource_div.hide();
     resource_input.val(resource_input.data('default-value'));
@@ -403,7 +444,7 @@ function reset_edit_resource_div(list_group_item, resource_div, resource_input, 
     select_refresh();
 }
 
-function save_edit_resource(ele, resource_input, resource_state_select, resource_input_color, resource_association_select, resource_addendums_select, resource_county_abbr_input, list_group_item, resource_div, resource_type) {
+function save_edit_resource(ele, resource_input, resource_state_select, resource_input_color, resource_association_select, resource_addendums_select, resource_form_group_type_select, resource_county_abbr_input, list_group_item, resource_div, resource_type) {
 
     let resource_id = ele.data('resource-id');
     let resource_title = list_group_item.find('.edit-resource-title');
@@ -426,6 +467,10 @@ function save_edit_resource(ele, resource_input, resource_state_select, resource
     if (resource_addendums_select) {
         resource_addendums = resource_addendums_select.val();
     }
+    let resource_form_group_type = '';
+    if (resource_form_group_type_select) {
+        resource_form_group_type = resource_form_group_type_select.val();
+    }
     let resource_county_abbr = '';
     if (resource_county_abbr_input) {
         resource_county_abbr = resource_county_abbr_input.val();
@@ -444,6 +489,7 @@ function save_edit_resource(ele, resource_input, resource_state_select, resource
         formData.append('resource_color', resource_color);
         formData.append('resource_association', resource_association);
         formData.append('resource_addendums', resource_addendums);
+        formData.append('resource_form_group_type', resource_form_group_type);
         formData.append('resource_county_abbr', resource_county_abbr);
 
         axios.post('/doc_management/resources/edit', formData, axios_options)
@@ -492,30 +538,45 @@ function reset_resources() {
     });
 }
 
-function confirm_delete_resource(ele) {
-    $('#confirm_delete_modal').modal();
-    $('#confirm_delete_modal').find('.delete-file-name').text();
+function confirm_delete_deactivate_resource(ele) {
+    let action = $(ele).data('action');
+    $('#confirm_delete_deactivate_resource_modal').modal();
+
     let resource_name = ele.data('resource-name');
-    $('.delete-file-name').text(resource_name);
-    $('#confirm_delete').click(function () {
-        delete_resource(ele)
+    $('.delete-deactivate-resource-file-name').text(resource_name);
+
+    let confirm_text, title_text;
+    if(action == 'delete') {
+        confirm_text = 'Are you sure you want to permanently delete this resource?';
+        title_text = 'Delete Resource';
+    } else if(action == 'deactivate') {
+        confirm_text = 'This will permanently deactivate the resource. Once deactivated the resource will remain in current items but will not be available for new items. Continue?';
+        title_text = 'Deactivate Resource';
+    }
+    $('.confirm-delete-deactivate-resource-text').text(confirm_text);
+    $('#confirm_delete_deactivate_resource_modal_title').text(title_text);
+
+    $('#confirm_delete_deactivate_resource').click(function () {
+        delete_deactivate_resource_resource(ele, action)
     });
 }
 
-function delete_resource(ele) {
+function delete_deactivate_resource_resource(ele, action) {
 
     let resource_id = ele.data('resource-id');
-    //let resource_name = ele.data('resource-name');
     let formData = new FormData();
     formData.append('resource_id', resource_id);
+    formData.append('action', action);
 
-    axios.post('/doc_management/resources/delete', formData, axios_options)
+    axios.post('/doc_management/resources/delete_deactivate', formData, axios_options)
         .then(function (response) {
             $(ele).closest('.list-group-item').remove();
-            toastr['success']('Resource Deleted Successfully');
-            $('#confirm_delete_modal').modal('hide');
+            toastr['success']('Resource ' + action + 'd successfully');
+            $('#confirm_delete_deactivate_resource_modal').modal('hide');
         })
         .catch(function (error) {
             console.log(error);
         });
 }
+
+

@@ -3,7 +3,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 @endphp
 
 <div class="row">
-    <div class="col-9">
+    <div class="col-8">
         <div class="row">
             <div class="col-12">
                 <h4>Checklist Items</h4>
@@ -19,7 +19,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                 if($form_id) {
                     $form_name = $files -> getFormName($form_id);
                     $form_name_orig = $form_name;
-                    $form_name = shorten_text($form_name, 100);
+                    $form_name = shorten_text($form_name, 70);
                 }
                 $form_link = 'javascript:void(0)';
                 if($checklist_item -> file_location != '') {
@@ -30,7 +30,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 
                 <li class="list-group-item checklist-item w-100 pt-1 pb-0" data-form-id="{{ $checklist_item -> checklist_form_id ?? null }}">
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-7">
                             <div class="d-flex justify-content-start">
                                 <div class="mt-4">
                                     <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i>
@@ -38,7 +38,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                                 <div class="h5 text-primary mt-4" title="{{ $form_name_orig }}"><a href="{{ $form_link }}" target="_blank">{{ $form_name }}</a></div>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-5">
                             <div class="row">
                                 <div class="col">
                                     <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required">
@@ -51,7 +51,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                                     <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-group-id required" data-label="Form Group">
                                         <option value=""></option>
                                         @foreach($checklist_groups as $checklist_group)
-                                        <option value="{{ $checklist_group -> resource_id }}" @if( $checklist_item -> checklist_item_group_id == $checklist_group -> resource_id) selected @endif>{{ $checklist_group -> resource_name }}</option>
+                                            <option value="{{ $checklist_group -> resource_id }}" @if( $checklist_item -> checklist_item_group_id == $checklist_group -> resource_id) selected @endif>{{ $checklist_group -> resource_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -66,7 +66,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
             </ul>
         </div>
     </div>
-    <div class="col-3">
+    <div class="col-4">
 
         <h4 class="mb-3">Forms</h4>
 
@@ -107,7 +107,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                             <div class="mr-2">
                                 <a href="javascript: void(0)" class="btn btn-sm btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="{{ $form -> file_location }}">Add</a>
                             </div>
-                            <div class="mt-2" title="{{ $form -> file_name_display }}">{{ shorten_text($form -> file_name_display, 40) }}</div>
+                            <div class="mt-2" title="{{ $form -> file_name_display }}">{{ shorten_text($form -> file_name_display, 65) }}</div>
                         </div>
                     </li>
 

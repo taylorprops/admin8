@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+
     toastr.options = {
         "timeOut": 2000
     }
@@ -24,30 +25,24 @@ $(document).ready(function () {
         }
         return response;
     }, function (error) {
-        // Any status codes that falls outside the range of 2xx cause this function to trigger
-        // Do something with response error
+        /* if (error.response.status === 401 || error.response.status === 404) {
+            window.location.href = '/';
+        } */
         return Promise.reject(error);
     });
 
 
-    // show search on ctrl + s
+    // show search on ctrl + s and ctrl + m
     window.addEventListener("keydown", function (event) {
-        if ((window.navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey) && event.keyCode == 83) {
+        if ((window.navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey) && (event.keyCode == 83 || event.keyCode == 77)) {
             event.preventDefault();
-            $('.dropdown-menu').removeClass('show');
-            $('.nav-item.dropdown').removeClass('show active');
-            $('#main_search').focus();
+            $('.nav-toggle, .nav-layer, .menu').toggleClass('open');
+            setTimeout(function() {
+                $('#main_search').focus();
+            }, 400);
         }
     }, false);
 
-    // show menu on ctrl + m
-    window.addEventListener("keydown", function (event) {
-        if ((window.navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey) && event.keyCode == 77) {
-            event.preventDefault();
-            $('#navbar_menu_link').trigger('click');
-            $('#navbar_main_menu').find('.dropdown-menu a').first().focus();
-        }
-    }, false);
 
     // go to dashboard on ctrl + d
     window.addEventListener("keydown", function (event) {

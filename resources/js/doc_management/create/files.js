@@ -131,7 +131,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 show_confirm_remove(form_id, form_name, form_group_id, state);
             });
             $('#add_to_checklists_button').off('click').on('click', function () {
-                show_add_to_checklists(form_id, form_name, form_group_id, state);
+                show_checklist_type(form_id, form_name, form_group_id, state);
             });
 
             tooltip();
@@ -142,12 +142,23 @@ if (document.URL.match(/create\/upload\/files/)) {
         });
     }
 
-    function show_add_to_checklists(form_id, form_name, form_group_id, state) {
+    function show_checklist_type(form_id, form_name, form_group_id, state) {
+        $('#checklist_type_modal').modal();
+        $('#checklist_type_button').click(function() {
+            let checklist_type = $('#add_form_checklist_type').val();
+            show_add_to_checklists(form_id, form_name, form_group_id, state, checklist_type);
+            $('#checklist_type_modal').modal('hide');
+        });
+    }
+
+    function show_add_to_checklists(form_id, form_name, form_group_id, state, checklist_type) {
         $('#add_to_checklists_modal').modal();
+        $('#add_form_to_checklists_div').html('<div class="loader-gif"></div>');
         axios.get('/doc_management/get_add_to_checklists_details', {
             params: {
                 form_id: form_id,
-                form_group_id: form_group_id
+                form_group_id: form_group_id,
+                checklist_type: checklist_type
             },
             headers: {
                 'Accept-Version': 1,
@@ -157,39 +168,37 @@ if (document.URL.match(/create\/upload\/files/)) {
         })
         .then(function (response) {
 
-            $('#add_form_to_checklists_div').html(response.data);
-            $('#add_to_checklists_form_name').text(form_name);
-            form_elements();
-            $('#add_to_checklists_table').DataTable({
-                'paging': false,
-                "aaSorting": [],
-                "searching": false,
-                "info": false,
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0,1,2,10]
-                }]
-            });
-            // hide all collapsible on open
-            $('.show-checklist-items-collapsible').off('click').on('click', function() {
-                $('.checklist-items-collapsible').collapse('hide');
-            });
+            setTimeout(function() {
+                $('#add_form_to_checklists_div').html(response.data);
+                $('#add_to_checklists_form_name').text(form_name);
+                form_elements();
+                $('#add_to_checklists_table').DataTable({
+                    'paging': false,
+                    "aaSorting": [],
+                    "searching": false,
+                    "info": false,
+                    columnDefs: [{
+                        orderable: false,
+                        targets: [0,1,2,10]
+                    }]
+                });
 
-            sortable();
-            order_checklists();
+                sortable();
+                order_checklists();
 
-            $('.checklist-item-checkbox').change(function() {
-                highlight_selected($(this));
-            });
+                $('.checklist-item-checkbox').change(function() {
+                    highlight_selected($(this));
+                });
 
-            $('#save_add_to_checklists_button').off('click').on('click', function() {
-                save_add_to_checklists(state, form_id, form_group_id);
-            });
+                $('#save_add_to_checklists_button').off('click').on('click', function() {
+                    save_add_to_checklists(state, form_id, form_group_id);
+                });
 
-            $('.checklist-filter').change(checklist_filter);
-            $('#filter_selected').change(filter_selected);
+                $('.checklist-filter').change(checklist_filter);
+                $('#filter_selected').change(filter_selected);
 
-            $('#select_all_checklists').click(check_all);
+                $('#select_all_checklists').click(check_all);
+            }, 2000);
 
         })
         .catch(function (error) {
@@ -256,6 +265,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         if (form_check == 'yes') {
 
+            $('#save_add_to_checklists_button').html('<span class="spinner-border spinner-border-sm"></span> Saving');
 
             let els = $('.checklist-items-tr');
             let checklists = {
@@ -299,6 +309,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                     show_manage_upload(checklist_form_id, checklist_item_group_id);
                 }, 100);
                 toastr['success']('Form Successfully Added To Checklists');
+                $('#save_add_to_checklists_button').html('<i class="fad fa-check mr-2"></i> Save');
             })
             .catch(function (error) {
                 console.log(error);
@@ -318,10 +329,35 @@ if (document.URL.match(/create\/upload\/files/)) {
     }
 
     function order_checklists() {
-        $('.show-checklist-items-collapsible').click(function() {
+        $('.show-checklist-items-collapsible').off('click').on('click', function() {
+            $('.checklist-items-collapsible').collapse('hide');
             if($(this).text() == 'Show Checklist Items') {
                 $('.show-checklist-items-collapsible').text('Show Checklist Items').addClass('btn-primary').removeClass('btn-success');
                 $(this).text('Hide Checklist Items').removeClass('btn-primary').addClass('btn-success');
+
+                let append_to = $(this).closest('td').prev('td').find('.checklist-items-collapsible');
+                if(append_to.find('li').length == 0) {
+                    let checklist_id = $(this).data('checklist-id');
+                    let file_id = $(this).data('file-id');
+                    axios.get('/doc_management/add_form_get_checklist_items', {
+                        params: {
+                            checklist_id: checklist_id,
+                            file_id: file_id
+                        },
+                        headers: {
+                            'Accept-Version': 1,
+                            'Accept': 'text/html',
+                            'Content-Type': 'text/html'
+                        }
+                    })
+                    .then(function (response) {
+                        append_to.html(response.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                }
             } else {
                 $(this).text('Show Checklist Items').addClass('btn-primary').removeClass('btn-success');
             }
@@ -592,6 +628,7 @@ if (document.URL.match(/create\/upload\/files/)) {
         let form_group_id = ele.data('form-group-id');
         $('#no_form_form_group_id').val(form_group_id);
         $('#no_form_state').val(state);
+        $('#no_form_sale_type').val('');
 
         $('#save_add_item_no_form_button').off('click').on('click', save_non_form_item);
 
@@ -697,7 +734,6 @@ if (document.URL.match(/create\/upload\/files/)) {
             let form_group_id = $('#form_group_id').val();
             let state = $('#state').val();
             let order = $('#list_div_' + form_group_id).find('.uploads-filter-sort').val();
-            console.log(order);
 
             $('#upload_file_button').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Uploading');
 

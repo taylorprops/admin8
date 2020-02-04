@@ -19,9 +19,7 @@ class RedirectIfAuthenticated
     {
 
         if (Auth::guard($guard) -> check()) {
-            Auth::logout();
-            return redirect('/'); // original
-            //return redirect() -> route('login');
+            return response() -> view('/auth/login', [], 404);
         }
 
 

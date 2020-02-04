@@ -44,6 +44,7 @@ class ResourcesController extends Controller
         $resource_color = $request -> resource_color;
         $resource_association = $request -> resource_association;
         $resource_addendums = $request -> resource_addendums;
+        $resource_form_group_type = $request -> resource_form_group_type;
         $resource_county_abbr = $request -> resource_county_abbr;
 
         // get default values from existing
@@ -58,6 +59,7 @@ class ResourcesController extends Controller
         $resource_item -> resource_color = $resource_color;
         $resource_item -> resource_association = $resource_association;
         $resource_item -> resource_addendums = $resource_addendums;
+        $resource_item -> resource_form_group_type = $resource_form_group_type;
         $resource_item -> resource_county_abbr = $resource_county_abbr;
         $resource_item -> resource_order = 0;
         $resource_item -> save();
@@ -73,14 +75,20 @@ class ResourcesController extends Controller
         $resource_item -> resource_color = $request -> resource_color;
         $resource_item -> resource_association = $request -> resource_association;
         $resource_item -> resource_addendums = $request -> resource_addendums;
+        $resource_item -> resource_form_group_type = $request -> resource_form_group_type;
         $resource_item -> resource_county_abbr = $request -> resource_county_abbr;
         $resource_item -> save();
 
     }
 
-    public function resources_delete(Request $request) {
-
-        $resource_item = ResourceItems::whereResourceId($request -> resource_id) -> delete();
+    public function delete_deactivate(Request $request) {
+        if($request -> action == 'delete') {
+            $resource_item = ResourceItems::whereResourceId($request -> resource_id) -> delete();
+        } else if($request -> action == 'deactivate') {
+            $resource_item = ResourceItems::whereResourceId($request -> resource_id) -> first();
+            $resource_item -> resource_active = 'no';
+            $resource_item -> save();
+        }
 
     }
 

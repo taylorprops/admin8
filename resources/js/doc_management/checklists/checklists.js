@@ -62,7 +62,7 @@ if (document.URL.match(/checklists/)) {
 
         let checklist_type = $('#list_div_' + location_id).find('.checklist-type-option').val();
 
-        axios.get('/doc_management/copy_checklists', {
+        axios.get('/doc_management/get_copy_checklists', {
             params: {
                 location_id: location_id,
                 checklist_type: checklist_type
@@ -183,7 +183,6 @@ if (document.URL.match(/checklists/)) {
             el = $(this);
             checklist_id = el.data('checklist-id');
             checklist_index = el.index();
-            console.log(checklist_id, checklist_index);
             checklists.checklist.push(
                 {
                     'checklist_id': checklist_id,
@@ -215,7 +214,6 @@ if (document.URL.match(/checklists/)) {
         });
         $('.sortable-checklist-items').disableSelection();
     }
-
 
     // search forms in add items modal
     function form_search() {
@@ -249,7 +247,6 @@ if (document.URL.match(/checklists/)) {
         }
     }
 
-
     // add/edit checklist items
     function add_checklist_items(checklist_id) {
 
@@ -258,7 +255,6 @@ if (document.URL.match(/checklists/)) {
             params: {
                 checklist_id: checklist_id
             },
-            // added html headers since returning html
             headers: {
                 'Accept-Version': 1,
                 'Accept': 'text/html',
@@ -310,7 +306,6 @@ if (document.URL.match(/checklists/)) {
         });
     }
 
-
     function save_checklist_items() {
         let form = $('#checklist_items_form');
 
@@ -360,7 +355,6 @@ if (document.URL.match(/checklists/)) {
 
     }
 
-
     function add_to_checklist() {
         let form_id = $(this).data('form-id');
         let text_orig = $(this).data('text');
@@ -379,7 +373,7 @@ if (document.URL.match(/checklists/)) {
         let checklist_item = ' \
             <li class="list-group-item checklist-item w-100" data-form-id="' + form_id + '"> \
                 <div class="row"> \
-                    <div class="col-8"> \
+                    <div class="col-7"> \
                         <div class="d-flex justify-content-start"> \
                             <div class="mt-4"> \
                                 <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
@@ -387,7 +381,7 @@ if (document.URL.match(/checklists/)) {
                             <div class="h5 text-primary mt-4" title="' + text_orig + '"><a href="' + form_loc + '" target="_blank"> ' + text + '</a></div> \
                         </div> \
                     </div> \
-                    <div class="col-4"> \
+                    <div class="col-5"> \
                         <div class="row"> \
                             <div class="col"> \
                                 <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required"> \
@@ -403,7 +397,7 @@ if (document.URL.match(/checklists/)) {
                                 </select> \
                             </div> \
                             <div class="col"> \
-                                <a class="btn btn-danger delete-checklist-item-button ml-3 mt-1"><i class="fa fa-trash"></i></a> \
+                                <a class="btn btn-danger delete-checklist-item-button ml-3 mt-3"><i class="fa fa-trash"></i></a> \
                             </div> \
                         </div> \
                     </div> \

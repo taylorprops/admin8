@@ -326,8 +326,6 @@ window.form_elements = function () {
 
         }); // end form_element.each(function () {
 
-
-
     }); // end form_elements.map(function (form_type) {
 
     if ($('input[type=color]').length > 0) {

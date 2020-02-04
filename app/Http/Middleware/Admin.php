@@ -26,7 +26,8 @@ class Admin
             return redirect($redirect_url) -> with('error','You do not have access');
         }
 
-        return redirect('/') -> with('error','Session Has Expired');
+        //return redirect('/') -> with('error','Session Has Expired');
+        return response() -> view('/auth/login', [], 404);
 
     }
 }

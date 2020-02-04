@@ -18,6 +18,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller {
+
+    public function add_form_get_checklist_items(Request $request) {
+
+        $file_id = $request -> file_id;
+        // get form details just to display
+        $uploaded_file = Upload::where('file_id', $file_id) -> first();
+        $checklist_id = $request -> checklist_id;
+        $checklist_items = new ChecklistsItems();
+        $items = ChecklistsItems::where('checklist_id', $checklist_id) -> get();
+        $upload = new Upload();
+
+        return view('/doc_management/create/upload/get_checklist_items_html', compact('file_id', 'uploaded_file', 'checklist_id','checklist_items', 'items', 'upload'));
+
+    }
+
     public function activate_upload(Request $request) {
         $upload_id = $request -> upload_id;
         $upload = Upload::where('file_id', $upload_id) -> first();
@@ -96,9 +111,8 @@ class UploadController extends Controller {
         // to run functions from ResourceItems
         $resource_items = new ResourceItems();
         // checklists to add to
-        $checklists = Checklists::orderBy('checklist_state', 'ASC')
+        $checklists = Checklists::where('checklist_type', $request -> checklist_type) -> orderBy('checklist_state', 'ASC')
             -> orderBy('checklist_location_id', 'ASC')
-            -> orderBy('checklist_type', 'DESC')
             -> orderBy('checklist_represent', 'DESC')
             -> orderBy('checklist_sale_rent', 'DESC')
             -> orderBy('checklist_property_type_id', 'ASC')

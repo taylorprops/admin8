@@ -76,6 +76,35 @@
         </div>
     </div>
     <!-- Modals -->
+    <div class="modal fade draggable" id="checklist_type_modal" tabindex="-1" role="dialog" aria-labelledby="checklist_type_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary draggable-handle">
+                    <h3 class="modal-title" id="checklist_type_title">Select Checklist Type</h3>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <i class="fal fa-times fa-2x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search" id="add_form_checklist_type" data-label="Select Checklist Type">
+                                    <option value=""></option>
+                                    <option value="listing">Listing</option>
+                                    <option value="contract">Contract</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-around">
+                    <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                    <a class="btn btn-success modal-confirm-button" id="checklist_type_button"><i class="fad fa-check mr-2"></i> Continue</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade draggable" id="add_to_checklists_modal" tabindex="-1" role="dialog" aria-labelledby="add_to_checklists_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
