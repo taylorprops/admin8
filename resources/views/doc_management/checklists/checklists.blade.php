@@ -140,7 +140,7 @@
                                 <div class="col-12" id="checklist_items_div"></div>
                             </div>
                         </div>
-                        <div class="modal-footer d-flex justify-content-between">
+                        <div class="modal-footer d-flex justify-content-around">
                             <a class="btn btn-danger" data-dismiss="modal"><i class="fal fa-times mr-2"></i> Cancel</a>
                             <a class="btn btn-primary" id="save_checklist_items_button"><i class="fad fa-save mr-2"></i> Save Items</a>
                         </div>

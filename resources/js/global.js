@@ -25,24 +25,11 @@ $(document).ready(function () {
         }
         return response;
     }, function (error) {
-        /* if (error.response.status === 401 || error.response.status === 404) {
-            window.location.href = '/';
-        } */
-        return Promise.reject(error);
-    });
-
-
-    // show search on ctrl + s and ctrl + m
-    window.addEventListener("keydown", function (event) {
-        if ((window.navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey) && (event.keyCode == 83 || event.keyCode == 77)) {
-            event.preventDefault();
-            $('.nav-toggle, .nav-layer, .menu').toggleClass('open');
-            setTimeout(function() {
-                $('#main_search').focus();
-            }, 400);
+        if(error.response.status === 404) {
+            window.location = '/';
         }
-    }, false);
-
+        return Promise.reject('error '+error);
+    });
 
     // go to dashboard on ctrl + d
     window.addEventListener("keydown", function (event) {
@@ -83,13 +70,13 @@ $(document).ready(function () {
     });
 
 
-    transition();
+    page_transition();
 
 
 });
 
 // page transitions
-window.transition = function() {
+window.page_transition = function() {
 
     if (document.location.pathname !== '/') {
 
@@ -106,7 +93,6 @@ window.transition = function() {
     }
 
 }
-
 
 /**************************  STANDARD USE FUNCTIONS ***********************************/
 

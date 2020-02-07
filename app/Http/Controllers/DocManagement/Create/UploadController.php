@@ -25,11 +25,14 @@ class UploadController extends Controller {
         // get form details just to display
         $uploaded_file = Upload::where('file_id', $file_id) -> first();
         $checklist_id = $request -> checklist_id;
+        $checklist = Checklists::where('id', $checklist_id) -> first();
+        $checklist_type = $checklist -> checklist_type;
         $checklist_items = new ChecklistsItems();
         $items = ChecklistsItems::where('checklist_id', $checklist_id) -> get();
         $upload = new Upload();
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', [$checklist_type, 'both']) -> orderBy('resource_order') -> get();
 
-        return view('/doc_management/create/upload/get_checklist_items_html', compact('file_id', 'uploaded_file', 'checklist_id','checklist_items', 'items', 'upload'));
+        return view('/doc_management/create/upload/get_checklist_items_html', compact('file_id', 'uploaded_file', 'checklist_id', 'checklist_items', 'items', 'upload', 'checklist_type', 'checklist_groups'));
 
     }
 
@@ -121,7 +124,7 @@ class UploadController extends Controller {
         $checklists_items = new ChecklistsItems();
         // options for required and form_group
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
-        $checklist_groups = $resource_items -> where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
+        $checklist_groups = $resource_items -> where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', [$request -> checklist_type, 'both']) -> orderBy('resource_order') -> get();
         $checklist_locations = $resource_items -> where('resource_type', 'checklist_locations') -> orderBy('resource_order') -> get();
         $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
         $property_sub_types = $resource_items -> where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
@@ -257,11 +260,12 @@ class UploadController extends Controller {
         $file_id = $request -> file_id;
         $checklists = json_decode($request -> checklists);
         $checklists = $checklists -> checklist;
-        $form_group_id = $request -> form_group_id;
         $required = $request -> required;
 
+        $checklist_ids_keep = explode(',', $request -> checklist_ids_keep);
+
         // delete file from all checklists
-        $delete_from_checklists = ChecklistsItems::where('checklist_form_id', $file_id) -> delete();
+        $delete_from_checklists = ChecklistsItems::where('checklist_form_id', $file_id) -> whereNotIn('checklist_id', $checklist_ids_keep) -> delete();
 
         foreach ($checklists as $checklist) {
             if ($checklist -> checklist_id != '') {
@@ -271,7 +275,7 @@ class UploadController extends Controller {
                 $checklist_items -> checklist_form_id = $file_id;
                 $checklist_items -> checklist_item_required = $required;
                 $checklist_items -> checklist_item_order = $checklist_order;
-                $checklist_items -> checklist_item_group_id = $form_group_id;
+                $checklist_items -> checklist_item_group_id = $checklist -> checklist_group_id;
                 $checklist_items -> save();
 
                 $current_items = new ChecklistsItems();

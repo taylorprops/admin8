@@ -3,12 +3,12 @@
 @section('content')
 {{ Auth::logout() }}
 <div class="container mt-5">
+    @php
+    if(isset($error)) {
+        echo '<div class="alert alert-danger">Error - '.$error.'</div>';
+    }
+    @endphp
 
-    @if(\Session::has('error'))
-        <div class="alert alert-danger">
-        {{\Session::get('error')}}
-        </div>
-    @endif
 
     <div class="row justify-content-center">
         <div class="col-md-8">

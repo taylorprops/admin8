@@ -17,7 +17,7 @@
     </li>
 </ul>
 <div class="tab-content card pt-1" id="sub_menu_divs">
-    <div class="tab-pane fade show active" id="doc_management_div" role="tabpanel" aria-labelledby="home-tab-md">
+    <div class="tab-pane fade show active" id="doc_management_div" role="tabpanel" aria-labelledby="doc_management_tab">
         <ul class="mt-5">
             <li>
                 <a class="text-primary" href="/doc_management/create/upload/files">
@@ -41,7 +41,7 @@
             </li>
         </ul>
     </div>
-    <div class="tab-pane fade" id="agents_div" role="tabpanel" aria-labelledby="profile-tab-md">
+    <div class="tab-pane fade" id="agents_div" role="tabpanel" aria-labelledby="agents_tab">
         <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
             Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko
             farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip
@@ -51,7 +51,7 @@
             richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus
             tattooed echo park.</p>
     </div>
-    <div class="tab-pane fade" id="loan_officers_div" role="tabpanel" aria-labelledby="contact-tab-md">
+    <div class="tab-pane fade" id="loan_officers_div" role="tabpanel" aria-labelledby="loan_officers_tab">
         <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo
             retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer,
             iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony.

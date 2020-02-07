@@ -84,12 +84,12 @@ class ChecklistsController extends Controller
         $resource_items = new ResourceItems();
 
         $checklist = Checklists::whereId($checklist_id) -> first();
-        $checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> orderBy('checklist_item_order') -> get();
+        $checklist_items_model = new ChecklistsItems();
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
         $checklist_groups = $resource_items -> where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', [$checklist -> checklist_type, 'both']) -> orderBy('resource_order') -> get();
 
 
-        return view('/doc_management/checklists/get_add_checklist_items_html', compact('checklist', 'checklist_items', 'form_groups', 'files', 'resource_items', 'checklist_groups', 'checklist_type'));
+        return view('/doc_management/checklists/get_add_checklist_items_html', compact('checklist', 'checklist_items', 'form_groups', 'files', 'resource_items', 'checklist_groups', 'checklist_type', 'checklist_items_model', 'checklist_id'));
     }
 
     public function checklists() {
@@ -111,13 +111,15 @@ class ChecklistsController extends Controller
         $checklists_model = new Checklists();
         $checklists = Checklists::where('checklist_location_id', $checklist_location_id) -> orderBy('checklist_order', 'ASC') -> get();
         $checklists_count = count($checklists);
-        $checklists_data = $checklists -> first();
-        $checklist_state = $checklists_data -> checklist_state;
-        $checklist_property_type_id = $checklists_data -> checklist_property_type_id;
-
+        $checklist_state = '';
+        $checklist_property_type_id = '';
+        if($checklists_count > 0) {
+            $checklists_data = $checklists -> first();
+            $checklist_state = $checklists_data -> checklist_state;
+            $checklist_property_type_id = $checklists_data -> checklist_property_type_id;
+        }
         $resource_items = new ResourceItems();
         $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
-
 
         return view('/doc_management/checklists/get_checklists_html', compact('checklists_model', 'property_types', 'checklists_count', 'resource_items', 'checklist_type', 'checklist_location_id', 'checklist_state', 'checklist_property_type_id'));
 

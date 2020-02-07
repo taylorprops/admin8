@@ -38,8 +38,8 @@ class Handler extends ExceptionHandler {
 
         if ($exception instanceof TokenMismatchException) {
             // axios requests
-            //return redirect('/') -> with('error','Session Has Expired');
-            return response() -> view('/auth/login', [], 404);
+            //return redirect('/') -> with('error','Access Denied');
+            echo '<script>top.location.href="/";</script>';
 
         }
 

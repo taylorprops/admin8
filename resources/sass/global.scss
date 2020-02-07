@@ -101,6 +101,11 @@ a:hover {
     border: none;
     border-radius: 0px;
     color: #fff;
+    padding: .5rem !important;
+
+    .fa-times {
+        margin-right: 15px;
+    }
 }
 
 .modal-dialog {
@@ -144,6 +149,9 @@ table.dataTable thead .sorting_desc_disabled:before {
     color: $blue-light;
 }
 
+ul {
+    list-style-type: none;
+}
 
 // CARDS
 

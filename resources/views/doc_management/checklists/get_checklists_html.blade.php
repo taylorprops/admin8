@@ -33,18 +33,18 @@
                     <div class="col-6">
                         <div class="row mt-2 checklist-items">
                             <div class="col">
-                                <i class="fas fa-sort mr-2 mt-1 list-item-handle text-primary"></i>
-                                <span class="text-primary-dark font-weight-bold ml-2 list-item-handle">
+                                <i class="fas fa-sort mr-2 mt-1 checklist-handle text-primary"></i>
+                                <span class="text-primary-dark font-weight-bold ml-2 checklist-handle">
                                     {{ ucwords($checklist -> checklist_sale_rent) }}
                                 </span>
                             </div>
                             <div class="col">
-                                <span class="text-primary list-item-handle">
+                                <span class="text-primary checklist-handle">
                                     {{ ($checklist -> checklist_represent == 'seller' ? 'Seller/Owner' : 'Buyer/Renter') }}
                                 </span>
                             </div>
                             <div class="col-5">
-                                <span class="text-orange list-item-handle">
+                                <span class="text-orange checklist-handle">
                                     @if($checklist -> checklist_property_sub_type_id > 0)
                                     {{ $resource_items -> getTagName($checklist -> checklist_property_sub_type_id) }}
                                     @else

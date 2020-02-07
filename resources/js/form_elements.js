@@ -109,6 +109,11 @@ window.form_elements = function () {
                     element.addClass('form-check-input');
                     element.wrap('<div class="form-ele form-check"></div>').parent('.form-ele').append('<label for="' + id + '" class="form-check-label ' + form_type + '-label ' + active_label + ' w-100">' + label + '</label>');
 
+                } else if (form_type == 'form-radio') {
+
+                    element.addClass('form-check-input');
+                    element.wrap('<div class="form-ele form-check"></div>').parent('.form-ele').append('<label for="' + id + '" class="form-check-label ' + form_type + '-label ' + active_label + ' w-100">' + label + '</label>');
+
                 } else if (form_type == 'form-input-color') {
 
 

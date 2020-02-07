@@ -10,58 +10,73 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
             </div>
         </div>
         <div class="checklist-items-selected border border-primary" data-simplebar data-simplebar-auto-hide="false">
-            <ul class="list-group sortable-checklist-items">
-                @foreach($checklist_items as $checklist_item)
-                @php
-                $form_id = $checklist_item -> checklist_form_id ?? null;
-                $form_name = '';
-                $form_name_orig = '';
-                if($form_id) {
-                    $form_name = $files -> getFormName($form_id);
-                    $form_name_orig = $form_name;
-                    $form_name = shorten_text($form_name, 70);
-                }
-                $form_link = 'javascript:void(0)';
-                if($checklist_item -> file_location != '') {
-                    $form_link = '/'.$files -> getFormLocation($form_id);
-                }
 
-                @endphp
+            <ul class="list-group sortable-checklist-items" id="checklists_top">
 
-                <li class="list-group-item checklist-item w-100 pt-1 pb-0" data-form-id="{{ $checklist_item -> checklist_form_id ?? null }}">
-                    <div class="row">
-                        <div class="col-7">
-                            <div class="d-flex justify-content-start">
-                                <div class="mt-4">
-                                    <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i>
+                <li class="list-group-add-helper h5 py-3 pl-2 mb-0 text-orange"><i class="fad fa-arrow-up mr-2"></i> Forms above must be added to a group below before saving.</li>
+
+                @foreach($checklist_groups as $checklist_group)
+
+                    <li class="list-group-header h5 py-2 pl-2 mb-0 font-weight-bold" data-form-group-id="{{ $checklist_group -> resource_id }}">{{ $checklist_group -> resource_name }}</li>
+
+                    @php
+                    $checklist_group_items = $checklist_items_model -> getChecklistItemsByGroup($checklist_id, $checklist_group -> resource_id);
+                    @endphp
+
+                    @if($checklist_group_items -> count() > 0)
+
+                        @foreach($checklist_group_items as $checklist_item)
+
+                            @php
+                            $form_id = $checklist_item -> checklist_form_id ?? null;
+                            $form_name = '';
+                            $form_name_orig = '';
+                            if($form_id) {
+                                $form_name = $files -> getFormName($form_id);
+                                $form_name_orig = $form_name;
+                                $form_name = shorten_text($form_name, 85);
+                            }
+                            $form_link = 'javascript:void(0)';
+                            if($checklist_item -> file_location != '') {
+                                $form_link = '/'.$files -> getFormLocation($form_id);
+                            }
+
+                            @endphp
+
+                            <li class="list-group-item checklist-item w-100 pt-1 pb-0" data-form-id="{{ $checklist_item -> checklist_form_id ?? null }}" data-form-group-id="{{ $checklist_group -> resource_id }}"">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-flex justify-content-start my-1">
+                                            <div>
+                                                <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i>
+                                            </div>
+                                            <div class="h5 text-primary" title="{{ $form_name_orig }}"><a href="{{ $form_link }}" target="_blank">{{ $form_name }}</a></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="d-flex justify-content-start my-1">
+                                            <span>Required:</span>
+                                            <input type="radio" class="custom-form-element form-radio checklist-item-required" name="checklist_item_required_{{ $form_id }}" value="yes" data-label="Yes" @if( $checklist_item -> checklist_item_required == 'yes') checked @endif>
+                                            <input type="radio" class="custom-form-element form-radio checklist-item-required" name="checklist_item_required_{{ $form_id }}" value="no" data-label="No" @if( $checklist_item -> checklist_item_required == 'no') checked @endif>
+                                        </div>
+                                        {{-- <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required">
+                                            <option value=""></option>
+                                            <option value="yes" @if( $checklist_item -> checklist_item_required == 'yes') selected @endif>Yes</option>
+                                            <option value="no" @if( $checklist_item -> checklist_item_required == 'no') selected @endif>No</option>
+                                        </select> --}}
+                                    </div>
+                                    <div class="col-1">
+                                        <a class="btn btn-sm btn-danger delete-checklist-item-button my-1"><i class="fa fa-trash"></i></a>
+                                    </div>
                                 </div>
-                                <div class="h5 text-primary mt-4" title="{{ $form_name_orig }}"><a href="{{ $form_link }}" target="_blank">{{ $form_name }}</a></div>
-                            </div>
-                        </div>
-                        <div class="col-5">
-                            <div class="row">
-                                <div class="col">
-                                    <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required">
-                                        <option value=""></option>
-                                        <option value="yes" @if( $checklist_item -> checklist_item_required == 'yes') selected @endif>Yes</option>
-                                        <option value="no" @if( $checklist_item -> checklist_item_required == 'no') selected @endif>No</option>
-                                    </select>
-                                </div>
-                                <div class="col-6">
-                                    <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-group-id required" data-label="Form Group">
-                                        <option value=""></option>
-                                        @foreach($checklist_groups as $checklist_group)
-                                            <option value="{{ $checklist_group -> resource_id }}" @if( $checklist_item -> checklist_item_group_id == $checklist_group -> resource_id) selected @endif>{{ $checklist_group -> resource_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col">
-                                    <a class="btn btn-danger delete-checklist-item-button ml-3 mt-3"><i class="fa fa-trash"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+                            </li>
+
+                        @endforeach
+
+                    @else
+                        <li class="list-group-item list-group-holder w-100 text-danger p-4">No Forms Yet For This Group</li>
+                    @endif
+
                 @endforeach
             </ul>
         </div>
@@ -104,10 +119,17 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 
                     <li class="list-group-item form-name" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">
                         <div class="d-flex justify-content-start">
-                            <div class="mr-2">
-                                <a href="javascript: void(0)" class="btn btn-sm btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="{{ $form -> file_location }}">Add</a>
+                            <div class="mr-2 my-auto">
+                                <a href="javascript: void(0)" class="btn btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="{{ $form -> file_location }}">Add</a>
                             </div>
-                            <div class="mt-2" title="{{ $form -> file_name_display }}">{{ shorten_text($form -> file_name_display, 65) }}</div>
+                            <div title="{{ $form -> file_name_display }}">
+                                {{ shorten_text($form -> file_name_display, 65) }}
+                                <br>
+                                @php $tags = explode(',', $form -> sale_type); @endphp
+                                @foreach($tags as $tag)
+                                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getTagName($tag) }}</span>
+                                @endforeach
+                            </div>
                         </div>
                     </li>
 
@@ -126,7 +148,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 <input type="hidden" id="add_item_checklist_type" value="{{ $checklist -> checklist_type }}">
 
 
-<input type="hidden" id="checklist_header_val" value="{{ $checklist -> checklist_state }} @if($checklist -> checklist_state != $location) | {{ $location }} @endif - {{ ucwords($checklist -> checklist_sale_rent) }} - {{ ucwords($checklist -> checklist_type) }} - {{ $resource_items -> getTagName($checklist -> checklist_property_type_id) }} @if($checklist -> checklist_property_sub_type_id != '') - {{ $resource_items -> getTagName($checklist -> checklist_property_sub_type_id) }}  @endif - {{ ucwords($checklist -> checklist_represent) }}">
+<input type="hidden" id="checklist_header_val" value="{{ $checklist -> checklist_state }} @if($checklist -> checklist_state != $location) {{ $location }} @endif - {{ ucwords($checklist -> checklist_sale_rent) }} - {{ ucwords($checklist -> checklist_type) }} - {{ $resource_items -> getTagName($checklist -> checklist_property_type_id) }} @if($checklist -> checklist_property_sub_type_id != '') - {{ $resource_items -> getTagName($checklist -> checklist_property_sub_type_id) }}  @endif - {{ ucwords($checklist -> checklist_represent) }}">
 
 
 {{-- options for checklist group select --}}

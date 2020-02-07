@@ -131,7 +131,6 @@ if (document.URL.match(/checklists/)) {
 
         axios.post('/doc_management/save_copy_checklists', formData, axios_options)
         .then(function (response) {
-            transition();
             $('#copy_checklists_modal').modal('hide');
             toastr['success']('Checklists Copied Successfully');
             load_checklists();
@@ -162,7 +161,7 @@ if (document.URL.match(/checklists/)) {
         // checklists are sortable
         $('.sortable-checklist').sortable({
             placeholder: 'bg-orange-sortable',
-            handle: '.list-item-handle',
+            handle: '.checklist-handle',
             stop: function (event, ui) {
                 // get details and update new order
                 let els = $(ui.item).parent('.sortable-checklist').children('.checklist-items-container');
@@ -206,13 +205,44 @@ if (document.URL.match(/checklists/)) {
         // checklist items are sortable and saved after sort
         $('.sortable-checklist-items').sortable({
             handle: '.checklist-item-handle',
+            items: '.list-group-item',
             placeholder: 'bg-orange-sortable-big',
-            receive: function (event, ui) {
-                forms_status();
+            revert: true,
+            start: function(event, ui) {
+                setTimeout(function() {
+                    fill_empty_groups();
+                }, 500);
             },
-            revert: true
+            stop: function (event, ui) {
+                // remove place holders for empty form groups
+                $('.list-group-holder').each(function() {
+                    if($(this).prev('li').hasClass('checklist-item') || $(this).next('li').hasClass('checklist-item')) {
+                        $(this).remove();
+                    }
+                });
+                forms_status();
+                $('.bg-orange-light').removeClass('bg-orange-light');
+                // assign new form-group-id
+                $('.checklist-item').each(function () {
+                    let form_group_id = $(this).prevAll('.list-group-header:first').data('form-group-id');
+                    $(this).data('form-group-id', form_group_id);
+                });
+            }
+
         });
         $('.sortable-checklist-items').disableSelection();
+    }
+
+    function fill_empty_groups() {
+        $('.list-group-header').each(function() {
+            if($(this).next('li').hasClass('list-group-header')) {
+                $('<li class="list-group-item list-group-holder w-100 text-danger p-4">No Forms Yet For This Group</li>').insertAfter($(this));
+            }
+            if($(this).next('li').hasClass('ui-sortable-helper') && $(this).next('li').next('li').hasClass('list-group-header')) {
+                $('<li class="list-group-item list-group-holder w-100 text-danger p-4">No Forms Yet For This Group</li>').insertAfter($(this));
+            }
+            $('.sortable-checklist-items').sortable('refresh');
+        });
     }
 
     // search forms in add items modal
@@ -307,6 +337,14 @@ if (document.URL.match(/checklists/)) {
     }
 
     function save_checklist_items() {
+
+        $('.checklist-item').each(function() {
+            if($(this).data('form-group-id') == undefined) {
+                $('#modal_danger').modal().find('.modal-body').html('You must add all checklist items to a group');
+                return false;
+            }
+        });
+
         let form = $('#checklist_items_form');
 
         let validate = validate_form(form);
@@ -323,8 +361,9 @@ if (document.URL.match(/checklists/)) {
                     let checklist_item = {};
 
                     let checklist_form_id = $(this).data('form-id');
-                    let checklist_item_required = $(this).find('.checklist-item-required').val();
-                    let checklist_item_group_id = $(this).find('.checklist-item-group-id').val();
+                    let required = $(this).find('.checklist-item-required').prop('name');
+                    let checklist_item_required = $('[name="'+required+'"]:checked').val();
+                    let checklist_item_group_id = $(this).data('form-group-id');
                     let checklist_item_order = index;
 
                     checklist_item['checklist_id'] = checklist_id;
@@ -366,46 +405,35 @@ if (document.URL.match(/checklists/)) {
         if (text_orig.length > 100) {
             text = text_orig.slice(0, 100) + '...';
         }
-
-        // options are saved in a hidden div on load since they are dynamic
-        let checklist_groups_options = $('#checklist_groups_options').html();
         // this is the helper dragged and inserted in checklist items container
         let checklist_item = ' \
-            <li class="list-group-item checklist-item w-100" data-form-id="' + form_id + '"> \
+            <li class="list-group-item checklist-item w-100 pt-1 pb-0 bg-orange-light" data-form-id="' + form_id + '"> \
                 <div class="row"> \
-                    <div class="col-7"> \
-                        <div class="d-flex justify-content-start"> \
-                            <div class="mt-4"> \
+                    <div class="col-8"> \
+                        <div class="d-flex justify-content-start my-1"> \
+                            <div> \
                                 <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
                             </div> \
-                            <div class="h5 text-primary mt-4" title="' + text_orig + '"><a href="' + form_loc + '" target="_blank"> ' + text + '</a></div> \
+                            <div class="h5 text-primary" title="' + text_orig + '"><a href="' + form_loc + '" target="_blank"> ' + text + '</a></div> \
                         </div> \
                     </div> \
-                    <div class="col-5"> \
-                        <div class="row"> \
-                            <div class="col"> \
-                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required"> \
-                                    <option value=""></option> \
-                                    <option value="yes">Yes</option> \
-                                    <option value="no">No</option> \
-                                </select> \
-                            </div> \
-                            <div class="col-6"> \
-                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-group-id required" data-label="Form Group"> \
-                                    <option value=""></option> \
-                                    ' + checklist_groups_options + ' \
-                                </select> \
-                            </div> \
-                            <div class="col"> \
-                                <a class="btn btn-danger delete-checklist-item-button ml-3 mt-3"><i class="fa fa-trash"></i></a> \
-                            </div> \
+                    <div class="col-3"> \
+                        <div class="d-flex justify-content-start my-1"> \
+                            <span>Required:</span> \
+                            <input type="radio" class="custom-form-element form-radio checklist-item-required" name="checklist_item_required_' + form_id + '" value="yes" data-label="Yes"> \
+                            <input type="radio" class="custom-form-element form-radio checklist-item-required" name="checklist_item_required_' + form_id + '" value="no" data-label="No"> \
                         </div> \
+                    </div> \
+                    <div class="col-1"> \
+                        <a class="btn btn-sm btn-danger delete-checklist-item-button my-1"><i class="fa fa-trash"></i></a> \
                     </div> \
                 </div> \
             </li> \
         ';
-        $('.sortable-checklist-items').append(checklist_item);
+        $('.sortable-checklist-items').prepend(checklist_item);
         $('.delete-checklist-item-button').click(delete_checklist_item);
+        // scroll to top
+        window.location = '#checklists_top';
 
         // if the form is already included in another checklist get the details and add it to this one
         axios.get('/doc_management/get_checklist_item_details', {
@@ -414,12 +442,6 @@ if (document.URL.match(/checklists/)) {
             },
         })
         .then(function (response) {
-            if (response.data) {
-                let row = $('.sortable-checklist-items').find('.list-group-item').last();
-                row.find('.checklist-item-group-id').val(response.data.checklist_item_group_id);
-                row.find('.checklist-item-required').val(response.data.checklist_item_required);
-            }
-
             select_refresh();
             form_elements();
             forms_status();
@@ -438,6 +460,7 @@ if (document.URL.match(/checklists/)) {
         $('#confirm_remove_file').click(function () {
             button.closest('li').remove();
             forms_status();
+            fill_empty_groups();
             $('#confirm_remove_file_modal').modal('hide');
         });
     }
@@ -455,6 +478,7 @@ if (document.URL.match(/checklists/)) {
         $.map(form_ids, function (value, index) {
             $('.form-name[data-form-id="' + value + '"]').addClass('form-selected').find('.add-to-checklist-button').addClass('disabled');
         });
+
     }
 
     function show_add_edit_checklist() {

@@ -13,6 +13,11 @@
         width: 30px;
         text-align: center;
     }
+    .list-group-header {
+        background: $blue-light;
+        color: $blue;
+        padding: 5px;
+    }
 
     .tab-content {
         padding: 0px !important
@@ -62,11 +67,11 @@
         overflow: auto;
     }
 
-    .add-to-checklists-div {
-        height: 60VH;
+    /* .add-to-checklists-div {
+        height: 70VH;
         overflow: auto;
         overflow-x: hidden !important;
-    }
+    } */
     #add_to_checklists_table_filter {
         margin-right: 25px;
     }
@@ -81,18 +86,32 @@
     .collapsible-container {
         position: relative;
     }
+    .checklist-order {
+        padding: 2px;
+    }
 
     .checklist-items-collapsible {
         background: #fff;
-        width: 91.5VW;
+        width: 80VW;
         position: absolute;
-        left: -5px;
-        top: 15px;
-        z-index: 1600;
+        left: 0px;
+        top: 8px;
+        z-index: 1000;
         padding: 10px;
     }
     .order-checklist-item-sortable-handle {
         cursor: move;
+    }
+
+    .bg-orange-sortable {
+        border: 2px dashed $orange;
+        height: 50px;
+    }
+
+    #add_form_to_checklists_div {
+        height: 78vh;
+        overflow-y: auto;
+        overflow-x: hidden !important;
     }
 
     // check all checkbox on add form to checklists

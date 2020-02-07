@@ -15,6 +15,14 @@ class ChecklistsItems extends Model
         });
     }
 
+    public function ScopeGetChecklistItemsByGroup($query, $checklist_id, $group_id) {
+        $checklists = $query -> where('checklist_id', $checklist_id) -> where('checklist_item_group_id', $group_id) -> orderBy('checklist_item_order') -> get();
+        if(count($checklists) > 0) {
+            return $checklists;
+        }
+        return null;
+    }
+
     public function ScopeCountInChecklist($query, $form_id) {
         $found = $query -> where('checklist_form_id', $form_id) -> get();
         if($found) {

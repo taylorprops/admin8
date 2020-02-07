@@ -19,7 +19,7 @@ class Agent
                 return $next($request);
             }
         }
-
-        return response() -> view('/auth/login', [], 404);
+        //return redirect('/') -> with('error','Session Has Expired');
+        echo '<script>top.location.href="/";</script>';
     }
 }
