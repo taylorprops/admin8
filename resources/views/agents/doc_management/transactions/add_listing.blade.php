@@ -12,7 +12,7 @@
                         <input type="text" id="address_search_input" placeholder="Enter Property Address">
                         <input type="text" id="address_unit" class="ml-2" placeholder="Unit">
                     </div>
-                    <div class="h4 text-orange text-center mt-5">Or Enter Manually</div>
+                    <div class="h4 text-center mt-4"><a href="javascript:void(0)" class="text-orange" id="address_enter_manually">Or Enter Manually</a></div>
                 </div>
             </div>
         </div>

@@ -23,7 +23,7 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.12.1/plugins/CSSRulePlugin.min.js"></script>
         {{-- google address search --}}
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZYF4d6qfYSdo6IQCekHluEluvlbgLfYI&libraries=places&outputFormat=json"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ config('global.vars.google_api_key') }}&libraries=places&outputFormat=json"></script>
 
 
         <noscript>
