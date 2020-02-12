@@ -56,8 +56,8 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                                     <div class="col-3">
                                         <div class="d-flex justify-content-start my-1">
                                             <span>Required:</span>
-                                            <input type="radio" class="custom-form-element form-radio checklist-item-required" name="checklist_item_required_{{ $form_id }}" value="yes" data-label="Yes" @if( $checklist_item -> checklist_item_required == 'yes') checked @endif>
-                                            <input type="radio" class="custom-form-element form-radio checklist-item-required" name="checklist_item_required_{{ $form_id }}" value="no" data-label="No" @if( $checklist_item -> checklist_item_required == 'no') checked @endif>
+                                            <input type="radio" class="custom-form-element form-radio checklist-item-required required" name="checklist_item_required_{{ $form_id }}" value="yes" data-label="Yes" @if( $checklist_item -> checklist_item_required == 'yes') checked @endif>
+                                            <input type="radio" class="custom-form-element form-radio checklist-item-required required" name="checklist_item_required_{{ $form_id }}" value="no" data-label="No" @if( $checklist_item -> checklist_item_required == 'no') checked @endif>
                                         </div>
                                         {{-- <select class="custom-form-element form-select form-select-no-cancel form-select-no-search checklist-item-required required" data-label="Required">
                                             <option value=""></option>

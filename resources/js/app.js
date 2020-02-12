@@ -20,4 +20,8 @@ require('./doc_management/resources/resources.js');
 require('./doc_management/fill/fill_fields.js');
 require('./doc_management/checklists/checklists.js');
 
+// Agents
+require('./agents/doc_management/transactions/add_listing.js');
+require('./agents/doc_management/transactions/add_contract.js');
+
 

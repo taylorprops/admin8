@@ -228,8 +228,16 @@ class UploadController extends Controller {
 
     public function remove_upload(Request $request) {
         $form_id = $request -> form_id;
-        ChecklistsItems::where('checklist_form_id', $form_id)
-            -> delete();
+        $checklist_items_model = new ChecklistsItems();
+
+        $checklist_items = $checklist_items_model -> where('checklist_form_id', $form_id) -> get();
+
+        $checklist_items -> each -> delete();
+        // set checklist count column
+        $update_count = $checklist_items -> map(function($checklist_item) {
+            $this -> updateChecklistCount($checklist_item -> checklist_id);
+        });
+
     }
 
     public function replace_upload(Request $request) {
@@ -264,7 +272,7 @@ class UploadController extends Controller {
 
         $checklist_ids_keep = explode(',', $request -> checklist_ids_keep);
 
-        // delete file from all checklists
+        // delete file from all checklists except those not changed
         $delete_from_checklists = ChecklistsItems::where('checklist_form_id', $file_id) -> whereNotIn('checklist_id', $checklist_ids_keep) -> delete();
 
         foreach ($checklists as $checklist) {
@@ -281,18 +289,21 @@ class UploadController extends Controller {
                 $current_items = new ChecklistsItems();
 
                 $set_order = $current_items -> where('checklist_id', $checklist -> checklist_id) -> where('checklist_item_order', '>=', $checklist_order) -> where('checklist_form_id', '!=', $file_id) -> update(['checklist_item_order' => DB::raw('checklist_item_order + 1')]);
-
+                // update checklist order
                 $current_items -> updateChecklistItemsOrder($checklist -> checklist_id);
-
                 // set checklist count column
-                $checklist_item_count = $current_items -> where('checklist_id', $checklist -> checklist_id) -> count();
-                $update_count = Checklists::where('id', $checklist -> checklist_id) -> first();
-                $update_count -> checklist_count = $checklist_item_count;
-                $update_count -> save();
+                $this -> updateChecklistCount($checklist -> checklist_id);
 
             }
         }
 
+    }
+
+    private function updateChecklistCount($checklist_id) {
+        $checklist_item_count = ChecklistsItems::where('checklist_id', $checklist_id) -> count();
+        $update_count = Checklists::where('id', $checklist_id) -> first();
+        $update_count -> checklist_count = $checklist_item_count;
+        $update_count -> save();
     }
 
     public function save_file_edit(Request $request) {

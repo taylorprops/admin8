@@ -407,7 +407,6 @@ function dropdown_search(wrapper, input, element, multiple) {
     // search for matching li's if tab not pressed
     search_input.keydown(function (e) {
         var keyCode = e.keyCode || e.which;
-        console.log(keyCode);
         if (keyCode != 9) {
             search_input.keyup(function () {
                 let search_value = new RegExp($(this).val(), 'i');
@@ -473,7 +472,15 @@ window.validate_form = function (form) {
 
         if (required.hasClass('form-radio')) {
 
-
+            ele = required.closest('.form-ele');
+            classname = 'invalid invalid-radio';
+            name = required.prop('name');
+            if ($('[name="' + name + '"]:checked').length == 0) {
+                ele.addClass(classname);
+                pass = 'no';
+            } else {
+                ele.removeClass(classname);
+            }
 
         } else if (required.hasClass('form-input-file')) {
             // get visible file input
@@ -529,7 +536,7 @@ window.validate_form = function (form) {
                 ele.removeClass(classname);
                 ele.prev('label').removeClass('invalid-label');
                 ele.next('label').removeClass('invalid-label');
-                required.prev('i').removeClass('invalid-input');
+                required.prev('input').removeClass('invalid-input');
             }
         });
 

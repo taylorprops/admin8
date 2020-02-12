@@ -1,0 +1,31 @@
+.page-add-listing {
+
+    .add-transaction-container {
+        width: 100VW;
+        height: 50VH;
+        overflow: hidden;
+    }
+
+    #address_search_input {
+        width: 600px;
+        padding: 20px;
+        font-size: 1.4rem;
+    }
+
+    #address_unit {
+        width: 100px;
+        padding: 20px;
+        font-size: 1.4rem;
+    }
+
+
+
+}
+
+// google address search
+.pac-container .pac-item {
+    padding: 10px;
+    line-height: 40px;
+    font-size: 1rem;
+    color: #999;
+}

@@ -36,6 +36,10 @@ if (document.URL.match(/checklists/)) {
         $('.add-items-button').off('click').on('click', function () {
             add_checklist_items($(this).data('checklist-id'));
         });
+        // duplicate checklist
+        $('.duplicate-checklist-button').off('click').on('click', function () {
+            duplicate_checklist($(this));
+        });
         // copy checklists to another location
         $('.copy-checklist-button').off('click').on('click', function() {
             copy_checklist($(this).data('location-id'));
@@ -56,6 +60,24 @@ if (document.URL.match(/checklists/)) {
         });
 
 
+    }
+
+    function duplicate_checklist(ele) {
+        let checklist_id = ele.data('checklist-id');
+        let checklist_location_id = ele.data('checklist-location-id');
+        let checklist_type = ele.data('checklist-type');
+        let formData = new FormData();
+        formData.append('checklist_id', checklist_id);
+        axios.post('/doc_management/duplicate_checklist', formData, axios_options)
+        .then(function (response) {
+            get_checklists(checklist_location_id, checklist_type);
+            setTimeout(function() {
+                init();
+            }, 500);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
 
     function copy_checklist(location_id) {
@@ -338,10 +360,11 @@ if (document.URL.match(/checklists/)) {
 
     function save_checklist_items() {
 
+        let cont = 'yes';
         $('.checklist-item').each(function() {
             if($(this).data('form-group-id') == undefined) {
                 $('#modal_danger').modal().find('.modal-body').html('You must add all checklist items to a group');
-                return false;
+                cont = 'no';
             }
         });
 
@@ -349,7 +372,7 @@ if (document.URL.match(/checklists/)) {
 
         let validate = validate_form(form);
 
-        if (validate == 'yes') {
+        if (validate == 'yes' && cont == 'yes') {
 
             //if ($('.checklist-item').length > 0) {
 
@@ -402,8 +425,8 @@ if (document.URL.match(/checklists/)) {
             form_loc = '/'+$(this).data('form-loc');
         }
         let text = text_orig;
-        if (text_orig.length > 100) {
-            text = text_orig.slice(0, 100) + '...';
+        if (text_orig.length > 85) {
+            text = text_orig.slice(0, 85) + '...';
         }
         // this is the helper dragged and inserted in checklist items container
         let checklist_item = ' \
@@ -420,8 +443,8 @@ if (document.URL.match(/checklists/)) {
                     <div class="col-3"> \
                         <div class="d-flex justify-content-start my-1"> \
                             <span>Required:</span> \
-                            <input type="radio" class="custom-form-element form-radio checklist-item-required" name="checklist_item_required_' + form_id + '" value="yes" data-label="Yes"> \
-                            <input type="radio" class="custom-form-element form-radio checklist-item-required" name="checklist_item_required_' + form_id + '" value="no" data-label="No"> \
+                            <input type="radio" class="custom-form-element form-radio checklist-item-required required" name="checklist_item_required_' + form_id + '" value="yes" data-label="Yes"> \
+                            <input type="radio" class="custom-form-element form-radio checklist-item-required required" name="checklist_item_required_' + form_id + '" value="no" data-label="No"> \
                         </div> \
                     </div> \
                     <div class="col-1"> \

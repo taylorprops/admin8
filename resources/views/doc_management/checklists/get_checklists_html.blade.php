@@ -62,7 +62,7 @@
                             <div>
                                 <a href="javascript: void(0)"
                                     data-checklist-id="{{ $checklist -> id }}"
-                                    class="btn btn-sm btn-primary float-right add-items-button mx-2">
+                                    class="btn btn-sm btn-primary float-right add-items-button">
                                     <i class="fal fa-plus mr-2"></i>
                                     Add Items
                                 </a>
@@ -77,7 +77,7 @@
                                     data-represent="{{ $checklist -> checklist_represent }}"
                                     data-property-sub-type="{{ $checklist -> checklist_property_sub_type_id }}"
                                     data-form-type="edit"
-                                    class="btn btn-sm btn-primary float-right edit-checklist-button mx-2">
+                                    class="btn btn-sm btn-primary float-right edit-checklist-button">
                                     <i class="fad fa-edit mr-2"></i>
                                     Edit
                                 </a>
@@ -88,11 +88,21 @@
                                     data-checklist-id="{{ $checklist -> id }}"
                                     data-checklist-location-id="{{ $checklist -> checklist_location_id }}"
                                     data-checklist-type="{{ $checklist -> checklist_type }}"
-                                    class="btn btn-sm btn-danger float-right delete-checklist-button mx-2">
+                                    class="btn btn-sm btn-danger float-right delete-checklist-button">
                                     <i class="fad fa-trash mr-2"></i>
                                     Delete
                                 </a>
                                 {{-- @endif --}}
+                            </div>
+                            <div>
+                                <a href="javascript: void(0)"
+                                    data-checklist-id="{{ $checklist -> id }}"
+                                    data-checklist-location-id="{{ $checklist -> checklist_location_id }}"
+                                    data-checklist-type="{{ $checklist -> checklist_type }}"
+                                    class="btn btn-sm btn-primary float-right duplicate-checklist-button">
+                                    <i class="fal fa-copy mr-2"></i>
+                                    Duplicate
+                                </a>
                             </div>
                         </div>
                     </div>

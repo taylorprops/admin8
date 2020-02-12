@@ -12,6 +12,23 @@ use App\Models\DocManagement\Upload;
 class ChecklistsController extends Controller
 {
 
+    public function duplicate_checklist(Request $request) {
+        $checklist_id = $request -> checklist_id;
+        $checklist = Checklists::where('id', $checklist_id) -> first();
+        $duplicate = $checklist -> replicate();
+        $duplicate -> save();
+        $new_checklist_id = $duplicate -> id;
+
+        // get all checklist items from target checklists to copy
+        $add_from_checklist_items = ChecklistsItems::where('checklist_id', $checklist_id) -> get();
+        foreach($add_from_checklist_items as $add_from_item) {
+            $checklist_item_copy = $add_from_item -> replicate();
+            $checklist_item_copy -> checklist_id = $new_checklist_id;
+            $checklist_item_copy -> save();
+        }
+
+    }
+
     function save_copy_checklists(Request $request) {
         $copy_from_location_id = $request -> location_id;
         $checklist_type = $request -> checklist_type;
@@ -111,15 +128,19 @@ class ChecklistsController extends Controller
         $checklists_model = new Checklists();
         $checklists = Checklists::where('checklist_location_id', $checklist_location_id) -> orderBy('checklist_order', 'ASC') -> get();
         $checklists_count = count($checklists);
-        $checklist_state = '';
+        /* $checklist_state = '';
         $checklist_property_type_id = '';
         if($checklists_count > 0) {
             $checklists_data = $checklists -> first();
             $checklist_state = $checklists_data -> checklist_state;
             $checklist_property_type_id = $checklists_data -> checklist_property_type_id;
-        }
+        } */
+        $checklist_property_type_id = '';
+
         $resource_items = new ResourceItems();
         $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
+        $checklist_location = $resource_items -> where('resource_id', $checklist_location_id) -> first();
+        $checklist_state = $checklist_location -> resource_state;
 
         return view('/doc_management/checklists/get_checklists_html', compact('checklists_model', 'property_types', 'checklists_count', 'resource_items', 'checklist_type', 'checklist_location_id', 'checklist_state', 'checklist_property_type_id'));
 

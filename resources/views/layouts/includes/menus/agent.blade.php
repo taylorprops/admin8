@@ -1,14 +1,35 @@
-<li class="nav-item dropdown mega-dropdown active mr-5">
-    <a class="nav-link dropdown-toggle text-uppercase" id="navbar_menu_link" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false"><i class="fal fa-bars fa-2x text-white"></i>
-    </a>
-    <div class="dropdown-menu mega-menu v-2 z-depth-1 bg-blue-light py-5 px-3"
-        aria-labelledby="navbar_menu_link">
-        <div class="row">
+<!-- Search form -->
+<div class="ml-5">
+    <input class="form-input-search" id="main_search" type="text" placeholder="Search" aria-label="Search">
+</div>
+<ul class="nav nav-tabs mt-5" id="sub_nav_tabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="doc_management_tab" data-toggle="tab" href="#doc_management_div" role="tab" aria-controls="doc_management_div"
+            aria-selected="true">Doc Management</a>
+    </li>
 
-            <div class="col-md-6 col-xl-3 mb-0">
+</ul>
+<div class="tab-content card pt-1" id="sub_menu_divs">
+    <div class="tab-pane fade show active" id="doc_management_div" role="tabpanel" aria-labelledby="doc_management_tab">
+        <ul class="mt-5">
+            <li>
+                <a class="text-primary" href="/agents/doc_management/transactions/add_listing">
+                    <i class="fas fa-caret-right pl-2 pr-3"></i>Add Listing
+                </a>
+            </li>
+            <li>
+                <a class="text-primary" href="/agents/doc_management/transactions/add_contract">
+                    <i class="fas fa-caret-right pl-2 pr-3"></i>Add Sales Contract
+                </a>
+            </li>
 
-            </div>
-        </div>
+        </ul>
     </div>
-</li>
+
+</div>
+
+
+
+
+
+

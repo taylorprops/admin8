@@ -13943,11 +13943,8 @@ ul {
   color: #b64341 !important;
 }
 
-.form-ele .invalid-i {
-  color: #b64341 !important;
-}
-
 .form-ele .invalid-input {
+  color: #b64341 !important;
   border: 1px solid #b64341 !important;
 }
 
@@ -14111,6 +14108,17 @@ ul {
 
 .form-ele .colorpicker-text:hover {
   cursor: pointer;
+}
+
+.invalid-radio .form-check-input[type=radio]:not(:checked) + label {
+  color: #b64341;
+}
+
+.invalid-radio .form-check-input[type=radio]:not(:checked) + label::before,
+.invalid-radio .form-check-input[type=radio]:not(:checked) + label::after,
+.invalid-radio label.btn input[type=radio]:not(:checked) + label::before,
+.invalid-radio label.btn input[type=radio]:not(:checked) + label::after {
+  border: 2px solid #b64341;
 }
 
 .qs-datepicker-container {
@@ -15110,7 +15118,7 @@ header {
 }
 
 .page-checklists .list-group-container {
-  max-height: 77VH;
+  max-height: 75VH;
   overflow: auto;
 }
 
@@ -15237,5 +15245,30 @@ header {
 .page-checklists .list-group-header {
   background: #ebf1f7 !important;
   color: #4c9bdb !important;
+}
+
+.page-add-listing .add-transaction-container {
+  width: 100VW;
+  height: 50VH;
+  overflow: hidden;
+}
+
+.page-add-listing #address_search_input {
+  width: 600px;
+  padding: 20px;
+  font-size: 1.4rem;
+}
+
+.page-add-listing #address_unit {
+  width: 100px;
+  padding: 20px;
+  font-size: 1.4rem;
+}
+
+.pac-container .pac-item {
+  padding: 10px;
+  line-height: 40px;
+  font-size: 1rem;
+  color: #999;
 }
 

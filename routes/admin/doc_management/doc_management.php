@@ -73,18 +73,15 @@ Route::middleware('admin') -> group(function () {
     Route::post('/doc_management/add_checklist_items', 'DocManagement\Checklists\ChecklistsController@add_checklist_items');
     /* Add Form to Checklists  */
     Route::post('/doc_management/save_add_to_checklists', 'DocManagement\Create\UploadController@save_add_to_checklists');
+    /* Duplicate Checklist  */
+    Route::post('/doc_management/duplicate_checklist', 'DocManagement\Checklists\ChecklistsController@duplicate_checklist');
     /* Save Copy Checklists  */
     Route::post('/doc_management/save_copy_checklists', 'DocManagement\Checklists\ChecklistsController@save_copy_checklists');
 
 
     /**********  DATA - GET /**********/
 
-    // List of docs to fill fields
-    Route::get('/doc_management/create/fill/fillable_files', 'DocManagement\Fill\FieldsController@fillable_files');
-    // fill fields
-    Route::get('/doc_management/create/fill_fields/{file_id}', 'DocManagement\Fill\FieldsController@fill_fields');
-    /* get common fields for select options */
-    Route::get('/doc_management/common_fields', 'DocManagement\Fill\FieldsController@get_common_fields');
+
     // get updated list of form_group files after adding a new one
     Route::get('/doc_management/get_form_group_files', 'DocManagement\Create\UploadController@get_form_group_files') -> name('doc_management.get_form_group_files');
     // get upload details for edit

@@ -19,15 +19,15 @@
     .invalid-input-file::placeholder {
         color: $danger !important;
     }
-    .invalid-i {
-        color: $danger !important;
-    }
     .invalid-input {
+        color: $danger !important;
         border: 1px solid $danger !important;
     }
     .invalid-input-file {
         border-bottom: 1px solid $danger !important;
     }
+
+
 
     .form-input, .form-textarea, .form-select-value-input {
         width: 100%;
@@ -170,6 +170,15 @@
     }
 
 
+}
+
+.invalid-radio {
+    .form-check-input[type="radio"]:not(:checked) + label {
+        color: $danger;
+    }
+    .form-check-input[type="radio"]:not(:checked) + label::before, .form-check-input[type="radio"]:not(:checked) + label::after, label.btn input[type="radio"]:not(:checked) + label::before, label.btn input[type="radio"]:not(:checked) + label::after {
+        border: 2px solid $danger;
+    }
 }
 
 

@@ -15,6 +15,7 @@ class UserController extends Controller
                 return view('/dashboard/agent/dashboard');
             }
         }
+
         return redirect('/');
     }
 }
