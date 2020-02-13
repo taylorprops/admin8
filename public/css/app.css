@@ -14014,10 +14014,11 @@ ul {
 }
 
 .form-ele .form-select-value-cancel {
+  display: none;
   width: 15px;
   height: 15px;
   position: absolute;
-  top: 35%;
+  top: 10px;
   right: 15px;
   cursor: pointer;
   z-index: 2;
@@ -14041,10 +14042,6 @@ ul {
 
 .form-ele .form-select-save-div {
   background: #ebf1f7;
-}
-
-.form-ele .form-select-value-cancel {
-  display: none;
 }
 
 .form-ele .form-select-search-div {

@@ -68,7 +68,7 @@ window.form_elements = function () {
                 // select label is added in select_html
                 // file label is added in file_html
                 let label = $(this).data('label');
-                if(!label) {
+                if (!label) {
                     label = '';
                 }
 
@@ -350,16 +350,46 @@ window.form_elements = function () {
 
 
     // show dropdown on focus
-    $('.form-ele').not('.form-check').on('focus', '.form-select-value-input', function (e) {
+
+    // original
+    $('.form-ele').not('.form-check').off().on('click', '.form-select-value-input', function (e) {
+        e.stopPropagation();
+        show_dropdown($(this));
+
+    });
+
+
+    /* $('.form-select-value-input').off('focus').on('focus', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        show_dropdown($(this));
+
+    }); */
+
+    /* $('.form-ele').not('.form-check').on('focus', '.form-select-value-input', function (e) {
         e.stopPropagation();
         if(e.type === 'focusin') {
             show_dropdown($(this));
         }
-    });
+    }); */
 
 }
 
 
+
+
+/* setTimeout(function() {
+    let mut = new MutationObserver(function (mutations) {
+        console.log(mutations);
+        mutations.forEach(function(mutation) {
+            console.log(mutation);
+        });
+    });
+    mut.observe(document.getElementsByClassName('custom-form-element'), {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+}, 1000); */
 
 setInterval(function () {
     $('.form-ele').removeClass('hidden');

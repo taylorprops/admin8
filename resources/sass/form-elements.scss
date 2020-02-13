@@ -77,10 +77,11 @@
         height: 60px;
     }
     .form-select-value-cancel {
+        display: none;
         width: 15px;
         height: 15px;
         position: absolute;
-        top: 35%;
+        top: 10px;
         right: 15px;
         cursor: pointer;
         z-index: 2;
@@ -102,9 +103,7 @@
     .form-select-save-div {
         background: $blue-light;
     }
-    .form-select-value-cancel {
-        display: none;
-    }
+
     .form-select-search-div {
         width: 100%;
         padding: 4px;
