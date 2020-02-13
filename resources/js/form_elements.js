@@ -350,29 +350,16 @@ window.form_elements = function () {
 
 
     // show dropdown on focus
-    $('.form-ele').not('.form-check').off().on('click', '.form-select-value-input', function (e) {
+    $('.form-ele').not('.form-check').on('focus', '.form-select-value-input', function (e) {
         e.stopPropagation();
-        show_dropdown($(this));
-
+        if(e.type === 'focusin') {
+            show_dropdown($(this));
+        }
     });
 
 }
 
 
-
-
-/* setTimeout(function() {
-    let mut = new MutationObserver(function (mutations) {
-        console.log(mutations);
-        mutations.forEach(function(mutation) {
-            console.log(mutation);
-        });
-    });
-    mut.observe(document.getElementsByClassName('custom-form-element'), {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-}, 1000); */
 
 setInterval(function () {
     $('.form-ele').removeClass('hidden');

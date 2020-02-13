@@ -1593,6 +1593,10 @@ a.text-green:hover {
   background: #b64341 !important;
 }
 
+.btn-secondary {
+  background: #c0703b !important;
+}
+
 /*!
  * Bootstrap v4.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
@@ -13431,6 +13435,11 @@ a:hover {
   text-decoration: none;
 }
 
+input {
+  border: 1px solid #ccc;
+  color: #6e6d6d;
+}
+
 .nowrap {
   white-space: nowrap;
 }
@@ -13972,6 +13981,7 @@ ul {
   position: absolute;
   top: 10px;
   left: 5px;
+  width: 95%;
   background: #fff;
   padding: 0 5px;
   font-size: 1rem;
@@ -13985,6 +13995,7 @@ ul {
 .form-ele .form-select-label.active {
   position: absolute;
   top: -5px;
+  width: auto;
   font-size: 0.8rem;
   color: #c0703b;
   line-height: 0.6rem;
@@ -15247,27 +15258,26 @@ header {
   color: #4c9bdb !important;
 }
 
-.page-add-listing .add-transaction-container {
-  width: 100VW;
-  height: 50VH;
-  overflow: hidden;
-}
-
 .page-add-listing #address_search_input {
   width: 600px;
-  padding: 20px;
-  font-size: 1.4rem;
+  padding: 10px;
+  font-size: 1.2rem;
 }
 
 .page-add-listing #address_unit {
   width: 100px;
-  padding: 20px;
-  font-size: 1.4rem;
+  padding: 10px;
+  font-size: 1.2rem;
+}
+
+.page-add-listing #address_enter_div {
+  width: 1100px;
+  margin: 0 auto;
 }
 
 .pac-container .pac-item {
   padding: 10px;
-  line-height: 40px;
+  line-height: 30px;
   font-size: 1rem;
   color: #999;
 }
