@@ -136,7 +136,7 @@ class UploadController extends Controller {
         $checklist_item_group_id = $checklist_item_details -> checklist_item_group_id ?? null;
         $checklist_item_required = $checklist_item_details -> checklist_item_required ?? null;
 
-        $states = Zips::States();
+        $states = Zips::ActiveStates();
 
         return view('/doc_management/create/upload/get_add_to_checklists_details_html', compact('file_id', 'uploaded_file', 'resource_items', 'checklists', 'checklists_items', 'form_groups', 'checklist_groups', 'checklist_locations', 'property_types', 'property_sub_types', 'upload', 'checklist_item_required', 'checklist_item_group_id', 'states'));
 
@@ -209,7 +209,7 @@ class UploadController extends Controller {
         $form_group_id = $request -> form_group_id ?: null;
         //$files = Upload::groupBy('file_id', 'file_name_orig') -> get();
         $files = Upload::orderBy('file_name_display') -> get();
-        $states = Zips::States();
+        $states = Zips::ActiveStates();
         //dd(ResourceItems::getTagName('11'));
         $resource_items = new ResourceItems();
         $resources = ResourceItems::orderBy('resource_order') -> get();

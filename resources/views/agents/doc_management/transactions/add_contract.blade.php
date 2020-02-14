@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-center align-items-center">
-                <input type="text" id="address_search_input">
+                <input type="text" id="address_search_street">
             </div>
         </div>
     </div><!-- ./ .row -->

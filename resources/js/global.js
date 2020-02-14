@@ -199,3 +199,31 @@ window.date_diff = function (s, e) {
 
     return days;
 }
+
+
+// get location details from zip code
+window.get_location_details = function(zip) {
+    if(zip.length == 5) {
+        let location_details = [];
+        let city = state = county = '';
+        axios.get('/global_functions/get_location_details', {
+            params: {
+                zip: zip
+            },
+        })
+        .then(function (response) {
+            let data = response.data;
+            city = data.city;
+            state = data.state;
+            county = data.county;
+            location_details.push(city);
+            location_details.push(state);
+            location_details.push(county);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+        return location_details;
+    }
+}

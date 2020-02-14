@@ -12,7 +12,7 @@ class ResourcesController extends Controller
 {
 
     public function resources() {
-        $states = Zips::States();
+        $states = Zips::ActiveStates();
         $resources_items_model = new ResourceItems();
         $resources = $resources_items_model -> groupBy('resource_type') -> get();
         $resources_items = $resources_items_model -> orderBy('resource_order') -> get();

@@ -23,6 +23,9 @@ window.form_elements = function () {
 
     */
 
+    // remove disabled
+    //$('.form-select-value-input').removeClass('disabled').prop('disabled', false);
+
     const form_elements = ['form-input', 'form-textarea', 'form-select', 'form-checkbox', 'form-radio', 'form-input-file', 'form-input-color'];
 
 
@@ -42,7 +45,7 @@ window.form_elements = function () {
             // check if form-ele already applied
             if (!element.parent().hasClass('form-ele')) {
 
-                let select_input_id = Math.floor(Math.random() * 100000) + 1;;
+                let select_input_id = Math.floor(Math.random() * 100000) + 1;
                 // avoid duplicate ids
                 /* if ($('#' + select_input_id).length > 0) {
                     console.log('dupes');
@@ -156,7 +159,7 @@ window.form_elements = function () {
                     }
 
                     let select_html = ' \
-                    <div class=form-select-wrapper"> \
+                    <div class="form-select-wrapper"> \
                         ' + clear_value + ' \
                         <label class="' + form_type + '-label" for="select_value_' + select_input_id + '">' + label + '</label> \
                         <input type="text" class="form-select-value-input '+ disabled + '" id="select_value_' + select_input_id + '" readonly ' + disabled + '> \
@@ -589,7 +592,10 @@ function shorten_value(input, value, multiple) {
 
 window.select_refresh = function () {
     $('.form-select').each(function () {
-        let select = $(this);
+        $(this).unwrap().show().next('.form-select-wrapper').remove();
+
+
+        /* let select = $(this);
         let wrapper = select.closest('.form-ele');
         let input = wrapper.find('.form-select-value-input');
 
@@ -614,8 +620,9 @@ window.select_refresh = function () {
             input.prop('disabled', true).addClass('disabled');
         } else {
             input.prop('disabled', false).removeClass('disabled');
-        }
+        } */
     });
+    form_elements();
 }
 
 function set_multiple_select_value(wrapper, input) {

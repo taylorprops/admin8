@@ -8,8 +8,12 @@ class Zips extends Model
 {
     public $table = 'docs_zips';
 
-    public function scopeStates() {
+    public function scopeActiveStates() {
         $states = config('global.vars.active_states');
+        return $states;
+    }
+    public function scopeAllStates() {
+        $states = Zips::select('state') -> groupBy('state') -> orderBy('state') -> get();
         return $states;
     }
 

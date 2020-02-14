@@ -108,7 +108,7 @@ class FieldsController extends Controller
         $fields = Fields::where('file_id', $file_id) -> orderBy('id') -> get() -> toArray();
         $field_inputs = FieldInputs::where('file_id', $file_id) -> orderBy('id') -> get() -> toArray();
         $field_values = FilledFields::where('file_id', $file_id) -> get() -> toArray();
-        // $states = Zips::States();
+        // $states = Zips::ActiveStates();
         //$file_id = $file_id;
         return view('/doc_management/fill/fill_fields', compact('file', 'images', 'fields', 'field_inputs', 'file_id', 'field_values'));
 

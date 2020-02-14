@@ -15255,13 +15255,17 @@ header {
   color: #4c9bdb !important;
 }
 
-.page-add-listing #address_search_input {
+.page-add-listing {
+  width: 1000px;
+}
+
+.page-add-listing #address_search_street {
   width: 600px;
   padding: 10px;
   font-size: 1.2rem;
 }
 
-.page-add-listing #address_unit {
+.page-add-listing #address_search_unit {
   width: 100px;
   padding: 10px;
   font-size: 1.2rem;
