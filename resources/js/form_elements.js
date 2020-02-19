@@ -26,6 +26,7 @@ window.form_elements = function () {
     // remove disabled
     //$('.form-select-value-input').removeClass('disabled').prop('disabled', false);
 
+
     const form_elements = ['form-input', 'form-textarea', 'form-select', 'form-checkbox', 'form-radio', 'form-input-file', 'form-input-color'];
 
 
@@ -64,7 +65,6 @@ window.form_elements = function () {
                 if (element.val() != '') {
                     active_label = 'active';
                 }
-
 
                 // wrap element with form-ele
                 // add labels on all except: select and file input
@@ -330,6 +330,10 @@ window.form_elements = function () {
 
                 } // end else if (form_type == 'form-select') {
 
+                if(element.hasClass('required')) {
+                    element.closest('.form-ele').append('<div class="required-div">R</div>');
+                }
+
             } // end if (!element.parent().hasClass('form-ele')) {
 
         }); // end form_element.each(function () {
@@ -592,7 +596,9 @@ function shorten_value(input, value, multiple) {
 
 window.select_refresh = function () {
     $('.form-select').each(function () {
-        $(this).unwrap().show().next('.form-select-wrapper').remove();
+        $(this).unwrap().show();
+        $(this).next('.form-select-wrapper').remove();
+        $(this).next('.required-div').remove();
 
 
         /* let select = $(this);

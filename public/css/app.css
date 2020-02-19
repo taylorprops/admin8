@@ -13961,6 +13961,14 @@ ul {
   border-bottom: 1px solid #b64341 !important;
 }
 
+.form-ele .required-div {
+  position: absolute;
+  top: -3px;
+  right: 2px;
+  font-size: 0.6rem;
+  color: #b64341;
+}
+
 .form-ele .form-input,
 .form-ele .form-textarea,
 .form-ele .form-select-value-input {
@@ -13997,7 +14005,7 @@ ul {
   top: -5px;
   width: auto;
   font-size: 0.8rem;
-  color: #c0703b;
+  color: #4c9bdb;
   line-height: 0.6rem;
   border-radius: 0px;
   padding-bottom: 3px;

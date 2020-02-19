@@ -19,7 +19,10 @@
         "mikehaertl/php-pdftk": "^0.7.0",
         "mikehaertl/phpwkhtmltopdf": "^2.4",
         "setasign/fpdi-fpdf": "^2.2",
+        "socrata/soda-php": "dev-develop",
+        "spatie/laravel-tail": "^3.3",
         "spipu/html2pdf": "^5.2",
+        "troydavisson/phrets": "2.*",
         "unisharp/laravel-filemanager": "~1.8"
     },
     "require-dev": {

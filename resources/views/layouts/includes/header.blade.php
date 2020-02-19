@@ -1,5 +1,5 @@
 @unless (Auth::check())
-    @php return redirect('/'); @endphp
+    @php header('Location: /'); exit(); @endphp
 @endunless
 <nav class="navbar sticky-top navbar-expand-lg bg-primary w-100">
     <div class="menu">

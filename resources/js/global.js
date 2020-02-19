@@ -202,11 +202,11 @@ window.date_diff = function (s, e) {
 
 
 // get location details from zip code
-window.get_location_details = function(zip) {
+/* window.get_location_details = function(zip) {
     if(zip.length == 5) {
         let location_details = [];
         let city = state = county = '';
-        axios.get('/global_functions/get_location_details', {
+        axios.get('/agents/doc_management/global_functions/get_location_details, {
             params: {
                 zip: zip
             },
@@ -226,4 +226,4 @@ window.get_location_details = function(zip) {
 
         return location_details;
     }
-}
+} */

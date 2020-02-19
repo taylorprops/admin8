@@ -12,6 +12,7 @@ use App\Models\DocManagement\Checklists\ChecklistsItems;
 
 class ResourceItems extends Model
 {
+    protected $connection = 'mysql';
     public $table = 'docs_resource_items';
     protected $primaryKey = 'resource_id';
     public $timestamps = false;

@@ -1,10 +1,9 @@
 <?php
 
-
-
-
-
     // ++++++ Doc Management ++++++ //
+
+    // Global functions
+    Route::get('/agents/doc_management/global_functions/get_location_details', 'Agents\DocManagement\Functions\GlobalFunctionsController@get_location_details');
 
     // Add new transaction
     Route::get('/agents/doc_management/transactions/add_listing', 'Agents\DocManagement\Transactions\AddTransactionController@add_listing');

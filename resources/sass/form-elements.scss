@@ -27,7 +27,13 @@
         border-bottom: 1px solid $danger !important;
     }
 
-
+    .required-div {
+        position: absolute;
+        top: -3px;
+        right: 2px;
+        font-size: .6rem;
+        color: $danger;
+    }
 
     .form-input, .form-textarea, .form-select-value-input {
         width: 100%;
@@ -61,7 +67,7 @@
         top: -5px;
         width: auto;
         font-size: .8rem;
-        color: $secondary-color;
+        color: $primary-color;
         line-height: .6rem;
         border-radius: 0px;
         padding-bottom: 3px;

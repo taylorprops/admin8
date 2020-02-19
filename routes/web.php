@@ -22,7 +22,7 @@ Route::get('/dashboard', 'UserController@dashboard');
 Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout');
 
-Route::get('/global_functions/get_location_details', 'Common\GlobalFunctionsController@get_location_details');
+
 
 
 // Route::get('/test', 'Testcontroller@test');

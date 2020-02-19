@@ -5,7 +5,8 @@ return [
     'vars' => [
         'bad_characters' => ['/\#/', '/\</', '/\$/', '/\+/', '/\%/', '/\>/', '/\!/', '/\&/', '/\*/', '/\'/', '/\|/', '/\{/', '/\?/', '/\"/', '/\=/', '/\}/', '/\//', '/\:/', '/\s/', '/\@/', '/\;/', '/\,/', '/\(/', '/\)/', '/\[/', '/\]/', '/\./'],
         'active_states' => $active_states,
-        'google_api_key' => env('GOOGLE_API_KEY')
+        'google_api_key' => env('GOOGLE_API_KEY'),
+        'socrata_api_key' => env('SOCRATA_API_KEY'),
     ]
 ];
 

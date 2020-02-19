@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Upload extends Model
 {
+    protected $connection = 'mysql';
     public $table = 'docs_uploads';
     protected $primaryKey = 'file_id';
 

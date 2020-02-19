@@ -24,7 +24,7 @@ if (document.URL.match(/add_listing/)) {
 
     function fill_location(zip) {
         if(zip.length == 5) {
-            axios.get('/global_functions/get_location_details', {
+            axios.get('/agents/doc_management/global_functions/get_location_details', {
                 params: {
                     zip: zip
                 },
@@ -37,6 +37,7 @@ if (document.URL.match(/add_listing/)) {
                 setTimeout(function() {
                     $('#enter_county').val(data.county);
                     select_refresh();
+                    enter_address_continue();
                 }, 500);
             })
             .catch(function (error) {
@@ -55,8 +56,35 @@ if (document.URL.match(/add_listing/)) {
         });
         if (cont == 'yes') {
             $('#address_enter_continue').prop('disabled', false);
-            $('#address_enter_continue').click(function () {
-                $('.address-container').collapse('hide');
+            $('#address_enter_continue').off('click').on('click', function () {
+
+                let street_number = $('#enter_street_number').val();
+                let street_name = $('#enter_street_name').val();
+                let street_dir = $('#enter_street_dir').val();
+                let unit_number = $('#enter_unit').val();
+                let city = $('#enter_city').val();
+                let state = $('#enter_state').val();
+                let zip = $('#enter_zip').val();
+                let county = $('#enter_county').val();
+                axios.get('/agents/doc_management/transactions/get_property_info', {
+                    params: {
+                        street_number: street_number,
+                        street_name: street_name,
+                        street_dir: street_dir,
+                        unit: unit_number,
+                        city: city,
+                        state: state,
+                        zip: zip,
+                        county: county
+                    }
+                })
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
             });
         } else {
             $('#address_enter_continue').prop('disabled', true);
@@ -96,9 +124,10 @@ if (document.URL.match(/add_listing/)) {
         let places = new google.maps.places.Autocomplete(address_search_street);
         google.maps.event.addListener(places, 'place_changed', function () {
 
-            //  TODO: need to make these hidden inputs. Cannot access from $('#enter_manually_button').click(function() {
+            //$('#address_search_unit').val('');
             let address_details = places.getPlace();
             let street_number = street_name = city = county = state = zip = '';
+
             address_details.address_components.forEach(function (address) {
                 if (address.types.includes('street_number')) {
                     street_number = address.long_name;
@@ -107,23 +136,32 @@ if (document.URL.match(/add_listing/)) {
                 } else if (address.types.includes('locality')) {
                     city = address.long_name;
                 } else if (address.types.includes('administrative_area_level_2')) {
-                    county = address.long_name;
+                    county = address.long_name.replace(/\sCounty/, '');
+                    county = county.replace(/'/, '');
                 } else if (address.types.includes('administrative_area_level_1')) {
-                    state = address.long_name;
+                    state = address.short_name;
                 } else if (address.types.includes('postal_code')) {
                     zip = address.long_name;
                 }
             });
-            //console.log(street_number, street_name, city, state, zip, county);
-            let unit = $('#address_search_unit').val();
 
-            $('#enter_manually_button').click(function () {
-                console.log(street_number, street_name, city, state, zip, county);
+
+            $('#enter_manually_button').off('click').on('click', function () {
+                let unit = $('#address_search_unit').val();
                 $('#enter_street_number').val(street_number).trigger('change');
                 $('#enter_street_name').val(street_name).trigger('change');
                 $('#enter_zip').val(zip).trigger('change');
-                fill_location(zip);
-                select_refresh();
+                $('#enter_city').val(city).trigger('change');
+                $('#enter_state').val(state).trigger('change');
+                $('#enter_unit').val(unit).trigger('change');
+                //update_county_select(state);
+                setTimeout(function() {
+                    console.log(county);
+                    $('#enter_county').val(county.toUpperCase()).trigger('change');
+                    select_refresh();
+                    enter_address_continue();
+                }, 500);
+
             });
 
             // show continue button once address selected
@@ -144,26 +182,26 @@ if (document.URL.match(/add_listing/)) {
                 }
             });
             // show results container
-            $('#address_search_continue').click(function () {
-                $('.address-container').collapse('hide');
-
-                /* axios.get('/agents/doc_management/transactions/get_property_info', {
+            $('#address_search_continue').off('click').on('click', function () {
+                //$('.address-container').collapse('hide');
+                let unit_number = $('#address_search_unit').val();
+                axios.get('/agents/doc_management/transactions/get_property_info', {
                     params: {
                         street_number: street_number,
-                        street_name: street_number,
-                        street_number: street_number,
-                        street_number: street_number,
-                        street_number: street_number,
-                        street_number: street_number,
-                        street_number: street_number,
-                    },
+                        street_name: street_name,
+                        unit: unit_number,
+                        city: city,
+                        state: state,
+                        zip: zip,
+                        county: county
+                    }
                 })
                 .then(function (response) {
-                    console.log(response);
+                    //console.log(response);
                 })
                 .catch(function (error) {
                     console.log(error);
-                }); */
+                });
 
             });
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChecklistsItems extends Model
 {
+    protected $connection = 'mysql';
     public $table = 'docs_checklists_items';
 
     public static function boot() {
