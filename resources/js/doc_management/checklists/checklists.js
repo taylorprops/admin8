@@ -4,11 +4,11 @@ if (document.URL.match(/checklists/)) {
 
         load_checklists();
 
-        let show_checklist_id = get_url_parameters('checklist_id');
+        let show_checklist_id = global_get_url_parameters('checklist_id');
         if (show_checklist_id) {
             add_checklist_items(show_checklist_id);
-            let checklist_location_id = get_url_parameters('checklist_location_id');
-            let type = get_url_parameters('checklist_type');
+            let checklist_location_id = global_get_url_parameters('checklist_location_id');
+            let type = global_get_url_parameters('checklist_type');
             $('#list_' + checklist_location_id).trigger('click');
             $('#list_div_' + checklist_location_id).find('.checklist-type-option').val(type).trigger('change');
             checklist_type();
@@ -103,7 +103,7 @@ if (document.URL.match(/checklists/)) {
             $('#copy_checklists_checklist_type').val(checklist_type);
 
             form_elements();
-            tooltip();
+            global_tooltip();
             // highlight selected check rows
             $('.export-to-form-group').change(function() {
                 if($(this).is(':checked')) {

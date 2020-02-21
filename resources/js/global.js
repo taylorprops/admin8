@@ -44,10 +44,10 @@ $(document).ready(function () {
     });
 
     $('.phone').keyup(function () {
-        format_phone(this);
+        global_format_phone(this);
     });
 
-    tooltip();
+    global_tooltip();
 
 
 
@@ -70,13 +70,13 @@ $(document).ready(function () {
     });
 
 
-    page_transition();
+    global_page_transition();
 
 
 });
 
 // page transitions
-window.page_transition = function() {
+window.global_page_transition = function() {
 
     if (document.location.pathname !== '/') {
 
@@ -86,7 +86,7 @@ window.page_transition = function() {
         tl.to(CSSRulePlugin.getRule('body:before'), 0, { cssRule: { top: '50%' }, ease: Power2.easeOut }, 'close')
             .to(CSSRulePlugin.getRule('body:after'), 0, { cssRule: { bottom: '50%' }, ease: Power2.easeOut }, 'close')
             .to($('.loader'), 0, { opacity: 1 })
-            .to(CSSRulePlugin.getRule('body:before'), 0.2, { cssRule: { top: '0%' }, ease: Power2.easeOut }, '+=1.5', 'open')
+            .to(CSSRulePlugin.getRule('body:before'), 0.2, { cssRule: { top: '0%' }, ease: Power2.easeOut }, '+=0.5', 'open')
             .to(CSSRulePlugin.getRule('body:after'), 0.2, { cssRule: { bottom: '0%' }, ease: Power2.easeOut }, '-=0.2', 'open')
             .to($('.loader'), 0.2, { opacity: 0, display: 'none' }, '-=0.2');
 
@@ -113,13 +113,37 @@ $(document).on('keydown', '.numbers-only', function (event) {
     }
 });
 
-window.tooltip = function() {
+window.global_loading_on = function(ele, html) {
+    let spinner_html = ' \
+    <div class="loading-spinner"> \
+        <div class="spinner-grow text-success" role="status"> \
+            <span class="sr-only">Loading...</span> \
+        </div> \
+        <div class="spinner-grow text-danger" role="status"> \
+            <span class="sr-only">Loading...</span> \
+        </div> \
+        <div class="spinner-grow text-warning" role="status"> \
+            <span class="sr-only">Loading...</span> \
+        </div> \
+        <div class="spinner-grow text-info" role="status"> \
+            <span class="sr-only">Loading...</span> \
+        </div> \
+    </div> \
+    <div class="loading-spinner-html mt-0 mx-auto">'+html+'</div> \
+    ';
+    ele.html(spinner_html);
+}
+window.global_loading_off = function() {
+    $('.loading-spinner, .loading-spinner-html').remove();
+}
+
+window.global_tooltip = function() {
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover();
 }
 
 
-window.get_url_parameters = function(key) {
+window.global_get_url_parameters = function(key) {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     if (urlParams.has(key)) {
@@ -129,8 +153,7 @@ window.get_url_parameters = function(key) {
 }
 
 // Format Phone
-window.format_phone = function (obj) {
-    //function format_phone(obj) {
+window.global_format_phone = function (obj) {
     let numbers = obj.value.replace(/\D/g, ''),
         char = { 0: '(', 3: ') ', 6: '-' };
     obj.value = '';
@@ -143,8 +166,7 @@ window.format_phone = function (obj) {
 }
 
 // FORMAT SOCIAL SECURITY
-window.fmtssn = function (socInput) {
-    //function fmtssn(socInput) {
+window.global_fmtssn = function (socInput) {
     re = /\D/g; // remove any characters that are not numbers
     socnum = socInput.value.replace(re, "");
     sslen = socnum.length;
@@ -168,17 +190,15 @@ window.fmtssn = function (socInput) {
 PURPOSE: remove duplicates from array
 USAGE:
 group_ids = ['a', 'b', 'c', 'c'];
-group_ids = group_ids.filter(filter_array);
+group_ids = group_ids.filter(global_filter_array);
 */
 
-window.filter_array = function (value, index, self) {
-    //export function filter_array(value, index, self) {
+window.global_filter_array = function (value, index, self) {
     return self.indexOf(value) === index;
 }
 
 // Format Money
-window.format_number = function (num) {
-    //export function format_number(num) {
+window.global_format_number = function (num) {
     const formatter = new Intl.NumberFormat('en-US', {
         style: 'decimal',
         minimumFractionDigits: 0
@@ -189,9 +209,7 @@ window.format_number = function (num) {
 }
 
 // Date Difference JS
-window.date_diff = function (s, e) {
-    //export function date_diff(s, e) {
-
+window.global_date_diff = function (s, e) {
     let start = new Date(s);
     let end = new Date(e);
     let diff = new Date(end - start);

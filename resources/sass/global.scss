@@ -130,9 +130,19 @@ input {
 	left: 0;
 	right: 0;
 	margin: auto;
-    background-image: url('/images/pageloader.gif');
+    background-image: url('/images/loading/pageloader.gif');
     background-repeat:no-repeat;
     background-position: center center;
+}
+
+.loading-spinner, .loading-spinner-html {
+    width: 200px;
+    margin: 10% auto 15px auto;
+    text-align: center;
+}
+.loading-spinner-html {
+    width: 400px;
+    text-align: center;
 }
 
 

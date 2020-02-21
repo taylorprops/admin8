@@ -100,7 +100,7 @@ if (document.URL.match(/create\/upload\/files/)) {
         $('.uploads-filter-sort').change(function () {
             sort_uploads($(this));
         });
-        tooltip();
+        global_tooltip();
     }
 
     function show_manage_upload(form_id, form_group_id) {
@@ -134,7 +134,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 show_checklist_type(form_id, form_name, form_group_id, state);
             });
 
-            tooltip();
+            global_tooltip();
 
         })
         .catch(function (error) {

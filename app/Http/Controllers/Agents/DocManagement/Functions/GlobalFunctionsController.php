@@ -120,34 +120,35 @@ class GlobalFunctionsController extends Controller
 
                     );
 
+                    if(isset($property['real_property_search_link'])) {
+                        // Owner name not available from response so we have to follow the link provided in the results and get the owner's name from that page
+                        $link = $property['real_property_search_link']['url'];
+                        $page = new \DOMDocument();
+                        libxml_use_internal_errors(true);
+                        $page -> loadHTMLFile($link);
+                        //echo $page -> saveHTML();
 
-                    // Owner name not available from response so we have to follow the link provided in the results and get the owner's name from that page
-                    $link = $property['real_property_search_link']['url'];
-                    $page = new \DOMDocument();
-                    libxml_use_internal_errors(true);
-                    $page -> loadHTMLFile($link);
-                    //echo $page -> saveHTML();
+                        $owner1 = $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_ucDetailsSearch_dlstDetaisSearch_lblOwnerName_0');
+                        if(!$owner1) {
+                            $owner1 = $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblOwnerName_0');
+                        }
+                        $owner2 = $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_ucDetailsSearch_dlstDetaisSearch_lblOwnerName2_0');
+                        if(!$owner2) {
+                            $owner2= $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblOwnerName2_0');
+                        }
 
-                    $owner1 = $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_ucDetailsSearch_dlstDetaisSearch_lblOwnerName_0');
-                    if(!$owner1) {
-                        $owner1 = $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblOwnerName_0');
+                        $details['Owner1'] = $owner1 -> textContent;
+                        $details['Owner2'] = $owner2 -> textContent;
+
+                        /* $details['frederick_city'] = 'no';
+                        if(stristr($property['town_code_mdp_field_towncode_desctown_sdat_field_36'], 'Frederick')) { //MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblSpecTaxTown_0
+                            $details['frederick_city'] = 'yes';
+                        }
+                        $details['condo'] = 'no';
+                        if(stristr($property['land_use_code_mdp_field_lu_desclu_sdat_field_50'], 'condominium')) {
+                            $details['condo'] = 'yes';
+                        } */
                     }
-                    $owner2 = $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_ucDetailsSearch_dlstDetaisSearch_lblOwnerName2_0');
-                    if(!$owner2) {
-                        $owner2= $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblOwnerName2_0');
-                    }
-
-                    $details['Owner1'] = $owner1 -> textContent;
-                    $details['Owner2'] = $owner2 -> textContent;
-
-                    /* $details['frederick_city'] = 'no';
-                    if(stristr($property['town_code_mdp_field_towncode_desctown_sdat_field_36'], 'Frederick')) { //MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblSpecTaxTown_0
-                        $details['frederick_city'] = 'yes';
-                    }
-                    $details['condo'] = 'no';
-                    if(stristr($property['land_use_code_mdp_field_lu_desclu_sdat_field_50'], 'condominium')) {
-                        $details['condo'] = 'yes';
-                    } */
 
 
 

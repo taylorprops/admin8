@@ -596,9 +596,11 @@ function shorten_value(input, value, multiple) {
 
 window.select_refresh = function () {
     $('.form-select').each(function () {
-        $(this).unwrap().show();
-        $(this).next('.form-select-wrapper').remove();
-        $(this).next('.required-div').remove();
+        if($(this).parent().hasClass('form-ele')) {
+            $(this).unwrap().show();
+            $(this).next('.form-select-wrapper').remove();
+            $(this).next('.required-div').remove();
+        }
 
 
         /* let select = $(this);

@@ -3,9 +3,11 @@ namespace App\Http\Controllers\Agents\DocManagement\Transactions;
 
 use App\Http\Controllers\Controller;
 use App\Models\DocManagement\Listings;
+use App\Models\DocManagement\ListingsRemoved;
 use App\Models\DocManagement\Zips;
 use Illuminate\Http\Request;
 use Config;
+use App\Http\Controllers\Agents\DocManagement\Functions\GlobalFunctionsController;
 
 class AddTransactionController extends Controller {
     public function add_contract() {
@@ -23,11 +25,31 @@ class AddTransactionController extends Controller {
         $street_name = $request -> street_name;
         $street_suffix = '';
         $street_dir_suffix = '';
+        $street_dir_suffix_alt = '';
 
         // remove all suffixes and dir suffixes to get just street name. Save them for later
         $street_suffixes_array = array('ALLEY', 'AVENUE', 'BEND', 'BOULEVARD', 'BRANCH', 'CIRCLE', 'CIR', 'CORNER', 'COURSE', 'COURT', 'COVE', 'CRESCENT', 'CROSSING', 'DRIVE', 'DRIVEWAY', 'EXTENSION', 'GARDENS', 'GARTH', 'GATEWAY', 'GLEN', 'GROVE', 'HARBOR', 'HIGHWAY', 'HILL', 'HOLLOW', 'KNOLLS', 'LANDING', 'LANE', 'LOOP', 'MEWS', 'MILLS', 'NORTHWAY', 'PARKWAY', 'PASSAGE', 'PATH', 'PIKE', 'PLACE', 'RIDGE', 'ROAD', 'ROUTE', 'ROW', 'RUN', 'SQUARE', 'STREET', 'TERRACE', 'TRACE', 'TRAIL', 'TURN', 'VIEW', 'VISTA', 'WALK', 'WAY');
 
         $street_dir_suffixes_array = array('E', 'EAST', 'N', 'NE', 'NORTH', 'NORTHEAST', 'NORTHWEST', 'NW', 'S', 'SE', 'SOUTH', 'SOUTHEAST', 'SOUTHWEST', 'SW', 'W', 'WEST');
+
+        $street_dir_suffixes_alt_array = array(
+            array('orig' => 'E', 'alt' => 'EAST'),
+            array('orig' => 'EAST', 'alt' => 'E'),
+            array('orig' => 'W', 'alt' => 'WEST'),
+            array('orig' => 'WEST', 'alt' => 'W'),
+            array('orig' => 'S', 'alt' => 'SOUTH'),
+            array('orig' => 'SOUTH', 'alt' => 'S'),
+            array('orig' => 'N', 'alt' => 'NORTH'),
+            array('orig' => 'NORTH', 'alt' => 'N'),
+            array('orig' => 'NE', 'alt' => 'NORTHEAST'),
+            array('orig' => 'NORTHEAST', 'alt' => 'NE'),
+            array('orig' => 'NW', 'alt' => 'NORTHWEST'),
+            array('orig' => 'NORTHWEST', 'alt' => 'NW'),
+            array('orig' => 'SE', 'alt' => 'SOUTHEAST'),
+            array('orig' => 'SOUTHEAST', 'alt' => 'SE'),
+            array('orig' => 'SW', 'alt' => 'SOUTHWEST'),
+            array('orig' => 'SOUTHWEST', 'alt' => 'SW')
+        );
 
         foreach ($street_suffixes_array as $street_suffixes) {
             if (preg_match('/\s\b(' . $street_suffixes . '(?!.*' . $street_suffixes . '))\b/i', $street_name, $matches)) {
@@ -40,27 +62,78 @@ class AddTransactionController extends Controller {
             if (preg_match('/\s\b(' . $street_dir_suffixes . ')\b/i', $street_name, $matches)) {
                 $street_name = preg_replace('/\s\b(' . $street_dir_suffixes . ')\b/i', '', $street_name);
                 $street_dir_suffix = trim($matches[0]);
+
+                foreach($street_dir_suffixes_alt_array as $dir) {
+                    if(strtolower($dir['orig']) == strtolower($street_dir_suffix)) {
+                        $street_dir_suffix_alt = $dir['alt'];
+                    }
+                }
             }
         }
-        $street_dir_suffix_sql = '';
+
+        $street_dir_suffix_bright_dmql = '';
         if($street_dir_suffix != '') {
-            $street_dir_suffix_sql = ',((StreetDirSuffix=|'.$street_dir_suffix.')|(StreetDirSuffix=.EMPTY.))';
+            $street_dir_suffix_bright_dmql = ',(((StreetDirSuffix=|'.$street_dir_suffix.')|(StreetDirSuffix=|'.$street_dir_suffix_alt.'))|((StreetDirPrefix=|'.$street_dir_suffix.')|(StreetDirPrefix=|'.$street_dir_suffix_alt.')))';
         }
 
         $unit = $request -> unit;
-        $unit_sql = '';
+        $unit_bright_dmql = '';
         if($unit != '') {
-            $unit_sql = ',(UnitNumber=*'.$unit.'*)';
+            $unit_bright_dmql = ',(UnitNumber=*'.$unit.'*)';
         }
         $city = $request -> city;
         $state = $request -> state;
         $zip = $request -> zip;
         $county = $request -> county;
 
+        $select_columns_db = array('ListPictureURL', 'FullStreetAddress', 'City', 'StateOrProvince', 'County', 'PostalCode', 'YearBuilt', 'BathroomsTotalInteger', 'BedroomsTotal', 'MlsStatus', 'ListingId', 'ListPrice', 'PropertyType', 'ListOfficeName', 'MLSListDate', 'ListAgentFirstName', 'ListAgentLastName');
+        $select_columns_bright = 'ListPictureURL, FullStreetAddress, City, StateOrProvince, County, PostalCode, YearBuilt, BathroomsTotalInteger, BedroomsTotal, MlsStatus, ListingId, ListPrice, PropertyType, ListOfficeName, MLSListDate, ListAgentFirstName, ListAgentLastName';
+
+        $results = [];
+
         ///// DATABASE SEARCH FOR PROPERTY /////
-        $bright_db_search = Listings::select('AssociationFee', 'AssociationFeeFrequency', 'AssociationYN', 'BathroomsTotalInteger', 'BedroomsTotal', 'CloseDate', 'CondoYN', 'Latitude', 'ListingId', 'ListingSourceRecordKey', 'ListingTaxID', 'ListOfficeName', 'ListPictureURL', 'ListPrice', 'Longitude', 'LotSizeAcres', 'MajorChangeTimestamp', 'MLSListDate', 'MlsStatus', 'NewConstructionYN', 'PropertySubType', 'PropertyType', 'SubdivisionName', 'UnitBuildingType', 'YearBuilt', 'FullStreetAddress', 'StreetDirPrefix', 'StreetDirSuffix', 'StreetName', 'StreetSuffix', 'StreetSuffixModifier', 'UnitNumber', 'City', 'County', 'StreetNumber', 'PostalCode', 'StateOrProvince') -> where('StateOrProvince', $state) -> where('PostalCode', $zip) -> where('StreetNumber', $street_number) -> where('StreetName', 'LIKE', $street_name . '%') -> where('UnitNumber', 'LIKE', '%' . $unit . '%') -> where('StreetDirSuffix', 'LIKE', $street_dir_suffix . '%') -> get() -> toArray();
+        $bright_db_search = Listings::select($select_columns_db) -> where('StateOrProvince', $state) -> where('PostalCode', $zip)
+            -> where('StreetNumber', $street_number)
+            -> where('StreetName', 'LIKE', $street_name . '%')
+            -> where('UnitNumber', 'LIKE', '%' . $unit . '%')
+            -> where(function ($q) use ($street_dir_suffix, $street_dir_suffix_alt) {
+                $q -> where('StreetDirSuffix', $street_dir_suffix)
+                    -> orWhere('StreetDirSuffix', $street_dir_suffix_alt);
+                $q -> where('StreetDirPrefix', $street_dir_suffix)
+                    -> orWhere('StreetDirPrefix', $street_dir_suffix_alt);
+            })
+            -> orderBy('MlsStatus', 'DESC')
+            -> get() -> toArray();
+
+            if (count($bright_db_search) > 0) {
+                $results['results_bright_type'] = 'db_active';
+                $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+            }
+
 
         ///// END DATABASE SEARCH FOR PROPERTY /////
+
+        ///// DATABASE SEARCH FOR OLD PROPERTIES /////
+        if (count($bright_db_search) == 0) {
+            $bright_db_search = ListingsRemoved::select($select_columns_db) -> where('StateOrProvince', $state) -> where('PostalCode', $zip)
+                -> where('StreetNumber', $street_number)
+                -> where('StreetName', 'LIKE', $street_name . '%')
+                -> where('UnitNumber', 'LIKE', '%' . $unit . '%')
+                -> where(function ($q) use ($street_dir_suffix, $street_dir_suffix_alt) {
+                    $q -> where('StreetDirSuffix', $street_dir_suffix)
+                        -> orWhere('StreetDirSuffix', $street_dir_suffix_alt);
+                    $q -> where('StreetDirPrefix', $street_dir_suffix)
+                        -> orWhere('StreetDirPrefix', $street_dir_suffix_alt);
+                })
+                -> get() -> toArray();
+
+            if (count($bright_db_search) > 0) {
+                $results['results_bright_type'] = 'db_closed';
+                $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+            }
+        }
+
+        ///// END DATABASE SEARCH FOR OLD PROPERTIES /////
 
         // If not found in database search search bright mls
         if (count($bright_db_search) == 0) {
@@ -72,21 +145,26 @@ class AddTransactionController extends Controller {
             $class = 'ALL';
 
             // get property results from brightmls
-            $query = '(StateOrProvince=|'.$state.'),(PostalCode='.$zip.'),(StreetNumber='.$street_number.'),(StreetName='.$street_name.'*)'.$unit_sql.$street_dir_suffix_sql;
+            $query = '(StateOrProvince=|'.$state.'),(PostalCode='.$zip.'),(StreetNumber='.$street_number.'),(StreetName='.$street_name.'*)' . $unit_bright_dmql . $street_dir_suffix_bright_dmql;
 
             $bright_db_search = $rets -> Search(
-            $resource,
-            $class,
-            $query,
+                $resource,
+                $class,
+                $query,
                 [
-                'Count' => 0,
-                'Select' => 'AssociationFee, AssociationFeeFrequency, AssociationYN, BathroomsTotalInteger, BedroomsTotal, CloseDate, CondoYN, Latitude, ListingId, ListingSourceRecordKey, ListingTaxID, ListOfficeName, ListPictureURL, ListPrice, Longitude, LotSizeAcres, MajorChangeTimestamp, MLSListDate, MlsStatus, NewConstructionYN, PropertySubType, PropertyType, SubdivisionName, UnitBuildingType, YearBuilt, FullStreetAddress, StreetDirPrefix, StreetDirSuffix, StreetName, StreetSuffix, StreetSuffixModifier, UnitNumber, City, County, StreetNumber, PostalCode, StateOrProvince'
+                    'Count' => 0,
+                    'Select' => $select_columns_bright
                 ]
             );
 
             $bright_db_search = $bright_db_search -> toArray();
 
             $rets -> disconnect();
+
+            if (count($bright_db_search) > 0) {
+                $results['results_bright_type'] = 'bright';
+                $results['results_bright_id'] = $bright_db_search['ListingId'];
+            }
 
         }
 
@@ -108,44 +186,43 @@ class AddTransactionController extends Controller {
         // search tax records by tax id if exists, otherwise use address
         $tax_record_search = '';
         if ($state == 'MD') {
-            $tax_record_search = app('App\Http\Controllers\Agents\DocManagement\Functions\GlobalFunctionsController') -> tax_records($street_number, $street_name, $unit, $zip, $tax_id, $state);
+            $functions = new GlobalFunctionsController();
+            $tax_record_search = $functions -> tax_records($street_number, $street_name, $unit, $zip, $tax_id, $state);
+            if(is_array($tax_record_search)) {
+                $results['results_tax_id'] = $tax_record_search['ListingTaxID'];;
+            }
         }
 
         $property_details = null;
         // if only brightmls results
-        if (!$bright_db_search && is_array($tax_record_search)) {
+        if ($bright_db_search && !is_array($tax_record_search)) {
             $property_details = $bright_db_search;
         } else
 
         // if only tax record results
-        if ($bright_db_search && !is_array($tax_record_search)) {
+        if (!$bright_db_search && is_array($tax_record_search)) {
             $property_details = $tax_record_search;
         } else
 
         // if both results
         if ($bright_db_search && is_array($tax_record_search)) {
+
             // keep bright results, replace a few and add rest from tax records
             $property_details = $bright_db_search;
-            $property_details['Owner1'] = $tax_record_search['Owner1'];
-            $property_details['Owner2'] = $tax_record_search['Owner2'];
-            $property_details['Longitude'] = $tax_record_search['Longitude'];
-            $property_details['Latitude'] = $tax_record_search['Latitude'];
-            $property_details['DeedReference1'] = $tax_record_search['DeedReference1'];
-            $property_details['Deed Reference2'] = $tax_record_search['Deed Reference2'];
-            $property_details['TownCode'] = $tax_record_search['TownCode'];
-            $property_details['Subdivision Code'] = $tax_record_search['Subdivision Code'];
-            $property_details['Map'] = $tax_record_search['Map'];
-            $property_details['Grid'] = $tax_record_search['Grid'];
-            $property_details['Parcel'] = $tax_record_search['Parcel'];
-            $property_details['ZoningCode'] = $tax_record_search['ZoningCode'];
-            $property_details['ResidenceType'] = $tax_record_search['ResidenceType'];
-            $property_details['UtilitiesWater'] = $tax_record_search['UtilitiesWater'];
-            $property_details['UtilitiesSewage'] = $tax_record_search['UtilitiesSewage'];
-            $property_details['District'] = $tax_record_search['District'];
-            $property_details['LegalDescription1'] = $tax_record_search['LegalDescription1'];
-            $property_details['LegalDescription2'] = $tax_record_search['LegalDescription2'];
-            $property_details['LegalDescription3'] = $tax_record_search['LegalDescription3'];
-            $property_details['TaxRecordLink'] = $tax_record_search['TaxRecordLink'];
+            $property_details['Owner1'] = '';
+            $property_details['Owner2'] = '';
+            if($property_details['Owner1'] != '') {
+                $property_details['Owner1'] = $tax_record_search['Owner1'] ?? null;
+                $property_details['Owner2'] = $tax_record_search['Owner2'];
+            }
+            $property_details['ResidenceType'] = $tax_record_search['ResidenceType'] ?? null;
+            $property_details['TaxRecordLink'] = $tax_record_search['TaxRecordLink'] ?? null;
+        }
+
+        if($property_details != null) {
+            $property_details['results_bright_type'] = $results['results_bright_type'] ?? null;
+            $property_details['results_bright_id'] = $results['results_bright_id'] ?? null;
+            $property_details['results_tax_id'] = $results['results_tax_id'] ?? null;
         }
 
         return $property_details;

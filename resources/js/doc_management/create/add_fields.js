@@ -1018,7 +1018,7 @@ if (document.URL.match(/create\/add_fields/)) {
             $('.field-div').each(function () {
                 group_ids.push($(this).data('group-id'));
             });
-            group_ids = group_ids.filter(filter_array);
+            group_ids = group_ids.filter(global_filter_array);
 
             for (let i = 0; i < group_ids.length; i++) {
 
@@ -1187,7 +1187,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 $(this).find('.field-div').each(function () {
                     group_ids.push($(this).data('group-id'));
                 });
-                group_ids = group_ids.filter(filter_array);
+                group_ids = group_ids.filter(global_filter_array);
                 // get all field names and add to field list
                 $.each(group_ids, function (index, group_id) {
                     let name = $('.group_' + group_id).data('customname');
