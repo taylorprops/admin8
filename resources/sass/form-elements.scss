@@ -54,7 +54,7 @@
         top: 10px;
         left: 2px;
         width: 95%;
-        background: #fff;
+        background: transparent;
         padding: 0 2px;
         font-size: 1rem;
         color: #b9b5b5;
@@ -66,10 +66,11 @@
 
     .form-input-label.active, .form-textarea-label.active, .form-select-label.active {
         position: absolute;
-        top: -7px;
+        top: -5px;
         width: auto;
         font-size: .7rem;
         color: $primary-color;
+        background: #fff;
         line-height: .6rem;
         border-radius: 0px;
         padding-bottom: 3px;

@@ -11,12 +11,85 @@ use App\Http\Controllers\Agents\DocManagement\Functions\GlobalFunctionsControlle
 
 class AddTransactionController extends Controller {
     public function add_contract() {
-        return view('/agents/doc_management/transactions/add_contract');
+        return view('/agents/doc_management/transactions/contracts/add_contract');
     }
 
     public function add_listing() {
         $states = Zips::ActiveStates();
-        return view('/agents/doc_management/transactions/add_listing', compact('states'));
+        return view('/agents/doc_management/transactions/listings/add_listing', compact('states'));
+    }
+
+    public function add_listing_details(Request $request) {
+
+        $bright_type = $request -> bright_type;
+        $bright_id = $request -> bright_id;
+        $state = $request -> state;
+        $tax_id = '';
+        // only pulling tax records from MD
+        if($state == 'MD') {
+            $tax_id = $request -> tax_id;
+        }
+
+
+        $select_columns_bright = 'Appliances,AssociationFee,AssociationFeeFrequency,AssociationYN,AttachedGarageYN,BasementFinishedPercent,BasementYN,BathroomsTotalInteger,BedroomsTotal,City,CloseDate,CondoYN,Cooling,County,ElementarySchool,FireplaceYN,FullStreetAddress,GarageYN,Heating,HighSchool,Latitude,ListingId,ListingSourceRecordKey,ListingTaxID,ListPictureURL,ListPrice,LivingArea,Longitude,LotSizeAcres,LotSizeSquareFeet,MajorChangeTimestamp,MiddleOrJuniorSchool,MLSListDate,MlsStatus,NewConstructionYN,NumAttachedGarageSpaces,NumDetachedGarageSpaces,Pool,PostalCode,PropertySubType,PropertyType,PublicRemarks,SaleType,StateOrProvince,StreetDirPrefix,StreetDirSuffix,StreetName,StreetNumber,StreetSuffix,StreetSuffixModifier,StructureDesignType,SubdivisionName,TotalPhotos,UnitBuildingType,UnitNumber,YearBuilt,ListOfficeName,ListOfficeMlsId,ListAgentMlsId,ListAgentFirstName,ListAgentLastName,ListAgentEmail,ListAgentPreferredPhone,BuyerOfficeName,BuyerOfficeMlsId,BuyerAgentMlsId,BuyerAgentFirstName,BuyerAgentLastName,BuyerAgentEmail,BuyerAgentPreferredPhone';
+        $select_columns_db = explode(',', $select_columns_bright);
+
+        if($bright_type == 'db_active') {
+
+            $bright_db_search = Listings::select($select_columns_db) -> where('ListingId', $bright_id) -> first() -> toArray();
+
+        } else if($bright_type == 'db_closed') {
+
+            $bright_db_search = ListingsRemoved::select($select_columns_db) -> where('ListingId', $bright_id) -> first() -> toArray();
+
+        } else if($bright_type == 'bright') {
+
+            $rets = new \PHRETS\Session(Config::get('rets.rets.rets_config'));
+            $connect = $rets -> Login();
+            $resource = 'Property';
+            $class = 'ALL';
+            $query = '(ListingId='.$bright_id.')';
+
+            $bright_db_search = $rets -> Search(
+                $resource,
+                $class,
+                $query,
+                [
+                    'Count' => 0,
+                    'Select' => $select_columns_bright
+                ]
+            );
+
+            $bright_db_search = $bright_db_search -> toArray();
+
+            $rets -> disconnect();
+
+        }
+
+        if($tax_id != '') {
+            $functions = new GlobalFunctionsController();
+            $tax_record_search = $functions -> tax_records('', '', '', '', $tax_id, $state);
+        }
+
+        $property_details = array();
+        // if only brightmls results
+        if ($bright_db_search && !$tax_record_search) {
+
+            $property_details = $bright_db_search[0];
+
+        // if only tax record results
+        } else if (!$bright_db_search && $tax_record_search) {
+
+            $property_details = $tax_record_search;
+
+        } else if ($bright_db_search && $tax_record_search) {
+
+            // keep bright results, replace a few and add rest from tax records
+            $property_details = array_merge($bright_db_search[0], $tax_record_search);
+        }
+        $property_details = (object) $property_details;
+
+        return view('/agents/doc_management/transactions/listings/add_listing_details', compact('property_details'));
     }
 
     public function get_property_info(Request $request) {
@@ -86,10 +159,12 @@ class AddTransactionController extends Controller {
         $zip = $request -> zip;
         $county = $request -> county;
 
-        $select_columns_db = array('ListPictureURL', 'FullStreetAddress', 'City', 'StateOrProvince', 'County', 'PostalCode', 'YearBuilt', 'BathroomsTotalInteger', 'BedroomsTotal', 'MlsStatus', 'ListingId', 'ListPrice', 'PropertyType', 'ListOfficeName', 'MLSListDate', 'ListAgentFirstName', 'ListAgentLastName');
-        $select_columns_bright = 'ListPictureURL, FullStreetAddress, City, StateOrProvince, County, PostalCode, YearBuilt, BathroomsTotalInteger, BedroomsTotal, MlsStatus, ListingId, ListPrice, PropertyType, ListOfficeName, MLSListDate, ListAgentFirstName, ListAgentLastName';
+        $select_columns_db = array('ListPictureURL', 'FullStreetAddress', 'City', 'StateOrProvince', 'County', 'PostalCode', 'YearBuilt', 'BathroomsTotalInteger', 'BedroomsTotal', 'MlsStatus', 'ListingId', 'ListPrice', 'PropertyType', 'ListOfficeName', 'MLSListDate', 'ListAgentFirstName', 'ListAgentLastName', 'UnitNumber', 'CloseDate');
+        $select_columns_bright = 'ListPictureURL, FullStreetAddress, City, StateOrProvince, County, PostalCode, YearBuilt, BathroomsTotalInteger, BedroomsTotal, MlsStatus, ListingId, ListPrice, PropertyType, ListOfficeName, MLSListDate, ListAgentFirstName, ListAgentLastName, UnitNumber, CloseDate';
 
+        $property_details = null;
         $results = [];
+        $results['multiple'] = false;
 
         ///// DATABASE SEARCH FOR PROPERTY /////
         $bright_db_search = Listings::select($select_columns_db) -> where('StateOrProvince', $state) -> where('PostalCode', $zip)
@@ -102,13 +177,24 @@ class AddTransactionController extends Controller {
                 $q -> where('StreetDirPrefix', $street_dir_suffix)
                     -> orWhere('StreetDirPrefix', $street_dir_suffix_alt);
             })
-            -> orderBy('MlsStatus', 'DESC')
+            -> orderBy('MLSListDate', 'DESC')
             -> get() -> toArray();
 
-            if (count($bright_db_search) > 0) {
-                $results['results_bright_type'] = 'db_active';
+        if (count($bright_db_search) > 0) {
+            $results['results_bright_type'] = 'db_active';
+            if (count($bright_db_search) > 1) {
+                // see if results have different unit numbers
+                if($bright_db_search[0]['UnitNumber'] != $bright_db_search[1]['UnitNumber']) {
+                    $property_details['multiple'] = true;
+                    return $property_details;
+                    die();
+                } else {
+                    $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+                }
+            } else {
                 $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
             }
+        }
 
 
         ///// END DATABASE SEARCH FOR PROPERTY /////
@@ -125,11 +211,23 @@ class AddTransactionController extends Controller {
                     $q -> where('StreetDirPrefix', $street_dir_suffix)
                         -> orWhere('StreetDirPrefix', $street_dir_suffix_alt);
                 })
+                -> orderBy('MLSListDate', 'DESC')
                 -> get() -> toArray();
 
             if (count($bright_db_search) > 0) {
                 $results['results_bright_type'] = 'db_closed';
-                $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+                if (count($bright_db_search) > 1) {
+                    // see if results have different unit numbers
+                    if($bright_db_search[0]['UnitNumber'] != $bright_db_search[1]['UnitNumber']) {
+                        $property_details['multiple'] = true;
+                        return $property_details;
+                        die();
+                    } else {
+                        $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+                    }
+                } else {
+                    $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+                }
             }
         }
 
@@ -163,7 +261,18 @@ class AddTransactionController extends Controller {
 
             if (count($bright_db_search) > 0) {
                 $results['results_bright_type'] = 'bright';
-                $results['results_bright_id'] = $bright_db_search['ListingId'];
+                if (count($bright_db_search) > 1) {
+                    // see if results have different unit numbers
+                    if($bright_db_search[0]['UnitNumber'] != $bright_db_search[1]['UnitNumber']) {
+                        $property_details['multiple'] = true;
+                        return $property_details;
+                        die();
+                    } else {
+                        $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+                    }
+                } else {
+                    $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+                }
             }
 
         }
@@ -173,14 +282,12 @@ class AddTransactionController extends Controller {
         // get only most recent result
         if (count($bright_db_search) == 0) {
             $bright_db_search = null;
-        } else {
-            $bright_db_search = end($bright_db_search);
         }
 
         // get tax id to search for more property details
         $tax_id = '';
-        if (isset($bright_db_search['ListingTaxID'])) {
-            $tax_id = $bright_db_search['ListingTaxID'];
+        if (isset($bright_db_search[0]['ListingTaxID'])) {
+            $tax_id = $bright_db_search[0]['ListingTaxID'];
         }
 
         // search tax records by tax id if exists, otherwise use address
@@ -189,40 +296,46 @@ class AddTransactionController extends Controller {
             $functions = new GlobalFunctionsController();
             $tax_record_search = $functions -> tax_records($street_number, $street_name, $unit, $zip, $tax_id, $state);
             if(is_array($tax_record_search)) {
-                $results['results_tax_id'] = $tax_record_search['ListingTaxID'];;
+                $results['results_tax_id'] = $tax_record_search['ListingTaxID'];
             }
         }
 
-        $property_details = null;
+
         // if only brightmls results
         if ($bright_db_search && !is_array($tax_record_search)) {
-            $property_details = $bright_db_search;
-        } else
+
+            $property_details = $bright_db_search[0];
 
         // if only tax record results
-        if (!$bright_db_search && is_array($tax_record_search)) {
+        } else if (!$bright_db_search && is_array($tax_record_search)) {
+
             $property_details = $tax_record_search;
-        } else
 
         // if both results
-        if ($bright_db_search && is_array($tax_record_search)) {
+        } else if ($bright_db_search && is_array($tax_record_search)) {
 
             // keep bright results, replace a few and add rest from tax records
-            $property_details = $bright_db_search;
-            $property_details['Owner1'] = '';
-            $property_details['Owner2'] = '';
+            $property_details = $bright_db_search[0];
+            $property_details['Owner1'] = null;
+            $property_details['Owner2'] = null;
             if($property_details['Owner1'] != '') {
                 $property_details['Owner1'] = $tax_record_search['Owner1'] ?? null;
-                $property_details['Owner2'] = $tax_record_search['Owner2'];
+                $property_details['Owner2'] = $tax_record_search['Owner2'] ?? null;
             }
             $property_details['ResidenceType'] = $tax_record_search['ResidenceType'] ?? null;
             $property_details['TaxRecordLink'] = $tax_record_search['TaxRecordLink'] ?? null;
+
+        } else {
+
+            $property_details = [];
+
         }
 
-        if($property_details != null) {
+        if(count($property_details) > 0) {
             $property_details['results_bright_type'] = $results['results_bright_type'] ?? null;
             $property_details['results_bright_id'] = $results['results_bright_id'] ?? null;
             $property_details['results_tax_id'] = $results['results_tax_id'] ?? null;
+            $property_details['multiple'] = false;
         }
 
         return $property_details;

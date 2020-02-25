@@ -13490,10 +13490,6 @@ input {
   font-size: 0.7rem;
 }
 
-.modal {
-  height: 102%;
-}
-
 .modal-content {
   border: 1px solid #fff;
   border-radius: 0px;
@@ -14002,7 +13998,7 @@ ul {
   top: 10px;
   left: 2px;
   width: 95%;
-  background: #fff;
+  background: transparent;
   padding: 0 2px;
   font-size: 1rem;
   color: #b9b5b5;
@@ -14016,10 +14012,11 @@ ul {
 .form-ele .form-textarea-label.active,
 .form-ele .form-select-label.active {
   position: absolute;
-  top: -7px;
+  top: -5px;
   width: auto;
   font-size: 0.7rem;
   color: #4c9bdb;
+  background: #fff;
   line-height: 0.6rem;
   border-radius: 0px;
   padding-bottom: 3px;
@@ -15285,13 +15282,18 @@ header {
   max-width: 750px;
 }
 
+.page-add-listing #mls_search_container {
+  max-width: 400px;
+}
+
 .page-add-listing .property-loading-div {
   width: 100%;
   height: 100%;
 }
 
 .page-add-listing #address_search_street,
-.page-add-listing #address_search_unit {
+.page-add-listing #address_search_unit,
+.page-add-listing #mls_search {
   padding: 10px;
   font-size: 1.2rem;
 }

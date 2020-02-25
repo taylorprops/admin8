@@ -21,7 +21,9 @@ require('./doc_management/fill/fill_fields.js');
 require('./doc_management/checklists/checklists.js');
 
 // Agents
-require('./agents/doc_management/transactions/add_listing.js');
-require('./agents/doc_management/transactions/add_contract.js');
+require('./agents/doc_management/transactions/listings/add_listing.js');
+require('./agents/doc_management/transactions/listings/add_listing_details.js');
+require('./agents/doc_management/transactions/contracts/add_contract.js');
+require('./agents/doc_management/transactions/contracts/add_contract_details.js');
 
 

@@ -67,6 +67,7 @@ $(document).ready(function () {
         setTimeout(function() {
             $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
         }, 0);
+
     });
 
 
