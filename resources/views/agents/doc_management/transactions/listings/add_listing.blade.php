@@ -21,7 +21,12 @@
                         <div class="mt-5">
                             <div class="row">
                                 <div class="col-sm-9 col-lg-10">
-                                    <div class="h5-responsive text-gray">Enter Property Street Address</div>
+                                    <div class="h5-responsive text-gray">
+                                        Enter Property Street Address
+                                        <span class="text-orange font-normal">
+                                            <a href=".mls-container" class="text-orange font-9" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".mls-container"> <i class="fad fa-arrows-alt-h mx-3"></i> or Use MLS ID Search</a>
+                                        </span>
+                                    </div>
                                     <input type="text" class="w-100" id="address_search_street">
                                 </div>
                                 <div class="col-sm-3 col-lg-2">
@@ -37,9 +42,6 @@
                         </div>
                         <div class="address-search-continue-div text-center my-4 hidden">
                             <a href=".property-container" class="btn btn-success btn-lg" id="address_search_continue" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container">Continue <i class="fad fa-chevron-double-right ml-3"></i></a>
-                        </div>
-                        <div class="h5-responsive text-center mt-4">
-                            <a href=".mls-container" class="btn btn-sm btn-secondary" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".mls-container">Search By MLS ID</a>
                         </div>
                         <div class="h5-responsive text-center mt-4">
                             <a href=".address-container" id="enter_manually_button" class="btn btn-sm btn-secondary" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".address-container">Or Enter Manually</a>
@@ -118,21 +120,23 @@
                     <div class="mt-5">
                         <div class="row">
                             <div class="col-12">
-                                <div class="h5-responsive text-gray">Enter MLS ID</div>
+                                <div class="h5-responsive text-gray">
+                                    Enter MLS ID
+                                    <span class="text-orange font-normal">
+                                        <a href=".mls-container" class="text-orange font-9" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".mls-container"> <i class="fad fa-arrows-alt-h mx-3"></i> or Use Address Search</a>
+                                    </span>
+                                </div>
                                 <input type="text" class="w-100" id="mls_search">
                             </div>
                         </div>
                     </div>
                     <div class="mls-search-error hidden">
                         <div class="alert alert-danger text-danger w-50 my-3 mx-auto text-center" role="alert">
-                            <i class="fad fa-exclamation-circle fa-lg mr-3"></i> Street Number not valid. Please enter the address manually
+                            <i class="fad fa-exclamation-circle fa-lg mr-3"></i> No Matching Results Found
                         </div>
                     </div>
                     <div class="mls-search-continue-div text-center my-4">
                         <a href=".property-container" class="btn btn-success btn-lg" id="mls_search_continue" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container">Continue <i class="fad fa-chevron-double-right ml-3"></i></a>
-                    </div>
-                    <div class="h5-responsive text-center mt-4">
-                        <a href=".mls-container" class="btn btn-sm btn-secondary" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".mls-container">Back To Address Search</a>
                     </div>
                 </div>
                 <!-- end mls search container -->

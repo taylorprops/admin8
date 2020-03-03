@@ -21,7 +21,7 @@ class AddTransactionController extends Controller {
         return view('/agents/doc_management/transactions/listings/add_listing', compact('states'));
     }
 
-    public function add_listing_details(Request $request) {
+    public function add_listing_details_existing(Request $request) {
 
         $bright_type = $request -> bright_type;
         $bright_id = $request -> bright_id;
@@ -33,6 +33,7 @@ class AddTransactionController extends Controller {
         if($bright_type == 'db_active') {
 
             $bright_db_search = Listings::select( $select_columns_db ) -> where('ListingId', $bright_id) -> first();
+
 
         } else if( $bright_type == 'db_closed' ) {
 
@@ -86,7 +87,7 @@ class AddTransactionController extends Controller {
             $property_details -> Owner1 = '';
             $property_details -> Owner2 = '';
             if($property_details -> Owner1 != '') {
-                $property_details -> Owner1 = $tax_record_search -> Owner1 ?? null;
+                $property_details -> Owner1 = $t7ax_record_search -> Owner1 ?? null;
                 $property_details -> Owner2 = $tax_record_search -> Owner2 ?? null;
             }
             $property_details -> ResidenceType = $tax_record_search -> ResidenceType ?? null;
@@ -95,7 +96,7 @@ class AddTransactionController extends Controller {
 
 dd($property_details);
 
-        return view('/agents/doc_management/transactions/listings/add_listing_details', compact('property_details'));
+        return view('/agents/doc_management/transactions/listings/add_listing_details_existing', compact('property_details'));
     }
 
     public function get_property_info(Request $request) {

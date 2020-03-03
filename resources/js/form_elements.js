@@ -330,8 +330,10 @@ window.form_elements = function () {
 
                 } // end else if (form_type == 'form-select') {
 
-                if(element.hasClass('required')) {
-                    element.closest('.form-ele').append('<div class="required-div">R</div>');
+                if (form_type != 'form-checkbox' && form_type != 'form-radio') {
+                    if(element.hasClass('required')) {
+                        element.closest('.form-ele').append('<div class="required-div">R</div>');
+                    }
                 }
 
             } // end if (!element.parent().hasClass('form-ele')) {

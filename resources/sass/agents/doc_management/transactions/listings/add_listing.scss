@@ -18,6 +18,9 @@
         padding: 10px;
         font-size: 1.2rem;
     }
+    #mls_search {
+        text-transform: uppercase;
+    }
 
     @include media-breakpoint-up(xs) {
         .property-results-image {

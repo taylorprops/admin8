@@ -79,7 +79,7 @@ $(document).ready(function () {
 // page transitions
 window.global_page_transition = function() {
 
-    if (document.location.pathname !== '/') {
+    /* if (document.location.pathname !== '/') {
 
 
         var tl = new TimelineMax();
@@ -91,7 +91,7 @@ window.global_page_transition = function() {
             .to(CSSRulePlugin.getRule('body:after'), 0.2, { cssRule: { bottom: '0%' }, ease: Power2.easeOut }, '-=0.2', 'open')
             .to($('.loader'), 0.2, { opacity: 0, display: 'none' }, '-=0.2');
 
-    }
+    } */
 
 }
 

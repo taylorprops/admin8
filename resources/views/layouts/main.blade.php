@@ -13,6 +13,9 @@
         <link href="/css/app.css" rel="stylesheet">
         <link href="/vendor/fontawesome/fontawesome/css/all.css" rel="stylesheet">
         <link href="/resources/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet">
+        {{-- mdbootsrap stepper --}}
+        <link href="/resources/mdbootstrap/css/addons-pro/steppers.min.css" rel="stylesheet">
+
 
         <script src="/js/app.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
@@ -20,11 +23,12 @@
         <script type="text/javascript" src="/resources/mdbootstrap/js/mdb.min.js"></script>
         <script type="text/javascript" src="/resources/mdbootstrap/js/addons/datatables.min.js"></script>
         {{-- page transitions --}}
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.12.1/plugins/CSSRulePlugin.min.js"></script>
+        {{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.12.1/plugins/CSSRulePlugin.min.js"></script> --}}
         {{-- google address search --}}
         <script src="https://maps.googleapis.com/maps/api/js?key={{ config('global.vars.google_api_key') }}&libraries=places&outputFormat=json"></script>
-
+        {{-- mdbootsrap stepper --}}
+        <script type="text/javascript" src="/resources/mdbootstrap/js/addons-pro/steppers.min.js"></script>
 
         <noscript>
             <style>
@@ -43,14 +47,15 @@
         @include('layouts.includes.header')
         </header>
 
-        <div class="loader">
+        {{-- page transitions
+            <div class="loader">
             <div class="bar1"></div>
             <div class="bar2"></div>
             <div class="bar3"></div>
             <div class="bar4"></div>
             <div class="bar5"></div>
             <div class="bar6"></div>
-        </div>
+        </div> --}}
 
         <main>
         @yield('content')

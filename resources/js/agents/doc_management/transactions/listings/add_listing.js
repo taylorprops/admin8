@@ -1,11 +1,11 @@
-if (document.URL.match(/add_listing/)) {
+if (document.URL.match(/add_listing\//)) {
 
     $(document).ready(function () {
 
         form_elements();
 
         // search address in google
-        search_address();
+        search_address_continue();
 
         $('#enter_state').change(function () {
             update_county_select($(this).val());
@@ -17,8 +17,17 @@ if (document.URL.match(/add_listing/)) {
 
         $('.required').bind('change keyup', function () {
             setTimeout(function () {
-                enter_address_continue();
+                enter_address_form_check();
             }, 100);
+        });
+
+        $('#mls_search_continue').off('click').on('click', function() {
+            search_mls_continue();
+        });
+
+        $('#address_enter_continue').off('click').on('click', function () {
+            enter_address_continue();
+
         });
     });
 
@@ -31,17 +40,19 @@ if (document.URL.match(/add_listing/)) {
         let state = $('#enter_state').val();
         let zip = $('#enter_zip').val();
         let county = $('#enter_county').val();
-        alert('creating');
+        let params = encodeURI(street_number + '/' + street_name + '/' + city + '/' + state + '/' + zip + '/' + county + '/' + street_dir + '/' + unit_number);
+        window.location.href = '/agents/doc_management/transactions/listings/add_listing_details_new/' + params;
     }
 
     function found_listing(bright_type, bright_id, tax_id, state) {
-        window.location.href = '/agents/doc_management/transactions/listings/add_listing_details/' + bright_type + '/' + bright_id + '/' + state + '/' + tax_id;
+        let params = encodeURI(state + '/' + tax_id + '/' + bright_type + '/' + bright_id);
+        window.location.href = '/agents/doc_management/transactions/listings/add_listing_details_existing/' + params;
     }
 
-    function show_property(response, street_number, street_name, city, state, zip, county, type) {
+    function show_property(response, type) {
 
         // results_bright_type = db_active|db_closed|bright, results_bright_id, results_tax_id
-
+        // if multiple - require unit number be entered and search again
         if(response.data != '' && response.data.multiple == true) {
 
             $('.property-loading-div').hide();
@@ -53,6 +64,7 @@ if (document.URL.match(/add_listing/)) {
             // show multiple options to choose from
             $('#multiple_results_modal').modal();
 
+        // single result returned
         } else if(response.data != '' && response.data.multiple == false) {
             // clear fields that may not contain data
             $('#property_details_owner1, #property_details_owner2, #property_details_beds, #property_details_baths').text('');
@@ -64,6 +76,8 @@ if (document.URL.match(/add_listing/)) {
                 ListPictureURL = '/images/agents/doc_management/add_transaction/house.png';
             }
             let FullStreetAddress = response.data.FullStreetAddress;
+            let StreetNumber = response.data.StreetNumber;
+            let StreetName = response.data.StreetName;
             let City = response.data.City;
             let StateOrProvince = response.data.StateOrProvince;
             let County = '';
@@ -110,10 +124,14 @@ if (document.URL.match(/add_listing/)) {
             // show certain details only if active listing in mls
             let Today = new Date();
             CloseDate = new Date(CloseDate);
-            // include listings that have closed in the past 90 days
+            // get all active and include listings that have closed in the past 180 days
             if(
-                (response.data.results_bright_type == 'db_active' || response.data.results_bright_type == 'bright') &&
-                (MlsStatus.match(/(CLOSED)/) && global_date_diff(CloseDate, Today) < 90)
+                (
+                    (response.data.results_bright_type == 'db_active' || response.data.results_bright_type == 'bright')
+                ) || (
+                    response.data.results_bright_type == 'db_closed' &&
+                    MlsStatus.match(/(CLOSED)/) && global_date_diff(CloseDate, Today) < 180
+                )
             ) {
                 $('.active-listing-div').show();
                 $('#property_details_status').text(MlsStatus);
@@ -151,18 +169,17 @@ if (document.URL.match(/add_listing/)) {
                 $('#address_enter_continue').data('go-to-details', 'yes');
             });
 
+        // no results
         } else {
             $('.property-loading-div').hide();
             global_loading_off();
 
-            if(type == 'search') {
+            if(type == 'search' || type == 'mls') {
                 // redirect to manually enter data
                 $('#modal_danger').modal().find('.modal-body').html('No matches found. Please enter the property information manually.');
-                $('#mls_match_container').collapse('hide');
-                $('#address_container').collapse('show');
-                $('#address_search_container').collapse('hide');
-                $('#address_enter_container').collapse('show');
-                autofill_manual_entry(street_number, street_name, zip);
+                $('#mls_match_container, #mls_search_container, #address_search_container').collapse('hide');
+                $('#address_container, #address_enter_container').collapse('show');
+
                 // next time address_enter_continue clicked go straight to enter details page.
                 $('#address_enter_continue').data('go-to-details', 'yes');
             } else if(type == 'enter') {
@@ -187,7 +204,7 @@ if (document.URL.match(/add_listing/)) {
                 setTimeout(function() {
                     $('#enter_county').val(data.county);
                     select_refresh();
-                    enter_address_continue();
+                    enter_address_form_check();
                 }, 500);
             })
             .catch(function (error) {
@@ -205,7 +222,23 @@ if (document.URL.match(/add_listing/)) {
         $('#property_details_address').text('');
     }
 
-    function enter_address_continue() {
+    function search_mls_continue() {
+        show_loader();
+        let mls = $('#mls_search').val();
+        axios.get('/agents/doc_management/transactions/get_property_info', {
+            params: {
+                mls: mls,
+            }
+        })
+        .then(function (response) {
+            show_property(response, 'mls');
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function enter_address_form_check() {
         let form = $('#enter_address_form');
         let cont = 'yes';
         form.find('.required').each(function () {
@@ -215,74 +248,54 @@ if (document.URL.match(/add_listing/)) {
         });
         if (cont == 'yes') {
             $('#address_enter_continue').prop('disabled', false);
-            $('#address_enter_continue').off('click').on('click', function () {
-                let go_to_details = $(this).data('go-to-details');
-                if(go_to_details == 'yes') {
-                    // go to enter details page
-                    create_listing();
-                } else {
-                    // search mls and tax records
-                    show_loader();
 
-                    let street_number = $('#enter_street_number').val();
-                    let street_name = $('#enter_street_name').val();
-                    let street_dir = $('#enter_street_dir').val();
-                    let unit_number = $('#enter_unit').val();
-                    let city = $('#enter_city').val();
-                    let state = $('#enter_state').val();
-                    let zip = $('#enter_zip').val();
-                    let county = $('#enter_county').val();
-
-                    axios.get('/agents/doc_management/transactions/get_property_info', {
-                        params: {
-                            street_number: street_number,
-                            street_name: street_name,
-                            street_dir: street_dir,
-                            unit: unit_number,
-                            city: city,
-                            state: state,
-                            zip: zip,
-                            county: county
-                        }
-                    })
-                    .then(function (response) {
-                        show_property(response, street_number, street_name, city, state, zip, county, 'enter');
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-
-                }
-
-            });
         } else {
             $('#address_enter_continue').prop('disabled', true);
         }
     }
 
-    function update_county_select(state) {
-        axios.get('/agents/doc_management/transactions/update_county_select', {
-            params: {
-                state: state
-            },
-        })
+    function enter_address_continue() {
+        let go_to_details = $('#address_enter_continue').data('go-to-details');
+        if(go_to_details == 'yes') {
+            // go to enter details page
+            create_listing();
+        } else {
+            // search mls and tax records
+            show_loader();
+
+            let street_number = $('#enter_street_number').val();
+            let street_name = $('#enter_street_name').val();
+            let street_dir = $('#enter_street_dir').val();
+            let unit_number = $('#enter_unit').val();
+            let city = $('#enter_city').val();
+            let state = $('#enter_state').val();
+            let zip = $('#enter_zip').val();
+            let county = $('#enter_county').val();
+
+            axios.get('/agents/doc_management/transactions/get_property_info', {
+                params: {
+                    street_number: street_number,
+                    street_name: street_name,
+                    street_dir: street_dir,
+                    unit: unit_number,
+                    city: city,
+                    state: state,
+                    zip: zip,
+                    county: county
+                }
+            })
             .then(function (response) {
-                let counties = response.data;
-                $('#enter_county').html('').prop('disabled', false);
-                $('#enter_county').append('<option value=""></option>');
-                $.each(counties, function (k, v) {
-                    $('#enter_county').append('<option value="' + v.county.toUpperCase() + '">' + v.county + '</option>');
-                });
-                setTimeout(function () {
-                    select_refresh();
-                }, 500);
+                // using 'enter' so if no results from search will go directly to next step
+                show_property(response, 'enter');
             })
             .catch(function (error) {
                 console.log(error);
             });
+
+        }
     }
 
-    function search_address() {
+    function search_address_continue() {
 
         // search input
         let address_search_street = document.getElementById('address_search_street');
@@ -352,7 +365,7 @@ if (document.URL.match(/add_listing/)) {
                     }
                 })
                 .then(function (response) {
-                    show_property(response, street_number, street_name, city, state, zip, county, 'search');
+                    show_property(response, 'search');
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -362,6 +375,28 @@ if (document.URL.match(/add_listing/)) {
 
         });
 
+    }
+
+    function update_county_select(state) {
+        axios.get('/agents/doc_management/transactions/update_county_select', {
+            params: {
+                state: state
+            },
+        })
+            .then(function (response) {
+                let counties = response.data;
+                $('#enter_county').html('').prop('disabled', false);
+                $('#enter_county').append('<option value=""></option>');
+                $.each(counties, function (k, v) {
+                    $('#enter_county').append('<option value="' + v.county.toUpperCase() + '">' + v.county + '</option>');
+                });
+                setTimeout(function () {
+                    select_refresh();
+                }, 500);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     function autofill_manual_entry(street_number, street_name, zip) {

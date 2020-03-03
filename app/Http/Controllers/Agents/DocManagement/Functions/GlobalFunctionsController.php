@@ -97,7 +97,7 @@ class GlobalFunctionsController extends Controller
                         'FullStreetAddress' => $property['mdp_street_address_mdp_field_address'] ?? null,
                         'City' => $property['premise_address_city_mdp_field_premcity_sdat_field_25'] ?? null,
                         'PostalCode' => $property['premise_address_zip_code_mdp_field_premzip_sdat_field_26'] ?? null,
-                        'PropertyType' => $property['land_use_code_mdp_field_lu_desclu_sdat_field_50'] ?? null,
+                        'TaxPropertyType' => $property['land_use_code_mdp_field_lu_desclu_sdat_field_50'] ?? null,
                         'YearBuilt' => $property['c_a_m_a_system_data_year_built_yyyy_mdp_field_yearblt_sdat_field_235'] ?? null,
                         'StateOrProvince' => $state ?? null,
                         'UnitNumber' => $property['premise_address_condominium_unit_no_sdat_field_28'] ?? null,
@@ -132,13 +132,15 @@ class GlobalFunctionsController extends Controller
                         if(!$owner1) {
                             $owner1 = $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblOwnerName_0');
                         }
+
                         $owner2 = $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_ucDetailsSearch_dlstDetaisSearch_lblOwnerName2_0');
                         if(!$owner2) {
-                            $owner2= $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblOwnerName2_0');
+                            $owner2 = $page -> getElementById('MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblOwnerName2_0');
                         }
 
-                        $details['Owner1'] = $owner1 -> textContent;
-                        $details['Owner2'] = $owner2 -> textContent;
+                        $details['Owner1'] = htmlspecialchars($this -> extractText($owner1));
+                        $details['Owner2'] = htmlspecialchars($this -> extractText($owner2));
+
 
                         /* $details['frederick_city'] = 'no';
                         if(stristr($property['town_code_mdp_field_towncode_desctown_sdat_field_36'], 'Frederick')) { //MainContent_MainContent_cphMainContentArea_ucSearchType_wzrdRealPropertySearch_query_ucDetailsSearch_query_dlstDetaisSearch_lblSpecTaxTown_0
@@ -165,5 +167,19 @@ class GlobalFunctionsController extends Controller
 
         return $details;
 
+    }
+
+    public function extractText($node) {
+        if (XML_TEXT_NODE === $node -> nodeType || XML_CDATA_SECTION_NODE === $node -> nodeType) {
+            return $node -> nodeValue;
+        } else if (XML_ELEMENT_NODE === $node -> nodeType || XML_DOCUMENT_NODE === $node -> nodeType || XML_DOCUMENT_FRAG_NODE === $node -> nodeType) {
+            if ('script' === $node -> nodeName) return '';
+
+            $text = '';
+            foreach($node -> childNodes as $childNode) {
+                $text .= $this -> extractText($childNode);
+            }
+            return $text;
+        }
     }
 }
