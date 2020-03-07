@@ -31,8 +31,10 @@ class AddTransactionController extends Controller {
         $select_columns_bright = 'ListPictureURL, FullStreetAddress, City, StateOrProvince, County, PostalCode, YearBuilt, BathroomsTotalInteger, BedroomsTotal, MlsStatus, ListingId, ListPrice, PropertyType, ListOfficeName, MLSListDate, ListAgentFirstName, ListAgentLastName, UnitNumber';
 
         if($bright_type == 'db_active') {
+        if($bright_type == 'db_active') {
 
-            $bright_db_search = Listings::select( $select_columns_db ) -> where('ListingId', $bright_id) -> first();
+        $bright_db_search = Listings::select( $select_columns_db ) -> where('ListingId', $bright_id) -> first();
+        if($bright_type == 'db_active') {
 
 
         } else if( $bright_type == 'db_closed' ) {
@@ -57,11 +59,13 @@ class AddTransactionController extends Controller {
                 ]
             );
 
-            $bright_db_search = $bright_db_search -> toArray();
+
+
 
             $rets -> disconnect();
 
         }
+                $bright_db_search = $bright_db_search -> toArray();
 
         if($tax_id != '') {
             $functions = new GlobalFunctionsController();

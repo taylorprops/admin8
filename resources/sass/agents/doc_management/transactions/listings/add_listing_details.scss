@@ -1,5 +1,17 @@
 .page-add-listing-details {
+    margin-bottom: 300px;
 
+    .steps-container {
+        max-width: 450px;
+    }
 
+    .form-ele {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    ul.stepper .step-title {
+        padding: .75rem 4rem;
+    }
 
 }

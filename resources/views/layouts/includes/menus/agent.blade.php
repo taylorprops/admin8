@@ -13,7 +13,7 @@
     <div class="tab-pane fade show active" id="doc_management_div" role="tabpanel" aria-labelledby="doc_management_tab">
         <ul class="mt-5">
             <li>
-                <a class="text-primary" href="/agents/doc_management/transactions/listings/add_listing">
+                <a class="text-primary" href="/agents/doc_management/transactions/add_listing/add_listing_page">
                     <i class="fas fa-caret-right pl-2 pr-3"></i>Add Listing
                 </a>
             </li>

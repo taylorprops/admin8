@@ -361,8 +361,12 @@ window.form_elements = function () {
     // show dropdown on focus
 
     // original
-    $('.form-ele').not('.form-check').off().on('click', '.form-select-value-input', function (e) {
+    $('.form-ele').not('.form-check').on('click', '.form-select-value-input', function (e) {
         e.stopPropagation();
+        show_dropdown($(this));
+
+    });
+    $('.form-select-value-input').on('focus', function (e) {
         show_dropdown($(this));
 
     });
@@ -413,11 +417,13 @@ function show_dropdown(input) {
     reset_select();
     let select = input.closest('.form-ele').find('select');
     // show dropdown
-    input.next('.form-select-dropdown').fadeIn();
-    // focus on search input is searchable
-    if (!select.hasClass('form-select-no-search')) {
-        input.next('.form-select-dropdown').find('.form-select-search-input').focus();
-        input.prev('label').addClass('active');
+    if(input.next('.form-select-dropdown').css('display') == 'none') {
+        input.next('.form-select-dropdown').show();
+        // focus on search input is searchable
+        if (!select.hasClass('form-select-no-search')) {
+            input.next('.form-select-dropdown').find('.form-select-search-input').focus();
+            input.prev('label').addClass('active');
+        }
     }
 
     $(document).mouseup(function (e) {

@@ -1,4 +1,4 @@
-if (document.URL.match(/add_listing\//)) {
+if (document.URL.match(/add_listing_page/)) {
 
     $(document).ready(function () {
 
@@ -41,12 +41,12 @@ if (document.URL.match(/add_listing\//)) {
         let zip = $('#enter_zip').val();
         let county = $('#enter_county').val();
         let params = encodeURI(street_number + '/' + street_name + '/' + city + '/' + state + '/' + zip + '/' + county + '/' + street_dir + '/' + unit_number);
-        window.location.href = '/agents/doc_management/transactions/listings/add_listing_details_new/' + params;
+        window.location.href = '/agents/doc_management/transactions/add_listing/add_listing_details_new/' + params;
     }
 
     function found_listing(bright_type, bright_id, tax_id, state) {
         let params = encodeURI(state + '/' + tax_id + '/' + bright_type + '/' + bright_id);
-        window.location.href = '/agents/doc_management/transactions/listings/add_listing_details_existing/' + params;
+        window.location.href = '/agents/doc_management/transactions/add_listing/add_listing_details_existing/' + params;
     }
 
     function show_property(response, type) {
@@ -126,11 +126,10 @@ if (document.URL.match(/add_listing\//)) {
             CloseDate = new Date(CloseDate);
             // get all active and include listings that have closed in the past 180 days
             if(
-                (
-                    (response.data.results_bright_type == 'db_active' || response.data.results_bright_type == 'bright')
-                ) || (
-                    response.data.results_bright_type == 'db_closed' &&
-                    MlsStatus.match(/(CLOSED)/) && global_date_diff(CloseDate, Today) < 180
+                (response.data.results_bright_type == 'db_active')
+                || (
+                    (response.data.results_bright_type == 'db_closed' || response.data.results_bright_type == 'bright')
+                    && MlsStatus.match(/(CLOSED)/) && global_date_diff(CloseDate, Today) < 180
                 )
             ) {
                 $('.active-listing-div').show();
@@ -299,6 +298,7 @@ if (document.URL.match(/add_listing\//)) {
 
         // search input
         let address_search_street = document.getElementById('address_search_street');
+
         // select all text on focus
         $(address_search_street).focus(function () { $(this).select(); });
         // google address search

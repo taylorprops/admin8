@@ -8,6 +8,8 @@ use App\Models\DocManagement\Zips;
 use Illuminate\Http\Request;
 use Config;
 use App\Http\Controllers\Agents\DocManagement\Functions\GlobalFunctionsController;
+use App\Models\DocManagement\ResourceItems;
+use App\Models\DocManagement\Transactions;
 
 class AddTransactionController extends Controller {
 
@@ -15,9 +17,44 @@ class AddTransactionController extends Controller {
         return view('/agents/doc_management/transactions/contracts/add_contract');
     }
 
-    public function add_listing() {
+    public function listing(Request $request) {
+        $id = $request -> id;
+        // if agent logged in filter by agent_id
+        $listing = Transactions::where('listing_id', $id) -> first();
+        return view('/agents/doc_management/transactions/listing', compact('listing'));
+
+    }
+
+    public function add_listing_page() {
         $states = Zips::ActiveStates();
-        return view('/agents/doc_management/transactions/listings/add_listing', compact('states'));
+        return view('/agents/doc_management/transactions/add_listing/add_listing_page', compact('states'));
+    }
+
+    public function save_add_listing(Request $request) {
+
+        $property_details = (object) session('property_details');
+
+        if($request -> agent_id) {
+            $property_details -> agent_id = $request -> agent_id;
+        } else {
+            $property_details -> agent_id = auth() -> user() -> id;
+        }
+        $property_details -> SaleRent = $request -> listing_type ?? null;
+        $property_details -> PropertyType = $request -> property_type ?? null;
+        $property_details -> PropertySubType = $request -> property_sub_type ?? null;
+        $property_details -> YearBuilt = $request -> year_built ?? null;
+        $property_details -> ListPrice = $request -> list_price ?? null;
+        $property_details -> HoaCondoFees = $request -> hoa_condo ?? null;
+
+        $listing = new Transactions();
+        foreach($property_details as $key => $val) {
+            $listing -> $key = $val ?? null;
+        }
+        $listing -> save();
+        $transaction_id = $listing -> id;
+
+        return $transaction_id;
+
     }
 
     public function add_listing_details_new(Request $request) {
@@ -35,7 +72,13 @@ class AddTransactionController extends Controller {
 
         $property_details = (object) $property_details;
 
-        return view('/agents/doc_management/transactions/listings/add_listing_details', compact('property_details'));
+        $resource_items = new ResourceItems();
+        $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
+        $property_sub_types = $resource_items -> where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
+
+        $request -> session() -> put('property_details', $property_details);
+
+        return view('/agents/doc_management/transactions/add_listing/add_listing_details', compact('property_details', 'property_types', 'property_sub_types'));
     }
 
     public function add_listing_details_existing(Request $request) {
@@ -53,6 +96,8 @@ class AddTransactionController extends Controller {
 
         $select_columns_bright = 'Appliances,AssociationFee,AssociationFeeFrequency,AssociationYN,AttachedGarageYN,BasementFinishedPercent,BasementYN,BathroomsTotalInteger,BedroomsTotal,City,CloseDate,CondoYN,Cooling,County,ElementarySchool,FireplaceYN,FullStreetAddress,GarageYN,Heating,HighSchool,Latitude,ListingId,ListingSourceRecordKey,ListingTaxID,ListPictureURL,ListPrice,LivingArea,Longitude,LotSizeAcres,LotSizeSquareFeet,MajorChangeTimestamp,MiddleOrJuniorSchool,MLSListDate,MlsStatus,NewConstructionYN,NumAttachedGarageSpaces,NumDetachedGarageSpaces,Pool,PostalCode,PropertySubType,PropertyType,PublicRemarks,SaleType,StateOrProvince,StreetDirPrefix,StreetDirSuffix,StreetName,StreetNumber,StreetSuffix,StreetSuffixModifier,StructureDesignType,SubdivisionName,TotalPhotos,UnitBuildingType,UnitNumber,YearBuilt,ListOfficeName,ListOfficeMlsId,ListAgentMlsId,ListAgentFirstName,ListAgentLastName,ListAgentEmail,ListAgentPreferredPhone,BuyerOfficeName,BuyerOfficeMlsId,BuyerAgentMlsId,BuyerAgentFirstName,BuyerAgentLastName,BuyerAgentEmail,BuyerAgentPreferredPhone';
         $select_columns_db = explode(',', $select_columns_bright);
+        $select_columns_db_closed = 'AssociationFee,AssociationYN,AttachedGarageYN,BasementFinishedPercent,BasementYN,BathroomsTotalInteger,BedroomsTotal,City,CondoYN,County,FireplaceYN,FullStreetAddress,GarageYN,Heating,Latitude,ListingTaxID,ListPictureURL,Longitude,LotSizeAcres,LotSizeSquareFeet,NewConstructionYN,NumAttachedGarageSpaces,NumDetachedGarageSpaces,Pool,PostalCode,PropertySubType,PropertyType,StateOrProvince,StreetDirPrefix,StreetDirSuffix,StreetName,StreetNumber,StreetSuffix,StreetSuffixModifier,StructureDesignType,SubdivisionName,UnitBuildingType,UnitNumber,YearBuilt';
+        $select_columns_db_closed = explode(',', $select_columns_db_closed);
 
         if($bright_type == 'db_active') {
 
@@ -60,7 +105,7 @@ class AddTransactionController extends Controller {
 
         } else if($bright_type == 'db_closed') {
 
-            $bright_db_search = ListingsRemoved::select($select_columns_db) -> where('ListingId', $bright_id) -> first() -> toArray();
+            $bright_db_search = ListingsRemoved::select($select_columns_db_closed) -> where('ListingId', $bright_id) -> first() -> toArray();
 
         } else if($bright_type == 'bright') {
 
@@ -80,7 +125,33 @@ class AddTransactionController extends Controller {
                 ]
             );
 
-            $bright_db_search = $bright_db_search -> toArray();
+            $bright_db_search = $bright_db_search[0] -> toArray();
+
+            if($bright_db_search['MlsStatus'] == 'CLOSED' && $bright_db_search['CloseDate'] < date("Y-m-d", strtotime("-3 month"))) {
+                $bright_db_search['MlsStatus'] = '';
+                $bright_db_search['CloseDate'] = '';
+                $bright_db_search['ListingId'] = '';
+                $bright_db_search['ListPrice'] = '';
+                $bright_db_search['ListOfficeName'] = '';
+                $bright_db_search['PropertyType'] = '';
+                $bright_db_search['PropertySubType'] = '';
+                $bright_db_search['MLSListDate'] = '';
+                $bright_db_search['ListAgentFirstName'] = '';
+                $bright_db_search['ListAgentLastName'] = '';
+                $bright_db_search['PublicRemarks'] = '';
+                $bright_db_search['NewConstructionYN'] = '';
+                $bright_db_search['ListOfficeMlsId'] = '';
+                $bright_db_search['ListAgentPreferredPhone'] = '';
+                $bright_db_search['ListAgentMlsId'] = '';
+                $bright_db_search['ListAgentEmail'] = '';
+                $bright_db_search['BuyerAgentEmail'] = '';
+                $bright_db_search['BuyerAgentFirstName'] = '';
+                $bright_db_search['BuyerAgentLastName'] = '';
+                $bright_db_search['BuyerAgentMlsId'] = '';
+                $bright_db_search['BuyerAgentPreferredPhone'] = '';
+                $bright_db_search['BuyerOfficeMlsId'] = '';
+                $bright_db_search['BuyerOfficeName'] = '';
+            }
 
             $rets -> disconnect();
 
@@ -110,7 +181,13 @@ class AddTransactionController extends Controller {
         }
         $property_details = (object) $property_details;
 
-        return view('/agents/doc_management/transactions/listings/add_listing_details', compact('property_details'));
+        $resource_items = new ResourceItems();
+        $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
+        $property_sub_types = $resource_items -> where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
+
+        $request -> session() -> put('property_details', $property_details);
+
+        return view('/agents/doc_management/transactions/add_listing/add_listing_details', compact('property_details', 'property_types', 'property_sub_types'));
     }
 
     public function get_property_info(Request $request) {
@@ -228,42 +305,11 @@ class AddTransactionController extends Controller {
 
         ///// END DATABASE SEARCH FOR PROPERTY /////
 
-        ///// DATABASE SEARCH FOR OLD PROPERTIES /////
-        if (count($bright_db_search) == 0) {
-
-            if($request -> mls) {
-
-                $bright_db_search = ListingsRemoved::select($select_columns_db) -> where('ListingId', $ListingId) -> get() -> toArray();
-
-            } else {
-
-                $bright_db_search = ListingsRemoved::select($select_columns_db) -> ListingSearch($state, $zip, $street_number, $street_name, $unit, $street_dir_suffix, $street_dir_suffix_alt);
-
-            }
-
-            if (count($bright_db_search) > 0) {
-                $results['results_bright_type'] = 'db_closed';
-                if (count($bright_db_search) > 1) {
-                    // see if results have different unit numbers
-                    if($bright_db_search[0]['UnitNumber'] != $bright_db_search[1]['UnitNumber']) {
-                        $property_details['multiple'] = true;
-                        return $property_details;
-                        die();
-                    } else {
-                        $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
-                    }
-                } else {
-                    $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
-                }
-            }
-        }
-
-        ///// END DATABASE SEARCH FOR OLD PROPERTIES /////
-
+        ///// BRIGHT SEARCH /////
         // If not found in database search search bright mls
         if (count($bright_db_search) == 0) {
 
-            ///// BRIGHT SEARCH /////
+
             $rets = new \PHRETS\Session(Config::get('rets.rets.rets_config'));
             $connect = $rets -> Login();
             $resource = 'Property';
@@ -309,6 +355,40 @@ class AddTransactionController extends Controller {
         }
 
         ///// END BRIGHT SEARCH /////
+
+        ///// DATABASE SEARCH FOR OLD PROPERTIES /////
+        if (count($bright_db_search) == 0) {
+
+            if($request -> mls) {
+
+                $bright_db_search = ListingsRemoved::select($select_columns_db) -> where('ListingId', $ListingId) -> get() -> toArray();
+
+            } else {
+
+                $bright_db_search = ListingsRemoved::select($select_columns_db) -> ListingSearch($state, $zip, $street_number, $street_name, $unit, $street_dir_suffix, $street_dir_suffix_alt);
+
+            }
+
+            if (count($bright_db_search) > 0) {
+                $results['results_bright_type'] = 'db_closed';
+                if (count($bright_db_search) > 1) {
+                    // see if results have different unit numbers
+                    if($bright_db_search[0]['UnitNumber'] != $bright_db_search[1]['UnitNumber']) {
+                        $property_details['multiple'] = true;
+                        return $property_details;
+                        die();
+                    } else {
+                        $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+                    }
+                } else {
+                    $results['results_bright_id'] = $bright_db_search[0]['ListingId'];
+                }
+            }
+        }
+
+        ///// END DATABASE SEARCH FOR OLD PROPERTIES /////
+
+
 
         // get only most recent result
         if (count($bright_db_search) == 0) {
