@@ -1,4 +1,4 @@
-if (document.URL.match(/add_listing_details_existing/)) {
+if (document.URL.match(/listing_add_details_existing/)) {
 
     $(document).ready(function () {
 
@@ -35,7 +35,7 @@ if (document.URL.match(/add_listing_details_existing/)) {
         let formData = new FormData(form[0]);
         axios.post('/agents/doc_management/transactions/save_add_listing', formData, axios_options)
         .then(function (response) {
-            window.location = '/transactions/listing/'+response.data;
+            window.location = '/transactions/listings/listing_details/'+response.data;
         })
         .catch(function (error) {
             console.log(error);

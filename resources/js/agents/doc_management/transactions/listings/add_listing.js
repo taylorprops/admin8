@@ -1,4 +1,4 @@
-if (document.URL.match(/add_listing_page/)) {
+if (document.URL.match(/listing_add/)) {
 
     $(document).ready(function () {
 
@@ -41,12 +41,12 @@ if (document.URL.match(/add_listing_page/)) {
         let zip = $('#enter_zip').val();
         let county = $('#enter_county').val();
         let params = encodeURI(street_number + '/' + street_name + '/' + city + '/' + state + '/' + zip + '/' + county + '/' + street_dir + '/' + unit_number);
-        window.location.href = '/agents/doc_management/transactions/add_listing/add_listing_details_new/' + params;
+        window.location.href = '/agents/doc_management/transactions/listings/listing_add_details_new/' + params;
     }
 
     function found_listing(bright_type, bright_id, tax_id, state) {
         let params = encodeURI(state + '/' + tax_id + '/' + bright_type + '/' + bright_id);
-        window.location.href = '/agents/doc_management/transactions/add_listing/add_listing_details_existing/' + params;
+        window.location.href = '/agents/doc_management/transactions/listings/listing_add_details_existing/' + params;
     }
 
     function show_property(response, type) {
