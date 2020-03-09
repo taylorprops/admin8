@@ -417,14 +417,16 @@ function show_dropdown(input) {
     reset_select();
     let select = input.closest('.form-ele').find('select');
     // show dropdown
-    if(input.next('.form-select-dropdown').css('display') == 'none') {
-        input.next('.form-select-dropdown').show();
-        // focus on search input is searchable
-        if (!select.hasClass('form-select-no-search')) {
-            input.next('.form-select-dropdown').find('.form-select-search-input').focus();
-            input.prev('label').addClass('active');
+    setTimeout(function() {
+        if(input.next('.form-select-dropdown').css('display') == 'none') {
+            input.next('.form-select-dropdown').show();
+            // focus on search input is searchable
+            if (!select.hasClass('form-select-no-search')) {
+                input.next('.form-select-dropdown').find('.form-select-search-input').focus();
+                input.prev('label').addClass('active');
+            }
         }
-    }
+    }, 300);
 
     $(document).mouseup(function (e) {
         var container = $('.form-select-dropdown');

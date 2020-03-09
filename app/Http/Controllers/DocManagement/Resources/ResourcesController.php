@@ -4,8 +4,8 @@ namespace App\Http\Controllers\DocManagement\Resources;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\DocManagement\Zips;
-use App\Models\DocManagement\ResourceItems;
+use App\Models\DocManagement\Resources\Zips;
+use App\Models\DocManagement\Resources\ResourceItems;
 
 
 class ResourcesController extends Controller

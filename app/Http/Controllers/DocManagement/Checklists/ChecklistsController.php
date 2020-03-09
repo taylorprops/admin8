@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DocManagement\Checklists\Checklists;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
-use App\Models\DocManagement\ResourceItems;
-use App\Models\DocManagement\Upload;
+use App\Models\DocManagement\Resources\ResourceItems;
+use App\Models\DocManagement\Create\Upload\Upload;
 
 class ChecklistsController extends Controller
 {

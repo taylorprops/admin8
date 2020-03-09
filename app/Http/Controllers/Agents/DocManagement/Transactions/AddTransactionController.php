@@ -2,14 +2,14 @@
 namespace App\Http\Controllers\Agents\DocManagement\Transactions;
 
 use App\Http\Controllers\Controller;
-use App\Models\DocManagement\Listings;
-use App\Models\DocManagement\ListingsRemoved;
-use App\Models\DocManagement\Zips;
+use App\Models\DocManagement\Transactions\Data\ListingsData;
+use App\Models\DocManagement\Transactions\Data\ListingsRemoved\Data;
+use App\Models\DocManagement\Resources\Zips;
 use Illuminate\Http\Request;
 use Config;
 use App\Http\Controllers\Agents\DocManagement\Functions\GlobalFunctionsController;
-use App\Models\DocManagement\ResourceItems;
-use App\Models\DocManagement\Transactions;
+use App\Models\DocManagement\Resources\ResourceItems;
+use App\Models\DocManagement\Transactions\Listings;
 
 class AddTransactionController extends Controller {
 
@@ -20,7 +20,7 @@ class AddTransactionController extends Controller {
     public function listing(Request $request) {
         $id = $request -> id;
         // if agent logged in filter by agent_id
-        $listing = Transactions::where('listing_id', $id) -> first();
+        $listing = Listings::where('listing_id', $id) -> first();
         return view('/agents/doc_management/transactions/listing', compact('listing'));
 
     }
@@ -46,7 +46,7 @@ class AddTransactionController extends Controller {
         $property_details -> ListPrice = $request -> list_price ?? null;
         $property_details -> HoaCondoFees = $request -> hoa_condo ?? null;
 
-        $listing = new Transactions();
+        $listing = new Listings();
         foreach($property_details as $key => $val) {
             $listing -> $key = $val ?? null;
         }
@@ -101,11 +101,11 @@ class AddTransactionController extends Controller {
 
         if($bright_type == 'db_active') {
 
-            $bright_db_search = Listings::select($select_columns_db) -> where('ListingId', $bright_id) -> first() -> toArray();
+            $bright_db_search = ListingsData::select($select_columns_db) -> where('ListingId', $bright_id) -> first() -> toArray();
 
         } else if($bright_type == 'db_closed') {
 
-            $bright_db_search = ListingsRemoved::select($select_columns_db_closed) -> where('ListingId', $bright_id) -> first() -> toArray();
+            $bright_db_search = ListingsRemovedData::select($select_columns_db_closed) -> where('ListingId', $bright_id) -> first() -> toArray();
 
         } else if($bright_type == 'bright') {
 
@@ -278,11 +278,11 @@ class AddTransactionController extends Controller {
         ///// DATABASE SEARCH FOR PROPERTY /////
         if($request -> mls) {
 
-            $bright_db_search = Listings::select($select_columns_db) -> where('ListingId', $ListingId) -> get() -> toArray();
+            $bright_db_search = ListingsData::select($select_columns_db) -> where('ListingId', $ListingId) -> get() -> toArray();
 
         } else {
 
-            $bright_db_search = Listings::select($select_columns_db) -> ListingSearch($state, $zip, $street_number, $street_name, $unit, $street_dir_suffix, $street_dir_suffix_alt);
+            $bright_db_search = ListingsData::select($select_columns_db) -> ListingSearch($state, $zip, $street_number, $street_name, $unit, $street_dir_suffix, $street_dir_suffix_alt);
 
         }
 
@@ -361,11 +361,11 @@ class AddTransactionController extends Controller {
 
             if($request -> mls) {
 
-                $bright_db_search = ListingsRemoved::select($select_columns_db) -> where('ListingId', $ListingId) -> get() -> toArray();
+                $bright_db_search = ListingsRemovedData::select($select_columns_db) -> where('ListingId', $ListingId) -> get() -> toArray();
 
             } else {
 
-                $bright_db_search = ListingsRemoved::select($select_columns_db) -> ListingSearch($state, $zip, $street_number, $street_name, $unit, $street_dir_suffix, $street_dir_suffix_alt);
+                $bright_db_search = ListingsRemovedData::select($select_columns_db) -> ListingSearch($state, $zip, $street_number, $street_name, $unit, $street_dir_suffix, $street_dir_suffix_alt);
 
             }
 
