@@ -1,0 +1,40 @@
+.page-listing-details {
+    .nav-link {
+        text-transform: uppercase;
+        font-size: 1.2rem;
+    }
+
+    .property-image-div img {
+        height: 85px;
+        border: 1px solid $primary-color;
+        border-radius: 5%;
+    }
+    .transaction-type {
+        font-size: 1.3rem;
+    }
+    .badge-pill {
+        padding: .5rem !important;
+    }
+
+    @media (max-width: 1200px) {
+        .nav-link {
+            font-size: 1rem;
+            text-transform: initial;
+        }
+        .transaction-type {
+            font-size: 1.1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .nav-link {
+            padding: 0.2rem .2rem;
+            font-size: .8rem;
+        }
+        .transaction-type {
+            font-size: 1rem;
+        }
+    }
+
+
+}

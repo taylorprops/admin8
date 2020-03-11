@@ -25,7 +25,7 @@
 
 
     // listing page
-    Route::get('/transactions/listings/listing_details/{id}', 'Agents\DocManagement\Transactions\Listings\ListingsAllController@listing');
+    Route::get('/transactions/listings/listing_details/{id}', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@listing');
 
 
 

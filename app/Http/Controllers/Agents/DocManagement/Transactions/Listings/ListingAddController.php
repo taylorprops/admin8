@@ -15,13 +15,7 @@ use App\Models\DocManagement\Transactions\Listings;
 
 class ListingAddController extends Controller
 {
-    /* public function listing(Request $request) {
-        $id = $request -> id;
-        // if agent logged in filter by agent_id
-        $listing = Listings::where('listing_id', $id) -> first();
-        return view('/agents/doc_management/transactions/listing', compact('listing'));
 
-    } */
 
     public function add_listing_page() {
         $states = Zips::ActiveStates();
@@ -32,11 +26,14 @@ class ListingAddController extends Controller
 
         $property_details = (object) session('property_details');
 
-        if($request -> agent_id) {
-            $property_details -> agent_id = $request -> agent_id;
+        // TODO need to add user id if added by admin
+        // add user id if logged in, otherwise it will be added
+        if($request -> Agent_ID) {
+            $property_details -> Agent_ID = $request -> Agent_ID;
         } else {
-            $property_details -> agent_id = auth() -> user() -> id;
+            $property_details -> Agent_ID = auth() -> user() -> id;
         }
+        // replace current values from property details with new data
         $property_details -> SaleRent = $request -> listing_type ?? null;
         $property_details -> PropertyType = $request -> property_type ?? null;
         $property_details -> PropertySubType = $request -> property_sub_type ?? null;
@@ -124,7 +121,7 @@ class ListingAddController extends Controller
             );
 
             $bright_db_search = $bright_db_search[0] -> toArray();
-
+            // remove all fields that do not apply to current listing
             if($bright_db_search['MlsStatus'] == 'CLOSED' && $bright_db_search['CloseDate'] < date("Y-m-d", strtotime("-3 month"))) {
                 $bright_db_search['MlsStatus'] = '';
                 $bright_db_search['CloseDate'] = '';

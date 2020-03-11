@@ -13900,6 +13900,7 @@ ul {
   white-space: nowrap;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
+  cursor: pointer;
 }
 
 .form-ele .form-input-label.active,
@@ -14353,6 +14354,20 @@ header {
   left: 0;
   -webkit-transition: 0.5s ease-in-out;
   transition: 0.5s ease-in-out;
+}
+
+.navbar .logo {
+  width: 300px;
+}
+
+@media (max-width: 576px) {
+  .navbar .logo {
+    width: 170px;
+  }
+
+  .navbar .nav-toggle span {
+    height: 2px;
+  }
 }
 
 .navbar .nav-toggle span:nth-child(1) {
@@ -15247,5 +15262,46 @@ header {
 
 .page-add-listing-details ul.stepper .step-title {
   padding: 0.75rem 4rem;
+}
+
+.page-listing-details .nav-link {
+  text-transform: uppercase;
+  font-size: 1.2rem;
+}
+
+.page-listing-details .property-image-div img {
+  height: 85px;
+  border: 1px solid #4c9bdb;
+  border-radius: 5%;
+}
+
+.page-listing-details .transaction-type {
+  font-size: 1.3rem;
+}
+
+.page-listing-details .badge-pill {
+  padding: 0.5rem !important;
+}
+
+@media (max-width: 1200px) {
+  .page-listing-details .nav-link {
+    font-size: 1rem;
+    text-transform: initial;
+  }
+
+  .page-listing-details .transaction-type {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-listing-details .nav-link {
+    padding: 0.2rem 0.2rem;
+    font-size: 0.8rem;
+  }
+
+  .page-listing-details .transaction-type {
+    font-size: 1rem;
+  }
 }
 

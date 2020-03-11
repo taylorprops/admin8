@@ -61,7 +61,7 @@
         overflow: hidden;
         white-space: nowrap;
         transition: all .3s;
-
+        cursor: pointer;
     }
 
     .form-input-label.active, .form-textarea-label.active, .form-select-label.active {

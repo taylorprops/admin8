@@ -13,13 +13,13 @@
         </div>
     </div>
     <div class="d-flex justify-content-between w-100">
-        <a class="nav-toggle">
+        <a class="nav-toggle ml-1 ml-md-3">
             <span></span>
             <span></span>
             <span></span>
         </a>
-        <a href="/dashboard"><img src="/images/logo/logos.png" height="30"></a>
-        <a href="/logout" class="text-white mr-3 mt-1">Logout</a>
+        <a href="/dashboard"><img class="logo" src="/images/logo/logos.png"></a>
+        <a href="/logout" class="text-white mr-1 mr-md-3 mt-1">Logout</a>
     </div>
 </nav>
 

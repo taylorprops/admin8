@@ -426,7 +426,7 @@ function show_dropdown(input) {
                 input.prev('label').addClass('active');
             }
         }
-    }, 300);
+    }, 100);
 
     $(document).mouseup(function (e) {
         var container = $('.form-select-dropdown');

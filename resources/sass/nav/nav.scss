@@ -24,6 +24,17 @@ header {
         left: 0;
         transition: .5s ease-in-out;
     }
+    .logo {
+        width: 300px;
+    }
+    @media (max-width: 576px) {
+        .logo {
+            width: 170px;
+        }
+        .nav-toggle span {
+            height: 2px;
+        }
+    }
     .nav-toggle span:nth-child(1) {
         top: 4px;
         transform-origin: left center;
