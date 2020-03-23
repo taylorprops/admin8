@@ -89,11 +89,7 @@ if (document.URL.match(/checklists/)) {
                 location_id: location_id,
                 checklist_type: checklist_type
             },
-            headers: {
-                'Accept-Version': 1,
-                'Accept': 'text/html',
-                'Content-Type': 'text/html'
-            }
+            headers: axios_headers_html
         })
         .then(function (response) {
             $('#copy_checklists_modal').modal();
@@ -307,11 +303,7 @@ if (document.URL.match(/checklists/)) {
             params: {
                 checklist_id: checklist_id
             },
-            headers: {
-                'Accept-Version': 1,
-                'Accept': 'text/html',
-                'Content-Type': 'text/html'
-            }
+            headers: axios_headers_html
         })
         .then(function (response) {
             // show modal
@@ -630,11 +622,7 @@ if (document.URL.match(/checklists/)) {
                 checklist_location_id: checklist_location_id,
                 checklist_type: checklist_type
             },
-            headers: {
-                'Accept-Version': 1,
-                'Accept': 'text/html',
-                'Content-Type': 'text/html'
-            }
+            headers: axios_headers_html
         }
 
         axios.get('/doc_management/get_checklists', options)

@@ -34,6 +34,8 @@ window.form_elements = function () {
 
         const form_element = $('.' + form_type);
 
+        //$('.form-select-value-input').removeClass('caret');
+
         // add container and label
         form_element.each(function () {
 
@@ -162,7 +164,7 @@ window.form_elements = function () {
                     <div class="form-select-wrapper"> \
                         ' + clear_value + ' \
                         <label class="' + form_type + '-label" for="select_value_' + select_input_id + '">' + label + '</label> \
-                        <input type="text" class="form-select-value-input '+ disabled + '" id="select_value_' + select_input_id + '" readonly ' + disabled + '> \
+                        <input type="text" class="form-select-value-input caret '+ disabled + '" id="select_value_' + select_input_id + '" readonly ' + disabled + '> \
                         <div class="form-select-dropdown z-depth-1"> \
                             <div class="form-select-search-div"> \
                                 <div class="w-100 d-flex justify-content-center"> \
@@ -225,7 +227,13 @@ window.form_elements = function () {
                         }
                         // show cancel option
                         if (!element.hasClass('form-select-no-cancel')) {
-                            wrapper.find('.form-select-value-cancel').show();
+                            if(wrapper.find('.form-select-value-input').val() == '') {
+                                wrapper.find('.form-select-value-input').addClass('caret');
+                                wrapper.find('.form-select-value-cancel').hide();
+                            } else {
+                                wrapper.find('.form-select-value-input').removeClass('caret');
+                                wrapper.find('.form-select-value-cancel').show();
+                            }
                         }
                     }
 
@@ -264,6 +272,7 @@ window.form_elements = function () {
 
                             if (form_ele.val() == '') {
                                 form_ele.closest('.form-ele').find('.form-select-value-cancel').hide();
+                                wrapper.find('.form-select-value-input').addClass('caret');
                             }
 
                             // shorten input value if too long
@@ -279,6 +288,7 @@ window.form_elements = function () {
                             wrapper.find('.form-select-value-input').val('').trigger('change');
                             wrapper.find('li').removeClass('active');
                             wrapper.find('.form-select-value-cancel').hide();
+                            wrapper.find('.form-select-value-input').addClass('caret');
                             wrapper.find('.form-check-input').prop('checked', false);
                             reset_select();
                         });
@@ -324,6 +334,7 @@ window.form_elements = function () {
                         }
                         if (!element.hasClass('form-select-no-cancel')) {
                             input.siblings('.form-select-value-cancel').show();
+                            wrapper.find('.form-select-value-input').removeClass('caret');
                         }
 
                     });
@@ -433,6 +444,11 @@ function show_dropdown(input) {
         if (!container.is(e.target) && container.has(e.target).length === 0) {
             container.hide();
         }
+        $('.form-select-value-input').each(function() {
+            if($(this).val() == '') {
+                $(this).prev('label').removeClass('active');
+            }
+        });
     });
 }
 
@@ -485,6 +501,7 @@ function dropdown_search(wrapper, input, element, multiple) {
 
             if (!element.hasClass('form-select-no-cancel')) {
                 input.siblings('.form-select-value-cancel').show();
+                wrapper.find('.form-select-value-input').removeClass('caret');
             }
         }
 
@@ -605,11 +622,13 @@ function shorten_value(input, value, multiple) {
 }
 
 window.select_refresh = function () {
+    $('.form-select-value-input').removeClass('caret');
     $('.form-select').each(function () {
         if($(this).parent().hasClass('form-ele')) {
             $(this).unwrap().show();
             $(this).next('.form-select-wrapper').remove();
             $(this).next('.required-div').remove();
+
         }
 
 

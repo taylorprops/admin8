@@ -218,20 +218,20 @@ $skins: () !default;
 $skins: map-merge(
   (
     "white": (
-      "skin-primary-color":      #4285f4,
+      "skin-primary-color":      #4c9bdb,
       "skin-navbar":             $white,
       "skin-footer-color":       #6f7178,
-      "skin-accent":             #4285f4,
+      "skin-accent":             #4c9bdb,
       "skin-flat":               #f9f9f9,
-      "skin-sidenav-item":       #4285f4,
+      "skin-sidenav-item":       #4c9bdb,
       "skin-sidenav-item-hover": rgba($black-base, .05),
       "skin-gradient-start":     #ababab,
       "skin-gradient-end":       $white,
       "skin-mask-slight":        rgba($white, .5),
       "skin-mask-light":         rgba($white, .65),
       "skin-mask-strong":        rgba($white, .8),
-      "skin-sn-child":           #4285f4,
-      "skin-btn-primary":        #4285f4,
+      "skin-sn-child":           #4c9bdb,
+      "skin-btn-primary":        #4c9bdb,
       "skin-btn-secondary":      #fc685f,
       "skin-btn-default":        #454545,
       "skin-text":               #424242

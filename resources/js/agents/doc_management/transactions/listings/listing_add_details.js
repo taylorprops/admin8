@@ -1,4 +1,4 @@
-if (document.URL.match(/listing_add_details_existing/)) {
+if (document.URL.match(/listing_add_details_/)) {
 
     $(document).ready(function () {
 
@@ -14,11 +14,12 @@ if (document.URL.match(/listing_add_details_existing/)) {
         $('.steps-container').find('input').change(function() {
             show_values();
         });
+        // show hide disclosure questions - only required for standard and short sales
+        disclosure_options();
         // show hide sub property types if rental
         sale_rental_options();
         $('[name=listing_type]').change(sale_rental_options);
-        // show hide disclosure questions - only required for standard and short sales
-        disclosure_options();
+
         $('[name=property_sub_type]').change(disclosure_options);
 
         form_elements();
@@ -35,7 +36,7 @@ if (document.URL.match(/listing_add_details_existing/)) {
         let formData = new FormData(form[0]);
         axios.post('/agents/doc_management/transactions/save_add_listing', formData, axios_options)
         .then(function (response) {
-            window.location = '/transactions/listings/listing_details/'+response.data;
+            window.location = '/agents/doc_management/transactions/listings/listing_required_details/'+response.data;
         })
         .catch(function (error) {
             console.log(error);
@@ -58,13 +59,17 @@ if (document.URL.match(/listing_add_details_existing/)) {
     }
 
     function sale_rental_options() {
-
+        let sale_type = $('[name=property_sub_type]:checked').val();
         let listing_type = $('[name=listing_type]:checked').val();
         if(listing_type == 'rental') {
             $('.property-sub-type').hide().find('[name=property_sub_type][value=Standard]').prop('checked', true);
             $('.year-built, .hoa').hide();
         } else {
-            $('.property-sub-type, .year-built, .hoa').show();
+            if(sale_type == 'Standard' || sale_type == 'Short Sale') {
+                $('.property-sub-type, .year-built, .hoa').show();
+            } else {
+                $('.property-sub-type, .year-built').show();
+            }
         }
         show_values();
 

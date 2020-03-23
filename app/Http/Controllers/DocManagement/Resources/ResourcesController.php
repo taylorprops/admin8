@@ -4,7 +4,7 @@ namespace App\Http\Controllers\DocManagement\Resources;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\DocManagement\Resources\Zips;
+use App\Models\Resources\LocationData;
 use App\Models\DocManagement\Resources\ResourceItems;
 
 
@@ -12,7 +12,7 @@ class ResourcesController extends Controller
 {
 
     public function resources() {
-        $states = Zips::ActiveStates();
+        $states = LocationData::ActiveStates();
         $resources_items_model = new ResourceItems();
         $resources = $resources_items_model -> groupBy('resource_type') -> get();
         $resources_items = $resources_items_model -> orderBy('resource_order') -> get();

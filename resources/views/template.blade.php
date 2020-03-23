@@ -1,8 +1,12 @@
 @extends('layouts.main')
-@section('title', 'title here')
+@section('title', 'title')
 
 @section('content')
-@endsection
+<div class="container page-page-class">
+    <div class="row">
+        <div class="col-12">
 
-@section('js')
+        </div>
+    </div>
+</div>
 @endsection

@@ -42,11 +42,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 state: state,
                 order: order
             },
-            headers: {
-                'Accept-Version': 1,
-                'Accept': 'text/html',
-                'Content-Type': 'text/html'
-            }
+            headers: axios_headers_html
         }
 
         axios.get('/doc_management/get_form_group_files', options)
@@ -110,11 +106,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 form_id: form_id,
                 form_group_id: form_group_id
             },
-            headers: {
-                'Accept-Version': 1,
-                'Accept': 'text/html',
-                'Content-Type': 'text/html'
-            }
+            headers: axios_headers_html
         })
         .then(function (response) {
 
@@ -166,11 +158,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 /* form_group_id: form_group_id, */
                 checklist_type: checklist_type
             },
-            headers: {
-                'Accept-Version': 1,
-                'Accept': 'text/html',
-                'Content-Type': 'text/html'
-            }
+            headers: axios_headers_html
         })
         .then(function (response) {
 
@@ -599,17 +587,19 @@ if (document.URL.match(/create\/upload\/files/)) {
                 let file_name = response.data.file_name_display;
                 let form_group_id = response.data.form_group_id;
                 let state = response.data.state;
+                let helper_text = response.data.helper_text;
                 let sale_type = response.data.sale_type;
                 let form = $('#edit_file_form');
-                form.find('select').val('').trigger('change');
+                //form.find('select').val('').trigger('change');
                 $('#edit_form_name').text(file_name_orig);
                 $('#edit_file_name_display').val(file_name).trigger('change');
                 $('#edit_form_group_id').val(form_group_id);
                 $('#edit_state').val(state);
+                $('#edit_helper_text').val(helper_text).trigger('change');
                 sale_type = sale_type.split(',');
 
                 $.each(sale_type, function (i, e) {
-                    $('#edit_sale_type option[value="' + e + '"]').prop('selected', true);
+                    $('#edit_sale_type').find('option[value="' + e + '"]').prop('selected', true);
                 });
                 $('#edit_sale_type').trigger('change');
 

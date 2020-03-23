@@ -1,4 +1,4 @@
-if (document.URL.match(/listing_add/)) {
+if (document.URL.match(/listing_add$/)) {
 
     $(document).ready(function () {
 
@@ -45,6 +45,9 @@ if (document.URL.match(/listing_add/)) {
     }
 
     function found_listing(bright_type, bright_id, tax_id, state) {
+        if(tax_id == '' || tax_id == 'undefined') {
+            tax_id = 0;
+        }
         let params = encodeURI(state + '/' + tax_id + '/' + bright_type + '/' + bright_id);
         window.location.href = '/agents/doc_management/transactions/listings/listing_add_details_existing/' + params;
     }
@@ -151,6 +154,7 @@ if (document.URL.match(/listing_add/)) {
             $('#found_property_submit_button').off('click').on('click', function() {
                 // send directly to add details page
                 let results_bright_type = results_bright_id = results_tax_id = '';
+
                 if(response.data.results_bright_type) {
                     results_bright_type = response.data.results_bright_type;
                 }
@@ -384,20 +388,20 @@ if (document.URL.match(/listing_add/)) {
                 state: state
             },
         })
-            .then(function (response) {
-                let counties = response.data;
-                $('#enter_county').html('').prop('disabled', false);
-                $('#enter_county').append('<option value=""></option>');
-                $.each(counties, function (k, v) {
-                    $('#enter_county').append('<option value="' + v.county.toUpperCase() + '">' + v.county + '</option>');
-                });
-                setTimeout(function () {
-                    select_refresh();
-                }, 500);
-            })
-            .catch(function (error) {
-                console.log(error);
+        .then(function (response) {
+            let counties = response.data;
+            $('#enter_county').html('').prop('disabled', false);
+            $('#enter_county').append('<option value=""></option>');
+            $.each(counties, function (k, v) {
+                $('#enter_county').append('<option value="' + v.county.toUpperCase() + '">' + v.county + '</option>');
             });
+            setTimeout(function () {
+                select_refresh();
+            }, 500);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
 
     function autofill_manual_entry(street_number, street_name, zip) {

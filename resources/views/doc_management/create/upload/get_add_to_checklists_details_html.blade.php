@@ -30,9 +30,7 @@
                                             <select class="custom-form-element form-select form-select-no-search checklist-filter" data-type="state" data-label="State">
                                                 <option value="">All</option>
                                                 @foreach($states as $state)
-                                                @if($state != 'All')
                                                 <option value="{{ $state }}">{{ $state }}</option>
-                                                @endif
                                                 @endforeach
                                             </select>
                                         </div>

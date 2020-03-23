@@ -90,9 +90,9 @@
                                     <select id="enter_state" class="custom-form-element form-select form-select-no-search form-select-no-cancel required" data-label="Select State">
                                         <option value=""></option>
                                         @foreach($states as $state)
-                                        @if($state != 'All')
-                                        <option value="{{ $state }}">{{ $state }}</option>
-                                        @endif
+                                            @if($state != 'All')
+                                            <option value="{{ $state }}">{{ $state }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>

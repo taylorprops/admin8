@@ -16,7 +16,7 @@ $indigo: #6574cd;
 $purple: #9561e2;
 $pink: #f66d9b;
 $red: #b64341;
-$orange: #c0703b;
+$orange: #df7935;
 $orange-light: #f8e5e3;
 $orange-dark: #943d31;
 $yellow: #ffed4a;
@@ -25,13 +25,13 @@ $green: #30a730;
 $green-dark: #1b631b;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
-$default: #c2d9f1;
+$default: #647c96;
 
 $theme-colors: (
     "primary": $blue,
     "secondary": $orange,
     "danger": $red,
-    "success": $green-dark,
+    "success": $green,
     "default": $default,
     "primary-dark": $blue-dark
 );
@@ -40,8 +40,13 @@ $primary-color: $blue;
 $secondary-color: $orange;
 $danger-color: $red;
 
+$border-color: #dee2e6;
+
 .text-primary-dark {
     color: $blue-dark;
+}
+.text-default {
+    color: $default;
 }
 .text-blue-light {
     color: $blue-light;
@@ -65,6 +70,11 @@ a.text-green:hover {
     color: $green-dark;
 }
 
+
+.bg-default {
+    background: $default !important;
+    background-color: $default !important;
+}
 .bg-primary-light {
     background: rgba($primary-color, .1) !important;
     background-color: rgba($primary-color, .1) !important;

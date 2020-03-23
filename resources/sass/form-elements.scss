@@ -9,18 +9,18 @@
     margin-top: .75rem;
     margin-bottom: .75rem;
 
-    .disabled {
+    /* .disabled {
         background: rgba($primary-color, .1);
-    }
+    } */
 
-    .invalid-label {
+    /* .invalid-label {
         color: $danger !important;
     }
     .invalid-input-file::placeholder {
         color: $danger !important;
-    }
+    } */
     .invalid-input {
-        color: $danger !important;
+        //color: $danger !important;
         border: 1px solid $danger !important;
     }
     .invalid-input-file {
@@ -45,6 +45,12 @@
         font-size: 1rem;
     }
 
+    .caret {
+        background-image: url(/images/form_elements/arrow-down.jpg);
+        background-position: 95% 50%;
+        background-repeat: no-repeat;
+    }
+
     .form-select {
         display: none;
     }
@@ -66,14 +72,17 @@
 
     .form-input-label.active, .form-textarea-label.active, .form-select-label.active {
         position: absolute;
-        top: -5px;
+        top: -7px;
         width: auto;
-        font-size: .7rem;
-        color: $primary-color;
-        background: #fff;
+        font-size: .8rem;
+        color: $default;
+        background: rgba(white, 0.9);
         line-height: .6rem;
-        border-radius: 0px;
-        padding-bottom: 3px;
+        border-radius: 10px;
+        padding-bottom: 2px;
+        padding-top: 1px;
+        box-shadow: 0px 5px 11px 5px rgba(255,255,255,0.59);
+        z-index: 1000;
     }
 
     .form-textarea {
@@ -87,11 +96,12 @@
     }
     .form-select-value-cancel {
         display: none;
-        width: 15px;
-        height: 15px;
+        width: 12px;
+        height: 12px;
         position: absolute;
-        top: 10px;
-        right: 15px;
+        color: gray;
+        top: 12px;
+        right: 5px;
         cursor: pointer;
         z-index: 2;
     }
@@ -126,10 +136,11 @@
 
     .form-select-options-div {
         padding-top: 5px;
-        max-height: 400px;
+        max-height: 250px;
         overflow: auto;
     }
     .form-select-ul {
+        max-height: 250px;
         list-style: none;
         width: 100%;
         margin: 0px;

@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+    global_page_transition();
 
     toastr.options = {
         "timeOut": 2000
@@ -19,12 +20,14 @@ $(document).ready(function () {
 
     // Add a response interceptor
     axios.interceptors.response.use(function (response) {
+        console.log(response);
         // log out user on axios calls if session expired
         if (response.data.dismiss) {
             window.location = '/';
         }
         return response;
     }, function (error) {
+        console.log(error);
         if(error.response.status === 404) {
             window.location = '/';
         }
@@ -43,8 +46,13 @@ $(document).ready(function () {
         handle: '.draggable-handle'
     });
 
-    $('.phone').keyup(function () {
+    $(document).on('keyup', '.phone', function () {
         global_format_phone(this);
+    });
+
+    $('.datepicker').pickadate({
+        format: 'yyyy-mm-dd',
+        formatSubmit: 'yyyy-mm-dd',
     });
 
     global_tooltip();
@@ -71,7 +79,7 @@ $(document).ready(function () {
     });
 
 
-    global_page_transition();
+
 
 
 });
@@ -79,11 +87,9 @@ $(document).ready(function () {
 // page transitions
 window.global_page_transition = function() {
 
-    /* if (document.location.pathname !== '/') {
-
-
+    if (document.URL.match(/(upload\/files)/)) {
+        $('.loader').show();
         var tl = new TimelineMax();
-
         tl.to(CSSRulePlugin.getRule('body:before'), 0, { cssRule: { top: '50%' }, ease: Power2.easeOut }, 'close')
             .to(CSSRulePlugin.getRule('body:after'), 0, { cssRule: { bottom: '50%' }, ease: Power2.easeOut }, 'close')
             .to($('.loader'), 0, { opacity: 1 })
@@ -91,7 +97,9 @@ window.global_page_transition = function() {
             .to(CSSRulePlugin.getRule('body:after'), 0.2, { cssRule: { bottom: '0%' }, ease: Power2.easeOut }, '-=0.2', 'open')
             .to($('.loader'), 0.2, { opacity: 0, display: 'none' }, '-=0.2');
 
-    } */
+    } else {
+        $('.loader').hide();
+    }
 
 }
 
@@ -143,6 +151,11 @@ window.global_tooltip = function() {
     $('[data-toggle="popover"]').popover();
 }
 
+window.axios_headers_html = {
+    'Accept-Version': 1,
+    'Accept': 'text/html',
+    'Content-Type': 'text/html'
+}
 
 window.global_get_url_parameters = function(key) {
     const queryString = window.location.search;

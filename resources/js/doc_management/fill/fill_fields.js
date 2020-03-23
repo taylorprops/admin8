@@ -16,7 +16,6 @@ if (document.URL.match(/create\/fill_fields/)) {
                 onSelect: (instance, date) => {
                     const value = date.toLocaleDateString();
                     $('#' + instance.el.id).prev('div.data-div').html(value);
-                    console.log(instance.el.id);
                 },
                 onHide: instance => {
                     $('.field-div').removeClass('active');

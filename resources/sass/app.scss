@@ -6,8 +6,9 @@
 
 // ++++++ Bootstrap ++++++ //
 @import '~bootstrap/scss/bootstrap';
-//@import 'page-transitions.scss';
+@import 'page-transitions.scss';
 @import 'global.scss';
+@import 'bootstrap-fixes.scss';
 @import '~js-datepicker/src/datepicker';
 @import 'form-elements.scss';
 @import 'vendor/simplebar/simplebar.scss';
@@ -31,6 +32,7 @@
 @import 'agents/doc_management/transactions/listings/listing_add.scss';
 @import 'agents/doc_management/transactions/listings/listing_details_add.scss';
 @import 'agents/doc_management/transactions/listings/listing_details.scss';
+@import 'agents/doc_management/transactions/listings/listing_required_details.scss';
 @import 'agents/doc_management/transactions/contracts/contract_add.scss';
 @import 'agents/doc_management/transactions/contracts/contract_add_details.scss';
 @import 'agents/doc_management/transactions/contracts/contract_details.scss';

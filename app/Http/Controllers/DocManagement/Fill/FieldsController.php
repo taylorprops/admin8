@@ -11,7 +11,7 @@ use App\Models\DocManagement\Create\Fields\FieldInputs;
 use App\Models\DocManagement\Create\Fields\FilledFields;
 use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Create\Upload\UploadImages;
-use App\Models\DocManagement\Resources\Zips;
+use App\Models\Resources\LocationData;
 use Illuminate\Support\Facades\Storage;
 use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Filesystem\Filesystem;
@@ -108,7 +108,7 @@ class FieldsController extends Controller
         $fields = Fields::where('file_id', $file_id) -> orderBy('id') -> get() -> toArray();
         $field_inputs = FieldInputs::where('file_id', $file_id) -> orderBy('id') -> get() -> toArray();
         $field_values = FilledFields::where('file_id', $file_id) -> get() -> toArray();
-        // $states = Zips::ActiveStates();
+        // $states = LocationData::ActiveStates();
         //$file_id = $file_id;
         return view('/doc_management/fill/fill_fields', compact('file', 'images', 'fields', 'field_inputs', 'file_id', 'field_values'));
 

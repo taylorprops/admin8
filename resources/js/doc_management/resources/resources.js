@@ -44,7 +44,6 @@ if (document.URL.match('/resources')) {
                     .catch(function (error) {
 
                     });
-
             }
         });
         $('.sortable').disableSelection();
@@ -267,7 +266,7 @@ function show_add_resource(ele) {
 
     reset_add_resource_div(add_resource_div, add_button, resource_input, resource_state_select, cancel_button);
 
-    let prepend_to = resource_div.find('.list-group');
+    let appendTo = resource_div.find('.list-group');
 
     add_button.hide();
     cancel_button.show().click(function () {
@@ -347,7 +346,7 @@ function show_add_resource(ele) {
                     toastr['success']('Resource Added Successfully');
                     let resource_id = response.data;
                     let new_resource_html = added_item_html(resource_id, resource_type, resource_name, resource_state, resource_color, resource_association, resource_addendums, resource_form_group_type, resource_county_abbr);
-                    $(new_resource_html).prependTo(prepend_to);
+                    $(new_resource_html).appendTo(appendTo);
                     options();
                 })
                 .catch(function (error) {
@@ -549,9 +548,6 @@ function confirm_delete_deactivate_resource(ele) {
     if(action == 'delete') {
         confirm_text = 'Are you sure you want to permanently delete this resource?';
         title_text = 'Delete Resource';
-    } else if(action == 'deactivate') {
-        confirm_text = 'This will permanently deactivate the resource. Once deactivated the resource will remain in current items but will not be available for new items. Continue?';
-        title_text = 'Deactivate Resource';
     }
     $('.confirm-delete-deactivate-resource-text').text(confirm_text);
     $('#confirm_delete_deactivate_resource_modal_title').text(title_text);

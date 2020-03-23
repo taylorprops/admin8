@@ -12,7 +12,7 @@ use App\Models\DocManagement\Resources\ResourceItems;
 use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Create\Upload\UploadImages;
 use App\Models\DocManagement\Create\Upload\UploadPages;
-use App\Models\DocManagement\Resources\Zips;
+use App\Models\Resources\LocationData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -136,7 +136,7 @@ class UploadController extends Controller {
         $checklist_item_group_id = $checklist_item_details -> checklist_item_group_id ?? null;
         $checklist_item_required = $checklist_item_details -> checklist_item_required ?? null;
 
-        $states = Zips::ActiveStates();
+        $states = LocationData::ActiveStates();
 
         return view('/doc_management/create/upload/get_add_to_checklists_details_html', compact('file_id', 'uploaded_file', 'resource_items', 'checklists', 'checklists_items', 'form_groups', 'checklist_groups', 'checklist_locations', 'property_types', 'property_sub_types', 'upload', 'checklist_item_required', 'checklist_item_group_id', 'states'));
 
@@ -209,7 +209,7 @@ class UploadController extends Controller {
         $form_group_id = $request -> form_group_id ?: null;
         //$files = Upload::groupBy('file_id', 'file_name_orig') -> get();
         $files = Upload::orderBy('file_name_display') -> get();
-        $states = Zips::ActiveStates();
+        $states = LocationData::ActiveStates();
         //dd(ResourceItems::getTagName('11'));
         $resource_items = new ResourceItems();
         $resources = ResourceItems::orderBy('resource_order') -> get();
@@ -252,12 +252,14 @@ class UploadController extends Controller {
 
         $file_name_display = $request -> no_form_file_name_display;
         $state = $request -> no_form_state;
+        $helper_text = $request -> no_form_helper_text;
         $form_group_id = $request -> no_form_form_group_id;
         $sale_type = implode(',', $request -> no_form_sale_type);
 
         $upload = new Upload();
         $upload -> file_name_display = $file_name_display;
         $upload -> state = $state;
+        $upload -> helper_text = $helper_text;
         $upload -> sale_type = $sale_type;
         $upload -> form_group_id = $form_group_id;
         $upload -> save();
@@ -310,12 +312,14 @@ class UploadController extends Controller {
         $file_id = $request -> edit_file_id;
         $file_name_display = $request -> edit_file_name_display;
         $state = $request -> edit_state;
+        $helper_text = $request -> edit_helper_text;
         $form_group_id = $request -> edit_form_group_id;
         $sale_type = implode(',', $request -> edit_sale_type);
 
         $upload = Upload::where('file_id', $file_id) -> first();
         $upload -> file_name_display = $file_name_display;
         $upload -> state = $state;
+        $upload -> helper_text = $helper_text;
         $upload -> sale_type = $sale_type;
         $upload -> form_group_id = $form_group_id;
         $upload -> save();
@@ -335,6 +339,7 @@ class UploadController extends Controller {
             $clean_filename = sanitize($file_name_no_ext);
             $new_filename = $date . '_' . $clean_filename . '.' . $ext;
             $state = $request['state'];
+            $helper_text = $request['helper_text'];
             $sale_type = implode(',', $request['sale_type']);
             $form_group_id = $request['form_group_id'];
             $file_name_display = $request['file_name_display'];
@@ -348,6 +353,7 @@ class UploadController extends Controller {
             $upload -> file_name_display = $file_name_display;
             $upload -> pages_total = $pages_total;
             $upload -> state = $state;
+            $upload -> helper_text = $helper_text;
             $upload -> sale_type = $sale_type;
             $upload -> form_group_id = $form_group_id;
             $upload -> pages_total = $pages_total;

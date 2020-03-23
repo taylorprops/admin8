@@ -37,10 +37,13 @@ class Handler extends ExceptionHandler {
     public function render($request, Exception $exception) {
 
         if ($exception instanceof TokenMismatchException) {
-            // axios requests
-            //return redirect('/') -> with('error','Access Denied');
-            echo '<script>top.location.href="/";</script>';
+            // axios requests token mismatch
+            return redirect() -> route('logout');
+        }
 
+        if (auth() -> user() == null) {
+            // axios requests 500 error
+            echo '<script>top.location.href="/";</script>';
         }
 
         return parent::render($request, $exception);

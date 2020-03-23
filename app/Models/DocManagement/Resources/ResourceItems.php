@@ -17,14 +17,14 @@ class ResourceItems extends Model
     public $timestamps = false;
 
     // allow only active records on all queries
-    public static function boot() {
+    /* public static function boot() {
         parent::boot();
         static::addGlobalScope(function ($query) {
             $query -> where('resource_active', 'yes');
         });
-    }
+    } */
 
-    public function scopeIsResourceInUse($query, $resource_id) {
+    /* public function scopeIsResourceInUse($query, $resource_id) {
 
         $checklist_property_type_ids = Checklists::select('checklist_property_type_id') -> get() -> pluck('checklist_property_type_id') -> toArray();
         $checklist_property_sub_type_ids = Checklists::select('checklist_property_sub_type_id') -> get() -> pluck('checklist_property_sub_type_id') -> toArray();
@@ -46,8 +46,11 @@ class ResourceItems extends Model
         }
         return false;
 
+    } */
+    public function scopeSellerResourceId() {
+        $seller_resource_id = ResourceItems::where('resource_name', 'Seller') -> first();
+        return $seller_resource_id -> resource_id;
     }
-
 
     public function getCountFormGroup($id) {
         $uploads = Upload::where('form_group_id', $id) -> get() -> count();

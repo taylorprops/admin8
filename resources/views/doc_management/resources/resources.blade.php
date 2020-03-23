@@ -86,7 +86,6 @@
                         <ul class="sortable list-group">
                         @foreach($resources_items as $resources_item)
                             @if($resource -> resource_type == $resources_item -> resource_type)
-                            @php $in_use = $resources_items_model -> isResourceInUse($resources_item -> resource_id) @endphp
                             <li class="list-group-item" data-resource-id="{{ $resources_item -> resource_id }}" data-type="{{ $resources_item -> resource_type }}">
                                 <div class="resource-div-details">
 
@@ -95,11 +94,9 @@
                                     @if($resources_item -> resource_color)<div class="resource-color-square mr-2 float-left list-item-handle" style="background-color: {{ $resources_item -> resource_color }}"></div> @endif
 
                                     <span class="edit-resource-title list-item-handle float-left">@if($resources_item -> resource_state) {{ $resources_item -> resource_state }} | @endif {{ $resources_item -> resource_name }} @if($resources_item -> resource_county_abbr) | {{ $resources_item -> resource_county_abbr }}@endif</span>
-                                    @if($in_use === false)
-                                    <a href="javascript: void(0)" class="delete-deactivate-resource-button text-danger float-right ml-3" data-resource-id="{{ $resources_item -> resource_id }}" data-resource-name="{{ $resources_item -> resource_name }}" data-action="delete"><i class="fad fa-trash-alt fa-lg"></i></a>
-                                    @else
-                                    <a href="javascript: void(0)" class="delete-deactivate-resource-button text-danger float-right ml-3" data-resource-id="{{ $resources_item -> resource_id }}" data-resource-name="{{ $resources_item -> resource_name }}" data-action="deactivate"><i class="fad fa-ban fa-lg"></i></a>
-                                    @endif
+
+                                    <a href="javascript: void(0)" class="delete-deactivate-resource-button text-danger float-right ml-3" data-resource-id="{{ $resources_item -> resource_id }}" data-resource-name="{{ $resources_item -> resource_name }}" data-action="delete"><i class="fad fa-ban fa-lg"></i></a>
+
                                     <a href="javascript: void(0)" class="edit-resource-button text-primary float-right" data-resource-type="{{ $resources_item -> resource_type }}"><i class="fad fa-edit fa-lg"></i></a>
 
                                 </div>
@@ -113,6 +110,7 @@
                                             <div class="col px-1">
                                                 <select class="custom-form-element form-select edit-resource-state form-select-no-cancel form-select-no-search required" data-label="State" data-default-value="{{ $resources_item -> resource_state }}">
                                                     <option value=""></option>
+                                                    <option value="All">All</option>
                                                     @foreach($states as $state)
                                                     <option value="{{ $state }}" @if( $resources_item -> resource_state == $state) selected @endif>{{ $state }}</option>
                                                     @endforeach

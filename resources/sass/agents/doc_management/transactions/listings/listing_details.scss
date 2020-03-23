@@ -1,28 +1,72 @@
 .page-listing-details {
     .nav-link {
         text-transform: uppercase;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0px;
+    }
+    .nav-link.active {
+        color: $orange;
     }
 
     .property-image-div img {
         height: 85px;
         border: 1px solid $primary-color;
-        border-radius: 5%;
     }
     .transaction-type {
         font-size: 1.3rem;
     }
-    .badge-pill {
-        padding: .5rem !important;
+    .transaction-sub-type {
+        font-size: .8rem;
+    }
+    .badge {
+        padding: .5rem;
+    }
+
+    .details-main-tabs {
+        padding: 0rem;
+        padding-top: 1rem;
+        border: 1px solid $border-color !important;
+        border-top: none !important;
+        margin-top: 0px;
+    }
+    .get-members-tabs {
+        border: none;
+    }
+
+
+    .listing-details-div {
+        width: 100%;
+        height: auto;
+        padding: 10px 20px;
+        border: 1px solid $border-color;
+    }
+
+    .confirm-import-image {
+        width: 100%;
+        max-height: 150px;
     }
 
     @media (max-width: 1200px) {
         .nav-link {
             font-size: 1rem;
             text-transform: initial;
+            padding: 0.5rem 1rem;
         }
         .transaction-type {
-            font-size: 1.1rem;
+            font-size: 1rem;
+        }
+        .transaction-sub-type {
+            font-size: .7rem;
+        }
+        .badge {
+            padding: .5rem .3rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .badge {
+            padding: .4rem .2rem;
         }
     }
 
@@ -32,7 +76,13 @@
             font-size: .8rem;
         }
         .transaction-type {
-            font-size: 1rem;
+            font-size: .9rem;
+        }
+        .transaction-sub-type {
+            font-size: .7rem;
+        }
+        .badge {
+            padding: .3rem;
         }
     }
 

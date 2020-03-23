@@ -61,6 +61,8 @@
                 }
             }
 
+            $YearBuilt = $property_details -> YearBuilt ?? null;
+
             @endphp
 
             <div class="h3 text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.', '.$property_details -> PostalCode }}</div>
@@ -123,7 +125,7 @@
                             <div class="step-new-content mt-3">
                                 <div class="row">
                                     <div class="col-12 col-md-6">
-                                        <input type="text" class="custom-form-element form-input numbers-only required" name="year_built" id="year_built" value="{{ $property_details -> YearBuilt }}" data-label="Year Built">
+                                        <input type="text" class="custom-form-element form-input numbers-only required" name="year_built" id="year_built" value="{{ $YearBuilt }}" data-label="Year Built">
                                     </div>
                                 </div>
                                 <div class="step-actions">

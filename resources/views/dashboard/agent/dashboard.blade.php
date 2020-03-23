@@ -3,6 +3,9 @@
 
 @section('content')
 Agents Dashboard
+@if(Session::get('agent_details'))
+{{ Session::get('agent_details') -> fullname }}
+@endif
 @endsection
 
 @section('js')

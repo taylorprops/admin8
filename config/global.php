@@ -1,10 +1,38 @@
 <?php
 
 $active_states = explode(',', env('ACTIVE_STATES'));
+$bad_characters = ['/\#/', '/\</', '/\$/', '/\+/', '/\%/', '/\>/', '/\!/', '/\&/', '/\*/', '/\'/', '/\|/', '/\{/', '/\?/', '/\"/', '/\=/', '/\}/', '/\//', '/\:/', '/\s/', '/\@/', '/\;/', '/\,/', '/\(/', '/\)/', '/\[/', '/\]/', '/\./'];
+$street_suffixes = array('ALLEY', 'AVENUE', 'BEND', 'BOULEVARD', 'BRANCH', 'CIRCLE', 'CIR', 'CORNER', 'COURSE', 'COURT', 'COVE', 'CRESCENT', 'CROSSING', 'DRIVE', 'DRIVEWAY', 'EXTENSION', 'GARDENS', 'GARTH', 'GATEWAY', 'GLEN', 'GROVE', 'HARBOR', 'HIGHWAY', 'HILL', 'HOLLOW', 'KNOLLS', 'LANDING', 'LANE', 'LOOP', 'MEWS', 'MILLS', 'NORTHWAY', 'PARKWAY', 'PASSAGE', 'PATH', 'PIKE', 'PLACE', 'RIDGE', 'ROAD', 'ROUTE', 'ROW', 'RUN', 'SQUARE', 'STREET', 'TERRACE', 'TRACE', 'TRAIL', 'TURN', 'VIEW', 'VISTA', 'WALK', 'WAY');
+$street_dir_suffixes = array('E', 'EAST', 'N', 'NE', 'NORTH', 'NORTHEAST', 'NORTHWEST', 'NW', 'S', 'SE', 'SOUTH', 'SOUTHEAST', 'SOUTHWEST', 'SW', 'W', 'WEST');
+$loader = '
+<div class="preloader-wrapper active">
+    <div class="spinner-layer spinner-blue-only">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+</div>';
+
+$select_columns_bright = 'Appliances,AssociationFee,AssociationFeeFrequency,AssociationYN,AttachedGarageYN,BasementFinishedPercent,BasementYN,BathroomsTotalInteger,BedroomsTotal,City,CloseDate,CondoYN,Cooling,County,ElementarySchool,FireplaceYN,FullStreetAddress,GarageYN,Heating,HighSchool,Latitude,ListingId,ListingSourceRecordKey,ListingTaxID,ListPictureURL,ListPrice,LivingArea,Longitude,LotSizeAcres,LotSizeSquareFeet,MajorChangeTimestamp,MiddleOrJuniorSchool,MLSListDate,MlsStatus,NewConstructionYN,NumAttachedGarageSpaces,NumDetachedGarageSpaces,Pool,PostalCode,PropertySubType,PropertyType,PublicRemarks,SaleType,StateOrProvince,StreetDirPrefix,StreetDirSuffix,StreetName,StreetNumber,StreetSuffix,StreetSuffixModifier,StructureDesignType,SubdivisionName,TotalPhotos,UnitBuildingType,UnitNumber,YearBuilt,ListOfficeName,ListOfficeMlsId,ListAgentMlsId,ListAgentFirstName,ListAgentLastName,ListAgentEmail,ListAgentPreferredPhone,BuyerOfficeName,BuyerOfficeMlsId,BuyerAgentMlsId,BuyerAgentFirstName,BuyerAgentLastName,BuyerAgentEmail,BuyerAgentPreferredPhone';
+
+$select_columns_bright_agents = ['ListAgentFirstName,ListAgentLastName,ListAgentEmail,ListAgentPreferredPhone,BuyerOfficeName,BuyerOfficeMlsId,BuyerAgentMlsId,BuyerAgentFirstName,BuyerAgentLastName,BuyerAgentEmail,BuyerAgentPreferredPhone'];
+
+
 return [
     'vars' => [
-        'bad_characters' => ['/\#/', '/\</', '/\$/', '/\+/', '/\%/', '/\>/', '/\!/', '/\&/', '/\*/', '/\'/', '/\|/', '/\{/', '/\?/', '/\"/', '/\=/', '/\}/', '/\//', '/\:/', '/\s/', '/\@/', '/\;/', '/\,/', '/\(/', '/\)/', '/\[/', '/\]/', '/\./'],
+        'bad_characters' => $bad_characters,
         'active_states' => $active_states,
+        'street_suffixes' => $street_suffixes,
+        'street_dir_suffixes' => $street_dir_suffixes,
+        'select_columns_bright' => $select_columns_bright,
+        'select_columns_bright_agents' => $select_columns_bright_agents,
+        'loader' => $loader,
         'google_api_key' => env('GOOGLE_API_KEY'),
         'socrata_api_key' => env('SOCRATA_API_KEY'),
     ]

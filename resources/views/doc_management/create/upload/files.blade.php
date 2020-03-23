@@ -239,10 +239,16 @@
                                 <div class="col-12">
                                     <select name="edit_state" id="edit_state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
                                         <option value=""></option>
+                                        <option value="All">All</option>
                                         @foreach($states as $state)
                                             <option value="{{ $state }}">{{ $state }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <textarea name="edit_helper_text" id="edit_helper_text" class="custom-form-element form-textarea" data-label="Helper Text"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -305,6 +311,11 @@
                                             <option value="{{ $state }}">{{ $state }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <textarea name="no_form_helper_text" id="no_form_helper_text" class="custom-form-element form-textarea" data-label="Helper Text"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -372,6 +383,11 @@
                                         <option value="{{ $state }}">{{ $state }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <textarea name="helper_text" id="helper_text" class="custom-form-element form-textarea" data-label="Helper Text"></textarea>
                                 </div>
                             </div>
                         </div>

@@ -1,39 +1,79 @@
 <?php
 
 function get_value($values, $id) {
-    foreach($values as $value) {
-        if($value['input_id'] == $id) {
+
+    foreach ($values as $value) {
+
+        if ($value['input_id'] == $id) {
             return $value['input_value'];
         }
+
     }
+
 }
 
 function get_value_radio_checkbox($values, $id) {
-    foreach($values as $value) {
-        if($value['input_id'] == $id) {
-            if($value['input_value'] != '') {
+
+    foreach ($values as $value) {
+
+        if ($value['input_id'] == $id) {
+
+            if ($value['input_value'] != '') {
                 return 'checked="checked"';
             } else {
                 return '';
             }
 
         }
+
     }
+
 }
 
 function address_type($val) {
-    if($val == 'Full Address') {
+
+    if ($val == 'Full Address') {
         return 'full';
-    } else if($val == 'Street Address') {
+    } elseif ($val == 'Street Address') {
         return 'street';
-    } else if($val == 'City') {
+    } elseif ($val == 'City') {
         return 'city';
-    } else if($val == 'State') {
+    } elseif ($val == 'State') {
         return 'state';
-    } else if($val == 'County') {
+    } elseif ($val == 'County') {
         return 'county';
-    } else if($val == 'Zip Code') {
+    } elseif ($val == 'Zip Code') {
         return 'zip';
     }
+
 }
+
+function bright_mls_search($ListingId) {
+
+    $rets = new \PHRETS\Session(Config::get('rets.rets.rets_config'));
+    $connect = $rets -> Login();
+    $resource = 'Property';
+    $class = 'ALL';
+    $query = '(ListingId=' . $ListingId . ')';
+    $select_columns_bright = config('global.vars.select_columns_bright');
+
+    $bright_db_search = $rets -> Search(
+        $resource,
+        $class,
+        $query,
+        [
+            'Count' => 0,
+            'Select' => $select_columns_bright,
+        ]
+    );
+
+    if(isset($bright_db_search[0])) {
+        $bright_db_search = $bright_db_search[0] -> toArray();
+        if(count($bright_db_search) > 0) {
+            return $bright_db_search;
+        }
+    }
+    return null;
+}
+
 ?>
