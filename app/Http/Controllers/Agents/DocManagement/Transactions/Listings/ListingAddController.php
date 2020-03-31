@@ -2,18 +2,26 @@
 
 namespace App\Http\Controllers\Agents\DocManagement\Transactions\Listings;
 
+use Config;
+use Illuminate\Http\Request;
+
 use App\Http\Controllers\Agents\DocManagement\Functions\GlobalFunctionsController;
 use App\Http\Controllers\Controller;
 use App\Models\DocManagement\Resources\ResourceItems;
 use App\Models\DocManagement\Transactions\Data\ListingsData;
 use App\Models\DocManagement\Transactions\Data\ListingsRemovedData;
-use App\Models\DocManagement\Transactions\Listings;
+use App\Models\DocManagement\Transactions\Listings\Listings;
+use App\Models\DocManagement\Transactions\Listings\Checklists\ListingChecklists;
+use App\Models\DocManagement\Transactions\Listings\Checklists\ListingChecklistItems;
+use App\Models\DocManagement\Transactions\Listings\Documents\ListingDocumentsFolders;
 use App\Models\DocManagement\Transactions\Members\Members;
+use App\Models\DocManagement\Checklists\Checklists;
+use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\Employees\Agents;
 use App\Models\Resources\LocationData;
 use App\Models\CRM\CRMContacts;
-use Config;
-use Illuminate\Http\Request;
+
+
 
 class ListingAddController extends Controller {
 
@@ -462,13 +470,15 @@ class ListingAddController extends Controller {
         $states_json = $states -> toJson();
         $statuses = ResourceItems::where('resource_type', 'listing_status') -> orderBy('resource_order') -> get();
         $contacts = CRMContacts::where('Agent_ID', $property_details -> Agent_ID) -> get();
+        $resource_items = new ResourceItems();
 
-        return view('/agents/doc_management/transactions/listings/listing_required_details', compact('property_details', 'states', 'states_json', 'statuses', 'contacts'));
+        return view('/agents/doc_management/transactions/listings/listing_required_details', compact('property_details', 'states', 'states_json', 'statuses', 'contacts', 'resource_items'));
     }
 
     public function save_add_listing(Request $request) {
 
         $property_details = (object)session('property_details');
+        $resource_items = new ResourceItems();
 
         // TODO add more agent fields
 
@@ -479,23 +489,26 @@ class ListingAddController extends Controller {
         } else {
             $agent = \Session::get('agent_details');
         }
-
-        if ($agent -> id) {
-
-            $property_details -> Agent_ID = $agent -> id;
-            $property_details -> ListAgentFirstName = $agent -> first_name;
-            $property_details -> ListAgentLastName = $agent -> last_name;
-            $property_details -> ListAgentEmail = $agent -> email;
-            $property_details -> ListAgentPreferredPhone = $agent -> cell_phone;
-        }
+        // add agent details
+        $property_details -> Agent_ID = $agent -> id;
+        $property_details -> ListAgentFirstName = $agent -> first_name;
+        $property_details -> ListAgentLastName = $agent -> last_name;
+        $property_details -> ListAgentEmail = $agent -> email;
+        $property_details -> ListAgentPreferredPhone = $agent -> cell_phone;
 
         // replace current values from property details with new data
         $property_details -> SaleRent = $request -> listing_type;
-        $property_details -> PropertyType = $request -> property_type ?? null;
-        $property_details -> PropertySubType = $request -> property_sub_type ?? null;
+        $property_details -> PropertyType = $resource_items -> GetResourceID($request -> property_type, 'checklist_property_types'); // convert to integer
+        $property_details -> PropertySubType = $resource_items -> GetResourceID($request -> property_sub_type, 'checklist_property_sub_types'); // convert to integer
         $property_details -> YearBuilt = $request -> year_built ?? null;
         $property_details -> ListPrice = preg_replace('/[\$,]+/', '', $request -> list_price);
         $property_details -> HoaCondoFees = $request -> hoa_condo ?? null;
+        if($property_details -> StateOrProvince == 'MD') {
+            $location_id = $resource_items -> GetResourceID($property_details -> County, 'checklist_locations');
+        } else {
+            $location_id = $resource_items -> GetResourceID($property_details -> StateOrProvince, 'checklist_locations');
+        }
+        $property_details -> Location_ID = $location_id;
 
         $listing = new Listings;
 
@@ -505,6 +518,17 @@ class ListingAddController extends Controller {
 
         $listing -> save();
         $listing_id = $listing -> Listing_ID;
+
+        // add default docs folders
+        $folders = ['listing_docs', 'trash'];
+        foreach ($folders as $folder) {
+            $new_folder = new ListingDocumentsFolders();
+            $new_folder -> Listing_ID = $listing -> Listing_ID;
+            $new_folder -> Agent_ID = $agent -> id;
+            $new_folder -> folder_name = $folder;
+            $new_folder -> save();
+        }
+
 
         return $listing_id;
 
@@ -567,8 +591,26 @@ class ListingAddController extends Controller {
         $listing -> SellerTwoLastName = $seller_two_last;
         $listing -> MLSListDate = $request -> MLSListDate;
         $listing -> ExpirationDate = $request -> ExpirationDate;
-        $listing -> Status = $request -> Status;
+        if(date('Y-m-d') < $request -> MLSListDate) {
+            $listing -> Status = ResourceItems::GetResourceID('Pre-Listing', 'listing_status');
+        } else if(date('Y-m-d') > $request -> MLSListDate && date('Y-m-d') < $request -> ExpirationDate) {
+            $listing -> Status = ResourceItems::GetResourceID('Active', 'listing_status');
+        } else {
+            $listing -> Status = ResourceItems::GetResourceID('Expired', 'listing_status');
+        }
         $listing -> save();
+
+        // add checklist and checklist items
+        $checklist_represent = 'seller';
+        $checklist_type = 'listing';
+        $checklist_property_type_id = $listing -> PropertyType;
+        $checklist_property_sub_type_id = $listing -> PropertySubType;
+        $checklist_sale_rent = $listing -> SaleRent;
+        $checklist_state = $listing -> StateOrProvince;
+        $checklist_location_id = $listing -> Location_ID;
+        $checklist_id = '';
+
+        ListingChecklists::CreateListingChecklist($checklist_id, $Listing_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id);
 
         return $Listing_ID;
 

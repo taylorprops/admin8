@@ -6,7 +6,7 @@
                 <div class="row">
 
                     <div class="col-12 col-md-6">
-                        <div class="listing-details-div my-2 z-depth-1">
+                        <div class="listing-details-div my-2 z-depth-1 h-100 slow">
                             <div class="h5 m-2 mb-4 text-default">
                                 <i class="fad fa-file-signature mr-3"></i> Listing Details
                             </div>
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <div class="listing-details-div my-2 z-depth-1">
+                        <div class="listing-details-div my-2 z-depth-1 h-100 slow">
                             <div class="h5 m-2 mb-4 text-default">
                                 <i class="fad fa-users mr-3"></i> Listing Agent(s)
                             </div>
@@ -98,7 +98,7 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <div class="listing-details-div mt-4 mb-2 z-depth-1">
+                        <div class="listing-details-div mt-4 mb-2 z-depth-1 slow">
                             <div class="row d-flex align-items-center">
                                 <div class="col-12 col-xl-3">
                                     <div class="h5 m-2 mb-2 mb-xl-4 text-default">

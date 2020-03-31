@@ -64,8 +64,8 @@
                                     <td>{{ ucwords($checklist -> checklist_type) }}</td>
                                     <td>{{ ucwords($checklist -> checklist_represent) }}</td>
                                     <td>{{ ucwords($checklist -> checklist_sale_rent) }}</td>
-                                    <td>{{ $resource_items -> getTagName($checklist -> checklist_property_type_id) }}</td>
-                                    <td>{{ $resource_items -> getTagName($checklist -> checklist_property_sub_type_id) }}</td>
+                                    <td>{{ $resource_items -> getResourceName($checklist -> checklist_property_type_id) }}</td>
+                                    <td>{{ $resource_items -> getResourceName($checklist -> checklist_property_sub_type_id) }}</td>
                                 </tr>
                                 @endforeach
                             </table>

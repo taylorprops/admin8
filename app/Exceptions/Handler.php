@@ -38,7 +38,7 @@ class Handler extends ExceptionHandler {
 
         if ($exception instanceof TokenMismatchException) {
             // axios requests token mismatch
-            return redirect() -> route('logout');
+            //return redirect() -> route('logout');
         }
 
         if (auth() -> user() == null) {

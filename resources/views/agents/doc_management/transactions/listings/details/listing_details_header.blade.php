@@ -8,42 +8,49 @@ if($listing -> SaleRent == 'sale') {
 }
 @endphp<div class="row mt-1 mt-sm-4">
 
+    <div class="col-12 col-lg-10">
 
-    <div class="d-flex justify-content-start flex-wrap">
+        <div class="d-flex justify-content-start flex-wrap">
 
-        @if($listing -> ListPictureURL)
-        <div class="d-none d-sm-block ml-2 mr-3">
-            <div class="property-image-div">
-                <img src="{{ $listing -> ListPictureURL }}" class="img-fluid z-depth-2">
+            @if($listing -> ListPictureURL)
+            <div class="d-none d-sm-block ml-2 mr-3">
+                <div class="property-image-div">
+                    <img src="{{ $listing -> ListPictureURL }}" class="img-fluid z-depth-2">
+                </div>
             </div>
-        </div>
-        @endif
+            @endif
 
-        <div class="ml-2 ml-md-3">
-            <div class="h3-responsive mb-2 text-gray">{!! $listing -> FullStreetAddress.' '.$listing -> Street.' '.$listing -> City.', '.$listing -> StateOrProvince.' '.$listing -> PostalCode !!}</div>
-            <div class="mb-1 mb-md-3">
-                <span class="badge bg-orange"><span class="transaction-type text-white">Listing</span></span>
-                <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $sale_rent }}</span></span>
-                <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $listing -> PropertyType }}</span></span>
-                @if($sale_rent != 'Rental' && $listing -> PropertySubType != '')
-                <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $listing -> PropertySubType }}</span></span>
-                @endif
+            <div class="ml-2 ml-md-3">
+                <div class="h3-responsive mb-2 text-gray">{!! $listing -> FullStreetAddress.' '.$listing -> Street.' '.$listing -> City.', '.$listing -> StateOrProvince.' '.$listing -> PostalCode !!}</div>
+                <div class="mb-1 mb-md-3">
+                    <span class="badge bg-orange"><span class="transaction-type text-white">Listing</span></span>
+                    <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $sale_rent }}</span></span>
+                    <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($listing -> PropertyType) }}</span></span>
+                    @if($sale_rent != 'Rental' && $listing -> PropertySubType > '0')
+                    <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($listing -> PropertySubType) }}</span></span>
+                    @endif
+                </div>
             </div>
+
         </div>
 
+    </div>
+    <div class="col-12 col-lg-2">
+        <a href="javascript: void(0);" class="btn btn-sm btn-success mt-2" id="add_contract_button"><i class="fa fa-plus mr-2"></i> Accept Contract</a>
+        <a href="javascript: void(0);" class="btn btn-sm btn-danger mt-2" id="withdraw_listing_button"><i class="fa fa-minus mr-2"></i> Withdraw Listing</a>
     </div>
 
 </div>
 
 <div class="row my-2 my-md-4 py-2 border-top border-bottom">
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-3 col-lg-2">
         <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">List Agent</div>
         <br>
         {{ $listing -> ListAgentFirstName . ' ' . $listing -> ListAgentLastName }}<br>
         {{ $listing -> ListAgentPreferredPhone }}<br>
         <a href="mailto:{{ $listing -> ListAgentEmail }}">{{ $listing -> ListAgentEmail }}</a>
     </div>
-    <div class="col-6 col-md-3 mt-0">
+    <div class="col-6 col-md-3 col-lg-2 mt-0">
         <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">Seller(s)</div>
         <br>
         @foreach($sellers as $seller)
@@ -51,12 +58,18 @@ if($listing -> SaleRent == 'sale') {
         @endforeach
 
     </div>
-    <div class="col-6 col-md-3 mt-3 mt-md-0">
+    <div class="col-6 col-md-3 col-lg-2 mt-3 mt-md-0">
         <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">List Price</div>
         <br>
         <span id="list_price_display">${{ number_format($listing -> ListPrice) }}</span>
+        <br>
+        <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">List Date</div>
+        <br>
+        {{ date('n/j/Y', strtotime($listing -> MLSListDate)) }}
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-3 col-lg-2">
         <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">Status</div>
+        <br>
+        {{ $resource_items -> GetResourceName($listing -> Status) }}
     </div>
 </div>

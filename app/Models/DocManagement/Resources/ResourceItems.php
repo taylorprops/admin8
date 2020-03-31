@@ -67,10 +67,18 @@ class ResourceItems extends Model
         return $location -> resource_state;
     }
 
-    public function scopeGetTagName($query, $id) {
+    public function scopeGetResourceName($query, $id) {
         if($id) {
-            $tags = $query -> where('resource_id', $id) -> first();
-            return $tags -> resource_name;
+            $resource = $query -> where('resource_id', $id) -> first();
+            return $resource -> resource_name;
+        }
+        return false;
+    }
+
+    public function scopeGetResourceID($query, $name, $type) {
+        if($name) {
+            $resource = $query -> where('resource_name', $name) -> where('resource_type', $type) -> first();
+            return $resource -> resource_id;
         }
         return false;
     }

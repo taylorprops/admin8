@@ -129,8 +129,8 @@
                                             <td>{{ ucwords($checklist -> checklist_type) }}</td>
                                             <td>{{ ($checklist -> checklist_represent == 'seller' ? 'Seller/Owner' : 'Buyer/Renter') }}</td>
                                             <td>{{ ucwords($checklist -> checklist_sale_rent) }}</td>
-                                            <td>{{ $resource_items -> getTagName($checklist -> checklist_property_type_id) }}</td>
-                                            <td>{{ $resource_items -> getTagName($checklist -> checklist_property_sub_type_id) }}</td>
+                                            <td>{{ $resource_items -> getResourceName($checklist -> checklist_property_type_id) }}</td>
+                                            <td>{{ $resource_items -> getResourceName($checklist -> checklist_property_sub_type_id) }}</td>
                                             <td><a href="/doc_management/checklists?checklist_id={{ $checklist -> id }}&checklist_location_id={{ $checklist -> checklist_location_id}}&checklist_type={{ $checklist -> checklist_type }}" class="btn btn-sm btn-primary" target="_blank">View Checklist</a></td>
                                         </tr>
                                         @endforeach

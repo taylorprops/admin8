@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Agents\DocManagement\Transactions\Listings;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\DocManagement\Transactions\Listings;
+use App\Models\DocManagement\Transactions\Listings\Listings;
 
 class ListingsAllController extends Controller
 {

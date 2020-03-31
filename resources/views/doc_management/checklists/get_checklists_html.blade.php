@@ -46,7 +46,7 @@
                             <div class="col-5">
                                 <span class="text-orange checklist-handle">
                                     @if($checklist -> checklist_property_sub_type_id > 0)
-                                    {{ $resource_items -> getTagName($checklist -> checklist_property_sub_type_id) }}
+                                    {{ $resource_items -> getResourceName($checklist -> checklist_property_sub_type_id) }}
                                     @else
                                     Standard
                                     @endif

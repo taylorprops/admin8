@@ -7,7 +7,7 @@ use App\Models\DocManagement\Checklists\Checklists;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\DocManagement\Create\Fields\FieldInputs;
 use App\Models\DocManagement\Create\Fields\Fields;
-use App\Models\DocManagement\Create\Fields\FilledFields;
+use App\Models\DocManagement\Create\FilledFields\FilledFields;
 use App\Models\DocManagement\Resources\ResourceItems;
 use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Create\Upload\UploadImages;
@@ -210,7 +210,7 @@ class UploadController extends Controller {
         //$files = Upload::groupBy('file_id', 'file_name_orig') -> get();
         $files = Upload::orderBy('file_name_display') -> get();
         $states = LocationData::ActiveStates();
-        //dd(ResourceItems::getTagName('11'));
+        //dd(ResourceItems::getResourceName('11'));
         $resource_items = new ResourceItems();
         $resources = ResourceItems::orderBy('resource_order') -> get();
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();

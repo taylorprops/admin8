@@ -2,6 +2,8 @@ $(document).ready(function () {
 
     global_page_transition();
 
+    inactivityTime();
+
     toastr.options = {
         "timeOut": 2000
     }
@@ -20,17 +22,16 @@ $(document).ready(function () {
 
     // Add a response interceptor
     axios.interceptors.response.use(function (response) {
-        console.log(response);
+        //console.log(response);
         // log out user on axios calls if session expired
         if (response.data.dismiss) {
             window.location = '/';
         }
         return response;
     }, function (error) {
-        console.log(error);
-        if(error.response.status === 404) {
+        /* if(error.response.status === 404 || error.response.match(/404/) || error.response.status === 500 || error.response.match(/500/)) {
             window.location = '/';
-        }
+        } */
         return Promise.reject('error '+error);
     });
 
@@ -48,6 +49,7 @@ $(document).ready(function () {
 
     $(document).on('keyup', '.phone', function () {
         global_format_phone(this);
+        $(this).attr('maxlength', 14);
     });
 
     $('.datepicker').pickadate({
@@ -84,6 +86,24 @@ $(document).ready(function () {
 
 });
 
+// session timeout
+window.inactivityTime = function () {
+    var time;
+    window.onload = resetTimer;
+    // DOM Events
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+
+    function logout() {
+        location.href = '/'
+    }
+
+    function resetTimer() {
+        clearTimeout(time);
+        time = setTimeout(logout, 1000 * 60 * 60 * 2);
+    }
+};
+
 // page transitions
 window.global_page_transition = function() {
 
@@ -105,6 +125,12 @@ window.global_page_transition = function() {
 
 /**************************  STANDARD USE FUNCTIONS ***********************************/
 
+window.scrollToAnchor = function(id) {
+    var anchor_position = $('#'+id).offset().top;
+    $('html,body').animate({
+        scrollTop: anchor_position
+    }, 1500);
+}
 
 // Numbers Only
 $(document).on('keydown', '.numbers-only', function (event) {

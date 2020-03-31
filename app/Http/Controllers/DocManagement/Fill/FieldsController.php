@@ -8,7 +8,7 @@ use App\Models\DocManagement\Create\Fields\CommonFields;
 use App\Models\DocManagement\Create\Fields\Fields;
 use App\Models\DocManagement\Create\Fields\FieldTypes;
 use App\Models\DocManagement\Create\Fields\FieldInputs;
-use App\Models\DocManagement\Create\Fields\FilledFields;
+use App\Models\DocManagement\Create\\FilledFields\FilledFields;
 use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Create\Upload\UploadImages;
 use App\Models\Resources\LocationData;

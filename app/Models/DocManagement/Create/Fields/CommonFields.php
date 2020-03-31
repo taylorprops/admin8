@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CommonFields extends Model
 {
     protected $connection = 'mysql';
-    public $table = 'docs_common_fields';
+    public $table = 'docs_create_common_fields';
     public $timestamps = false;
 
     public function scopeGetCommonFields() {

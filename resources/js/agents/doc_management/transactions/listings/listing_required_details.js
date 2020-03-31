@@ -50,8 +50,9 @@ if (document.URL.match(/listing_required_details/)) {
     function show_import_modal(seller_id) {
         seller_id = seller_id - 1;
         $('#import_contact_modal').modal();
-        $('#contacts_table').on('click', '.add-contact-button', function() {
+        $('#contacts_table').off('click').on('click', '.add-contact-button', function() {
             let seller_div = $('.seller-div').eq(seller_id);
+            console.log(seller_div.length);
             seller_div.find('[name^=seller_first_name]').val($(this).data('contact-first'));
             seller_div.find('[name^=seller_last_name]').val($(this).data('contact-last'));
             seller_div.find('[name^=seller_phone]').val($(this).data('contact-phone'));

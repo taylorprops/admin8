@@ -15,7 +15,7 @@
             <div class="steps-container mx-auto">
                 <form id="steps_form" autocomplete="off">
                     <input autocomplete="false" name="hidden" type="text" style="display:none;">
-                    <div class="h4 text-primary mt-3 text-center">Please Enter the following details</div>
+                    <div class="h4 text-primary mt-3 text-center">Jsut a few more details</div>
                     <ul class="stepper linear mt-2 pt-1">
                         <li class="step active">
                             <div class="h4 step-title waves-effect waves-light text-gray">Seller(s)</div>
@@ -91,25 +91,7 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="step">
-                            <div class="h4 step-title waves-effect waves-light text-gray">Status</div>
-                            <div class="step-new-content mt-3">
-                                <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-3">
-                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="Status" id="Status" data-label="Status">
-                                            <option value=""></option>
-                                            @foreach($statuses as $status)
-                                            <option value="{{ $status -> resource_id }}">{{ $status -> resource_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="step-actions">
-                                    <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                                    <button class="waves-effect waves-light btn btn-success next-step">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
-                                </div>
-                            </div>
-                        </li>
+
 
                         <li class="step">
                             <div class="h4 step-title waves-effect waves-light text-gray">Complete!</div>
@@ -164,6 +146,7 @@
                                             data-contact-id="{{ $contact -> id }}"
                                             data-contact-first="{{ $contact -> contact_first }}"
                                             data-contact-last="{{ $contact -> contact_last }}"
+                                            data-contact-company="{{ $contact -> contact_company }}"
                                             data-contact-phone="{{ $contact -> contact_phone_cell }}"
                                             data-contact-email="{{ $contact -> contact_email }}"
                                             data-contact-street="{{ $contact -> contact_street }}"
@@ -172,7 +155,7 @@
                                             data-contact-zip="{{ $contact -> contact_zip }}"
                                             >Import</a>
                                         </td>
-                                        <td>{{ $contact -> contact_type }}</td>
+                                        <td>{{ $resource_items -> GetResourceName($contact -> contact_type_id) }}</td>
                                         <td>{{ $contact -> contact_last }}</td>
                                         <td>{{ $contact -> contact_first }}</td>
                                         <td>{{ $contact -> contact_street.' '.$contact -> contact_city.', '.$contact -> contact_state.' '.$contact -> contact_zip }}</td>

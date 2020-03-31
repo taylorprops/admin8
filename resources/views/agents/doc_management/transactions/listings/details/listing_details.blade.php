@@ -5,17 +5,17 @@
 
 <div class="container page-listing-details mb-5">
 
-    <div id="details_header">
+    <div id="details_header"></div>
 
-    </div>
+    <span id="scroll_to"></span>
 
     <div class="row">
         <div class="col-md-12 mt-3 details-tabs">
             <ul id="tabs" class="nav nav-tabs details-list-group">
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="details" data-target="#details_tab" data-toggle="tab" class="nav-link active"><i class="fad fa-home-lg-alt mr-2 d-none d-md-inline-block"></i> Details</a></li>
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="members" id="open_members_tab" data-target="#members_tab" data-toggle="tab" class="nav-link"><i class="fad fa-user-friends mr-2 d-none d-md-inline-block"></i> Members</a></li>
+                <li class="nav-item"><a href="javascript: void(0)" data-tab="documents" id="open_documents_tab" data-target="#documents_tab" data-toggle="tab" class="nav-link"><i class="fad fa-folder-open mr-2 d-none d-md-inline-block"></i> Documents</a></li>
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="checklist" id="open_checklist_tab" data-target="#checklist_tab" data-toggle="tab" class="nav-link"><i class="fad fa-tasks mr-2 d-none d-md-inline-block"></i> Checklist</a></li>
-                <li class="nav-item"><a href="javascript: void(0)" data-tab="docs" id="open_docs_tab" data-target="#docs_tab" data-toggle="tab" class="nav-link"><i class="fad fa-folder-open mr-2 d-none d-md-inline-block"></i> Documents</a></li>
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="contracts" id="open_contracts_tab" data-target="#contracts_tab" data-toggle="tab" class="nav-link"><i class="fad fa-file-signature mr-2 d-none d-md-inline-block"></i> Contracts</a></li>
                 @if(auth() -> user() -> group == 'admin')
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="commission" id="open_commission_tab" data-target="#commission_tab" data-toggle="tab" class="nav-link"><i class="fad fa-sack-dollar mr-2 d-none d-md-inline-block"></i> Commission</a></li>
@@ -33,12 +33,12 @@
                         {!! config('global.vars.loader') !!}
                     </div>
                 </div>
-                <div id="checklist_tab" class="tab-pane fade">
+                <div id="documents_tab" class="tab-pane fade">
                     <div class="w-100 my-5 text-center">
                         {!! config('global.vars.loader') !!}
                     </div>
                 </div>
-                <div id="docs_tab" class="tab-pane fade">
+                <div id="checklist_tab" class="tab-pane fade">
                     <div class="w-100 my-5 text-center">
                         {!! config('global.vars.loader') !!}
                     </div>

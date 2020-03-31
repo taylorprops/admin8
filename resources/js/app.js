@@ -26,6 +26,13 @@ require('./agents/doc_management/transactions/listings/listing_required_details.
 require('./agents/doc_management/transactions/listings/listing_add.js');
 require('./agents/doc_management/transactions/listings/listing_details.js');
 require('./agents/doc_management/transactions/listings/listings_all.js');
+// details tabs
+require('./agents/doc_management/transactions/listings/details_tabs/checklist.js');
+require('./agents/doc_management/transactions/listings/details_tabs/commission.js');
+require('./agents/doc_management/transactions/listings/details_tabs/contracts.js');
+require('./agents/doc_management/transactions/listings/details_tabs/details.js');
+require('./agents/doc_management/transactions/listings/details_tabs/documents.js');
+require('./agents/doc_management/transactions/listings/details_tabs/members.js');
 
 
 require('./agents/doc_management/transactions/contracts/contract_add_details.js');

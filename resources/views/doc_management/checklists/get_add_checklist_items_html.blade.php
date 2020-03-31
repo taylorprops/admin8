@@ -127,7 +127,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                                 <br>
                                 @php $tags = explode(',', $form -> sale_type); @endphp
                                 @foreach($tags as $tag)
-                                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getTagName($tag) }}</span>
+                                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
                                 @endforeach
                             </div>
                         </div>
@@ -148,7 +148,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 <input type="hidden" id="add_item_checklist_type" value="{{ $checklist -> checklist_type }}">
 
 
-<input type="hidden" id="checklist_header_val" value="{{ $checklist -> checklist_state }} @if($checklist -> checklist_state != $location) {{ $location }} @endif - {{ ucwords($checklist -> checklist_sale_rent) }} - {{ ucwords($checklist -> checklist_type) }} - {{ $resource_items -> getTagName($checklist -> checklist_property_type_id) }} @if($checklist -> checklist_property_sub_type_id != '') - {{ $resource_items -> getTagName($checklist -> checklist_property_sub_type_id) }}  @endif - {{ ucwords($checklist -> checklist_represent) }}">
+<input type="hidden" id="checklist_header_val" value="{{ $checklist -> checklist_state }} @if($checklist -> checklist_state != $location) {{ $location }} @endif - {{ ucwords($checklist -> checklist_sale_rent) }} - {{ ucwords($checklist -> checklist_type) }} - {{ $resource_items -> getResourceName($checklist -> checklist_property_type_id) }} @if($checklist -> checklist_property_sub_type_id != '') - {{ $resource_items -> getResourceName($checklist -> checklist_property_sub_type_id) }}  @endif - {{ ucwords($checklist -> checklist_represent) }}">
 
 
 {{-- options for checklist group select --}}

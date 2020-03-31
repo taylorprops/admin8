@@ -3,6 +3,7 @@
 namespace App\Models\DocManagement\Checklists;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DocManagement\Create\Upload\Upload;
 
 class ChecklistsItems extends Model
 {
@@ -14,6 +15,11 @@ class ChecklistsItems extends Model
         static::addGlobalScope(function ($query) {
             $query -> where('checklist_item_active', 'yes');
         });
+    }
+
+    public function ScopeGetFormName($query, $id) {
+        $upload = Upload::where('file_id', $id) -> first();
+        return $upload -> file_name_display;
     }
 
     public function ScopeGetChecklistItemsByGroup($query, $checklist_id, $group_id) {

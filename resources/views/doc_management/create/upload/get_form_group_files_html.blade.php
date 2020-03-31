@@ -13,7 +13,7 @@ $show_title = false;
                 <div class="d-flex justify-content-end">
                     @php $tags = explode(',', $file -> sale_type); @endphp
                     @foreach($tags as $tag)
-                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getTagName($tag) }}</span>
+                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
                     @endforeach
                 </div>
             </div>
