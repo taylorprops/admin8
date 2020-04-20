@@ -24,11 +24,13 @@ $(document).ready(function () {
     axios.interceptors.response.use(function (response) {
         //console.log(response);
         // log out user on axios calls if session expired
-        if (response.data.dismiss) {
+        if (response.data.dismiss || response.data.error) {
             window.location = '/';
         }
         return response;
     }, function (error) {
+        console.log(error.response);
+        window.location = '/';
         /* if(error.response.status === 404 || error.response.match(/404/) || error.response.status === 500 || error.response.match(/500/)) {
             window.location = '/';
         } */
@@ -58,7 +60,6 @@ $(document).ready(function () {
     });
 
     global_tooltip();
-
 
 
 

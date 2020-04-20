@@ -27,12 +27,21 @@
         border-bottom: 1px solid $danger !important;
     }
 
+
+
     .required-div {
         position: absolute;
         top: -2px;
         right: 3px;
         font-size: .6rem;
         color: $danger;
+    }
+    .datepicker-div {
+        position: absolute;
+        top: 7px;
+        right: 6px;
+        font-size: 1.2rem;
+        color: $primary;
     }
 
     .form-input, .form-textarea, .form-select-value-input {
@@ -203,8 +212,9 @@
 
 // datepicker
 .qs-datepicker-container {
-    width: 300px !important;
-    height: 300px !important;
+    width: 200px !important;
+    height: 200px !important;
+    font-size: .7rem;
 }
 .qs-datepicker .qs-controls {
     background: $primary-color;
@@ -227,14 +237,14 @@
     border-right-color: white;
 }
 .qs-datepicker .qs-month, .qs-datepicker .qs-year {
-    font-size: 1rem;
+    font-size: .8rem;
 }
 .qs-datepicker .qs-square.qs-day {
     font-weight: normal !important;
-    font-size: .7rem !important;
+    font-size: .5rem !important;
 }
 .qs-datepicker .qs-square {
-    height: 40px;
+    height: 25px;
 }
 .qs-datepicker .qs-overlay {
     background: rgba($primary-color, .8) !important;
@@ -243,4 +253,7 @@
 .qs-datepicker .qs-overlay .qs-submit.qs-disabled {
     color: rgba(255,255,255,.3);
     border-color:  rgba(255,255,255,.3);
+}
+.qs-datepicker .qs-overlay .qs-overlay-month {
+    opacity: .8;
 }

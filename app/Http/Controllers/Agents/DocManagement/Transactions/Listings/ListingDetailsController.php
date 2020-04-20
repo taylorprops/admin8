@@ -3,24 +3,55 @@
 namespace App\Http\Controllers\Agents\DocManagement\Transactions\Listings;
 
 use App\Http\Controllers\Controller;
+use Config;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
 use App\Models\CRM\CRMContacts;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\DocManagement\Resources\ResourceItems;
-use App\Models\DocManagement\Transactions\Listings\Checklists\ListingChecklistItems;
-use App\Models\DocManagement\Transactions\Listings\Checklists\ListingChecklistItemsDocs;
-use App\Models\DocManagement\Transactions\Listings\Checklists\ListingChecklists;
-use App\Models\DocManagement\Transactions\Listings\Documents\ListingDocuments;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
+use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
+use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
 use App\Models\DocManagement\Transactions\Listings\Listings;
 use App\Models\DocManagement\Transactions\Members\Members;
 use App\Models\DocManagement\Transactions\Members\TransactionCoordinators;
 use App\Models\Employees\Agents;
 use App\Models\Employees\Teams;
 use App\Models\Resources\LocationData;
-use Config;
-use Illuminate\Http\Request;
+use App\Models\DocManagement\Create\Upload\Upload;
+use App\Models\DocManagement\Transactions\Upload\TransactionUpload;
+use App\Models\DocManagement\Transactions\Upload\TransactionUploadImages;
+use App\Models\DocManagement\Transactions\Upload\TransactionUploadPages;
+
 
 class ListingDetailsController extends Controller {
+
+    // TABS
+
+    // Checklist Tab
+    public function get_checklist(Request $request) {
+        $Listing_ID = $request -> Listing_ID;
+        $checklist = TransactionChecklists::where('Listing_ID', $Listing_ID) -> first();
+        $items = TransactionChecklistItems::where('Listing_ID', $Listing_ID) -> orderBy('checklist_item_order') -> get();
+        $checklist_items = new ChecklistsItems();
+
+        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('checklist', 'items', 'checklist_items', 'checklist_docs'));
+    }
     // End Checklist Tab
+
+    // Members Tab
+    public function get_members(Request $request) {
+        $listing = Listings::find($request -> Listing_ID);
+        $members = Members::where('Listing_ID', $request -> Listing_ID) -> get();
+        $resource_items = new ResourceItems();
+        $contact_types = $resource_items -> where('resource_type', 'contact_type') -> get();
+        $states = LocationData::AllStates();
+        $contacts = CRMContacts::where('Agent_ID', $listing -> Agent_ID) -> get();
+        return view('/agents/doc_management/transactions/listings/details/data/get_members', compact('members', 'contact_types', 'resource_items', 'states', 'contacts'));
+    }
 
     public function add_member_html(Request $request) {
         $contact_types = ResourceItems::where('resource_type', 'contact_type') -> get();
@@ -42,20 +73,34 @@ class ListingDetailsController extends Controller {
 
     }
 
-// End Documents Tab
+    public function save_member(Request $request) {
 
-    // Checklist Tab
-    public function get_checklist(Request $request) {
-        $Listing_ID = $request -> Listing_ID;
-        $checklist = ListingChecklists::where('Listing_ID', $Listing_ID) -> first();
-        $items = ListingChecklistItems::where('Listing_ID', $Listing_ID) -> orderBy('checklist_item_order') -> get();
-        $checklist_items = new ChecklistsItems();
-        $checklist_docs = new ListingChecklistItemsDocs();
+        if ($request -> id && $request -> id != 'undefined') {
+            $member = Members::find($request -> id);
+        } else {
+            $member = new Members();
+        }
 
-        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('checklist', 'items', 'checklist_items', 'checklist_docs'));
+        $data = $request -> all();
+
+        foreach ($data as $col => $val) {
+
+            if ($col != 'id') {
+                $member -> $col = $val ?? null;
+            }
+
+        }
+
+        $member -> save();
+
+        $this -> update_sellers($request -> Listing_ID);
+
+        return response() -> json([
+            'status' => 'ok',
+        ]);
     }
+    // End Members Tab
 
-// TABS
     // Details Tab
     public function get_details(Request $request) {
         $Listing_ID = $request -> Listing_ID;
@@ -70,86 +115,6 @@ class ListingDetailsController extends Controller {
         $trans_coords = TransactionCoordinators::where('active', 'yes') -> orderBy('last_name') -> get();
 
         return view('/agents/doc_management/transactions/listings/details/data/get_details', compact('Listing_ID', 'listing', 'agents', 'teams', 'street_suffixes', 'street_dir_suffixes', 'states', 'counties', 'trans_coords'));
-    }
-
-// End Members Tab
-
-    // Documents Tab
-    public function get_documents(Request $request) {
-        $Listing_ID = $request -> Listing_ID;
-        $documents = ListingDocuments::where('Listing_ID', $Listing_ID) -> get();
-
-        return view('/agents/doc_management/transactions/listings/details/data/get_documents', compact('documents'));
-    }
-
-// End Details Tab
-
-    // Members Tab
-    public function get_members(Request $request) {
-        $listing = Listings::find($request -> Listing_ID);
-        $members = Members::where('Listing_ID', $request -> Listing_ID) -> get();
-        $resource_items = new ResourceItems();
-        $contact_types = $resource_items -> where('resource_type', 'contact_type') -> get();
-        $states = LocationData::AllStates();
-        $contacts = CRMContacts::where('Agent_ID', $listing -> Agent_ID) -> get();
-        return view('/agents/doc_management/transactions/listings/details/data/get_members', compact('members', 'contact_types', 'resource_items', 'states', 'contacts'));
-    }
-
-    // Listing Details
-    public function listing_details(Request $request) {
-        $Listing_ID = $request -> Listing_ID;
-        $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
-        $resource_items = new ResourceItems();
-        $sellers = Members::where('Listing_ID', $Listing_ID) -> where('member_type_id', $resource_items -> SellerResourceId()) -> get();
-
-        if ($listing -> ExpirationDate != '' && $listing -> ExpirationDate != '0000-00-00') {
-            return view('/agents/doc_management/transactions/listings/details/listing_details', compact('listing', 'sellers'));
-        } else {
-            return redirect('/agents/doc_management/transactions/listings/listing_required_details/' . $Listing_ID);
-        }
-
-    }
-
-    // Listing Details Header
-    public function listing_details_header(Request $request) {
-        $Listing_ID = $request -> Listing_ID;
-        $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
-        $resource_items = new ResourceItems();
-        $sellers = Members::where('Listing_ID', $Listing_ID) -> where('member_type_id', $resource_items -> SellerResourceId()) -> get();
-        $statuses = $resource_items -> where('resource_type', 'listing_status') -> orderBy('resource_order') -> get();
-        return view('/agents/doc_management/transactions/listings/details/listing_details_header', compact('listing', 'sellers', 'resource_items', 'statuses'));
-    }
-
-    // TEMP get all listings
-    public function listings_all(Request $request) {
-        $listings = Listings::where('Agent_ID', auth() -> user() -> user_id) -> get();
-        return view('/agents/doc_management/transactions/listings/listings_all', compact('listings'));
-    }
-
-    public function mls_search(Request $request) {
-
-        $listing_details = Listings::find($request -> Listing_ID);
-        $mls_search_details = bright_mls_search($request -> ListingId);
-        $mls_search_details = (object)$mls_search_details;
-
-        // only if mls search produced results
-        if (isset($mls_search_details -> ListingId)) {
-
-            return response() -> json([
-                'status' => 'ok',
-                'county_match' => 'yes',
-                'address' => $mls_search_details -> FullStreetAddress,
-                'city' => $mls_search_details -> City,
-                'state' => $mls_search_details -> StateOrProvince,
-                'zip' => $mls_search_details -> PostalCode,
-                'picture_url' => $mls_search_details -> ListPictureURL,
-                'list_company' => $mls_search_details -> ListOfficeName,
-            ]);
-        }
-
-        return response() -> json([
-            'status' => 'not found',
-        ]);
     }
 
     public function save_details(Request $request) {
@@ -194,31 +159,292 @@ class ListingDetailsController extends Controller {
             'status' => 'ok',
         ]);
     }
+    // End Details Tab
 
-    public function save_member(Request $request) {
+    // Documents Tab
+    public function get_documents(Request $request) {
 
-        if ($request -> id && $request -> id != 'undefined') {
-            $member = Members::find($request -> id);
-        } else {
-            $member = new Members();
+        $Listing_ID = $request -> Listing_ID;
+        $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
+        $Agent_ID = $listing -> Agent_ID;
+        $documents = TransactionDocuments::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
+        $folders = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
+        $checklist_items = TransactionChecklistItems::where('Listing_ID', $Listing_ID) -> orderBy('checklist_item_order') -> get();
+        $checklist_form_ids = $checklist_items -> pluck('checklist_form_id') -> all();
+        $checklist_forms = Upload::whereIn('file_id', $checklist_form_ids) -> get();
+
+        $available_files = new Upload();
+
+        $resource_items = new ResourceItems();
+        $form_groups = $resource_items -> where('resource_type', 'form_groups') -> where('resource_association', 'yes') -> orderBy('resource_order') -> get();
+        $form_tags = $resource_items -> where('resource_type', 'form_tags') -> orderBy('resource_order') -> get();
+
+        return view('/agents/doc_management/transactions/listings/details/data/get_documents', compact('Agent_ID', 'Listing_ID', 'documents', 'folders', 'checklist_forms', 'available_files', 'resource_items', 'form_groups', 'form_tags'));
+    }
+
+    public function reorder_documents(Request $request) {
+        $data = json_decode($request['data'], true);
+        $data = $data['document'];
+
+        foreach($data as $item) {
+            $document_id = $item['document_id'];
+            $document_order = $item['document_index'];
+            $reorder = TransactionDocuments::where('id', $document_id) -> first();
+            $reorder -> order = $document_order;
+            $reorder -> save();
         }
 
-        $data = $request -> all();
+    }
 
-        foreach ($data as $col => $val) {
+    public function add_folder(Request $request) {
+        $order = TransactionDocumentsFolders::where('Listing_ID', $request -> Listing_ID) -> where('Agent_ID', $request -> Agent_ID) -> where('folder_name', '!=', 'Trash') -> max('order');
+        $order += 1;
+        $folder = new TransactionDocumentsFolders();
+        $folder -> folder_name = $request -> folder;
+        $folder -> order = $order;
+        $folder -> Listing_ID = $request -> Listing_ID;
+        $folder -> Agent_ID = $request -> Agent_ID;
+        $folder -> save();
+    }
 
-            if ($col != 'id') {
-                $member -> $col = $val ?? null;
+    public function delete_folder(Request $request) {
+        $folder_id = $request -> folder_id;
+        $Listing_ID = $request -> Listing_ID;
+        $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('folder_name', 'Trash') -> first();
+        $move_documents_to_trash = TransactionDocuments::where('folder', $folder_id) -> update(['folder' => $trash_folder -> id]);
+        $delete_folder = TransactionDocumentsFolders::where('id', $folder_id) -> delete();
+    }
+
+    public function save_add_template_documents(Request $request) {
+        $Agent_ID = $request -> Agent_ID;
+        $Listing_ID = $request -> Listing_ID;
+        $folder = $request -> folder;
+
+        $files = json_decode($request['files'], true);
+
+        foreach($files as $file) {
+            $add_documents = new TransactionDocuments();
+            $add_documents -> Agent_ID = $Agent_ID;
+            $add_documents -> Listing_ID = $Listing_ID;
+            $add_documents -> folder = $folder;
+            $add_documents -> file_id = $file['file_id'];
+            $add_documents -> file_type = 'system';
+            $add_documents -> file_name = $file['file_name'];
+            $add_documents -> file_name_display = $file['file_name_display'];
+            $add_documents -> pages_total = $file['pages_total'];
+            $add_documents -> file_location = $file['file_location'];
+            $add_documents -> save();
+        }
+
+    }
+
+    public function upload_documents(Request $request) {
+
+        $file = $request -> file('file');
+        $Agent_ID = $request -> Agent_ID;
+        $Listing_ID = $request -> Listing_ID;
+        $folder = $request -> folder;
+
+        if ($file) {
+
+            $ext = $file -> getClientOriginalExtension();
+            $file_name_display = $file -> getClientOriginalName();
+            $filename = $file_name_display;
+            $date = date('YmdHis');
+            $file_name_no_ext = str_replace('.' . $ext, '', $filename);
+            $clean_filename = sanitize($file_name_no_ext);
+            $new_filename = $clean_filename . '_' . $date . '.' . $ext;
+            // convert to pdf if image
+            if($ext != 'pdf') {
+                $new_filename = $clean_filename . '_' . $date . '.pdf';
+                $file_name_display = $file_name_no_ext.'.pdf';
+                $create_images = exec('convert -quality 100 -density 300 ' . $file . ' /tmp/'.$new_filename, $output, $return);
+                $file = '/tmp/'.$new_filename;
+            }
+            $pages_total = exec('pdftk ' . $file . ' dump_data | sed -n \'s/^NumberOfPages:\s//p\'');
+
+            // add to Documents first because of foreign key restraint on TransactionUpload
+            $add_documents = new TransactionDocuments();
+            $add_documents -> file_type = 'user';
+            $add_documents -> Agent_ID = $Agent_ID;
+            $add_documents -> Listing_ID = $Listing_ID;
+            $add_documents -> folder = $folder;
+            $add_documents -> file_name = $new_filename;
+            $add_documents -> file_name_display = $file_name_display;
+            $add_documents -> pages_total = $pages_total;
+            $add_documents -> save();
+            $ListingDocs_ID = $add_documents -> id;
+
+            // add original file to database
+            $upload = new TransactionUpload();
+            $upload -> ListingDocs_ID = $ListingDocs_ID;
+            $upload -> Agent_ID = $Agent_ID;
+            $upload -> Listing_ID = $Listing_ID;
+            $upload -> file_name = $new_filename;
+            $upload -> file_name_display = $file_name_display;
+            $upload -> pages_total = $pages_total;
+            $upload -> pages_total = $pages_total;
+            $upload -> save();
+            $file_id = $upload -> file_id;
+
+            $add_documents -> file_id = $file_id;
+            $add_documents -> save();
+
+            $base_path = base_path();
+            $storage_path = $base_path . '/storage/app/public';
+            $storage_dir = 'doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id;
+            $storage_public_path = '/storage/'.$storage_dir;
+            $file_location = $storage_public_path . '/' . $new_filename;
+
+            if (!Storage::disk('public') -> put($storage_dir . '/' . $new_filename, file_get_contents($file))) {
+                $fail = json_encode(['fail' => 'File Not Uploaded']);
+                return ($fail);
             }
 
+            $storage_full_path = $storage_path . '/doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id;
+            chmod($storage_full_path . '/' . $new_filename, 0775);
+
+            // update directory path in database
+            $upload -> file_location = $storage_public_path . '/' . $new_filename;
+            $upload -> save();
+
+            // create directories
+            $storage_dir_pages = $storage_dir . '/pages';
+            Storage::disk('public') -> makeDirectory($storage_dir_pages);
+            $storage_dir_images = $storage_dir . '/images';
+            Storage::disk('public') -> makeDirectory($storage_dir_images);
+
+
+            // split pdf into pages and images
+            $input_file = $storage_full_path . '/' . $new_filename;
+            $output_files = $storage_path . '/' . $storage_dir_pages . '/page_%02d.pdf';
+            $new_image_name = str_replace($ext, 'jpg', $new_filename);
+            $output_images = $storage_path . '/' . $storage_dir_images . '/' . $new_image_name;
+
+            // add individual pages to pages directory
+            $create_pages = exec('pdftk ' . $input_file . ' burst output ' . $output_files, $output, $return);
+            // remove data file
+            exec('rm ' . $storage_path . '/' . $storage_dir_pages . '/doc_data.txt');
+
+            // add individual images to images directory
+            $create_images = exec('convert -density 100 -quality 100 ' . $input_file . ' -background white -alpha remove -strip ' . $output_images, $output, $return);
+
+            // get all image files images_storage_path to use as file location
+            $saved_images_directory = Storage::files('public/' . $storage_dir . '/images');
+            $images_public_path = $storage_public_path . '/images';
+
+            $page_number = 1;
+            foreach ($saved_images_directory as $saved_image) {
+                // get just filename
+                $images_file_name = basename($saved_image);
+
+                // add images to database
+                $upload_images = new TransactionUploadImages();
+                $upload_images -> file_id = $file_id;
+                $upload_images -> Agent_ID = $Agent_ID;
+                $upload_images -> Listing_ID = $Listing_ID;
+                $upload_images -> file_name = $images_file_name;
+                $upload_images -> file_location = $images_public_path . '/' . $images_file_name;
+                $upload_images -> pages_total = $pages_total;
+                $upload_images -> page_number = $page_number;
+                $upload_images -> save();
+                $page_number += 1;
+
+            }
+
+            $saved_pages_directory = Storage::files('public/' . $storage_dir . '/pages');
+            $pages_public_path = $storage_public_path . '/pages';
+
+            $page_number = 1;
+            foreach ($saved_pages_directory as $saved_page) {
+                $pages_file_name = basename($saved_page);
+                $upload_pages = new TransactionUploadPages();
+                $upload_pages -> Agent_ID = $Agent_ID;
+                $upload_pages -> Listing_ID = $Listing_ID;
+                $upload_pages -> file_id = $file_id;
+                $upload_pages -> file_name = $pages_file_name;
+                $upload_pages -> file_location = $pages_public_path . '/' . $pages_file_name;
+                $upload_pages -> pages_total = $pages_total;
+                $upload_pages -> page_number = $page_number;
+                $upload_pages -> save();
+
+                $page_number += 1;
+
+            }
+
+            $add_documents -> file_location = $file_location;
+            $add_documents -> save();
+
+
+
         }
 
-        $member -> save();
+    }
 
-        $this -> update_sellers($request -> Listing_ID);
+    public function move_documents_to_trash(Request $request) {
+        $Listing_ID = $request -> Listing_ID;
+        $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('folder_name', 'Trash') -> first();
+        $document_ids = explode(',', $request -> document_ids);
+        $update_folder = TransactionDocuments::whereIn('id', $document_ids) -> update(['folder' => $trash_folder -> id]);
+    }
+
+    public function move_documents_to_folder(Request $request) {
+        $Listing_ID = $request -> Listing_ID;
+        $folder_id = $request -> folder_id;
+        $document_ids = explode(',', $request -> document_ids);
+        $update_folder = TransactionDocuments::whereIn('id', $document_ids) -> update(['folder' => $folder_id]);
+    }
+    // End Documents Tab
+
+
+    // Listing Details
+    public function listing_details(Request $request) {
+        $Listing_ID = $request -> Listing_ID;
+        $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
+        $resource_items = new ResourceItems();
+        $sellers = Members::where('Listing_ID', $Listing_ID) -> where('member_type_id', $resource_items -> SellerResourceId()) -> get();
+
+        if ($listing -> ExpirationDate != '' && $listing -> ExpirationDate != '0000-00-00') {
+            return view('/agents/doc_management/transactions/listings/details/listing_details', compact('listing', 'sellers'));
+        } else {
+            return redirect('/agents/doc_management/transactions/listings/listing_required_details/' . $Listing_ID);
+        }
+
+    }
+
+    // Listing Details Header
+    public function listing_details_header(Request $request) {
+        $Listing_ID = $request -> Listing_ID;
+        $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
+        $resource_items = new ResourceItems();
+        $sellers = Members::where('Listing_ID', $Listing_ID) -> where('member_type_id', $resource_items -> SellerResourceId()) -> get();
+        $statuses = $resource_items -> where('resource_type', 'listing_status') -> orderBy('resource_order') -> get();
+        return view('/agents/doc_management/transactions/listings/details/listing_details_header', compact('listing', 'sellers', 'resource_items', 'statuses'));
+    }
+
+    public function mls_search(Request $request) {
+
+        $listing_details = Listings::find($request -> Listing_ID);
+        $mls_search_details = bright_mls_search($request -> ListingId);
+        $mls_search_details = (object)$mls_search_details;
+
+        // only if mls search produced results
+        if (isset($mls_search_details -> ListingId)) {
+
+            return response() -> json([
+                'status' => 'ok',
+                'county_match' => 'yes',
+                'address' => $mls_search_details -> FullStreetAddress,
+                'city' => $mls_search_details -> City,
+                'state' => $mls_search_details -> StateOrProvince,
+                'zip' => $mls_search_details -> PostalCode,
+                'picture_url' => $mls_search_details -> ListPictureURL,
+                'list_company' => $mls_search_details -> ListOfficeName,
+            ]);
+        }
 
         return response() -> json([
-            'status' => 'ok',
+            'status' => 'not found',
         ]);
     }
 
@@ -228,7 +454,7 @@ class ListingDetailsController extends Controller {
         $mls_search_details = bright_mls_search($request -> ListingId);
         $mls_search_details = (object)$mls_search_details;
         $resource_items = new ResourceItems();
-        $checklist = ListingChecklists::where('Listing_ID', $request -> Listing_ID) -> where('Agent_ID', $listing_details -> Agent_ID) -> first();
+        $checklist = TransactionChecklists::where('Listing_ID', $request -> Listing_ID) -> where('Agent_ID', $listing_details -> Agent_ID) -> first();
         $checklist_id = $checklist -> id;
 
         // set values
@@ -292,7 +518,9 @@ class ListingDetailsController extends Controller {
             $location_id = $resource_items -> GetResourceID($mls_search_details -> StateOrProvince, 'checklist_locations');
         }
 
-        ListingChecklists::CreateListingChecklist($checklist_id, $request -> Listing_ID, $listing_details -> Agent_ID, 'seller', 'listing', $property_type_id, $property_sub_type_id, $sale_rent, $mls_search_details -> StateOrProvince, $location_id);
+        TransactionChecklists::CreateListingChecklist($checklist_id, $request -> Listing_ID, $listing_details -> Agent_ID, 'seller', 'listing', $property_type_id, $property_sub_type_id, $sale_rent, $mls_search_details -> StateOrProvince, $location_id);
+
+        $listing_details -> ListingId = $request -> ListingId;
 
         // get cols and vals for mls search
         foreach ($mls_search_details as $col => $val) {
@@ -349,13 +577,15 @@ class ListingDetailsController extends Controller {
     }
 
     public function update_sellers($Listing_ID) {
-        $sellers = Members::where('Listing_ID', $Listing_ID) -> where('member_type_id', ResourceItems::SellerResourceId()) -> get() -> toArray();
+        $sellers = Members::where('Listing_ID', $Listing_ID) -> where('member_type_id', ResourceItems::SellerResourceId());
+
         $seller_two_first = $seller_two_last = '';
-        $seller_one_first = $sellers[0]['first_name'];
-        $seller_one_last = $sellers[0]['last_name'];
-        if ($sellers[1]) {
-            $seller_two_first = $sellers[1]['first_name'];
-            $seller_two_last = $sellers[1]['last_name'];
+        $seller_one_first = $sellers -> first() -> first_name;
+        $seller_one_last = $sellers -> first() -> last_name;
+
+        if ($sellers -> take(1) -> first()) {
+            $seller_two_first = $sellers -> take(1) -> first() -> first_name;
+            $seller_two_last = $sellers -> take(1) -> first() -> last_name;
         }
 
         $listing = Listings::find($Listing_ID);
@@ -366,12 +596,12 @@ class ListingDetailsController extends Controller {
         $listing -> save();
     }
 
-    public function update_status(Request $request) {
-        $Listing_ID = $request -> Listing_ID;
-        $Status = $request -> Status;
-        $listing = Listings::find($Listing_ID);
-        $listing -> Status = $Status;
-        $listing -> save();
+    // TEMP get all listings
+    public function listings_all(Request $request) {
+        $listings = Listings::where('Agent_ID', auth() -> user() -> user_id) -> get();
+        return view('/agents/doc_management/transactions/listings/listings_all', compact('listings'));
     }
+
+
 
 }

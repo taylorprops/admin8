@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Models\DocManagement\Transactions\Listings\Checklists;
+namespace App\Models\DocManagement\Transactions\Checklists;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\DocManagement\Checklists\Checklists;
 use App\Models\DocManagement\Transactions\Listings\Listings;
-use App\Models\DocManagement\Transactions\Listings\Checklists\ListingChecklistItems;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
 
-class ListingChecklists extends Model
+class TransactionChecklists extends Model
 {
     protected $connection = 'mysql';
-    public $table = 'docs_transactions_checklist_listing';
+    public $table = 'docs_transactions_checklists';
     protected $primaryKey = 'id';
 
     public function ScopeCreateListingChecklist($request, $checklist_id, $Listing_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id) {
@@ -38,13 +38,13 @@ class ListingChecklists extends Model
 
         if($checklist_id) {
 
-            $existing_checklist = ListingChecklists::find($checklist_id);
+            $existing_checklist = TransactionChecklists::find($checklist_id);
             $existing_checklist -> checklist_id = $checklist -> id;
             $existing_checklist -> Listing_ID = $Listing_ID;
             $existing_checklist -> Agent_ID = $Agent_ID;
             $existing_checklist -> save();
 
-            $existing_items = ListingChecklistItems::where('checklist_id', $checklist_id) -> get();
+            $existing_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
 
             // remove items from checklist no longer needed
             $new_form_ids = [];
@@ -61,14 +61,14 @@ class ListingChecklists extends Model
             }
 
             if(count($remove_ids) > 0) {
-                $remove_items = ListingChecklistItems::whereIn('id', $remove_ids) -> delete();
+                $remove_items = TransactionChecklistItems::whereIn('id', $remove_ids) -> delete();
             }
 
             // TODO: remove items docs too
 
         } else {
 
-            $add_checklist = new ListingChecklists();
+            $add_checklist = new TransactionChecklists();
             $add_checklist -> checklist_id = $checklist -> id;
             $add_checklist -> Listing_ID = $Listing_ID;
             $add_checklist -> Agent_ID = $Agent_ID;
@@ -80,7 +80,7 @@ class ListingChecklists extends Model
         foreach($items as $item) {
 
             if(!in_array($item -> checklist_form_id, $keep_form_ids)) {
-                $add_checklist_items = new ListingChecklistItems();
+                $add_checklist_items = new TransactionChecklistItems();
                 $add_checklist_items -> checklist_id = $checklist_id;
                 $add_checklist_items -> Listing_ID = $Listing_ID;
                 $add_checklist_items -> Agent_ID = $Agent_ID;

@@ -103,9 +103,9 @@
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary draggable-handle">
-                <h3 class="modal-title" id="delete_member_title">Confirm</h3>
+                <h4 class="modal-title" id="delete_member_title">Confirm</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <i class="fal fa-times fa-2x"></i>
+                    <i class="fal fa-times mt-2"></i>
                 </button>
             </div>
             <div class="modal-body">
@@ -123,9 +123,9 @@
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary draggable-handle">
-                <h3 class="modal-title" id="import_contact_modal_title">Select Contacts</h3>
+                <h4 class="modal-title" id="import_contact_modal_title">Select Contacts</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <i class="fal fa-times fa-2x"></i>
+                    <i class="fal fa-times mt-2"></i>
                 </button>
             </div>
             <div class="modal-body">

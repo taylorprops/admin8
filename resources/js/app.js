@@ -3,7 +3,7 @@ import $ from 'jquery';
 window.$ = window.jQuery = $;
 const axios = require('axios');
 import 'jquery-ui/ui/widgets/datepicker.js';
-
+require('dm-file-uploader');
 
 
 
@@ -33,6 +33,10 @@ require('./agents/doc_management/transactions/listings/details_tabs/contracts.js
 require('./agents/doc_management/transactions/listings/details_tabs/details.js');
 require('./agents/doc_management/transactions/listings/details_tabs/documents.js');
 require('./agents/doc_management/transactions/listings/details_tabs/members.js');
+require('./agents/doc_management/transactions/upload/upload.js');
+
+// edit files
+require('./agents/doc_management/transactions/edit_files/edit_files.js');
 
 
 require('./agents/doc_management/transactions/contracts/contract_add_details.js');

@@ -1,0 +1,121 @@
+.page-fill-fields {
+    overflow-x: hidden;
+    border: 1px solid $border-color;
+
+    .file-viewer-container {
+        width: 1000px;
+    }
+
+    .file-view {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 120px);
+        overflow-y: scroll;
+    }
+
+
+    .file-view-thumb-container {
+        border: 2px solid rgba($primary-color, .2);
+        margin-bottom: 5px;
+    }
+
+    .file-view-thumb-container.active {
+        border: 2px solid $primary-color;
+    }
+
+    .file-view-thumb-footer {
+        font-size: .7rem;
+    }
+
+
+    // Fields
+
+    .field-container,
+    .field-container-hidden {
+        position: relative;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    input.fillable-field-input {
+        width: 100%;
+        height: 100%;
+    }
+
+    .field-datepicker {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: none;
+        color: transparent;
+        z-index: 1;
+    }
+
+    .data-div {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        line-height: 1;
+    }
+
+    .data-div:not(.data-div-radio-check) {
+        font-size: 11px;
+        padding-left: 5px;
+        padding-top: 4px;
+    }
+
+    .data-div.data-div-radio-check {
+        top: -5px;
+        left: 1px;
+        font-size: 1.6em;
+        line-height: 80%;
+    }
+
+
+
+    // Fields
+    .field-div {
+        background: rgba($orange, .1);
+        cursor: pointer;
+        color: #000;
+        box-shadow: none;
+    }
+
+    .field-div.active {
+        cursor: default;
+        box-shadow: 0px 9px 0px -5px #FFFFFF,
+        0px -9px 0px -5px #FFFFFF,
+        9px 0px 0px -5px #FFFFFF,
+        -9px 0px 0px -5px  #FFFFFF,
+        0px 0px 0px 5px $blue,
+        5px 5px 10px 5px rgba(0, 0, 0, 0);
+    }
+
+    .modal-body {
+        max-height: 65VH;
+        overflow: auto;
+    }
+
+    @media (max-width: 1500px) {
+        .edit-file-sidebar {
+            display: none;
+        }
+    }
+
+    // edit file options bar
+    .navbar-edit-file-options {
+        li:hover {
+            background: $blue-light;
+        }
+        a {
+
+        }
+    }
+
+}

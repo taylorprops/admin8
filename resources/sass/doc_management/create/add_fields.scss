@@ -1,12 +1,9 @@
 .page-add-fields {
-    width: 100%;
-    max-width: 100% !important;
     overflow-x: hidden;
+    border: 1px solid $border-color;
 
     .file-viewer-container {
-        width: 1100px;
-        margin-left: auto;
-        margin-right: auto;
+        width: 1000px;
     }
 
     .file-view {
@@ -14,8 +11,6 @@
         width: 100%;
         height: calc(100vh - 140px);
         overflow-y: scroll;
-        // margin-left: auto;
-        // margin-right: auto;
     }
 
 
@@ -147,8 +142,8 @@
         .field-options-holder {
             position: absolute;
             top: -50px;
-            left:50%;
-            transform: translate(-50%, 0%);
+            //left:50%;
+            //transform: translate(-50%, 0%);
             width: auto;
             background: transparent;
         }
@@ -263,6 +258,12 @@
 
     .form-div h5 {
         padding-bottom: 5px;
+    }
+
+    @media (max-width: 1500px) {
+        .edit-file-sidebar {
+            display: none;
+        }
     }
 
 }

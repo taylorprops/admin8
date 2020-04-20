@@ -11,12 +11,12 @@ use App\Models\DocManagement\Resources\ResourceItems;
 use App\Models\DocManagement\Transactions\Data\ListingsData;
 use App\Models\DocManagement\Transactions\Data\ListingsRemovedData;
 use App\Models\DocManagement\Transactions\Listings\Listings;
-use App\Models\DocManagement\Transactions\Listings\Checklists\ListingChecklists;
-use App\Models\DocManagement\Transactions\Listings\Checklists\ListingChecklistItems;
-use App\Models\DocManagement\Transactions\Listings\Documents\ListingDocumentsFolders;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
+use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
 use App\Models\DocManagement\Transactions\Members\Members;
-use App\Models\DocManagement\Checklists\Checklists;
-use App\Models\DocManagement\Checklists\ChecklistsItems;
+// use App\Models\DocManagement\Checklists\Checklists;
+// use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\Employees\Agents;
 use App\Models\Resources\LocationData;
 use App\Models\CRM\CRMContacts;
@@ -520,14 +520,19 @@ class ListingAddController extends Controller {
         $listing_id = $listing -> Listing_ID;
 
         // add default docs folders
-        $folders = ['listing_docs', 'trash'];
-        foreach ($folders as $folder) {
-            $new_folder = new ListingDocumentsFolders();
-            $new_folder -> Listing_ID = $listing -> Listing_ID;
-            $new_folder -> Agent_ID = $agent -> id;
-            $new_folder -> folder_name = $folder;
-            $new_folder -> save();
-        }
+        $new_folder = new TransactionDocumentsFolders();
+        $new_folder -> Listing_ID = $listing -> Listing_ID;
+        $new_folder -> Agent_ID = $agent -> id;
+        $new_folder -> folder_name = 'Listing Documents';
+        $new_folder -> order = 0;
+        $new_folder -> save();
+
+        $new_folder = new TransactionDocumentsFolders();
+        $new_folder -> Listing_ID = $listing -> Listing_ID;
+        $new_folder -> Agent_ID = $agent -> id;
+        $new_folder -> folder_name = 'Trash';
+        $new_folder -> order = 100;
+        $new_folder -> save();
 
 
         return $listing_id;
@@ -564,7 +569,7 @@ class ListingAddController extends Controller {
             $members -> address_city = $address_city[$i];
             $members -> address_state = $address_state[$i];
             $members -> address_zip = $address_zip[$i];
-            $members -> CRMContact_ID = $seller_crm_contact_id[$i] ?? null;
+            $members -> CRMContact_ID = $seller_crm_contact_id[$i] ?? 0;
             $members -> member_type_id = ResourceItems::SellerResourceId();
             $members -> Agent_ID = $Agent_ID;
             $members -> Listing_ID = $Listing_ID;
@@ -610,7 +615,7 @@ class ListingAddController extends Controller {
         $checklist_location_id = $listing -> Location_ID;
         $checklist_id = '';
 
-        ListingChecklists::CreateListingChecklist($checklist_id, $Listing_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id);
+        TransactionChecklists::CreateListingChecklist($checklist_id, $Listing_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id);
 
         return $Listing_ID;
 

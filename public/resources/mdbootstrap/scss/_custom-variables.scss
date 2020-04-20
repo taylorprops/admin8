@@ -98,6 +98,10 @@ a.text-green:hover {
 .bg-blue-med {
     background: $blue-med !important;
 }
+.bg-green {
+    background: $green !important;
+    background-color: $green !important;
+}
 .bg-green-light {
     background: rgba($green, .1) !important;
     background-color: rgba($green, .1) !important;

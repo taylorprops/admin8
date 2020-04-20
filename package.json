@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "acorn": ">=6.4.1",
+    "dm-file-uploader": "^1.0.2",
     "gulp": "^4.0.2",
     "html2canvas": "^1.0.0-rc.5",
     "interactjs": "^1.6.3",

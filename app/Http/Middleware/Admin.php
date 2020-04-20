@@ -26,8 +26,8 @@ class Admin
             return redirect($redirect_url) -> with('error','You do not have access');
         }
 
-        //return redirect('/') -> with('error','Session Has Expired');
-        echo '<script>top.location.href="/";</script>';
+        return redirect('/') -> with('error','Session Has Expired');
+        //echo '<script>top.location.href="/";</script>';
 
     }
 }

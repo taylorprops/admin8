@@ -8,7 +8,7 @@ use App\Models\DocManagement\Create\Fields\CommonFields;
 use App\Models\DocManagement\Create\Fields\Fields;
 use App\Models\DocManagement\Create\Fields\FieldTypes;
 use App\Models\DocManagement\Create\Fields\FieldInputs;
-use App\Models\DocManagement\Create\\FilledFields\FilledFields;
+use App\Models\DocManagement\Create\FilledFields\FilledFields;
 use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Create\Upload\UploadImages;
 use App\Models\Resources\LocationData;
@@ -21,7 +21,6 @@ class FieldsController extends Controller
     public function get_common_fields(Request $request) {
         return CommonFields::getCommonFields();
     }
-
 
     public function add_fields(Request $request) {
 
@@ -41,53 +40,67 @@ class FieldsController extends Controller
 
         $file_id = $data[0]['file_id'];
 
-        // add new fields
-        if(isset($file_id)) {
+        $published = Upload::where('file_id', $file_id) -> first();
+        if($published -> published == 'no') {
 
-            // delete all fields for this document
-            $delete_docs = Fields::where('file_id', $file_id) -> delete();
-            $delete_inputs = FieldInputs::where('file_id', $file_id) -> delete();
+            // add new fields
+            if(isset($file_id)) {
 
-            if(!empty($data[0]['field_id'])) {
+                // delete all fields for this document
+                $delete_docs = Fields::where('file_id', $file_id) -> delete();
+                $delete_inputs = FieldInputs::where('file_id', $file_id) -> delete();
 
-                // remove input fields, they are added next
-                $ignore_fields = ['field_data_input', 'field_data_input_helper_text', 'field_data_input_id'];
-                // add fields
-                foreach($data as $field) {
-                    $fields = new Fields;
-                    foreach($field as $key => $val) {
-                        if(!in_array($key, $ignore_fields)) {
-                            // keep field name in readable format and as name/id
-                            if($key == 'field_name') {
-                                $fields -> field_name_display = $val;
-                                $val = trim(preg_replace('/\s/', '', $val));
+                if(!empty($data[0]['field_id'])) {
+
+                    // remove input fields, they are added next
+                    $ignore_fields = ['field_data_input', 'field_data_input_helper_text', 'field_data_input_id'];
+                    // add fields
+                    foreach($data as $field) {
+                        $fields = new Fields;
+                        foreach($field as $key => $val) {
+                            if(!in_array($key, $ignore_fields)) {
+                                // keep field name in readable format and as name/id
+                                if($key == 'field_name') {
+                                    $fields -> field_name_display = $val;
+                                    $val = trim(preg_replace('/\s/', '', $val));
+                                }
+                                $fields -> $key = $val;
                             }
-                            $fields -> $key = $val;
                         }
+                        $fields -> save();
                     }
-                    $fields -> save();
-                }
 
-                // add field inputs
-                foreach($data as $field) {
-                    $field_id = $field['field_id'];
-                    $input_ids = $field['field_data_input_id'];
-                    $input_names = $field['field_data_input'];
-                    $input_names_helper_text = $field['field_data_input_helper_text'];
+                    // add field inputs
+                    foreach($data as $field) {
 
-                    for($i = 0; $i < count($input_names); $i++) {
-                        $field_inputs = new FieldInputs;
-                        $field_inputs -> input_id = $input_ids[$i];
-                        $field_inputs -> input_name = $input_names[$i];
-                        $field_inputs -> input_helper_text = $input_names_helper_text[$i];
-                        $field_inputs -> file_id = $file_id;
-                        $field_inputs -> field_id = $field_id;
-                        $field_inputs -> save();
+                        $field_id = $field['field_id'];
+                        $input_ids = $field['field_data_input_id'];
+                        $input_names = $field['field_data_input'];
+                        $input_names_helper_text = $field['field_data_input_helper_text'];
+                        $field_type = $field['field_name_type'];
+
+                        for($i = 0; $i < count($input_names); $i++) {
+                            $field_inputs = new FieldInputs;
+                            $field_inputs -> input_id = $input_ids[$i];
+                            $field_inputs -> input_name = $input_names[$i];
+                            $field_inputs -> input_helper_text = $input_names_helper_text[$i];
+                            $field_inputs -> file_id = $file_id;
+                            $field_inputs -> field_id = $field_id;
+                            $field_inputs -> field_type = $field_type;
+                            $field_inputs -> save();
+                        }
+
                     }
 
                 }
 
             }
+
+        } else {
+
+            return response() -> json([
+                'error' => 'published',
+            ]);
 
         }
 
@@ -95,8 +108,8 @@ class FieldsController extends Controller
 
     public function fillable_files(Request $request) {
 
-        $files = Upload::select('file_name_orig', 'file_id') -> groupBy('file_id', 'file_name_orig') -> get() -> toArray();
-        return view('/doc_management/fill/fillable_files', ['files' => $files]);
+        $files = Upload::select('file_name_orig', 'file_id') -> groupBy('file_id', 'file_name_orig') -> get();
+        return view('/doc_management/fill/fillable_files', compact('files'));
 
     }
 

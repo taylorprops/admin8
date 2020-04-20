@@ -6,7 +6,7 @@
                 <div class="row">
 
                     <div class="col-12 col-md-6">
-                        <div class="listing-details-div my-2 z-depth-1 h-100 slow">
+                        <div class="listing-details-div my-2 z-depth-1 h-100">
                             <div class="h5 m-2 mb-4 text-default">
                                 <i class="fad fa-file-signature mr-3"></i> Listing Details
                             </div>
@@ -35,13 +35,13 @@
                                     <input type="text" class="custom-form-element form-input required" data-label="List Price" name="ListPrice" id="ListPrice" value="{{ $listing -> ListPrice }}">
                                 </div>
                                 <div class="col-12 col-md-6">
+                                    <input type="text" class="custom-form-element form-input required" data-label="Year Built" name="YearBuilt" id="YearBuilt" value="{{ $listing -> YearBuilt }}">
+                                </div>
+                                <div class="col-12 col-md-6">
                                     <input type="text" class="custom-form-element form-input datepicker required" data-label="List Date" name="MLSListDate" id="MLSListDate" value="{{ $listing -> MLSListDate }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <input type="text" class="custom-form-element form-input datepicker required" data-label="Expiration Date" name="ExpirationDate" id="ExpirationDate" value="{{ $listing -> ExpirationDate }}">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <input type="text" class="custom-form-element form-input required" data-label="Year Built" name="YearBuilt" id="YearBuilt" value="{{ $listing -> YearBuilt }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <input type="text" class="custom-form-element form-input" data-label="Source" name="Source" id="Source" value="{{ $listing -> Source }}">
@@ -49,8 +49,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="listing-details-div my-2 z-depth-1 h-100 slow">
+                    <div class="col-12 col-md-6 mt-4 mt-md-2">
+                        <div class="listing-details-div z-depth-1 h-100">
                             <div class="h5 m-2 mb-4 text-default">
                                 <i class="fad fa-users mr-3"></i> Listing Agent(s)
                             </div>
@@ -98,7 +98,7 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <div class="listing-details-div mt-4 mb-2 z-depth-1 slow">
+                        <div class="listing-details-div mt-4 mb-2 z-depth-1">
                             <div class="row d-flex align-items-center">
                                 <div class="col-12 col-xl-3">
                                     <div class="h5 m-2 mb-2 mb-xl-4 text-default">

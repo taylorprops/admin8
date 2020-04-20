@@ -7,14 +7,15 @@
         <th>Status</th>
     </thead>
     <tbody>
+
     @foreach($items as $item)
-        @php $docs = $checklist_docs -> GetDocs($item -> checklist_item_id); @endphp
+        {{-- @php $docs = $checklist_items -> GetDocs($item -> checklist_item_id); @endphp --}}
         <tr>
             <td>{{ $loop -> index + 1 }}</td>
             <td>
-                @if($docs)
+                {{-- @if($docs)
 
-                @endif
+                @endif --}}
             </td>
             <td>{{ $checklist_items -> GetFormName($item -> checklist_form_id) }}</td>
             <td></td>

@@ -130,7 +130,7 @@ if (document.URL.match(/listing_details/)) {
             $('input').trigger('change');
             setTimeout(select_refresh, 500);
             $('#import_contact_modal').modal('hide');
-            toastr['success']('Contact Details Imported');
+
             setTimeout(function() {
                 scrollToAnchor('scroll_to');
             }, 500);

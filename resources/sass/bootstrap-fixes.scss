@@ -1,11 +1,11 @@
 /// MODALS /////
 .modal-content {
     border: 1px solid #fff;
-    border-radius: 0px;
+    //border-radius: 0px;
 }
 .modal-header {
     border: none;
-    border-radius: 0px;
+    //border-radius: 0px;
     color: #fff;
     padding: .5rem !important;
     h1,
@@ -55,13 +55,19 @@ table.dataTable thead .sorting_desc_disabled:before {
 // cards
 // remove border-radius from cards
 .card, .card-header:first-child {
-    border-radius: 0px !important;
+    //border-radius: 0px !important;
 }
 // tabs
 @media (max-width: 767.98px) {
     // remove padding around card on small devices
     .tab-content {
         padding: .5rem 0;
+    }
+
+    #toast-container > div {
+        width: auto;
+        padding: 15px 15px 15px 50px;
+        font-size: 1rem;
     }
 }
 // popovers

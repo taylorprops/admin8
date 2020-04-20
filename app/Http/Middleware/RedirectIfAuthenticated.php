@@ -19,8 +19,8 @@ class RedirectIfAuthenticated
     {
 
         if (Auth::guard($guard) -> check()) {
-            //return redirect('/') -> with('error','Session Has Expired');
-            echo '<script>top.location.href="/";</script>';
+            return redirect('/') -> with('error','Session Has Expired');
+            //echo '<script>top.location.href="/";</script>';
         }
 
 

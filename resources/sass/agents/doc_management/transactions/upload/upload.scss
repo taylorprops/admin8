@@ -1,0 +1,19 @@
+#files_queue {
+    overflow-y: auto;
+    min-height: 500px;
+}
+@media (min-width: 768px) {
+	#files {
+		min-height: 0;
+	}
+}
+
+
+.dm-uploader {
+	border: 0.25rem dashed #A5A5C7;
+	text-align: center;
+}
+.dm-uploader.active {
+	border-color: $orange;
+	border-style: solid;
+}

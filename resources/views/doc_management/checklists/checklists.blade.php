@@ -12,6 +12,7 @@
                 <div class="border-top border-bottom border-gray">
                     <div class="list-group-container" data-simplebar data-simplebar-auto-hide="false">
                         <div class="list-group" role="tablist">
+
                             @foreach ($locations as $location)
                             <a class="list-group-item list-group-item-action @if ($loop -> first) active loaded @endif checklist-location"
                                 id="list_{{ $location -> resource_id }}"
@@ -84,9 +85,9 @@
         <div class="modal-dialog modal-dialog-centered modal-" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary draggable-handle">
-                    <h3 class="modal-title" id="confirm_copy_title">Confirm Copy</h3>
+                    <h4 class="modal-title" id="confirm_copy_title">Confirm Copy</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <i class="fal fa-times fa-2x"></i>
+                        <i class="fal fa-times mt-2"></i>
                     </button>
                 </div>
                 <div class="modal-body py-5">
@@ -105,9 +106,9 @@
             <div class="modal-content">
                 <form id="copy_checklists_form">
                     <div class="modal-header bg-primary draggable-handle">
-                        <h3 class="modal-title" id="copy_checklists_modal_title">Copy Checklists To Another Form Group</h3>
+                        <h4 class="modal-title" id="copy_checklists_modal_title">Copy Checklists To Another Form Group</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <i class="fal fa-times fa-2x"></i>
+                            <i class="fal fa-times mt-2"></i>
                         </button>
                     </div>
                     <div class="modal-body">
@@ -156,9 +157,9 @@
             <div class="modal-content">
                 <form id="checklist_form">
                     <div class="modal-header bg-primary draggable-handle">
-                        <h3 class="modal-title" id="checklist_modal_title">Add/Edit Checklist</h3>
+                        <h4 class="modal-title" id="checklist_modal_title">Add/Edit Checklist</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <i class="fal fa-times fa-2x"></i>
+                            <i class="fal fa-times mt-2"></i>
                         </button>
                     </div>
                     <div class="modal-body">

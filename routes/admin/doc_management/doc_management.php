@@ -56,9 +56,7 @@ Route::middleware('admin') -> group(function () {
 
     // Fields //
     Route::post('/doc_management/save_add_fields', 'DocManagement\Fill\FieldsController@save_add_fields');
-    Route::post('/doc_management/save_fill_fields', 'DocManagement\Fill\FieldsController@save_fill_fields');
-    // Export filled fields to pdf
-    Route::post('/doc_management/save_pdf_client_side', 'DocManagement\Fill\FieldsController@save_pdf_client_side');
+
 
     /* checklists */
     /* Add Checklists */
@@ -100,6 +98,9 @@ Route::middleware('admin') -> group(function () {
     Route::get('/doc_management/add_form_get_checklist_items', 'DocManagement\Create\UploadController@add_form_get_checklist_items');
     // get details to add to checklists
     Route::get('/doc_management/get_add_to_checklists_details', 'DocManagement\Create\UploadController@get_add_to_checklists_details');
+
+
+    Route::get('/doc_management/common_fields', 'DocManagement\Fill\FieldsController@get_common_fields');
 
 });
 

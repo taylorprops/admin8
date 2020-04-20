@@ -14,6 +14,7 @@
 @import 'vendor/simplebar/simplebar.scss';
 @import '~jquery-ui/themes/base/all.css';
 @import 'nav/nav.scss';
+@import '~dm-file-uploader/src/css/jquery.dm-uploader.css';
 
 // SECTIONS
 
@@ -25,7 +26,6 @@
 @import 'doc_management/create/files.scss';
 @import 'doc_management/create/add_fields.scss';
 @import 'doc_management/resources/resources.scss';
-@import 'doc_management/fill/fill_fields.scss';
 @import 'doc_management/checklists/checklists.scss';
 
 // ++++++ Agents ++++++ //
@@ -36,4 +36,6 @@
 @import 'agents/doc_management/transactions/contracts/contract_add.scss';
 @import 'agents/doc_management/transactions/contracts/contract_add_details.scss';
 @import 'agents/doc_management/transactions/contracts/contract_details.scss';
+@import 'agents/doc_management/transactions/upload/upload.scss';
+@import 'agents/doc_management/transactions/edit_files/edit_files.scss';
 

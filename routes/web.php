@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('/auth/login');
-});
+}) -> name('login');
 
 Route::get('/dashboard', 'UserController@dashboard');
 

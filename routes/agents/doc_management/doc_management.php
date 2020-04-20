@@ -43,13 +43,25 @@
     Route::post('/agents/doc_management/transactions/listings/save_member', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@save_member');
     // delete member
     Route::post('/agents/doc_management/transactions/listings/delete_member', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@delete_member');
-    // update status in header
-    Route::post('/agents/doc_management/transactions/listings/update_status', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@update_status');
+    // add documents folder
+    Route::post('/agents/doc_management/transactions/listings/add_folder', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@add_folder');
+    // delete documents folder
+    Route::post('/agents/doc_management/transactions/listings/delete_folder', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@delete_folder');
+    // upload documents
+    Route::post('/agents/doc_management/transactions/listings/upload_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@upload_documents');
+    // save add template documents
+    Route::post('/agents/doc_management/transactions/listings/save_add_template_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@save_add_template_documents');
+    // move documents to trash
+    Route::post('/agents/doc_management/transactions/listings/move_documents_to_trash', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@move_documents_to_trash');
+    // move documents to different folder
+    Route::post('/agents/doc_management/transactions/listings/move_documents_to_folder', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@move_documents_to_folder');
+    // reorder documents
+    Route::post('/agents/doc_management/transactions/listings/reorder_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@reorder_documents');
 
 
 
     // Add new contract
-    Route::get('/agents/doc_management/transactions/add_contract/add_contract', 'Agents\DocManagement\Transactions\ContractAddController@add_contract');
+    /* Route::get('/agents/doc_management/transactions/add_contract/add_contract', 'Agents\DocManagement\Transactions\ContractAddController@add_contract'); */
 
     // TODO this is shared by add listing and add contract
     // Add listing and contract
@@ -66,11 +78,18 @@
 
 
     // ** FILL FIELDS
-    // List of docs to fill fields
-    Route::get('/doc_management/create/fill/fillable_files', 'DocManagement\Fill\FieldsController@fillable_files');
+
     // fill fields
-    Route::get('/doc_management/create/fill_fields/{file_id}', 'DocManagement\Fill\FieldsController@fill_fields');
-    /* get common fields for select options */
-    Route::get('/doc_management/common_fields', 'DocManagement\Fill\FieldsController@get_common_fields');
+    Route::get('/agents/doc_management/transactions/edit_files/{document_id}', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@file_view');
+
+    //Route::get('/agents/doc_management/transactions/edit_files/field', 'DocManagement\Fill\FieldsController@fillable_files');
+
+    Route::post('/agents/doc_management/transactions/edit_files/save_field_input_values', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@save_field_input_values');
+    // Export filled fields to pdf
+    Route::post('/doc_management/save_pdf_client_side', 'DocManagement\Fill\FieldsController@save_pdf_client_side');
+
+
+
+
 
 

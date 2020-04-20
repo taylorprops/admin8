@@ -24,7 +24,7 @@ $show_title = false;
                     <div>
                         @if($file -> published == 'no')
                             @if($file -> file_location != '')
-                                <a href="/doc_management/create/add_fields/{{ $file -> file_id }}" class="btn btn-sm btn-primary ml-0" data-toggle="tooltip" data-html="true" title="Add fields to the form"><i class="fal fa-plus mr-2"></i> Add/Edit Fields</a>
+                                <a href="/doc_management/create/add_fields/{{ $file -> file_id }}" class="btn btn-sm btn-primary ml-0" data-toggle="tooltip" data-html="true" title="Add fields to the form" target="_blank"><i class="fal fa-plus mr-2"></i> Add/Edit Fields</a>
                             @endif
                         @else
                             <span class="chip @if($file -> active == 'yes') green @else red @endif text-white" data-toggle="tooltip" data-html="true" title="Fields for this form can no longer be edited and the from can no longer be deleted"><i class="fad @if($file -> active == 'yes') fa-check @else fa-ban @endif mr-2"></i> Published</span>

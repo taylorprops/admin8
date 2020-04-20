@@ -239,7 +239,7 @@ window.form_elements = function () {
 
                     // add save button to exit out of multiple select
                     if (multiple) {
-                        wrapper.find('.form-select-dropdown').append('<div class="w-100 form-select-save-div"><div class="d-flex d-flex justify-content-center p-0"><a href="javascript: void(0)" class="form-select-multiple-save btn btn-success btn-sm">Save</a></div></div>');
+                        wrapper.find('.form-select-dropdown').append('<div class="w-100 form-select-save-div"><div class="d-flex d-flex justify-content-center p-0"><a href="javascript: void(0)" class="form-select-multiple-save btn btn-success btn-sm">Close</a></div></div>');
                         $('.form-select-multiple-save').click(function () {
                             $('.form-select-dropdown').fadeOut();
                             $('.form-select-search-input').val('').trigger('change');
@@ -273,6 +273,7 @@ window.form_elements = function () {
                             if (form_ele.val() == '') {
                                 form_ele.closest('.form-ele').find('.form-select-value-cancel').hide();
                                 wrapper.find('.form-select-value-input').addClass('caret');
+                                input.val('');
                             }
 
                             // shorten input value if too long
@@ -344,6 +345,9 @@ window.form_elements = function () {
                 if (form_type != 'form-checkbox' && form_type != 'form-radio') {
                     if(element.hasClass('required')) {
                         element.closest('.form-ele').append('<div class="required-div">R</div>');
+                    }
+                    if(element.hasClass('datepicker')) {
+                        element.closest('.form-ele').append('<div class="datepicker-div"><i class="fal fa-calendar-alt"></i></div>');
                     }
                 }
 

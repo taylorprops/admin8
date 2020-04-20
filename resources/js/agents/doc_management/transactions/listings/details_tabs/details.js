@@ -1,20 +1,28 @@
 if (document.URL.match(/listing_details/)) {
 
     window.save_details = function() {
+
+        if($('#MLSListDate').val() > $('#ExpirationDate').val()) {
+            $('#modal_danger').modal().find('.modal-body').html('Expiration Date Must Be After List Date');
+            return false;
+        }
         let form = $('#listing_details_form');
-        let formData = new FormData(form[0]);
-        formData.append('Listing_ID', $('#Listing_ID').val());
-        axios.post('/agents/doc_management/transactions/listings/save_details', formData, axios_options)
-        .then(function (response) {
-            if(response.data.status == 'ok') {
-                load_tabs('details');
-                load_details_header($('#Listing_ID').val());
-                toastr['success']('Listing Details Saved!');
-            }
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        let validate = validate_form(form);
+        if(validate == 'yes') {
+            let formData = new FormData(form[0]);
+            formData.append('Listing_ID', $('#Listing_ID').val());
+            axios.post('/agents/doc_management/transactions/listings/save_details', formData, axios_options)
+            .then(function (response) {
+                if(response.data.status == 'ok') {
+                    load_tabs('details');
+                    load_details_header($('#Listing_ID').val());
+                    toastr['success']('Listing Details Saved!');
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
     }
 
     window.save_search_mls = function() {

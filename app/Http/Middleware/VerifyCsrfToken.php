@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+use Closure;
+use Auth;
 
 class VerifyCsrfToken extends Middleware
 {
@@ -19,6 +21,17 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        '/logout'
     ];
+
+    public function handle($request, Closure $next)
+    {
+
+        if(basename(request() -> path()) != 'login') {
+            if(auth() -> user() == null) {
+                return redirect() -> route('login');
+            }
+        }
+        return $next($request);
+    }
 }

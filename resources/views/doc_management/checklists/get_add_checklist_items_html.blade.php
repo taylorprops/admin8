@@ -114,7 +114,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                     @php
                     $forms = $files -> formGroupFiles($form_group -> resource_id);
                     @endphp
-
+                    @if($forms)
                     @foreach($forms as $form)
 
                     <li class="list-group-item form-name" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">
@@ -134,6 +134,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                     </li>
 
                     @endforeach
+                    @endif
 
                 </ul>
 

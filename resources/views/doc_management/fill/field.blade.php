@@ -72,7 +72,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
     @if($field_type == 'date')
 
     @php
-    $input_id = 'input_id_'.$field['field_id'];
+    $input_id = $field['field_id'];
     $value = get_value($field_values, $input_id);
     @endphp
     <input type="text" class="field-datepicker fillable-field-input" id="{{ $input_id }}" value="{{ $value }}" data-default-value="{{ $value }}">
@@ -80,7 +80,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
     @elseif($field_type == 'radio')
 
     @php
-    $input_id = 'input_id_'.$field['field_id'];
+    $input_id = $field['field_id'];
     $checked = get_value_radio_checkbox($field_values, $input_id);
     @endphp
 
@@ -89,7 +89,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
     @elseif($field_type == 'checkbox')
 
     @php
-    $input_id = 'input_id_'.$field['field_id'];
+    $input_id = $field['field_id'];
     $checked = get_value_radio_checkbox($field_values, $input_id);
     @endphp
 
@@ -114,7 +114,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                         @if($field_type == 'textline')
 
                         @php
-                        $input_id = 'input_id_'.$field['field_id'];
+                        $input_id = $field['field_id'];
                         $value = get_value($field_values, $input_id);
                         $textline_class = $field['textline_type'] ?? null;
                         @endphp
@@ -134,7 +134,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                             @if($field['field_id'] == $input['field_id'])
 
                             @php
-                            $input_id = 'input_id_'.$field['field_id'].'_'.$input['input_id'];
+                            $input_id = $field['field_id'].'_'.$input['input_id'];
                             $value = get_value($field_values, $input_id);
                             $address_type = address_type($input['input_name']);
                             @endphp
@@ -155,7 +155,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                         @elseif($field_type == 'number')
 
                         @php
-                        $input_id = 'input_id_'.$field['field_id'];
+                        $input_id = $field['field_id'];
                         $value = get_value($field_values, $input_id);
                         @endphp
 

@@ -250,9 +250,9 @@
     <div class="modal-dialog modal-dialog-centered modal" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary draggable-handle">
-                <h3 class="modal-title" id="multiple_results_title">Multiple Results Found</h3>
+                <h4 class="modal-title" id="multiple_results_title">Multiple Results Found</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <i class="fal fa-times fa-2x"></i>
+                    <i class="fal fa-times mt-2"></i>
                 </button>
             </div>
             <div class="modal-body">

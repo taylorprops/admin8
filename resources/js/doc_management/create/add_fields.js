@@ -33,20 +33,6 @@ if (document.URL.match(/create\/add_fields/)) {
                 let group_id = $(this).data('group-id');
                 let field_type = $(this).data('type');
 
-                // let h = $(this).css('height').replace(/px/, '');
-                // let w = $(this).css('width').replace(/px/, '');
-                // let h_perc = pix_2_perc_hw('height', h, container);
-                // let w_perc = pix_2_perc_hw('width', w, container);
-                // let x = $(this).css('left').replace(/px/, '');
-                // let y = $(this).css('top').replace(/px/, '');
-                // // convert from % to px
-                // $(this).css('height', h + 'px');
-                // $(this).css('width', w + 'px');
-                // $(this).css('top', y + 'px');
-                // $(this).css('left', x + 'px');
-
-
-
 
                 $(this).find('.field-properties').data('field-type', field_type);
 
@@ -200,20 +186,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
         }
 
-        /* function clear_fields_on_change(id) {
-            $('#name_select_' + id).change(function () {
-                if ($(this).val() != '') {
-                    $('#name_input_' + id).val('').trigger('change');
-                } else {
-                    $(this);
-                }
-            });
-            $('#name_input_' + id).change(function () {
-                if ($(this).val() != '') {
-                    $('#name_select_' + id).val('').trigger('change');
-                }
-            });
-        } */
+
 
         function set_field_options(field_type, ele, id, rect, container) {
 
@@ -235,6 +208,17 @@ if (document.URL.match(/create\/add_fields/)) {
                 $('.field-div').removeClass('active');
                 ele.addClass('active');
                 let group_id = ele.data('group-id');
+                let x_pos = ele.position().left;
+                let doc_width = $('#file_viewer').width();
+                let ele_pos = {
+                    left: '0px'
+                }
+                if(x_pos > doc_width / 2) {
+                    ele_pos = {
+                        right: '0px'
+                    }
+                }
+                ele.find('.field-options-holder').css(ele_pos);
                 set_hwxy(ele, group_id, field_type);
 
             });
@@ -512,7 +496,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                                 let name_type = select.val().replace(/\sName/, '');
 
-                                if (select.val() == 'Seller or Landlord Name' || select.val() == 'Buyer Name') {
+                                if (select.val() == 'Seller or Landlord Name' || select.val() == 'Buyer or Renter Name') {
                                     // force click to add inputs
                                     inputs_container.next('.add-input').trigger('click').trigger('click');
                                     inputs_container.children('.row:eq(0)').find('.field-data-input').val(name_type + ' One Name').trigger('change');
@@ -1138,6 +1122,15 @@ if (document.URL.match(/create\/add_fields/)) {
                 cd_adjusted = cw - 4;
             }
 
+            let x_pos = ele.position().left;
+            let doc_width = $('#file_viewer').width();
+
+            if(x_pos > (doc_width / 2)) {
+                ele.find('.field-options-holder').css({ left: '' }).animate({ right: '0px' });
+            } else {
+                ele.find('.field-options-holder').css({ right: '' }).animate({ left: '0px' });
+            }
+
             if (x_perc < dist) {
                 ele.animate({ left: dist + '%' });
             }
@@ -1178,7 +1171,6 @@ if (document.URL.match(/create\/add_fields/)) {
 
         function field_list() {
             $('.field-list-container').html('');
-            $('.field-list-container').append('<div class="h3 text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>');
             $('.file-view-page-container').each(function () {
                 let page_number = $(this).data('id');
                 $('.field-list-container').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
@@ -1348,7 +1340,8 @@ if (document.URL.match(/create\/add_fields/)) {
                         $(this).find('.field-data-name').each(function () {
                             if ($(this).val() != '') {
                                 field_data['field_name'] = $(this).val();
-                                field_data['field_name_type'] = $(this).data('field-type');
+                                let field_type = $(this).data('field-type');
+                                field_data['field_name_type'] = field_type;
                             }
                         });
 
@@ -1384,7 +1377,11 @@ if (document.URL.match(/create\/add_fields/)) {
                     url: '/doc_management/save_add_fields',
                     data: { data: JSON.stringify(data) },
                     success: function (response) {
-                        $('#modal_success').modal().find('.modal-body').html('Fields Successfully Saved');
+                        if(response.error == 'published') {
+                            $('#modal_danger').modal().find('.modal-body').html('This form has already been published. It can no longer be edited');
+                        } else {
+                            $('#modal_success').modal().find('.modal-body').html('Fields Successfully Saved');
+                        }
                     }
                 });
             } else {

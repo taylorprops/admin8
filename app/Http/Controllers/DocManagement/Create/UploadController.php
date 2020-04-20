@@ -74,7 +74,7 @@ class UploadController extends Controller {
             $upload_copy -> published = 'no';
             $upload_copy -> save();
 
-            // copy db data for admin.docs_fields, admin.docs_filled_fields_values, admin.docs_fields_inputs
+            // copy db data for admin.docs_fields, admin.docs_transaction_fields_inputs_values, admin.docs_fields_inputs
             $data_sets = [UploadImages::where('file_id', $upload_id) -> get(), UploadPages::where('file_id', $upload_id) -> get()];
 
             foreach ($data_sets as $data_set) {
@@ -372,7 +372,7 @@ class UploadController extends Controller {
             chmod($storage_full_path . '/' . $new_filename, 0775);
 
             // update directory path in database
-            $storage_public_path = 'storage/doc_management/uploads/' . $file_id;
+            $storage_public_path = '/storage/doc_management/uploads/' . $file_id;
             $upload -> file_location = $storage_public_path . '/' . $new_filename;
             $upload -> save();
 
@@ -409,7 +409,7 @@ class UploadController extends Controller {
                 $upload = new UploadImages();
                 $upload -> file_id = $file_id;
                 $upload -> file_name = $images_file_name;
-                $upload -> file_location = '/' . $images_public_path . '/' . $images_file_name;
+                $upload -> file_location = $images_public_path . '/' . $images_file_name;
                 $upload -> pages_total = $pages_total;
                 $upload -> page_number = $page_number;
                 $upload -> save();
@@ -426,7 +426,7 @@ class UploadController extends Controller {
                 $upload = new UploadPages();
                 $upload -> file_id = $file_id;
                 $upload -> file_name = $pages_file_name;
-                $upload -> file_location = '/' . $pages_public_path . '/' . $pages_file_name;
+                $upload -> file_location = $pages_public_path . '/' . $pages_file_name;
                 $upload -> pages_total = $pages_total;
                 $upload -> page_number = $page_number;
                 $upload -> save();

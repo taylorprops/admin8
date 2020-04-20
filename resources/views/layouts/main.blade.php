@@ -42,7 +42,7 @@
 
     </head>
 
-    <body>
+    <body @if(Request::is('*/edit_files/*')) class="y-scroll-none" @endif>
 
         <header>
         @include('layouts.includes.header')

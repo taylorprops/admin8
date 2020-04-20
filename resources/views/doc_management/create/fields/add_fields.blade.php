@@ -2,7 +2,8 @@
 @section('title', 'Edit File')
 @section('content')
 
-<div class="container-fluid page-add-fields file-view-container p-0">
+<div class="container page-add-fields file-view-container p-0 mx-auto">
+
     <div class="container-fluid">
         <div class="row bg-blue-light">
             <div class="col-12 ml-1">
@@ -47,15 +48,23 @@
             </div>
         </div>
     </div>
+
     <div class="container-fluid">
+
         <div class="row">
 
             <?php $total_pages = count($images); ?>
-            <div class="col-2 p-0">
 
-                <div class="field-list-container file-view p-1"></div>
+            <div class="col-2 p-0 edit-file-sidebar">
+
+                <div class="file-view">
+                    <div class="h5 text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>
+                    <div class="field-list-container"></div>
+                </div>
+
             </div>
-            <div class="col-8 p-0">
+
+            <div class="col-12 col-xl-8 p-0 mx-auto">
 
                 <div class="container-fluid p-0">
                     <div class="file-viewer-container mx-auto">
@@ -91,11 +100,12 @@
                     </div> <!-- end file-viewer-container -->
 
                 </div> <!-- end container-fluid p-0 -->
-            </div> <!-- col-11 -->
-            <div class="col-2 p-0">
+            </div>
+
+            <div class="col-2 p-0 edit-file-sidebar">
 
                 <div class="file-view" id="thumb_viewer">
-                    <div class="h3 text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
+                    <div class="h5 text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
                     @foreach($images as $image)
                         <?php $c = $image['page_number']; ?>
                         <div class="file-view-thumb-container  w-50 mx-auto" <?php echo($c == 1) ? 'active' : ''; ?>" id="thumb_{{ $c }}" data-id="{{ $c }}">
@@ -109,7 +119,9 @@
                     @endforeach
                 </div>
             </div>
+
         </div>
+
     </div>
 
 </div><!-- ./ .container -->
@@ -122,7 +134,7 @@
     @php
 
     $field = $fields['field_type'];
-    $heightp = '1.1';
+    $heightp = '1.3';
     $widthp = '15';
     if($field == 'date') {
         $widthp = '10';
