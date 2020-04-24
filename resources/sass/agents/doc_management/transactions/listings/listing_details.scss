@@ -109,12 +109,9 @@
         }
     }
 
-    #add_checklist_template_modal .form-ele {
-        margin-top: 0rem;
-        margin-bottom: 0rem;
-    }
-
-    #add_individual_template_modal .form-ele {
+    #add_checklist_template_modal .form-ele,
+    #add_individual_template_modal .form-ele,
+    #add_document_modal .form-ele {
         margin-top: 0rem;
         margin-bottom: 0rem;
     }

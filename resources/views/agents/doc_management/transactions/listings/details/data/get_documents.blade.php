@@ -167,7 +167,7 @@
 
                                 $menu_options .= '<div class="dropdown-divider d-block d-md-none"></div>';
 
-                                $menu_options .= '<button type="button" class="dropdown-item text-danger doc-delete-button" data-document-id="'.$document -> id.'" title="Delete Form"><i class="fad fa-trash mr-2 mr-md-0"></i><span class="d-inline-block d-md-none"> Trash</button>';
+                                $menu_options .= '<button type="button" class="dropdown-item text-danger doc-delete-button" data-document-id="'.$document -> id.'" data-document-name="' . $document -> file_name_display . '" title="Delete Form"><i class="fad fa-trash mr-2 mr-md-0"></i><span class="d-inline-block d-md-none"> Trash</button>';
 
                                 $menu_options_large = preg_replace('/dropdown-item\stext-primary/', 'btn btn-primary', $menu_options);
                                 $menu_options_large = preg_replace('/dropdown-item\stext-danger/', 'btn btn-danger', $menu_options_large);
@@ -199,6 +199,34 @@
 
     @endforeach
 
+</div>
+
+<div class="modal fade draggable" id="confirm_delete_document_modal" tabindex="-1" role="dialog" aria-labelledby="delete_document_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary draggable-handle">
+                <h4 class="modal-title" id="delete_document_title">Delete Document</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <i class="fal fa-times mt-2"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            Are you sure you want to move this form to Trash?
+                            <br>
+                            <div class="font-weight-bold text-primary mt-2" id="delete_document_name"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+                <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                <a class="btn btn-success modal-confirm-button" id="confirm_delete_document_button"><i class="fad fa-check mr-2"></i> Confirm</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade draggable" id="confirm_delete_folder_modal" tabindex="-1" role="dialog" aria-labelledby="delete_folder_title" aria-hidden="true">
@@ -532,8 +560,6 @@
                         <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
                         <a class="btn btn-success" id="save_add_folder_button"><i class="fad fa-check mr-2"></i> Save Folder</a>
                     </div>
-                    <input type="hidden" id="Listing_ID" value="{{ $Listing_ID }}">
-                    <input type="hidden" id="Agent_ID" value="{{ $Agent_ID }}">
             </form>
         </div>
     </div>

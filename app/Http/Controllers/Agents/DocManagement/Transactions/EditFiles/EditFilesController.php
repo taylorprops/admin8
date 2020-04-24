@@ -60,7 +60,7 @@ class EditFilesController extends Controller
         $field_inputs_user = UserFieldsInputs::where('file_id', $file_id) -> orderBy('id') -> get();
         $field_values = UserFieldsValues::where('file_id', $file_id) -> where('file_type', $file_type) -> get();
 
-        return view('/agents/doc_management/transactions/edit_files/file', compact('listing', 'Listing_ID', 'Agent_ID', 'file', 'images', 'fields', 'field_inputs_system', 'field_inputs_user', 'file_id', 'field_values', 'file_type', 'common_fields'));
+        return view('/agents/doc_management/transactions/edit_files/file', compact('listing', 'Listing_ID', 'Agent_ID', 'file', 'images', 'fields', 'field_inputs_system', 'field_inputs_user', 'file_id', 'document_id', 'field_values', 'file_type', 'common_fields'));
 
     }
 
@@ -106,30 +106,104 @@ class EditFilesController extends Controller
             $filled_fields -> input_value = $field['input_value'];
             $filled_fields -> save();
 
-            // update all common fields for this listing or contract
-            $common_fields = UserFieldsValues::where('Agent_ID', $Agent_ID)
-            -> where(function ($query) use ($Listing_ID, $Contract_ID) {
-                if($Listing_ID > 0) {
-                    $query -> where('Listing_ID', $Listing_ID);
-                } else if($Contract_ID > 0) {
-                    $query -> where('Contract_ID', $Contract_ID);
-                }
-            })
-            -> where('common_name', $field['common_name']) -> first();
+            if($field['common_name'] != '') {
+                // update all common fields for this listing or contract
+                $common_fields = UserFieldsValues::where('Agent_ID', $Agent_ID)
+                -> where(function ($query) use ($Listing_ID, $Contract_ID) {
+                    if($Listing_ID > 0) {
+                        $query -> where('Listing_ID', $Listing_ID);
+                    } else if($Contract_ID > 0) {
+                        $query -> where('Contract_ID', $Contract_ID);
+                    }
+                })
+                -> where('common_name', $field['common_name']) -> first();
 
-            $common_fields -> input_value = $field['input_value'];
-            $common_fields -> save();
+                $common_fields -> input_value = $field['input_value'];
+                $common_fields -> save();
+            }
         }
 
     }
 
+    public function convert_to_pdf(Request $request) {
+
+        $Listing_ID = $request -> Listing_ID;
+        $file_id = $request -> file_id;
+
+        $upload_dir = 'doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system';
+
+        $doc_root = $_SERVER['DOCUMENT_ROOT'];
+        $full_path_dir = $doc_root . 'storage/' . $upload_dir;
+        $pdf_output_dir = $doc_root . 'storage/' . $upload_dir . '/combined/';
+
+        // get file name to use for the final converted file
+        $file = glob($full_path_dir.'/converted/*pdf');
+        $filename = basename($file[0]);
+
+        // create or clear out directories if they already exist
+        $clean_dir = new Filesystem;
+        $clean_dir -> cleanDirectory('storage/' . $upload_dir . '/layers');
+        $clean_dir -> cleanDirectory('storage/' . $upload_dir . '/combined');
+        $clean_dir -> cleanDirectory('storage/' . $upload_dir . '/converted');
+
+        for ($c = 1; $c <= $request['page_count']; $c++) {
+            $options = array(
+                'binary' => '/usr/bin/xvfb-run -- /usr/bin/wkhtmltopdf',
+                'no-outline',
+                'margin-top' => 0,
+                'margin-right' => 0,
+                'margin-bottom' => 0,
+                'margin-left' => 0,
+                'disable-smart-shrinking',
+                'page-size' => 'A4',
+                'encoding' => 'UTF-8',
+                'dpi' => 96,
+            );
+
+            $pdf = new Pdf($options);
+            $pdf -> addPage($request['page_' . $c]);
+
+            if (!$pdf -> saveAs($full_path_dir . '/layers/layer_' . $c . '.pdf')) {
+                $error = $pdf -> getError();
+                dd($error);
+            }
+
+            // merge layers from pages folder and layers folder and dump in combined folder
+            $page_number = $c;
+
+            if (strlen($c) == 1) {
+                $page_number = '0' . $c;
+            }
+
+            $layer1 = $full_path_dir . '/pages/page_' . $page_number . '.pdf';
+            $layer2 = $full_path_dir . '/layers/layer_' . $c . '.pdf';
+            exec('convert -quality 100 -density 300 ' . $layer2 . ' -transparent white -background none ' . $layer2.' 2>&1', $output);
+            exec('pdftk ' . $layer2 . ' background ' . $layer1 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf 2>&1', $output2);
+
+        }
+
+        // merge all from combined and add final to converted - named $filename
+        exec('pdftk '.$full_path_dir.'/combined/*pdf cat output '.$full_path_dir.'/converted/'.$filename);
+    }
 
 
 
+    public function rotate_document(Request $request) {
+        $file_id = $request -> file_id;
+        $file_type = $request -> file_type;
+        $Listing_ID = $request -> Listing_ID;
+        $folder = 'public/doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id.'_'.$file_type.'/';
+        $files = Storage::allFiles($folder);
 
+        foreach($files as $file) {
+            $doc_root = $_SERVER['DOCUMENT_ROOT'];
+            $file = str_replace('public', $doc_root.'/storage', $file);
+            exec('mogrify -rotate "90" /'.$file.' 2>&1', $output);
+        }
 
+    }
 
-    public function save_add_fields(Request $request) {
+    /* public function save_add_fields(Request $request) {
 
         $data = json_decode($request['data'], true);
 
@@ -185,14 +259,8 @@ class EditFilesController extends Controller
 
         }
 
-    }
-
-
-
-
-
-
-    public function save_pdf_client_side(Request $request) {
+    } */
+    /* public function save_pdf_client_side(Request $request) {
         if($request) {
 
             $file_id = $request['file_id'];
@@ -250,5 +318,5 @@ class EditFilesController extends Controller
             }
 
         }
-    }
+    }  */
 }

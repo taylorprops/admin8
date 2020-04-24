@@ -13661,6 +13661,10 @@ table.dataTable thead .sorting_desc_disabled:before {
   }
 }
 
+.popover {
+  max-width: 400px;
+}
+
 .popover-header {
   background-color: #df7935;
   border-bottom: none;
@@ -15481,12 +15485,9 @@ header .navbar #sub_menu_divs a {
   height: auto;
 }
 
-.page-listing-details #add_checklist_template_modal .form-ele {
-  margin-top: 0rem;
-  margin-bottom: 0rem;
-}
-
-.page-listing-details #add_individual_template_modal .form-ele {
+.page-listing-details #add_checklist_template_modal .form-ele,
+.page-listing-details #add_individual_template_modal .form-ele,
+.page-listing-details #add_document_modal .form-ele {
   margin-top: 0rem;
   margin-bottom: 0rem;
 }
@@ -15663,6 +15664,16 @@ header .navbar #sub_menu_divs a {
   width: 100%;
   height: calc(100vh - 120px);
   overflow-y: scroll;
+  -vendor-animation-duration: 2s;
+  -webkit-animation-duration: 2s;
+          animation-duration: 2s;
+}
+
+.page-fill-fields .file-view-page-container,
+.page-fill-fields .file-view-thumb-container {
+  -vendor-animation-duration: 8s;
+  -webkit-animation-duration: 8s;
+          animation-duration: 8s;
 }
 
 .page-fill-fields .file-view-thumb-container {
@@ -15715,7 +15726,7 @@ header .navbar #sub_menu_divs a {
 .page-fill-fields .data-div:not(.data-div-radio-check) {
   font-size: 11px;
   padding-left: 5px;
-  padding-top: 4px;
+  padding-top: 7px;
 }
 
 .page-fill-fields .data-div.data-div-radio-check {

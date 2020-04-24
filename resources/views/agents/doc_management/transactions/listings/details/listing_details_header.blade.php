@@ -53,7 +53,7 @@ if($listing -> SaleRent == 'sale') {
         <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">List Agent</div>
         <br>
         {{ $listing -> ListAgentFirstName . ' ' . $listing -> ListAgentLastName }}<br>
-        {{ $listing -> ListAgentPreferredPhone }}<br>
+        {{ format_phone($listing -> ListAgentPreferredPhone) }}<br>
         <a href="mailto:{{ $listing -> ListAgentEmail }}">{{ $listing -> ListAgentEmail }}</a>
     </div>
     <div class="col-6 col-md-3 col-lg-2 mt-0">

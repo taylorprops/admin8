@@ -57,6 +57,9 @@
     Route::post('/agents/doc_management/transactions/listings/move_documents_to_folder', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@move_documents_to_folder');
     // reorder documents
     Route::post('/agents/doc_management/transactions/listings/reorder_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@reorder_documents');
+    // add document to checklist item
+    Route::post('/agents/doc_management/transactions/listings/add_document_to_checklist_item', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@add_document_to_checklist_item');
+
 
 
 
@@ -82,11 +85,12 @@
     // fill fields
     Route::get('/agents/doc_management/transactions/edit_files/{document_id}', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@file_view');
 
-    //Route::get('/agents/doc_management/transactions/edit_files/field', 'DocManagement\Fill\FieldsController@fillable_files');
+    // rotate document
+    Route::post('/agents/doc_management/transactions/edit_files/rotate_document', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@rotate_document');
 
     Route::post('/agents/doc_management/transactions/edit_files/save_field_input_values', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@save_field_input_values');
     // Export filled fields to pdf
-    Route::post('/doc_management/save_pdf_client_side', 'DocManagement\Fill\FieldsController@save_pdf_client_side');
+    Route::post('/agents/doc_management/transactions/edit_files/convert_to_pdf', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@convert_to_pdf');
 
 
 

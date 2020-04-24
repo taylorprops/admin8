@@ -71,6 +71,9 @@ table.dataTable thead .sorting_desc_disabled:before {
     }
 }
 // popovers
+.popover {
+    max-width: 400px;
+}
 .popover-header {
     background-color: $orange;
     border-bottom: none;

@@ -22,6 +22,15 @@ class ChecklistsItems extends Model
         return $upload -> file_name_display;
     }
 
+    public function ScopeGetFormHelpDetails($query, $id) {
+        $upload = Upload::where('file_id', $id) -> first();
+        $details = collect();
+        $details -> helper_text = $upload -> helper_text;
+        $details -> file_location = $upload -> file_location;
+
+        return compact('details');
+    }
+
     public function ScopeGetChecklistItemsByGroup($query, $checklist_id, $group_id) {
         $checklists = $query -> where('checklist_id', $checklist_id) -> where('checklist_item_group_id', $group_id) -> orderBy('checklist_item_order') -> get();
         if(count($checklists) > 0) {

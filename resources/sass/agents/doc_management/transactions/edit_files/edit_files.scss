@@ -11,6 +11,13 @@
         width: 100%;
         height: calc(100vh - 120px);
         overflow-y: scroll;
+        -vendor-animation-duration: 2s;
+        animation-duration: 2s;
+    }
+
+    .file-view-page-container, .file-view-thumb-container {
+        -vendor-animation-duration: 8s;
+        animation-duration: 8s;
     }
 
 
@@ -67,7 +74,7 @@
     .data-div:not(.data-div-radio-check) {
         font-size: 11px;
         padding-left: 5px;
-        padding-top: 4px;
+        padding-top: 7px;
     }
 
     .data-div.data-div-radio-check {
@@ -117,5 +124,7 @@
 
         }
     }
+
+
 
 }

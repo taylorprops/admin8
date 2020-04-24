@@ -20,13 +20,16 @@ class Upload extends Model
             -> where('active', 'yes')
             -> orderBy('file_name_display', 'ASC') -> get();
 
-        $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('folder_name', 'Trash') -> first();
+        $forms_in_use = null;
 
-        $forms_in_use = TransactionDocuments::select('file_id')
-            -> where('Listing_ID', $Listing_ID)
-            -> where('file_id', '>', '0')
-            -> where('folder', '!=', $trash_folder -> id)
-            -> pluck('file_id');
+        if($Listing_ID) {
+            $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('folder_name', 'Trash') -> first();
+            $forms_in_use = TransactionDocuments::select('file_id')
+                -> where('Listing_ID', $Listing_ID)
+                -> where('file_id', '>', '0')
+                -> where('folder', '!=', $trash_folder -> id)
+                -> pluck('file_id');
+        }
 
         return compact('forms_available', 'forms_in_use');
 

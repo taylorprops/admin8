@@ -112,29 +112,29 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                     </li>
 
                     @php
-                    $forms = $files -> formGroupFiles($form_group -> resource_id);
+                    $forms = $files -> formGroupFiles($form_group -> resource_id, null);
+                    $forms = $forms['forms_available'];
                     @endphp
-                    @if($forms)
+
                     @foreach($forms as $form)
 
-                    <li class="list-group-item form-name" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">
-                        <div class="d-flex justify-content-start">
-                            <div class="mr-2 my-auto">
-                                <a href="javascript: void(0)" class="btn btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="{{ $form -> file_location }}">Add</a>
+                        <li class="list-group-item form-name" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">
+                            <div class="d-flex justify-content-start">
+                                <div class="mr-2 my-auto">
+                                    <a href="javascript: void(0)" class="btn btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="{{ $form -> file_location }}">Add</a>
+                                </div>
+                                <div title="{{ $form -> file_name_display }}">
+                                    {{ shorten_text($form -> file_name_display, 65) }}
+                                    <br>
+                                    @php $tags = explode(',', $form -> sale_type); @endphp
+                                    @foreach($tags as $tag)
+                                        <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
+                                    @endforeach
+                                </div>
                             </div>
-                            <div title="{{ $form -> file_name_display }}">
-                                {{ shorten_text($form -> file_name_display, 65) }}
-                                <br>
-                                @php $tags = explode(',', $form -> sale_type); @endphp
-                                @foreach($tags as $tag)
-                                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
-                                @endforeach
-                            </div>
-                        </div>
-                    </li>
+                        </li>
 
                     @endforeach
-                    @endif
 
                 </ul>
 

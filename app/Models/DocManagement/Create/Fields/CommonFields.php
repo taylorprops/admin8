@@ -48,9 +48,13 @@ class CommonFields extends Model
 
             $value = '';
 
-            if(!empty($common_name_search)) {
+            if(!empty($common_name_search) && $common_name_search -> db_column_name != '') {
+
                 $db_column_name = $common_name_search -> db_column_name;
-                $value = $listing -> $db_column_name;
+                if($listing -> $db_column_name != '' ) {
+                    $value = $listing -> $db_column_name;
+                }
+
             } else {
 
                 $member = null;
@@ -64,7 +68,7 @@ class CommonFields extends Model
                     }
                 } else if($common_name == 'Seller or Landlord Two Name') {
                     $member = $members -> where('member_type_id', $members_modal -> GetMemberTypeID('Seller'));
-                    if(count($member) > 0) {
+                    if(count($member) > 1) {
                         $member = $member -> values();
                         $member = $member[1];
                     } else {
@@ -80,18 +84,13 @@ class CommonFields extends Model
                     }
                 } else if($common_name == 'Buyer or Renter Two Name') {
                     $member = $members -> where('member_type_id', $members_modal -> GetMemberTypeID('Buyer'));
-                    if(count($member) > 0) {
+                    if(count($member) > 1) {
                         $member = $member -> values();
                         $member = $member[1];
                     } else {
                         $member = null;
                     }
-                }
-                if($member) {
-                    $value = $member -> first_name . ' ' . $member -> last_name;
-                }
-
-                if($common_name == 'Full Address') {
+                } else if($common_name == 'Full Address') {
                     $value = $listing -> FullStreetAddress . ' ' . $listing -> City . ' ' . $listing -> StateOrProvince .' '.$listing -> PostalCode;
                 } else if($common_name == 'Street Address') {
                     $value = $listing -> FullStreetAddress;
@@ -103,14 +102,21 @@ class CommonFields extends Model
                     $value = $listing -> PostalCode;
                 } else if($common_name == 'County') {
                     $value = $listing -> County;
+                } else if($common_name == 'Listing Agent Name') {
+                    $value = $listing -> ListAgentFirstName . ' ' . $listing -> ListAgentLastName;
+                } else if($common_name == 'Buyers Agent Name') {
+                    $value = $listing -> BuyerAgentFirstName . ' ' . $listing -> BuyerAgentLastName;
                 }
 
+                if($member) {
+                    $value = $member -> first_name . ' ' . $member -> last_name;
+                }
 
             }
             if($value == null) {
                 $value = '';
             }
-            return $value;
+            return trim($value);
 
 
         } else if($field_type == 'user') {

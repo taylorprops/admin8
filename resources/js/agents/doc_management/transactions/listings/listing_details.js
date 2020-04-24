@@ -41,12 +41,14 @@ if (document.URL.match(/listing_details/)) {
 
     window.load_tabs = function (tab) {
         let Listing_ID = $('#Listing_ID').val();
+        let Agent_ID = $('#Agent_ID').val();
         if (tab == '') {
             tab = 'details';
         }
         axios.get('/agents/doc_management/transactions/listings/get_' + tab, {
             params: {
-                Listing_ID: Listing_ID
+                Listing_ID: Listing_ID,
+                Agent_ID: Agent_ID
             },
             headers: axios_headers_html
         })
@@ -111,15 +113,13 @@ if (document.URL.match(/listing_details/)) {
                         });
 
                     }, 1000);
+                } else if(tab == 'checklist') {
+
                 }
 
                 // init tooltips and form elements
                 global_tooltip();
-                /* if(tab != 'details') {
-                    setTimeout(function() {
-                        scrollToAnchor('scroll_to');
-                    }, 500);
-                } */
+
                 setTimeout(form_elements, 500);
 
                 $('.modal-backdrop').remove();

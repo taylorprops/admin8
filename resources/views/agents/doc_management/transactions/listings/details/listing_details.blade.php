@@ -79,4 +79,5 @@
 
 </div>
 <input type="hidden" id="Listing_ID" value="{{ $listing -> Listing_ID }}">
+<input type="hidden" id="Agent_ID" value="{{ $listing -> Agent_ID }}">
 @endsection

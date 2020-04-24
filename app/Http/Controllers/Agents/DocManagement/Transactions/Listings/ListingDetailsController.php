@@ -12,6 +12,7 @@ use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\DocManagement\Resources\ResourceItems;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsNotes;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
@@ -33,12 +34,38 @@ class ListingDetailsController extends Controller {
 
     // Checklist Tab
     public function get_checklist(Request $request) {
-        $Listing_ID = $request -> Listing_ID;
-        $checklist = TransactionChecklists::where('Listing_ID', $Listing_ID) -> first();
-        $items = TransactionChecklistItems::where('Listing_ID', $Listing_ID) -> orderBy('checklist_item_order') -> get();
-        $checklist_items = new ChecklistsItems();
 
-        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('checklist', 'items', 'checklist_items', 'checklist_docs'));
+        $Listing_ID = $request -> Listing_ID;
+        $Agent_ID = $request -> Agent_ID;
+        $checklist_items_model = new ChecklistsItems();
+        $transaction_checklist_items_model = new TransactionChecklistItems();
+        $transaction_checklist_item_docs_model = new TransactionChecklistItemsDocs();
+        $transaction_checklist_item_notes_model = new TransactionChecklistItemsNotes();
+
+        $transaction_checklist = TransactionChecklists::where('Listing_ID', $Listing_ID) -> first();
+        $transaction_checklist_id = $transaction_checklist -> id;
+
+        $transaction_checklist_items = $transaction_checklist_items_model -> where('Listing_ID', $Listing_ID) -> where('checklist_id' , $transaction_checklist_id)  -> orderBy('checklist_item_order') -> get();
+
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', ['listing', 'both']) -> orderBy('resource_order') -> get();
+
+        $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('folder_name', 'Trash') -> first();
+        $documents = TransactionDocuments::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
+        $folders = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder_name', '!=', 'Trash') -> orderBy('order') -> get();
+
+        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('Listing_ID', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents', 'folders'));
+    }
+
+    public function add_document_to_checklist_item(Request $request) {
+        $document_id = $request -> document_id;
+        $checklist_id = $request -> checklist_id;
+        $checklist_item_id = $request -> checklist_item_id;
+        $Agent_ID = $request -> Agent_ID;
+        $Listing_ID = $request -> Listing_ID;
+
+        // pdf to attach is file_location_convert
+
+        // set assigned = 'yes'
     }
     // End Checklist Tab
 
@@ -223,18 +250,37 @@ class ListingDetailsController extends Controller {
         $files = json_decode($request['files'], true);
 
         foreach($files as $file) {
+
+            $file_id = $file['file_id'];
             $add_documents = new TransactionDocuments();
             $add_documents -> Agent_ID = $Agent_ID;
             $add_documents -> Listing_ID = $Listing_ID;
             $add_documents -> folder = $folder;
-            $add_documents -> file_id = $file['file_id'];
+            $add_documents -> file_id = $file_id;
             $add_documents -> file_type = 'system';
             $add_documents -> file_name = $file['file_name'];
             $add_documents -> file_name_display = $file['file_name_display'];
             $add_documents -> pages_total = $file['pages_total'];
             $add_documents -> file_location = $file['file_location'];
             $add_documents -> save();
+
+            // copy all original documents from system uploads to document uploads
+            $base_path = base_path();
+            $storage_path = $base_path . '/storage/app/public/';
+
+            $copy_from = $storage_path . 'doc_management/uploads/' . $file_id . '/*';
+            $copy_to = $storage_path . 'doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system';
+            Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system/converted');
+            Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system/layers');
+            Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system/combined');
+            $copy = exec('cp -r ' . $copy_from . ' ' . $copy_to);
+            $copy_converted = exec('cp '. $storage_path . 'doc_management/uploads/' . $file_id . '/'.$file['file_name'] . ' ' . $copy_to .'/converted/'.$file['file_name']);
+
+            $add_documents -> file_location_converted = '/storage/doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system/converted/'.$file['file_name'];
+            $add_documents -> save();
+
         }
+
 
     }
 
@@ -292,7 +338,7 @@ class ListingDetailsController extends Controller {
 
             $base_path = base_path();
             $storage_path = $base_path . '/storage/app/public';
-            $storage_dir = 'doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id;
+            $storage_dir = 'doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_user';
             $storage_public_path = '/storage/'.$storage_dir;
             $file_location = $storage_public_path . '/' . $new_filename;
 
@@ -300,12 +346,17 @@ class ListingDetailsController extends Controller {
                 $fail = json_encode(['fail' => 'File Not Uploaded']);
                 return ($fail);
             }
+            // add to converted folder
+            if (!Storage::disk('public') -> put($storage_dir . '/converted/' . $new_filename, file_get_contents($file))) {
+                $fail = json_encode(['fail' => 'File Not Added to Converted Directory']);
+                return ($fail);
+            }
 
-            $storage_full_path = $storage_path . '/doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id;
+            $storage_full_path = $storage_path . '/doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_user';
             chmod($storage_full_path . '/' . $new_filename, 0775);
 
             // update directory path in database
-            $upload -> file_location = $storage_public_path . '/' . $new_filename;
+            $upload -> file_location = $file_location;
             $upload -> save();
 
             // create directories
@@ -373,6 +424,7 @@ class ListingDetailsController extends Controller {
             }
 
             $add_documents -> file_location = $file_location;
+            $add_documents -> file_location_converted =  $storage_public_path . '/converted/' . $new_filename;
             $add_documents -> save();
 
 

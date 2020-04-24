@@ -30,11 +30,11 @@ $(document).ready(function () {
         return response;
     }, function (error) {
         console.log(error.response);
-        window.location = '/';
+        location.reload();
         /* if(error.response.status === 404 || error.response.match(/404/) || error.response.status === 500 || error.response.match(/500/)) {
             window.location = '/';
         } */
-        return Promise.reject('error '+error);
+        //return Promise.reject('error '+error);
     });
 
     // go to dashboard on ctrl + d
@@ -62,7 +62,6 @@ $(document).ready(function () {
     global_tooltip();
 
 
-
     // confirm modals on enter | requires .modal-confirm and .modal-confirm-button
     /* $('.modal-confirm').on('show.bs.modal', function () {
         $('body').off('keyup').on('keyup', function(event) {
@@ -80,7 +79,6 @@ $(document).ready(function () {
         }, 0);
 
     });
-
 
 
 

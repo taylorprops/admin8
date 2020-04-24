@@ -28,7 +28,7 @@ if (document.URL.match(/listing_details/)) {
 
         $(document).on('click', '.folder-collapse', toggle_caret);
 
-        $(document).on('click', '.doc-delete-button', delete_one_document);
+        $(document).on('click', '.doc-delete-button', show_delete_one_document);
 
         $(document).on('click', '.delete-folder-button', function () {
             confirm_delete_folder($(this).data('folder-id'));
@@ -290,9 +290,20 @@ if (document.URL.match(/listing_details/)) {
             });
     }
 
-    function delete_one_document() {
+    function show_delete_one_document() {
+        let document_id = $(this).data('document-id');
+        let document_name = $(this).data('document-name');
+        $('#confirm_delete_document_modal').modal();
+        $('#delete_document_name').text(document_name);
+        $('#confirm_delete_document_button').off('click').on('click', function() {
+            delete_one_document(document_id);
+        });
+    }
+
+    function delete_one_document(document_id) {
+
         $('.documents-container').fadeOut('1000');
-        let document_ids = [$(this).data('document-id')];
+        let document_ids = [document_id];
         let formData = new FormData();
         let Listing_ID = $('#Listing_ID').val();
         formData.append('document_ids', document_ids);

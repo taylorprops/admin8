@@ -22,7 +22,7 @@
                                 <a class="nav-link text-white bg-green px-5 py-2 text-center" href="javascript: void(0)" id="save_field_input_values"><i class="fad fa-save fa-lg"></i><br>Save</a>
                             </li>
                             <li class="nav-item border-right">
-                                <a class="nav-link text-primary-dark px-4 py-2 text-center" href="javascript: void(0)"><i class="fad fa-file-pdf fa-lg"></i><br>To PDF</a>
+                                <a class="nav-link text-primary-dark px-4 py-2 text-center" href="javascript: void(0)" id="to_pdf"><i class="fad fa-file-pdf fa-lg"></i><br>To PDF</a>
                             </li>
                             <li class="nav-item dropdown border-right">
                                 <a class="nav-link dropdown-toggle text-primary-dark px-4 py-2 text-center" id="print_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-print fa-lg"></i><br>Print</a>
@@ -35,9 +35,15 @@
                             <li class="nav-item border-right">
                                 <a class="nav-link text-primary-dark px-4 py-2 text-center" href="javascript: void(0)"><i class="fad fa-envelope fa-lg"></i><br>Email</a>
                             </li>
+                            @if($file_type == 'user')
+                            <li class="nav-item border-right">
+                                <a class="nav-link text-primary-dark px-4 py-2 text-center" href="javascript: void(0)" id="rotate_form_button"><i class="fad fa-sync-alt fa-lg"></i><br>Rotate</a>
+                            </li>
+                            @else
                             <li class="nav-item border-right">
                                 <a class="nav-link text-primary-dark px-4 py-2 text-center" href="javascript: void(0)"><i class="fad fa-rabbit-fast fa-lg"></i><br>Quick Fill</a>
                             </li>
+                            @endif
 
                         </ul>
 
@@ -67,7 +73,7 @@
 
                 <div class="container-fluid p-0">
                     <div class="file-viewer-container mx-auto">
-                        <div class="file-view" id="file_viewer">
+                        <div class="file-view animated fadeIn" id="file_viewer">
 
                             @foreach($images as $image)
 
@@ -76,7 +82,7 @@
                                 <div class="h5 text-white bg-primary p-2 text-center mb-0" id="page_{{ $c }}">
                                     Page <?php echo $c.' of '.$total_pages; ?>
                                 </div>
-                                <div class="file-view-page-container border border-primary w-100" data-id="{{ $c }}">
+                                <div class="file-view-page-container border border-primary w-100 animated" data-id="{{ $c }}">
                                     <div class="field-container w-100 h-100">
                                         <img class="file-image-bg w-100 h-100" src="{{ $image -> file_location }}">
 
@@ -102,11 +108,11 @@
             </div>
 
             <div class="col-2 p-0 edit-file-sidebar">
-                <div class="file-view" id="thumb_viewer">
+                <div class="file-view animated fadeIn" id="thumb_viewer">
                     <div class="h5 text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
                     @foreach($images as $image)
                         @php $c = $image -> page_number; @endphp
-                        <div class="file-view-thumb-container  w-50 mx-auto @if($c == 1) active @endif" id="thumb_{{ $c }}" data-id="{{ $c }}">
+                        <div class="file-view-thumb-container animated w-50 mx-auto @if($c == 1) active @endif" id="thumb_{{ $c }}" data-id="{{ $c }}">
                             <div class="file-view-thumb">
                                 <a href="javascript: void(0)"><img class="file-thumb w-100 h-100" src="{{ $image -> file_location }}"></a>
                             </div>
@@ -124,6 +130,7 @@
 
 </div><!-- ./ .container -->
 <input type="hidden" id="file_id" value="{{ $file_id }}">
+<input type="hidden" id="document_id" value="{{ $document_id }}">
 <input type="hidden" id="file_type" value="{{ $file_type }}">
 <input type="hidden" id="file_name" value="{{ $file -> file_name_display }}">
 <input type="hidden" id="Listing_ID" value="{{ $Listing_ID }}">

@@ -80,6 +80,9 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
         if(!$value) {
             $value = $common_fields -> GetCommonNameValue($common_name, $field -> field_id, 'system', $Listing_ID, '', $Agent_ID);
         }
+        if($value != '') {
+            $value = date('n/j/Y', strtotime($value));
+        }
         @endphp
         <input type="text" class="field-datepicker fillable-field-input" id="{{ $input_id }}" value="{{ $value }}" data-default-value="{{ $value }}" data-common-name="{{ $common_name }}">
 
@@ -90,7 +93,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
     $checked = get_value_radio_checkbox($field_values, $input_id);
     @endphp
 
-        <input type="radio" class="fillable-field-input" value="{{ $field -> radio_value }}" id="{{ $input_id }}" {{ $checked }}>
+        <input type="radio" class="fillable-field-input" value="{{ $field -> radio_value }}" id="{{ $input_id }}" {{ $checked }} data-common-name="{{ $common_name }}">
 
     @elseif($field_type == 'checkbox')
 
@@ -99,11 +102,11 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
         $checked = get_value_radio_checkbox($field_values, $input_id);
         @endphp
 
-        <input type="checkbox" class="fillable-field-input" value="{{ $field -> checkbox_value }}" id="{{ $input_id }}" {{ $checked }}>
+        <input type="checkbox" class="fillable-field-input" value="{{ $field -> checkbox_value }}" id="{{ $input_id }}" {{ $checked }} data-common-name="{{ $common_name }}">
 
     @else
 
-    <div class="modal fade fill-fields-div" id="fill_fields_div_modal_{{$field -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field -> field_id}}_title" aria-hidden="true">
+    <div class="modal fade" id="fill_fields_div_modal_{{$field -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field -> field_id}}_title" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
@@ -113,7 +116,6 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                     </button>
                 </div>
                 <div class="modal-body">
-
 
                     <div class="container form-div">
 
@@ -148,6 +150,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                                         $input_id = $field -> field_id.'_'.$input_system -> input_id;
                                         $value = get_value($field_values, $input_id);
                                         $common_name_input = $input_system -> input_name;
+
                                         if(!$value) {
                                             $value = $common_fields -> GetCommonNameValue($common_name_input, $input_system -> input_id, 'system', $Listing_ID, '', $Agent_ID);
                                         }
