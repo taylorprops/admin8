@@ -197,7 +197,7 @@ if (document.URL.match(/edit_files/)) {
 
     function to_pdf() {
         // fields that css will be changed during export to pdf. They will be reset after
-        let els = '.data-div-shrink-font, .file-image-bg, .field-div, .data-div-radio-check';
+        let els = '.data-div, .file-image-bg, .field-div, .data-div-radio-check';
         let styles;
         $(els).each(function () {
             let data_div = $(this);
@@ -207,8 +207,7 @@ if (document.URL.match(/edit_files/)) {
             });
         });
 
-        $('.data-div').css({ 'font-size': '11px', 'padding': '7px 0px 0px 5px', 'font-family': 'Ariel' });
-        //$('.data-div-shrink-font').css({ 'padding-left': '5px' }); // removed 'font-size': '.8em', 'line-height': '140%', 'font-weight': 'bold',
+        $('.data-div').not('.data-div-radio-check').css({ 'font-size': '12px', 'padding': '4px 0px 0px 5px', 'font-family': 'Arial, Helvetica, sans-serif', 'font-weight': 'bold' });
         $('.file-image-bg').css({ opacity: '0.0' });
         $('.field-div').css({ background: 'none' });
         $('.data-div-radio-check').css({ 'margin-left': '1px', 'font-size': '1.2em', 'line-height': '80%', 'font-weight': 'bold' });
@@ -240,6 +239,15 @@ if (document.URL.match(/edit_files/)) {
         axios_options['header'] = { 'content-type': 'multipart/form-data' };
         axios.post('/agents/doc_management/transactions/edit_files/convert_to_pdf', formData, axios_options)
             .then(function (response) {
+                setTimeout(function () {
+                    $(els).each(function () {
+                        let data_div = $(this);
+                        $.each(styles, function (index, style) {
+                            data_div.css(style, data_div.data(style));
+                        });
+                    });
+
+                }, 1000);
                 toastr['success']('PDF Exported Successfully');
             })
             .catch(function (error) {
@@ -247,15 +255,7 @@ if (document.URL.match(/edit_files/)) {
                 });
 
 
-        setTimeout(function () {
-            $(els).each(function () {
-                let data_div = $(this);
-                $.each(styles, function (index, style) {
-                    data_div.css(style, data_div.data(style));
-                });
-            });
 
-        }, 1000);
     }
 
     function rotate_form() {

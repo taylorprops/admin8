@@ -67,8 +67,6 @@ if (document.URL.match(/create\/add_fields/)) {
 
         $('.delete-input').off('click').on('click', delete_input);
 
-
-
         // on page double click add field
         $('#file_viewer').on('dblclick', '.file-view-page-container.active .file-image', function (e) { // changed from just .file-view-page-container.active - adding .file-image prevents new field being created when double clicking in edit properties div
 
@@ -159,7 +157,6 @@ if (document.URL.match(/create\/add_fields/)) {
             }
         });
 
-
         // on page click hide all focused els
         $(document).on('click', '.field-container', function (e) {
 
@@ -168,6 +165,15 @@ if (document.URL.match(/create\/add_fields/)) {
                 reset_field_properties();
             }
 
+        });
+
+        $(document).on('keyup', '[data-field-type="custom"]', function() {
+            let helper_text_input = $(this).closest('.form-div').find('.field-data-helper-text');
+            if(helper_text_input.val() == '') {
+                $(this).bind('keyup change', function() {
+                    helper_text_input.val($(this).val()).trigger('change');
+                });
+            }
         });
 
         function reset_field_properties() {
@@ -185,8 +191,6 @@ if (document.URL.match(/create\/add_fields/)) {
             $('.focused, .mini-slider-div').hide();
 
         }
-
-
 
         function set_field_options(field_type, ele, id, rect, container) {
 
@@ -933,8 +937,6 @@ if (document.URL.match(/create\/add_fields/)) {
 
             return properties
         }
-
-
 
         function field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, page, type) {
 

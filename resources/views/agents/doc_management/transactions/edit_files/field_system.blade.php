@@ -23,7 +23,8 @@ $left = $field -> left_perc;
 $height = $field -> height_perc;
 $width = $field -> width_perc;
 
-$data_div_classes = 'data-div-shrink-font';
+//$data_div_classes = 'data-div-shrink-font';
+$data_div_classes = '';
 $data_div_styles = 'font-family: Helvetica, Arial, sans-serif;';
 
 if($field_type == 'radio' || $field_type == 'checkbox') {

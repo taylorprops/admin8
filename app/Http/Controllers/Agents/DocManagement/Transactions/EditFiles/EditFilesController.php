@@ -144,21 +144,22 @@ class EditFilesController extends Controller
         $clean_dir = new Filesystem;
         $clean_dir -> cleanDirectory('storage/' . $upload_dir . '/layers');
         $clean_dir -> cleanDirectory('storage/' . $upload_dir . '/combined');
-        $clean_dir -> cleanDirectory('storage/' . $upload_dir . '/converted');
+        //$clean_dir -> cleanDirectory('storage/' . $upload_dir . '/converted');
+
+        $options = array(
+            'binary' => '/usr/bin/xvfb-run -- /usr/bin/wkhtmltopdf',
+            'no-outline',
+            'margin-top' => 0,
+            'margin-right' => 0,
+            'margin-bottom' => 0,
+            'margin-left' => 0,
+            'page-size' => 'Letter',
+            'encoding' => 'UTF-8',
+            'dpi' => 96,
+            'disable-smart-shrinking'
+        );
 
         for ($c = 1; $c <= $request['page_count']; $c++) {
-            $options = array(
-                'binary' => '/usr/bin/xvfb-run -- /usr/bin/wkhtmltopdf',
-                'no-outline',
-                'margin-top' => 0,
-                'margin-right' => 0,
-                'margin-bottom' => 0,
-                'margin-left' => 0,
-                'disable-smart-shrinking',
-                'page-size' => 'A4',
-                'encoding' => 'UTF-8',
-                'dpi' => 96,
-            );
 
             $pdf = new Pdf($options);
             $pdf -> addPage($request['page_' . $c]);
@@ -177,13 +178,17 @@ class EditFilesController extends Controller
 
             $layer1 = $full_path_dir . '/pages/page_' . $page_number . '.pdf';
             $layer2 = $full_path_dir . '/layers/layer_' . $c . '.pdf';
-            exec('convert -quality 100 -density 300 ' . $layer2 . ' -transparent white -background none ' . $layer2.' 2>&1', $output);
-            exec('pdftk ' . $layer2 . ' background ' . $layer1 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf 2>&1', $output2);
+
+            exec('convert -quality 100 -density 300 ' . $layer2 . ' -transparent white -background none ' . $layer2);
+
+            exec('pdftk ' . $layer2 . ' background ' . $layer1 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf');
+
 
         }
 
         // merge all from combined and add final to converted - named $filename
         exec('pdftk '.$full_path_dir.'/combined/*pdf cat output '.$full_path_dir.'/converted/'.$filename);
+
     }
 
 

@@ -353,7 +353,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="sale_type[]" id="sale_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
+                                    <select name="sale_type[]" id="sale_type" class="custom-form-element form-select form-select-no-search form-select-no-cancel required" data-label="Select Form Types" multiple>
                                         <option value=""></option>
                                         @foreach($resources as $resource)
                                             @if($resource -> resource_type == 'form_tags')
