@@ -9,7 +9,7 @@
 
                     @foreach($checklist_groups as $checklist_group)
 
-                        <div class="h5 text-orange @if(!$loop -> first) mt-4 @endif">{{ $checklist_group -> resource_name }}</div>
+                        <div class="h5 text-orange checklist-group-header pb-2 @if(!$loop -> first) mt-4 @else mt-3 @endif">{{ $checklist_group -> resource_name }}</div>
 
                         @if(count($transaction_checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)
 
@@ -26,9 +26,10 @@
                                 }
                                 // get docs and notes for checklist item
                                 $transaction_checklist_item_id = $checklist_item -> id;
-                                $transaction_documents = $transaction_checklist_item_docs_model -> GetDocs($Listing_ID, $transaction_checklist_id, $transaction_checklist_item_id);
+                                $transaction_documents = $transaction_checklist_item_docs_model -> GetDocs($transaction_checklist_item_id);
                                 $transaction_documents_count = count($transaction_documents);
-                                $notes = $transaction_checklist_item_notes_model -> GetNotes($Listing_ID, $transaction_checklist_id, $transaction_checklist_item_id);
+
+                                $notes = $transaction_checklist_item_notes_model -> GetNotes($transaction_checklist_item_id);
                                 $notes_count = count($notes);
                                 $notes_count_unread = $notes -> where('notes_status', 'unread') -> count();
 
@@ -37,6 +38,7 @@
                                 $status = $status_details -> status;
                                 $classes = $status_details -> classes;
                                 $fa = $status_details -> fa;
+                                $helper_text = $status_details -> helper_text;
                                 @endphp
 
                                 <div class="checklist-item-div p-2 border-bottom">
@@ -47,7 +49,9 @@
                                             <div class="checklist-item-details d-flex align-items-center justify-content-between h-100">
 
                                                 <div class="d-flex justify-content-start">
-                                                    <div class="badge bg-blue-med pt-2 px-2 mr-3">{{ $loop -> index + 1 }}</div>
+                                                    {{-- <div class="badge bg-blue-med pt-2 px-2 mr-3">{{ $loop -> index + 1 }}</div> --}}
+                                                    <div class="status-badge badge {{ $classes }} mx-2" title="{{ $helper_text }}">{!! $fa . ' ' . $status !!}</div>
+
                                                     <div class="mx-2 helper-wrapper">
                                                         <a href="javascript: void(0)" role="button" class="checklist-item-helper" data-toggle="popover" data-html="true" data-trigger="focus" title="{{ $checklist_item_name }}" data-content="{{ $form_help_html }}">
                                                             <i class="fad fa-question-circle ml-2"></i>
@@ -56,24 +60,35 @@
                                                     <div class="mx-2">{{ $checklist_item_name }}</div>
                                                 </div>
 
-                                                <div class="badge {{ $classes }} mx-2">{!! $fa . ' ' . $status !!}</div>
-
                                             </div>
                                         </div>
                                         <div class="col-12 col-lg-7">
-                                            <button type="button" class="btn btn-sm btn-success add-document-button" data-checklist-id="{{ $transaction_checklist_id }}" data-checklist-item-id="{{ $transaction_checklist_item_id }}"><i class="fa fa-plus mr-2"></i> Add Document</button>
+                                            <div class="d-flex justify-content-start align-items-center">
+                                                @if($transaction_documents_count > 0)
+                                                <div class="mr-2">
+                                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#documents_div_{{ $transaction_checklist_item_id }}" aria-expanded="false" aria-controls="documents_div_{{ $transaction_checklist_item_id }}">View Docs <span class="badge bg-blue-light text-primary py-1 px-1 ml-2">{{ $transaction_documents_count }}</span></button>
+                                                </div>
+                                                @endif
+                                                <div>
+                                                    <button type="button" class="btn btn-sm btn-success add-document-button" data-checklist-id="{{ $transaction_checklist_id }}" data-checklist-item-id="{{ $transaction_checklist_item_id }}"><i class="fa fa-plus mr-2"></i> Add Document</button>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div class="checklist-item-documents">
-                                            @php
-
-                                            @endphp
+                                        <div class="collapse" id="documents_div_{{ $transaction_checklist_item_id }}">
+                                            @foreach($transaction_documents as $transaction_document)
+                                                @php
+                                                $doc_info = $documents_model -> GetDocInfo($transaction_document -> document_id);
+                                                @endphp
+                                                <div class="p-2 border-bottom d-flex justify-content-between align-items-center">
+                                                    <div>{{ $doc_info['file_name'] }}</div>
+                                                    <div><i class="fa fa-times text-danger"></i></div>
+                                                </div>
+                                            @endforeach
                                         </div>
 
-                                        <div class="checklist-item-notes">
-                                            @php
+                                        <div class="collapse" id="notes_div_{{ $transaction_checklist_item_id }}">
 
-                                            @endphp
                                         </div>
 
                                     </div>
@@ -109,14 +124,14 @@
                         <div class="row">
                             <div class="col-12">
                                 @foreach($folders as $folder)
-                                    @if(count($documents -> where('folder', $folder -> id)) > 0)
+                                    @if(count($documents_available -> where('folder', $folder -> id)) > 0)
                                         <div class="h5 text-orange">{{ $folder -> folder_name }}</div>
-                                        @foreach($documents -> where('folder', $folder -> id) as $document)
+                                        @foreach($documents_available -> where('folder', $folder -> id) as $document_available)
                                             <div class="d-flex justify-content-start align-items-center border-bottom">
                                                 <div>
-                                                    <button type="button" class="btn btn-sm btn-success select-document-button" data-document-id="{{ $document -> id }}">Add</button>
+                                                    <button type="button" class="btn btn-sm btn-success select-document-button" data-document-id="{{ $document_available -> id }}">Add</button>
                                                 </div>
-                                                <div class="ml-2">{{ $document -> file_name_display }}</div>
+                                                <div class="ml-2">{{ $document_available -> file_name_display }}</div>
                                             </div>
                                         @endforeach
                                     @endif

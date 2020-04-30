@@ -148,6 +148,7 @@ $(document).on('keydown', '.numbers-only', function (event) {
 });
 
 window.global_loading_on = function(ele, html) {
+    // ele used if containing loading frame in an element, otherwise leave blank
     let spinner_html = ' \
     <div class="loading-spinner"> \
         <div class="spinner-grow text-success" role="status"> \
@@ -165,10 +166,15 @@ window.global_loading_on = function(ele, html) {
     </div> \
     <div class="loading-spinner-html mt-0 mx-auto">'+html+'</div> \
     ';
-    ele.html(spinner_html);
+
+    if(ele != '') {
+        $(ele).html(spinner_html);
+    } else {
+        $('body').append('<div class="loading-bg">'+spinner_html+'</div>');
+    }
 }
 window.global_loading_off = function() {
-    $('.loading-spinner, .loading-spinner-html').remove();
+    $('.loading-spinner, .loading-spinner-html, .loading-bg').remove();
 }
 
 window.global_tooltip = function() {

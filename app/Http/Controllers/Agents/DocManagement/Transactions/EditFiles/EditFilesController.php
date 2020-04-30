@@ -156,13 +156,15 @@ class EditFilesController extends Controller
             'page-size' => 'Letter',
             'encoding' => 'UTF-8',
             'dpi' => 96,
-            'disable-smart-shrinking'
+            'disable-smart-shrinking',
+            'tmpDir' => '/var/www/tmp'
         );
 
         for ($c = 1; $c <= $request['page_count']; $c++) {
 
+            $html = preg_replace('/\>[\s]+\</', '><', $request['page_' . $c]);
             $pdf = new Pdf($options);
-            $pdf -> addPage($request['page_' . $c]);
+            $pdf -> addPage($html);
 
             if (!$pdf -> saveAs($full_path_dir . '/layers/layer_' . $c . '.pdf')) {
                 $error = $pdf -> getError();
@@ -182,7 +184,6 @@ class EditFilesController extends Controller
             exec('convert -quality 100 -density 300 ' . $layer2 . ' -transparent white -background none ' . $layer2);
 
             exec('pdftk ' . $layer2 . ' background ' . $layer1 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf');
-
 
         }
 

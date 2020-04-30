@@ -50,10 +50,12 @@ class ListingDetailsController extends Controller {
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', ['listing', 'both']) -> orderBy('resource_order') -> get();
 
         $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('folder_name', 'Trash') -> first();
-        $documents = TransactionDocuments::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
+        $documents_model = new TransactionDocuments();
+        $documents_available = $documents_model -> where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
+        $documents_checklist = $documents_model -> where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
         $folders = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder_name', '!=', 'Trash') -> orderBy('order') -> get();
 
-        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('Listing_ID', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents', 'folders'));
+        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('Listing_ID', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents_model', 'documents_available', 'documents_checklist', 'folders'));
     }
 
     public function add_document_to_checklist_item(Request $request) {
@@ -63,10 +65,23 @@ class ListingDetailsController extends Controller {
         $Agent_ID = $request -> Agent_ID;
         $Listing_ID = $request -> Listing_ID;
 
-        // pdf to attach is file_location_convert
+        $add_checklist_item_doc = new TransactionChecklistItemsDocs();
+        $add_checklist_item_doc -> document_id = $document_id;
+        $add_checklist_item_doc -> checklist_id = $checklist_id;
+        $add_checklist_item_doc -> checklist_item_id = $checklist_item_id;
+        $add_checklist_item_doc -> Agent_ID = $Agent_ID;
+        $add_checklist_item_doc -> Listing_ID = $Listing_ID;
+        $add_checklist_item_doc -> save();
 
-        // set assigned = 'yes'
+        $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes']);
     }
+
+    public function remove_document_from_checklist_item(Request $request) {
+        $document_id = $request -> document_id;
+        $checklist_item_doc = TransactionChecklistItemsDocs::where('id', $document_id);
+        $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'no']);
+    }
+
     // End Checklist Tab
 
     // Members Tab

@@ -180,8 +180,9 @@ if (document.URL.match(/listing_add$/)) {
             if(type == 'search' || type == 'mls') {
                 // redirect to manually enter data
                 $('#modal_danger').modal().find('.modal-body').html('No matches found. Please enter the property information manually.');
-                $('#mls_match_container, #mls_search_container, #address_search_container').collapse('hide');
                 $('#address_container, #address_enter_container').collapse('show');
+                $('#mls_match_container, #mls_search_container, #address_search_container').collapse('hide');
+
                 autofill_manual_entry(street_number, street_name, zip);
 
                 // next time address_enter_continue clicked go straight to enter details page.
@@ -220,7 +221,7 @@ if (document.URL.match(/listing_add$/)) {
     function show_loader() {
         // clear current data and show loader
         $('.property-loading-div').fadeIn();
-        global_loading_on($('.property-loading-div'), '<div class="h3 text-primary"><i class="fad fa-home-lg-alt mr-3"></i> Searching Properties</div>');
+        global_loading_on('.property-loading-div', '<div class="h3 text-primary"><i class="fad fa-home-lg-alt mr-3"></i> Searching Properties</div>');
         $('.property-results-container').hide();
         $('#property_details_photo').prop('src', '');
         $('#property_details_address').text('');

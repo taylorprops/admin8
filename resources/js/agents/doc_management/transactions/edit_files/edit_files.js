@@ -196,6 +196,8 @@ if (document.URL.match(/edit_files/)) {
     });
 
     function to_pdf() {
+
+        global_loading_on('', '<div class="text-white">Merging Fields and Creating PDF.<br>Please be patient, this process can take up to 10 seconds for each page.</div>');
         // fields that css will be changed during export to pdf. They will be reset after
         let els = '.data-div, .file-image-bg, .field-div, .data-div-radio-check';
         let styles;
@@ -236,18 +238,21 @@ if (document.URL.match(/edit_files/)) {
         formData.append('file_name', file_name);
         formData.append('Listing_ID', Listing_ID);
 
+        setTimeout(function () {
+            $(els).each(function () {
+                let data_div = $(this);
+                $.each(styles, function (index, style) {
+                    data_div.css(style, data_div.data(style));
+                });
+            });
+
+        }, 300);
+
         axios_options['header'] = { 'content-type': 'multipart/form-data' };
         axios.post('/agents/doc_management/transactions/edit_files/convert_to_pdf', formData, axios_options)
             .then(function (response) {
-                setTimeout(function () {
-                    $(els).each(function () {
-                        let data_div = $(this);
-                        $.each(styles, function (index, style) {
-                            data_div.css(style, data_div.data(style));
-                        });
-                    });
 
-                }, 1000);
+                global_loading_off();
                 toastr['success']('PDF Exported Successfully');
             })
             .catch(function (error) {

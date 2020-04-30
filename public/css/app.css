@@ -1593,6 +1593,11 @@ a.text-green:hover {
   background-color: #647c96 !important;
 }
 
+.bg-default-light {
+  background: rgba(100, 124, 150, 0.4) !important;
+  background-color: rgba(100, 124, 150, 0.4) !important;
+}
+
 .bg-primary-light {
   background: rgba(76, 155, 219, 0.1) !important;
   background-color: rgba(76, 155, 219, 0.1) !important;
@@ -13562,6 +13567,16 @@ input {
   overflow-y: scroll !important;
 }
 
+.loading-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1900;
+  background: rgba(0, 0, 0, 0.7);
+}
+
 .loader-gif {
   height: 70px;
   width: 70px;
@@ -13581,6 +13596,7 @@ input {
   width: 200px;
   margin: 10% auto 15px auto;
   text-align: center;
+  z-index: 1901;
 }
 
 .loading-spinner-html {
@@ -15545,6 +15561,14 @@ header .navbar #sub_menu_divs a {
   border-top: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
   z-index: 1000;
+}
+
+.page-listing-details .status-badge {
+  width: 100px;
+}
+
+.page-listing-details .checklist-group-header {
+  border-bottom: 3px solid #dee2e6;
 }
 
 @media (max-width: 1200px) {

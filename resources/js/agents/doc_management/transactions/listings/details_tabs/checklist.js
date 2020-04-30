@@ -4,7 +4,10 @@ $(document).ready(function() {
     $(document).on('click', '.add-document-button', show_add_document);
 
     $(document).on('click', '.select-document-button', save_add_document);
+
 });
+
+
 
 function show_add_document() {
     $('#add_document_checklist_id').val($(this).data('checklist-id'));
@@ -26,7 +29,9 @@ function save_add_document() {
     formData.append('Agent_ID', Agent_ID);
     axios.post('/agents/doc_management/transactions/listings/add_document_to_checklist_item', formData, axios_options)
     .then(function (response) {
-        console.log(response);
+        $('#add_document_modal').modal('hide');
+        toastr['success']('Document Added To Checklist');
+        load_tabs('checklist');
     })
     .catch(function (error) {
         console.log(error);

@@ -165,6 +165,7 @@ if (document.URL.match(/listing_details/)) {
                 .then(function (response) {
                     toastr['success']('Documents Successfully Added')
                     load_tabs('documents');
+                    load_tabs('checklist');
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -257,6 +258,7 @@ if (document.URL.match(/listing_details/)) {
         axios.post('/agents/doc_management/transactions/listings/delete_folder', formData, axios_options)
             .then(function (response) {
                 load_tabs('documents');
+                load_tabs('checklist');
             })
             .catch(function (error) {
                 console.log(error);
@@ -284,6 +286,7 @@ if (document.URL.match(/listing_details/)) {
         axios.post('/agents/doc_management/transactions/listings/move_documents_to_folder', formData, axios_options)
             .then(function (response) {
                 load_tabs('documents');
+                load_tabs('checklist');
             })
             .catch(function (error) {
                 console.log(error);
@@ -312,6 +315,7 @@ if (document.URL.match(/listing_details/)) {
             .then(function (response) {
                 //button.closest('.document-div').appendTo($('.folder-div').last().find('[id^=documents_folder_]'));
                 load_tabs('documents');
+                load_tabs('checklist');
                 toastr['success']('Document Moved To Trash');
             })
             .catch(function (error) {
@@ -338,6 +342,7 @@ if (document.URL.match(/listing_details/)) {
         axios.post('/agents/doc_management/transactions/listings/move_documents_to_trash', formData, axios_options)
             .then(function (response) {
                 load_tabs('documents');
+                load_tabs('checklist');
                 toastr['success']('Documents Moved To Trash');
             })
             .catch(function (error) {
