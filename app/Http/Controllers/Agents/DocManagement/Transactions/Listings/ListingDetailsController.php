@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\User;
+
 
 use App\Models\CRM\CRMContacts;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
@@ -23,6 +25,8 @@ use App\Models\Employees\Agents;
 use App\Models\Employees\Teams;
 use App\Models\Resources\LocationData;
 use App\Models\DocManagement\Create\Upload\Upload;
+use App\Models\DocManagement\Create\Upload\UploadImages;
+use App\Models\DocManagement\Create\Upload\UploadPages;
 use App\Models\DocManagement\Transactions\Upload\TransactionUpload;
 use App\Models\DocManagement\Transactions\Upload\TransactionUploadImages;
 use App\Models\DocManagement\Transactions\Upload\TransactionUploadPages;
@@ -41,6 +45,7 @@ class ListingDetailsController extends Controller {
         $transaction_checklist_items_model = new TransactionChecklistItems();
         $transaction_checklist_item_docs_model = new TransactionChecklistItemsDocs();
         $transaction_checklist_item_notes_model = new TransactionChecklistItemsNotes();
+        $users_model = new User();
 
         $transaction_checklist = TransactionChecklists::where('Listing_ID', $Listing_ID) -> first();
         $transaction_checklist_id = $transaction_checklist -> id;
@@ -55,7 +60,7 @@ class ListingDetailsController extends Controller {
         $documents_checklist = $documents_model -> where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
         $folders = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder_name', '!=', 'Trash') -> orderBy('order') -> get();
 
-        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('Listing_ID', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents_model', 'documents_available', 'documents_checklist', 'folders'));
+        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('Listing_ID', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents_model', 'users_model', 'documents_available', 'documents_checklist', 'folders'));
     }
 
     public function add_document_to_checklist_item(Request $request) {
@@ -78,8 +83,25 @@ class ListingDetailsController extends Controller {
 
     public function remove_document_from_checklist_item(Request $request) {
         $document_id = $request -> document_id;
-        $checklist_item_doc = TransactionChecklistItemsDocs::where('id', $document_id);
+        $checklist_item_doc = TransactionChecklistItemsDocs::where('document_id', $document_id) -> delete();
         $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'no']);
+    }
+
+    function add_notes_to_checklist_item(Request $request) {
+        $add_notes = new TransactionChecklistItemsNotes();
+        $add_notes -> checklist_id = $request -> checklist_id;
+        $add_notes -> checklist_item_id = $request -> checklist_item_id;
+        $add_notes -> checklist_item_doc_id = $request -> checklist_item_doc_id ?? null;
+        $add_notes -> Listing_ID = $request -> Listing_ID;
+        $add_notes -> Agent_ID = $request -> Agent_ID;
+        $add_notes -> note_user_id = auth() -> user() -> id;
+        $add_notes -> note_status = 'unread';
+        $add_notes -> notes = $request -> notes;
+        $add_notes -> save();
+    }
+
+    public function mark_note_read(Request $request) {
+        $mark_read = TransactionChecklistItemsNotes::where('id', $request -> note_id) -> update(['note_status' => 'read']);
     }
 
     // End Checklist Tab
@@ -211,7 +233,8 @@ class ListingDetailsController extends Controller {
         $Agent_ID = $listing -> Agent_ID;
         $documents = TransactionDocuments::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
         $folders = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
-        $checklist_items = TransactionChecklistItems::where('Listing_ID', $Listing_ID) -> orderBy('checklist_item_order') -> get();
+        $checklist_items = TransactionChecklistItems::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> orderBy('checklist_item_order') -> get();
+        $checklist_id = $checklist_items -> first() -> checklist_id;
         $checklist_form_ids = $checklist_items -> pluck('checklist_form_id') -> all();
         $checklist_forms = Upload::whereIn('file_id', $checklist_form_ids) -> get();
 
@@ -221,7 +244,7 @@ class ListingDetailsController extends Controller {
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> where('resource_association', 'yes') -> orderBy('resource_order') -> get();
         $form_tags = $resource_items -> where('resource_type', 'form_tags') -> orderBy('resource_order') -> get();
 
-        return view('/agents/doc_management/transactions/listings/details/data/get_documents', compact('Agent_ID', 'Listing_ID', 'documents', 'folders', 'checklist_forms', 'available_files', 'resource_items', 'form_groups', 'form_tags'));
+        return view('/agents/doc_management/transactions/listings/details/data/get_documents', compact('Agent_ID', 'Listing_ID', 'checklist_id', 'documents', 'folders', 'checklist_forms', 'available_files', 'resource_items', 'form_groups', 'form_tags'));
     }
 
     public function reorder_documents(Request $request) {
@@ -311,15 +334,17 @@ class ListingDetailsController extends Controller {
             $ext = $file -> getClientOriginalExtension();
             $file_name_display = $file -> getClientOriginalName();
             $filename = $file_name_display;
+
             $date = date('YmdHis');
             $file_name_no_ext = str_replace('.' . $ext, '', $filename);
             $clean_filename = sanitize($file_name_no_ext);
             $new_filename = $clean_filename . '_' . $date . '.' . $ext;
+
             // convert to pdf if image
             if($ext != 'pdf') {
                 $new_filename = $clean_filename . '_' . $date . '.pdf';
                 $file_name_display = $file_name_no_ext.'.pdf';
-                $create_images = exec('convert -quality 100 -density 300 ' . $file . ' /tmp/'.$new_filename, $output, $return);
+                $create_images = exec('convert -quality 100 -density 300 -page letter ' . $file . ' /tmp/'.$new_filename, $output, $return);
                 $file = '/tmp/'.$new_filename;
             }
             $pages_total = exec('pdftk ' . $file . ' dump_data | sed -n \'s/^NumberOfPages:\s//p\'');
@@ -393,7 +418,7 @@ class ListingDetailsController extends Controller {
             exec('rm ' . $storage_path . '/' . $storage_dir_pages . '/doc_data.txt');
 
             // add individual images to images directory
-            $create_images = exec('convert -density 100 -quality 100 ' . $input_file . ' -background white -alpha remove -strip ' . $output_images, $output, $return);
+            $create_images = exec('convert -density 300 -quality 100 ' . $input_file . ' -background white -alpha remove -strip ' . $output_images, $output, $return);
 
             // get all image files images_storage_path to use as file location
             $saved_images_directory = Storage::files('public/' . $storage_dir . '/images');
@@ -461,6 +486,134 @@ class ListingDetailsController extends Controller {
         $document_ids = explode(',', $request -> document_ids);
         $update_folder = TransactionDocuments::whereIn('id', $document_ids) -> update(['folder' => $folder_id]);
     }
+
+    public function add_document_to_checklist_item_html(Request $request) {
+        $checklist_id = $request -> checklist_id;
+        $document_ids = $request -> document_ids;
+        $checklist_items_model = new ChecklistsItems();
+        $transaction_checklist_items_modal = new TransactionChecklistItems();
+        $checklist_items = $transaction_checklist_items_modal -> where('checklist_id', $checklist_id) -> get();
+        $transaction_checklist_item_documents = TransactionChecklistItemsDocs::where('checklist_id', $checklist_id) -> get();
+        $documents = TransactionDocuments::whereIn('id', $document_ids) -> get();
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', ['listing', 'both']) -> orderBy('resource_order') -> get();
+
+        return view('/agents/doc_management/transactions/listings/details/data/add_document_to_checklist_item_html', compact('checklist_id', 'documents', 'transaction_checklist_item_documents', 'checklist_items_model', 'transaction_checklist_items_modal', 'checklist_items', 'checklist_groups'));
+    }
+
+    public function save_assign_documents_to_checklist(Request $request) {
+
+        $checklist_items = json_decode($request['checklist_items']);
+        $checklist_id = $request -> checklist_id;
+        $Agent_ID = $request -> Agent_ID;
+        $Listing_ID = $request -> Listing_ID;
+
+        foreach($checklist_items as $checklist_item) {
+
+            $checklist_item_id = $checklist_item -> checklist_item_id;
+            $document_ids = collect($checklist_item -> document_ids);
+
+            foreach($document_ids as $document_id) {
+
+                $add_checklist_item_doc = new TransactionChecklistItemsDocs();
+                $add_checklist_item_doc -> document_id = $document_id;
+                $add_checklist_item_doc -> checklist_id = $checklist_id;
+                $add_checklist_item_doc -> checklist_item_id = $checklist_item_id;
+                $add_checklist_item_doc -> Agent_ID = $Agent_ID;
+                $add_checklist_item_doc -> Listing_ID = $Listing_ID;
+                $add_checklist_item_doc -> save();
+
+                $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes']);
+
+            }
+
+        }
+
+    }
+
+    public function save_rename_document(Request $request) {
+        $document_id = $request -> document_id;
+        $new_name = str_replace('.pdf', '', $request -> new_name).'.pdf';
+        $transaction_upload = TransactionUpload::where('ListingDocs_ID', $document_id) -> update(['file_name_display' => $new_name]);
+        $transaction_document = TransactionDocuments::where('id', $document_id) -> update(['file_name_display' => $new_name]);
+        return true;
+    }
+
+    public function get_split_document_html(Request $request) {
+
+        $checklist_id = $request -> checklist_id;
+        $document_id = $request -> document_id;
+        $document = TransactionDocuments::where('id', $document_id) -> first();
+        $file_id = $document -> file_id;
+        $file_type = $request -> file_type;
+
+        if($file_type == 'user') {
+            $document_images = TransactionUploadImages::where('file_id', $file_id) -> get();
+        } else {
+            $document_images = UploadImages::where('file_id', $file_id) -> get();
+        }
+
+        $checklist_items_model = new ChecklistsItems();
+        $transaction_checklist_items_modal = new TransactionChecklistItems();
+        $checklist_items = $transaction_checklist_items_modal -> where('checklist_id', $checklist_id) -> get();
+
+        $transaction_checklist_item_documents = TransactionChecklistItemsDocs::where('checklist_id', $checklist_id) -> get();
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', ['listing', 'both']) -> orderBy('resource_order') -> get();
+
+        return view('/agents/doc_management/transactions/listings/details/data/get_split_document_html', compact('document_id', 'file_type', 'document', 'document_images', 'checklist_items', 'checklist_groups', 'transaction_checklist_item_documents', 'checklist_items_model', 'transaction_checklist_items_modal'));
+    }
+
+    public function save_split_document_to_documents(Request $request) {
+
+        $document_name = $request -> document_name;
+        $image_ids = $request -> image_ids;
+        $file_type = $request -> file_type;
+        $checklist_item_id = $request -> checklist_item_id;
+
+        if($file_type == 'user') {
+            $document_images = TransactionUploadImages::whereIn('id', explode(',', $image_ids)) -> get();
+        } else {
+            $document_images = UploadImages::whereIn('id', $image_ids) -> get();
+        }
+
+        $document_image_files = [];
+        $document_page_files = [];
+        foreach($document_images as $document_image) {
+
+            $file_id = $document_image -> file_id;
+            $page_number = $document_image -> page_number;
+
+            if($file_type == 'user') {
+                $document_page = TransactionUploadPages::where('file_id', $file_id) -> where('page_number', $page_number) -> first();
+            } else {
+                $document_page = UploadPages::where('file_id', $file_id) -> where('page_number', $page_number) -> first();
+            }
+
+            $document_image_files[] = $document_image -> file_location;
+            $document_page_files[] = $document_page -> file_location;
+
+        }
+        // TODO: all of this
+        // add to transaction uploads
+        // add images and pages and merged file
+        // add to docs_transaction_docs
+        // add to docs_transactions_uploads_images
+        // add to docs_transactions_uploads_pages
+        // copy from docs_transaction_fields
+        // copy from docs_transaction_fields_inputs ######### NOT THIS ONE????????????
+        // copy from docs_transaction_fields_inputs_values
+        // assign to checklist item
+
+        // if manually saving to documents
+        if($document_name) {
+
+        // if adding to checklist item
+        } else {
+
+        }
+
+
+    }
+
     // End Documents Tab
 
 

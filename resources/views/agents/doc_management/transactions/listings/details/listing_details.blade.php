@@ -10,7 +10,7 @@
     <span id="scroll_to"></span>
 
     <div class="row">
-        <div class="col-md-12 mt-3 details-tabs">
+        <div class="col-md-12 px-1 px-sm-3 mt-3 details-tabs">
             <ul id="tabs" class="nav nav-tabs details-list-group">
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="details" data-target="#details_tab" data-toggle="tab" class="nav-link active"><i class="fad fa-home-lg-alt mr-2 d-none d-md-inline-block"></i> Details</a></li>
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="members" id="open_members_tab" data-target="#members_tab" data-toggle="tab" class="nav-link"><i class="fad fa-user-friends mr-2 d-none d-md-inline-block"></i> Members</a></li>

@@ -257,8 +257,10 @@ class UploadController extends Controller {
         $sale_type = implode(',', $request -> no_form_sale_type);
 
         $upload = new Upload();
+        $upload -> file_name_orig= $file_name_display;
         $upload -> file_name_display = $file_name_display;
         $upload -> state = $state;
+        $upload -> pages_total = 0;
         $upload -> helper_text = $helper_text;
         $upload -> sale_type = $sale_type;
         $upload -> form_group_id = $form_group_id;
@@ -394,7 +396,7 @@ class UploadController extends Controller {
             exec('rm ' . $storage_path . '/' . $storage_dir_pages . '/doc_data.txt');
 
             // add individual images to images directory
-            $create_images = exec('convert -density 100 -quality 100 ' . $input_file . ' -background white -alpha remove -strip ' . $output_images, $output, $return);
+            $create_images = exec('convert -density 300 -quality 100 ' . $input_file . ' -background white -alpha remove -strip ' . $output_images, $output, $return);
 
             // get all image files images_storage_path to use as file location
             $saved_images_directory = Storage::files('public/' . $storage_dir . '/images');

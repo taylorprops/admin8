@@ -57,8 +57,26 @@
     Route::post('/agents/doc_management/transactions/listings/move_documents_to_folder', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@move_documents_to_folder');
     // reorder documents
     Route::post('/agents/doc_management/transactions/listings/reorder_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@reorder_documents');
-    // add document to checklist item
+    // get add document to checklist html
+    Route::get('/agents/doc_management/transactions/listings/add_document_to_checklist_item_html', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@add_document_to_checklist_item_html');
+
+    // delete document from checklist item
+    Route::post('/agents/doc_management/transactions/listings/remove_document_from_checklist_item', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@remove_document_from_checklist_item');
+    // add notes checklist item
+    Route::post('/agents/doc_management/transactions/listings/add_notes_to_checklist_item', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@add_notes_to_checklist_item');
+    // mark note read
+    Route::post('/agents/doc_management/transactions/listings/mark_note_read', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@mark_note_read');
+
+    // add one document to checklist item from checklist
     Route::post('/agents/doc_management/transactions/listings/add_document_to_checklist_item', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@add_document_to_checklist_item');
+    // save assign items to checklist from documents
+    Route::post('/agents/doc_management/transactions/listings/save_assign_documents_to_checklist', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@save_assign_documents_to_checklist');
+    // save rename document
+    Route::post('/agents/doc_management/transactions/listings/save_rename_document', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@save_rename_document');
+    // get split document html
+    Route::get('/agents/doc_management/transactions/listings/get_split_document_html', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@get_split_document_html');
+    // save add split document to documents
+    Route::post('/agents/doc_management/transactions/listings/save_split_document_to_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@save_split_document_to_documents');
 
 
 
@@ -83,14 +101,19 @@
     // ** FILL FIELDS
 
     // fill fields
-    Route::get('/agents/doc_management/transactions/edit_files/{document_id}', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@file_view');
+    Route::get('/agents/doc_management/transactions/edit_files/{document_id}/{saved?}', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@file_view');
 
     // rotate document
     Route::post('/agents/doc_management/transactions/edit_files/rotate_document', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@rotate_document');
 
     Route::post('/agents/doc_management/transactions/edit_files/save_field_input_values', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@save_field_input_values');
     // Export filled fields to pdf
-    Route::post('/agents/doc_management/transactions/edit_files/convert_to_pdf', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@convert_to_pdf');
+    Route::post('/agents/doc_management/transactions/edit_files/convert_to_pdf', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@convert_to_pdf') -> name('convert_to_pdf');
+    // save editing form - user added text, highlighting, etc
+    Route::post('/agents/doc_management/transactions/edit_files/save_edit_options', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@save_edit_options');
+    // get user fields
+    Route::post('/agents/doc_management/transactions/edit_files/get_user_fields', 'Agents\DocManagement\Transactions\EditFiles\EditFilesController@get_user_fields');
+
 
 
 

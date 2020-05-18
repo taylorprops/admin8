@@ -9,7 +9,7 @@
 
             <div class="row mb-5">
                 <div class="col-12">
-                    <div class="h1-responsive text-primary mt-4 mb-2">Add Listing</div>
+                    <div class="h1 text-primary mt-4 mb-2">Add Listing</div>
                 </div>
             </div>
 
@@ -17,11 +17,11 @@
                 <!-- address search container -->
                 <div class="d-flex justify-content-center w-100">
                     <div id="address_search_container" class="address-container mls-container collapse show">
-                        <div class="h3-responsive text-center text-orange mb-4">To Begin, Search By Property Address</div>
+                        <div class="h3 text-center text-orange mb-4">To Begin, Search By Property Address</div>
                         <div class="mt-5">
                             <div class="row">
                                 <div class="col-sm-9 col-lg-10">
-                                    <div class="h5-responsive text-gray">
+                                    <div class="h5 text-gray">
                                         Enter Property Street Address
                                         <span class="text-orange font-normal">
                                             <a href=".mls-container" class="text-orange font-9" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".mls-container"> <i class="fad fa-arrows-alt-h mx-3"></i> or Use MLS ID Search</a>
@@ -30,7 +30,7 @@
                                     <input type="text" class="w-100" id="address_search_street">
                                 </div>
                                 <div class="col-sm-3 col-lg-2">
-                                    <div class="h5-responsive text-gray">Unit</div>
+                                    <div class="h5 text-gray">Unit</div>
                                     <input type="text" class="w-100" id="address_search_unit">
                                 </div>
                             </div>
@@ -43,7 +43,7 @@
                         <div class="address-search-continue-div text-center my-4 hidden">
                             <a href=".property-container" class="btn btn-success btn-lg" id="address_search_continue" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container">Continue <i class="fad fa-chevron-double-right ml-3"></i></a>
                         </div>
-                        <div class="h5-responsive text-center mt-4">
+                        <div class="h5 text-center mt-4">
                             <a href=".address-container" id="enter_manually_button" class="btn btn-sm btn-secondary" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".address-container">Or Enter Manually</a>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
 
                 <!-- address enter container -->
                 <div id="address_enter_container" class="address-container collapse">
-                    <div class="h3-responsive text-center text-orange mb-4">To Begin, Enter The Street Address</div>
+                    <div class="h3 text-center text-orange mb-4">To Begin, Enter The Street Address</div>
                     <form id="enter_address_form">
                         <div class="container">
                             <div class="row">
@@ -108,7 +108,7 @@
                             </button>
                         </div>
                     </form>
-                    <div class="h5-responsive text-center mt-4">
+                    <div class="h5 text-center mt-4">
                         <a href=".address-container" class="btn btn-sm btn-secondary" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".address-container">Go Back To Address Search</a>
                     </div>
                 </div>
@@ -116,11 +116,11 @@
 
                 <!-- mls search container -->
                 <div id="mls_search_container" class="mls-container mx-auto collapse">
-                    <div class="h3-responsive text-center text-orange mb-4">Search By Bright MLS ID</div>
+                    <div class="h3 text-center text-orange mb-4">Search By Bright MLS ID</div>
                     <div class="mt-5">
                         <div class="row">
                             <div class="col-12">
-                                <div class="h5-responsive text-gray">
+                                <div class="h5 text-gray">
                                     Enter MLS ID
                                     <span class="text-orange font-normal">
                                         <a href=".mls-container" class="text-orange font-9" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".mls-container"> <i class="fad fa-arrows-alt-h mx-3"></i> or Use Address Search</a>
@@ -154,7 +154,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="h2-responsive text-gray mb-3 text-center">We found the following matching property</div>
+                                <div class="h2 text-gray mb-3 text-center">We found the following matching property</div>
                             </div>
                         </div>
                         <div class="row">
@@ -167,7 +167,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div class="h4-responsive mt-3 mt-md-0" id="property_details_address"></div>
+                                            <div class="h4 mt-3 mt-md-0" id="property_details_address"></div>
                                             <div class="row pt-2 mt-2 border-top property-details">
                                                 <div class="container">
                                                     <div class="row">

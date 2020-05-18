@@ -39,7 +39,7 @@
                         <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $location -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $location -> resource_id }}">
 
                             <div class="d-flex justify-content-between">
-                                <div class="h3 text-primary">{{ $location -> resource_name }} @if($location -> resource_name != $location -> resource_state) | {{ $location -> resource_state }} @endif</div>
+                                <div class="h3 responsive text-primary">{{ $location -> resource_name }} @if($location -> resource_name != $location -> resource_state) | {{ $location -> resource_state }} @endif</div>
                                 <div class="d-flex justify-content-end">
                                     <div>
                                         <select class="custom-form-element form-select form-select-no-search form-select-no-cancel checklist-type-option" data-label="Checklist Type">

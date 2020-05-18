@@ -46,21 +46,23 @@ class EditFilesController extends Controller
         $common_fields = new CommonFields();
 
         if($file_type == 'system') {
+
             $file = Upload::where('file_id', $file_id) -> first();
             $images = UploadImages::where('file_id', $file_id) -> get();
-            $fields = Fields::where('file_id', $file_id) -> orderBy('id') -> get();
 
         } else if($file_type == 'user') {
+
             $file = TransactionUpload::where('file_id', $file_id) -> first();
             $images = TransactionUploadImages::where('file_id', $file_id) -> get();
-            $fields = UserFields::where('file_id', $file_id) -> orderBy('id') -> get();
 
         }
-        $field_inputs_system = FieldInputs::where('file_id', $file_id) -> orderBy('id') -> get();
-        $field_inputs_user = UserFieldsInputs::where('file_id', $file_id) -> orderBy('id') -> get();
+
+        $fields_system = Fields::where('file_id', $file_id) -> orderBy('id') -> get();
+        $fields_system_inputs = FieldInputs::where('file_id', $file_id) -> orderBy('id') -> get();
+        $fields_user = UserFields::where('file_id', $file_id) -> where('file_type', $file_type) -> orderBy('id') -> get();
         $field_values = UserFieldsValues::where('file_id', $file_id) -> where('file_type', $file_type) -> get();
 
-        return view('/agents/doc_management/transactions/edit_files/file', compact('listing', 'Listing_ID', 'Agent_ID', 'file', 'images', 'fields', 'field_inputs_system', 'field_inputs_user', 'file_id', 'document_id', 'field_values', 'file_type', 'common_fields'));
+        return view('/agents/doc_management/transactions/edit_files/file', compact('listing', 'Listing_ID', 'Agent_ID', 'file', 'images', 'fields_system', 'fields_system_inputs', 'fields_user', 'file_id', 'document_id', 'field_values', 'file_type', 'common_fields'));
 
     }
 
@@ -183,7 +185,8 @@ class EditFilesController extends Controller
 
             exec('convert -quality 100 -density 300 ' . $layer2 . ' -transparent white -background none ' . $layer2);
 
-            exec('pdftk ' . $layer2 . ' background ' . $layer1 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf');
+            //exec('pdftk ' . $layer2 . ' background ' . $layer1 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf');
+            exec('pdftk ' . $layer1 . ' background ' . $layer2 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf');
 
         }
 
@@ -191,8 +194,6 @@ class EditFilesController extends Controller
         exec('pdftk '.$full_path_dir.'/combined/*pdf cat output '.$full_path_dir.'/converted/'.$filename);
 
     }
-
-
 
     public function rotate_document(Request $request) {
         $file_id = $request -> file_id;
@@ -209,120 +210,40 @@ class EditFilesController extends Controller
 
     }
 
-    /* public function save_add_fields(Request $request) {
+    public function get_user_fields(Request $request) {
+
+        $Listing_ID = $request -> Listing_ID;
+        $Agent_ID = $request -> Agent_ID;
+        $file_id = $request -> file_id;
+        $file_type = $request -> file_type;
+        $user_fields = UserFields::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('file_id', $file_id) -> where('file_type', $file_type) -> get();
+
+        return response() -> json($user_fields);
+
+    }
+
+    public function save_edit_options(Request $request) {
 
         $data = json_decode($request['data'], true);
 
+        $file_type = $data[0]['file_type'];
         $file_id = $data[0]['file_id'];
 
-        // add new fields
         if(isset($file_id)) {
 
             // delete all fields for this document
-            $delete_docs = Fields::where('file_id', $file_id) -> delete();
-            $delete_inputs = FieldInputs::where('file_id', $file_id) -> delete();
+            $delete_fields = UserFields::where('file_id', $file_id) -> where('file_type', $file_type) -> delete();
 
-            if(!empty($data[0]['field_id'])) {
-
-                // remove input fields, they are added next
-                $ignore_fields = ['field_data_input', 'field_data_input_helper_text', 'field_data_input_id'];
-                // add fields
-                foreach($data as $field) {
-                    $fields = new Fields;
-                    foreach($field as $key => $val) {
-                        if(!in_array($key, $ignore_fields)) {
-                            // keep field name in readable format and as name/id
-                            if($key == 'field_name') {
-                                $fields -> field_name_display = $val;
-                                $val = trim(preg_replace('/\s/', '', $val));
-                            }
-                            $fields -> $key = $val;
-                        }
-                    }
-                    $fields -> save();
+            // add fields
+            foreach($data as $field) {
+                $fields = new UserFields;
+                foreach($field as $key => $val) {
+                    $fields -> $key = $val;
                 }
-
-                // add field inputs
-                foreach($data as $field) {
-                    $field_id = $field['field_id'];
-                    $input_ids = $field['field_data_input_id'];
-                    $input_names = $field['field_data_input'];
-                    $input_names_helper_text = $field['field_data_input_helper_text'];
-
-                    for($i = 0; $i < count($input_names); $i++) {
-                        $field_inputs = new FieldInputs;
-                        $field_inputs -> input_id = $input_ids[$i];
-                        $field_inputs -> input_name = $input_names[$i];
-                        $field_inputs -> input_helper_text = $input_names_helper_text[$i];
-                        $field_inputs -> file_id = $file_id;
-                        $field_inputs -> field_id = $field_id;
-                        $field_inputs -> save();
-                    }
-
-                }
-
+                $fields -> save();
             }
 
         }
+    }
 
-    } */
-    /* public function save_pdf_client_side(Request $request) {
-        if($request) {
-
-            $file_id = $request['file_id'];
-
-            $upload_dir = 'doc_management/uploads/' . $file_id;
-            // create or clear out directories if they already exist
-            $clean_dir = new Filesystem;
-            if (!Storage::disk('public') -> exists($upload_dir . '/layers')) {
-                Storage::disk('public') -> makeDirectory($upload_dir . '/layers');
-            } else {
-                $clean_dir -> cleanDirectory('storage/'.$upload_dir . '/layers');
-            }
-            if (!Storage::disk('public') -> exists($upload_dir . '/combined')) {
-                Storage::disk('public') -> makeDirectory($upload_dir . '/combined');
-            } else {
-                $clean_dir -> cleanDirectory('storage/'.$upload_dir . '/combined');
-            }
-
-            $doc_root = $_SERVER['DOCUMENT_ROOT'];
-            $full_path_dir = $doc_root . 'storage/'.$upload_dir;
-
-            $pdf_output_dir = $doc_root . 'storage/'.$upload_dir.'/combined/';
-
-            for($c = 1; $c <= $request['page_count']; $c++) {
-                $options = array(
-                    'binary' => '/usr/bin/xvfb-run -- /usr/bin/wkhtmltopdf',
-                    'no-outline',
-                    'margin-top'    => 0,
-                    'margin-right'  => 0,
-                    'margin-bottom' => 0,
-                    'margin-left'   => 0,
-                    //'disable-smart-shrinking',
-                    'page-size' => 'Letter',
-                    'encoding' => 'UTF-8',
-                    'dpi' => 96,
-                );
-
-                $pdf = new Pdf($options);
-                $pdf -> addPage($request['page_'.$c]);
-                if (!$pdf -> saveAs($full_path_dir.'/layers/layer_'.$c.'.pdf')) {
-                    $error = $pdf -> getError();
-                    dd($error);
-                }
-
-                // merge layers from pages folder and layers folder and dump in combined folder
-                $page_number = $c;
-                if(strlen($c) == 1) {
-                    $page_number = '0'.$c;
-                }
-                $layer1 = $full_path_dir . '/pages/page_'.$page_number.'.pdf';
-                $layer2 = $full_path_dir . '/layers/layer_'.$c.'.pdf';
-                exec('convert -quality 100 -density 300 '.$layer2.' -transparent white -background none '.$layer2);
-                exec('pdftk '.$layer2.' background '.$layer1.' output '.$pdf_output_dir.'/'.date('YmdHis').'_combined_'.$c.'.pdf');
-
-            }
-
-        }
-    }  */
 }

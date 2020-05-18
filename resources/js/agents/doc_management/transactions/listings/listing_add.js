@@ -99,7 +99,7 @@ if (document.URL.match(/listing_add$/)) {
 
 
             $('#property_details_photo').prop('src', ListPictureURL);
-            $('#property_details_address').html(FullStreetAddress+'<br>'+City+', '+StateOrProvince+' '+PostalCode+'<br><span class="h5 mt-1 text-secondary">'+County.toUpperCase()+'</span>');
+            $('#property_details_address').html(FullStreetAddress+'<br>'+City+', '+StateOrProvince+' '+PostalCode+'<br><span class="h5 responsive mt-1 text-secondary">'+County.toUpperCase()+'</span>');
             $('#property_details_year_built').text(YearBuilt);
             if(Owner1) {
                 $('.owner-div').show();
@@ -221,7 +221,7 @@ if (document.URL.match(/listing_add$/)) {
     function show_loader() {
         // clear current data and show loader
         $('.property-loading-div').fadeIn();
-        global_loading_on('.property-loading-div', '<div class="h3 text-primary"><i class="fad fa-home-lg-alt mr-3"></i> Searching Properties</div>');
+        global_loading_on('.property-loading-div', '<div class="h3 responsive text-primary"><i class="fad fa-home-lg-alt mr-3"></i> Searching Properties</div>');
         $('.property-results-container').hide();
         $('#property_details_photo').prop('src', '');
         $('#property_details_address').text('');

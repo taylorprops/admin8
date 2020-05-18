@@ -3,6 +3,7 @@
     font-family: 'Lato', sans-serif;
     // font-family: 'Maitree', serif;
 }
+
 /* html {
     font-size: 1rem;
 } */
@@ -10,29 +11,93 @@
     body {
         font-size: .8rem;
     }
+
     .h5-responsive {
         font-size: 115%;
     }
 }
+
 @media (max-width: 991.98px) {
     html {
         font-size: .9rem;
     }
 }
+
 @media (max-width: 1199.98px) {
     html {
         font-size: 1rem;
     }
 }
+
 body {
     padding-top: 60px;
 }
+
 body:not(.y-scroll-none) {
     overflow-y: scroll;
 }
+
 body.y-scroll-none {
     overflow-y: hidden;
 }
+
+@function strip-unit($value) {
+    @return $value / ($value * 0 + 1);
+}
+
+@mixin fluid-type($min-vw, $max-vw, $min-font-size, $max-font-size) {
+    $u1: unit($min-vw);
+    $u2: unit($max-vw);
+    $u3: unit($min-font-size);
+    $u4: unit($max-font-size);
+
+    @if $u1==$u2 and $u1==$u3 and $u1==$u4 {
+        & {
+            font-size: $min-font-size;
+
+            @media screen and (min-width: $min-vw) {
+                font-size: calc(#{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} * ((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)}));
+            }
+
+            @media screen and (min-width: $max-vw) {
+                font-size: $max-font-size;
+            }
+        }
+    }
+}
+
+$min_width: 320px;
+$max_width: 2000px;
+$min_font: 12px;
+$max_font: 40px;
+$mod_1: 1.2; // mobile
+$mod_2: 1.5; // desktop
+
+.h1 {
+    font-size: $mod_1*$mod_1*$mod_1*$mod_1 *1rem;
+    @include fluid-type($min_width, $max_width, $mod_1*$mod_1*$mod_1 *$min_font, $mod_2*$mod_2*$mod_2 *$min_font);
+}
+
+.h2 {
+    font-size: $mod_1*$mod_1*$mod_1 *1rem;
+    @include fluid-type($min_width, $max_width, $mod_1*$mod_1*$mod_1 *$min_font, $mod_2*$mod_2*$mod_2 *$min_font);
+}
+
+.h3 {
+    font-size: $mod_1*$mod_1 *1rem;
+    @include fluid-type($min_width, $max_width, $mod_1*$mod_1 *$min_font, $mod_2*$mod_2 *$min_font);
+}
+
+.h4 {
+    font-size: $mod_1 *1rem;
+    @include fluid-type($min_width, $max_width, $mod_1*$mod_1 *$min_font, $mod_2*$mod_2 *$min_font);
+}
+
+h5 {
+    font-size: 1rem;
+    @include fluid-type($min_width, $max_width, $mod_1*$mod_1 *$min_font, $mod_2*$mod_2 *$min_font);
+}
+
 h1,
 h2,
 h3,
@@ -40,55 +105,70 @@ h4,
 h5 {
     color: $primary;
 }
+
 h2 {
     margin: 2.5rem 0 2rem 0;
 }
+
 a:hover {
     text-decoration: none;
 }
+
 input {
     border: 1px solid #ccc;
     color: #6e6d6d;
 }
+
 .nowrap {
     white-space: nowrap;
 }
+
 .btn:not(.btn-rounded),
 .btn:not(.btn-rounded):hover {
     border: 1px transparent;
     //border-radius: 0px;
     white-space: nowrap;
 }
+
 .btn.btn-sm {
     padding: 0.2rem .6rem;
     font-size: 0.75rem !important;
 }
+
 .btn.disabled,
 .btn:disabled {
     opacity: 0.25;
 }
+
 .container {
     max-width: 1500px !important;
 }
+
 .uppercase {
     text-transform: uppercase
 }
+
 .hidden {
     display: none;
 }
+
 .font-9 {
     font-size: .9rem;
 }
+
 .font-8 {
     font-size: .8rem;
 }
+
 .font-7 {
     font-size: .7rem;
 }
+
 // custom scroll bars
 .simplebar-content-wrapper {
     overflow-y: scroll !important;
 }
+
 .loading-bg {
     position: fixed;
     top: 0;
@@ -96,8 +176,9 @@ input {
     width: 100%;
     height: 100%;
     z-index: 1900;
-    background: rgba(0,0,0, .7);
+    background: rgba(0, 0, 0, .7);
 }
+
 .loader-gif {
     height: 70px;
     width: 70px;
@@ -111,6 +192,7 @@ input {
     background-repeat: no-repeat;
     background-position: center center;
 }
+
 .loading-spinner,
 .loading-spinner-html {
     width: 200px;
@@ -118,12 +200,20 @@ input {
     text-align: center;
     z-index: 1901;
 }
+
 .loading-spinner-html {
     width: 400px;
     text-align: center;
 }
+
 ul {
     list-style-type: none;
 }
+
+.draggable {
+    touch-action: none;
+    user-select: none;
+}
+
 
 

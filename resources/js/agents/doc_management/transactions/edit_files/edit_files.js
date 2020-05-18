@@ -6,6 +6,10 @@ if (document.URL.match(/edit_files/)) {
 
     $(document).ready(function () {
 
+        if(window.location.href.match(/saved/)) {
+            $('#modal_success').modal().find('.modal-body').html('Fields Successfully Added');
+        }
+
         form_elements();
 
         $('[data-address-type="state"]').addClass('uppercase').attr('maxlength', 2);
@@ -60,16 +64,17 @@ if (document.URL.match(/edit_files/)) {
 
         field_list();
 
-        $('#save_field_input_values').click(function() {
+        $('#save_field_input_values_button').click(function() {
             save_field_input_values('no');
         });
+
+
 
         // on page click hide all focused els
         $(document).on('click', '.field-container', function (e) {
             if (!$(e.target).is('.field-div *')) {
-                $('.field-div').removeClass('active');
-                //reset_field_properties();
-
+                $('.focused').hide();
+                field_list();
             }
         });
 
@@ -77,7 +82,7 @@ if (document.URL.match(/edit_files/)) {
             reset_field_properties();
         });
 
-        $('.field-div').click(function () {
+        $('.field-div').not('.disabled').click(function () {
 
             var group_id = $(this).data('group-id');
             // checkboxes and radios never get highlighted
@@ -125,16 +130,6 @@ if (document.URL.match(/edit_files/)) {
 
         });
 
-        /* $('.field-div').not('.date').off('click').on('click', function () {
-            $(this).find('.modal').modal('show');
-            // setTimeout(function() {
-            //     if($('.modal.show').find('input').eq(0).length == 1) {
-            //         $('.modal.show').find('input').eq(0).next('label').addClass('active').focus();
-            //     } else if($('.modal.show').find('textarea').eq(0).length == 1) {
-            //         $('.modal.show').find('textarea').eq(0).next('label').addClass('active').focus();
-            //     }
-            // }, 600);
-        }); */
 
         $('.save-fillable-fields').click(function () {
             var type = $(this).data('type');
@@ -181,38 +176,471 @@ if (document.URL.match(/edit_files/)) {
 
         });
 
-        $('.modal').on('hidden.bs.modal', function (e) {
-            $('.field-div').removeClass('active');
-        });
+
+        /* if($(window).width() < 768) {
+            $('.form-options-container').draggable({ axis: 'x' });
+        } */
 
         // action buttons
-        $(document).on('click', '#rotate_form_button', rotate_form);
+        $(document).on('click', '#rotate_form_button:not(.disabled)', rotate_form);
+        $(document).on('click', '#to_pdf_button:not(.disabled)', to_pdf);
+        $(document).on('click', '#show_edit_options_button:not(.disabled)', show_edit_options);
+        $(document).on('click', '#save_edit_options_button', save_edit_options);
+        $(document).on('click', '#cancel_edit_options_button', close_edit_options);
 
-        $('#to_pdf').off('click').on('click', function () {
-            to_pdf();
+        $('.edit-form-action').click(function() {
+            $('.edit-form-action').removeClass('active text-white').addClass('text-primary-dark');
+            $(this).removeClass('text-primary-dark').addClass('active text-white');
         });
-
 
     });
 
+    function show_edit_options() {
+        // show edit menu options and hide others
+        $('.form-options-container').find('.form-options-div').not('.edit-options').hide();
+        $('.edit-options').show();
+        // disable filling for all fields
+        $('.field-div').addClass('disabled');
+        // remove user fields
+        $('.user-field-div').remove();
+
+        let Listing_ID = $('#Listing_ID').val();
+        let Agent_ID = $('#Agent_ID').val();
+        let file_id = $('#file_id').val();
+        let file_type = $('#file_type').val();
+
+        let formData = new FormData();
+        formData.append('Listing_ID', Listing_ID);
+        formData.append('Agent_ID', Agent_ID);
+        formData.append('file_id', file_id);
+        formData.append('file_type', file_type);
+        axios.post('/agents/doc_management/transactions/edit_files/get_user_fields', formData, axios_options)
+        .then(function (response) {
+            response.data.forEach(function(field) {
+
+                let type = field['field_type'];
+                let field_class = '';
+                let field_html = '';
+                let handles = ' \
+                <div class="ui-resizable-handle ui-resizable-e focused"></div> \
+                <div class="ui-resizable-handle ui-resizable-w focused"></div> \
+                ';
+
+                if(type == 'highlight') {
+                    handles = ' \
+                    <div class="ui-resizable-handle ui-resizable-nw focused"></div> \
+                    <div class="ui-resizable-handle ui-resizable-ne focused"></div> \
+                    <div class="ui-resizable-handle ui-resizable-se focused"></div> \
+                    <div class="ui-resizable-handle ui-resizable-sw focused"></div> \
+                    ';
+                }
+
+                if(type == 'user_text') {
+                    field_class = 'user-field-div textline-div';
+                    field_html = '<div class="textline-html"></div>';
+                } else if (type == 'strikeout') {
+                    field_class = 'user-field-div strikeout-div';
+                    field_html = '<div class="strikeout-html"></div>';
+                } else if (type == 'highlight') {
+                    field_class = 'user-field-div highlight-div';
+                    field_html = '<div class="highlight-html"></div>';
+                }
+
+                let field_div = ' \
+                    <div class="field-div '+field_class+' group_'+field['group_id']+' ui-resizable ui-draggable" style="position: absolute; top: '+field['top_perc']+'%; left: '+field['left_perc']+'%; height: '+field['height_perc']+'%; width: '+field['width_perc']+'%;" id="field_'+field['group_id']+'" data-field-id="'+field['group_id']+'" data-group-id="'+field['group_id']+'" data-type="'+type+'" data-page="'+field['page']+'"> \
+                        <div class="field-options-holder focused" style="right: 0px; display: none;"> \
+                            <div class="btn-group" role="group" aria-label="Field Options"> <a type="button" class="btn btn-primary field-handle ui-draggable-handle"><i class="fal fa-arrows fa-lg"></i></a> <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> </div> \
+                        </div> \
+                        '+handles+' \
+                        '+field_html+' \
+                    </div> \
+                ';
+
+                $('.field-container').append(field_div);
+                setTimeout(function() {
+                    $('.focused').hide();
+                }, 500);
+                set_hwxy($('#field_' + field['group_id']), field['group_id'], type);
+                set_field_options(type, $('#field_' + field['group_id']), '', '', $('.field-container'));
+
+            });
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+        $('#file_viewer').off('dblclick').on('dblclick', '.file-view-page-container.active .file-image-bg', function (e) {
+            add_field(e);
+        });
+    }
+
+    function add_field(e) {
+
+        let field_type = $('.edit-form-action.active').data('field-type');
+        if(field_type) {
+
+            let container = $(e.target.parentNode);
+
+            // get bounding box coordinates
+            let rect = e.target.getBoundingClientRect();
+            // get target coordinates
+            let x = parseInt(Math.round(e.clientX - rect.left));
+            let y = parseInt(Math.round(e.clientY - rect.top));
+
+            let x_perc = pix_2_perc_xy('x', x, container);
+            let y_perc = pix_2_perc_xy('y', y, container);
+
+            let ele_h_perc = 1.3;
+
+            // remove element height from top position
+            y_perc = y_perc - ele_h_perc;
+
+            // set w and h for new field
+            let h_perc = 1.3;
+            let w_perc = 15;
+            h_perc = parseFloat(h_perc);
+            w_perc = parseFloat(w_perc);
+
+            // create unique id for field
+            let id = Date.now();
+
+            //create field and attach to container
+            let field = field_html(h_perc, w_perc, x_perc, y_perc, id, id, $('#active_page').val(), field_type);
+
+            // hide all handles and buttons
+            //$('.focused').hide();
+
+            // append new field
+            $(container).append(field);
+
+            set_hwxy($('#field_' + id), id, field_type);
+
+            keep_in_view($('#field_' + id), w_perc, x_perc, y_perc, field_type);
+
+            set_field_options(field_type, $('#field_' + id), id, rect, container);
+
+        }
+    }
+
+    function set_field_options(field_type, ele, id, rect, container) {
+
+        ele.click(function (e) {
+
+            if (e.target === this) {
+                e.stopPropagation();
+            }
+            $('.focused').hide();
+            ele.find('.focused').show();
+            let group_id = ele.data('group-id');
+            let x_pos = ele.position().left;
+            let doc_width = $('#file_viewer').width();
+            let ele_pos = {
+                left: '0px'
+            }
+            if(x_pos > doc_width / 2) {
+                ele_pos = {
+                    right: '0px'
+                }
+            }
+            ele.find('.field-options-holder').css(ele_pos);
+            set_hwxy(ele, group_id, field_type);
+
+        });
+
+        let handles = {
+            'e': '.ui-resizable-e', 'w': '.ui-resizable-w'
+        };
+        if(field_type == 'highlight') {
+            handles = {
+                'nw': '.ui-resizable-nw', 'ne': '.ui-resizable-ne', 'se': '.ui-resizable-se', 'sw': '.ui-resizable-sw'
+            }
+        }
+        ele.resizable({
+            containment: container,
+            handles: handles,
+            stop: function (e, ui) {
+                let resized_ele = $(e.target);
+                setTimeout(function() {
+                    set_hwxy(resized_ele, '', field_type);
+                }, 500);
+
+            }
+        });
+
+        ele.draggable({
+            containment: container,
+            handle: '.field-handle',
+            cursor: 'grab',
+            stop: function (e, ui) {
+                let dragged_ele = $(e.target);
+                let dragged_x = ui.position.left;
+                let dragged_y = ui.position.top;
+                let dragged_x_perc = pix_2_perc_xy('x', dragged_x, container);
+                let dragged_y_perc = pix_2_perc_xy('y', dragged_y,container);
+                let dragged_h = dragged_ele.height();
+                let dragged_w = dragged_ele.width();
+                //let dragged_h_perc = pix_2_perc_hw('height', dragged_h, container);
+                let dragged_w_perc = pix_2_perc_hw('width', dragged_w, container);
+                //let dragged_group_id = dragged_ele.data('group-id');
+
+
+                setTimeout(function() {
+                    set_hwxy(dragged_ele, '', field_type);
+                    keep_in_view(dragged_ele, dragged_w_perc, dragged_x_perc, dragged_y_perc, field_type);
+                }, 500);
+
+            }
+        });
+
+
+        // hide all handles and buttons when another container is selected
+        $('.field-select-container').click(function (e) {
+            $('.focused').hide();
+        });
+
+        // remove field
+        $('.remove-field').off('click').on('click', function () {
+            $(this).closest('.field-div').remove();
+
+            setTimeout(function () {
+                field_list();
+            }, 500);
+        });
+
+
+
+    }
+
+    function field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, page, type) {
+
+        let field_class = '';
+        let field_html = '';
+        let handles = ' \
+        <div class="field-handle ui-resizable-handle ui-resizable-e focused"></div> \
+        <div class="field-handle ui-resizable-handle ui-resizable-w focused"></div> \
+        ';
+
+        if(type == 'highlight') {
+            handles = ' \
+            <div class="field-handle ui-resizable-handle ui-resizable-nw focused"></div> \
+            <div class="field-handle ui-resizable-handle ui-resizable-ne focused"></div> \
+            <div class="field-handle ui-resizable-handle ui-resizable-se focused"></div> \
+            <div class="field-handle ui-resizable-handle ui-resizable-sw focused"></div> \
+            ';
+        }
+
+        if(type == 'user_text') {
+            field_class = 'user-field-div textline-div standard';
+            field_html = '<div class="textline-html"></div>';
+        } else if (type == 'strikeout') {
+            field_class = 'user-field-div strikeout-div standard';
+            field_html = '<div class="strikeout-html"></div>';
+        } else if (type == 'highlight') {
+            field_class = 'user-field-div highlight-div standard';
+            field_html = '<div class="highlight-html"></div>';
+        }
+
+        return ' \
+        <div class="field-div new '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;" id="field_' + id + '" data-field-id="' + id + '" data-group-id="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
+            <div class="field-options-holder focused"> \
+                <div class="btn-group" role="group" aria-label="Field Options"> \
+                    <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
+                </div> \
+            </div> \
+            '+ handles + ' \
+            '+ field_html + ' \
+        </div> \
+        ';
+    }
+
+    function set_hwxy(ele, group_id, type) {
+
+        let container = ele.closest('.field-container');
+
+        let h = ele.height();
+        let w = ele.width();
+        let h_perc = pix_2_perc_hw('height', h, container);
+        let w_perc = pix_2_perc_hw('width', w, container);
+
+        let x = ele.position().left;
+        let y = ele.position().top;
+        let x_perc = pix_2_perc_xy('x', x, container);
+        let y_perc = pix_2_perc_xy('y', y,container);
+
+        if (h_perc) {
+            ele.data('hp', h_perc);
+            ele.data('wp', w_perc);
+            $('#field_' + type + '_heightp').val(h_perc);
+            $('#field_' + type + '_widthp').val(w_perc);
+        }
+        if (x) {
+            ele.data('x', x);
+            ele.data('y', y);
+            ele.data('xp', x_perc);
+            ele.data('yp', y_perc);
+            $('#field_' + type + '_x').val(x);
+            $('#field_' + type + '_y').val(y);
+            $('#field_' + type + '_xp').val(x_perc);
+            $('#field_' + type + '_yp').val(y_perc);
+        }
+        if (group_id) {
+            $('#field_' + type + '_group_id').val(group_id);
+        }
+        ele.data('page', ele.data('page'));
+
+    }
+
+    function keep_in_view(ele, w_perc, x_perc, y_perc, type) {
+        // adjust fields if placed out of bounds
+        let dist = '';
+        let cw = 100;
+        dist = 3;
+        let cd_adjusted = cw;
+
+        let x_pos = ele.position().left;
+        let doc_width = $('#file_viewer').width();
+
+        if(x_pos > (doc_width / 2)) {
+            ele.find('.field-options-holder').css({ left: '' }).animate({ right: '0px' });
+        } else {
+            ele.find('.field-options-holder').css({ right: '' }).animate({ left: '0px' });
+        }
+
+        if (x_perc < dist) {
+            ele.animate({ left: dist + '%' });
+        }
+        if ((x_perc + w_perc) > cd_adjusted) {
+            let pos = cw - w_perc - dist;
+            ele.animate({ left: pos + '%' });
+        }
+
+        if (y_perc < 2) {
+            ele.animate({ top: '2%' });
+        }
+
+        setTimeout(function () {
+            let group_id = ele.data('group-id');
+            set_hwxy(ele, group_id, type);
+        }, 1500);
+
+    }
+
+    function pix_2_perc_hw(type, px, container) {
+        if (type == 'width') {
+            return (100 * parseFloat(px / parseFloat(container.width())));
+        } else {
+            return (100 * parseFloat(px / parseFloat(container.height())));
+        }
+    }
+
+    function pix_2_perc_xy(type, px, container) {
+        if (type == 'x') {
+            return (100 * parseFloat(px / parseFloat(container.width())));
+        } else {
+            return (100 * parseFloat(px / parseFloat(container.height())));
+        }
+    }
+
+    function save_edit_options() {
+
+        let data = [];
+
+        if ($('.user-field-div').length > 0) {
+
+            $('.user-field-div').each(function () {
+
+                let field_data = {};
+                field_data['Listing_ID'] = $('#Listing_ID').val();
+                field_data['Agent_ID'] = $('#Agent_ID').val();
+
+                let type = $(this).data('type');
+                field_data['file_type'] = $('#file_type').val();
+                field_data['file_id'] = $('#file_id').val();
+                field_data['field_id'] = $(this).data('field-id');
+
+                let user_field_type = 'Text';
+                if(type == 'strikeout') {
+                    user_field_type = 'Strikeout';
+                } else if(type == 'highlight') {
+                    user_field_type = 'Highlight';
+                }
+
+                field_data['field_name'] = 'User '+user_field_type;
+                field_data['field_name_display'] = 'User '+user_field_type;
+                field_data['group_id'] = $(this).data('group-id');
+                field_data['page'] = $(this).data('page');
+                field_data['field_type'] = type;
+                field_data['left'] = $(this).data('x');
+                field_data['top'] = $(this).data('y');
+                field_data['height'] = $(this).data('h');
+                field_data['width'] = $(this).data('w');
+                field_data['left_perc'] = $(this).data('xp');
+                field_data['top_perc'] = $(this).data('yp');
+                field_data['height_perc'] = $(this).data('hp');
+                field_data['width_perc'] = $(this).data('wp');
+
+                data.push(field_data);
+
+            });
+
+        } else {
+
+            let field_data = {};
+            field_data['Listing_ID'] = $('#Listing_ID').val();
+            field_data['Agent_ID'] = $('#Agent_ID').val();
+            field_data['file_type'] = $('#file_type').val();
+            field_data['file_id'] = $('#file_id').val();
+
+            data.push(field_data);
+
+        }
+
+        data = JSON.stringify(data);
+
+        let formData = new FormData();
+        formData.append('data', data);
+        axios.post('/agents/doc_management/transactions/edit_files/save_edit_options', formData, axios_options)
+        .then(function (response) {
+            let url = window.location.href.replace(/\/saved/, '')+'/saved';
+            window.location.href = url;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function close_edit_options() {
+        window.location.href = window.location.href.replace(/\/saved/, '');
+        /* $('.form-options-container').find('.form-options-div').not('.edit-options').show();
+        $('.edit-options').hide();
+        $('.field-div').removeClass('disabled');
+        $('.edit-form-action').removeClass('active text-white').addClass('text-primary-dark');
+        $('.field-div.new').remove(); */
+    }
+
     function to_pdf() {
 
-        global_loading_on('', '<div class="text-white">Merging Fields and Creating PDF.<br>Please be patient, this process can take up to 10 seconds for each page.</div>');
+        global_loading_on('', '<div class="h3 text-white">Merging Fields, Saving and Creating PDF.<br>Please be patient, this process can take up to 10 seconds for each page.</div>');
         // fields that css will be changed during export to pdf. They will be reset after
         let els = '.data-div, .file-image-bg, .field-div, .data-div-radio-check';
         let styles;
         $(els).each(function () {
             let data_div = $(this);
-            styles = ['color', 'font-size', 'line-height', 'font-weight', 'opacity', 'background', 'margin-left', 'padding-left'];
+            styles = ['color', 'font-size', 'line-height', 'font-weight', 'opacity', 'background', 'margin-left', 'padding-left', 'height', 'display', 'position', 'top'];
             $.each(styles, function (index, style) {
                 data_div.data(style, data_div.css(style));
             });
         });
 
-        $('.data-div').not('.data-div-radio-check').css({ 'font-size': '12px', 'padding': '4px 0px 0px 5px', 'font-family': 'Arial, Helvetica, sans-serif', 'font-weight': 'bold' });
+        // set inline styles for PDF
+        $('.data-div').not('.data-div-radio-check, .highlight, .strikeout').css({ 'font-size': '1rem', 'color': '#000', 'padding-left': '5px', 'font-family': 'sans-serif', 'letter-spacing': '0.03rem' });
         $('.file-image-bg').css({ opacity: '0.0' });
         $('.field-div').css({ background: 'none' });
         $('.data-div-radio-check').css({ 'margin-left': '1px', 'font-size': '1.2em', 'line-height': '80%', 'font-weight': 'bold' });
+        $('.data-div.highlight').css({ background: 'rgba(252, 234, 78, .3)', height: '100%' });
+        $('.data-div.strikeout').css({ width: '100%', height: '3px', background: 'black', display: 'block', position: 'relative', top: '10px' });
 
 
         let file_id = $('#file_id').val();
@@ -220,9 +648,11 @@ if (document.URL.match(/edit_files/)) {
         let Listing_ID = $('#Listing_ID').val();
 
         // remove datepicker html, datepicker input, background img, modals, left over input fields
-        let elements_remove = '.qs-datepicker-container, .field-datepicker, .file-image-bg, .modal, .fillable-field-input';
+        let elements_remove = '.qs-datepicker-container, .field-datepicker, .file-image-bg, .fillable-field-input, .modal';
 
         let formData = new FormData();
+
+        // get html from all pages to add to pdf layer
         let c = 0;
         $('.file-view-page-container').each(function () {
             c += 1;
@@ -230,6 +660,7 @@ if (document.URL.match(/edit_files/)) {
             let page_html = container.clone();
             page_html.find(elements_remove).remove();
             page_html = page_html.wrap('<div>').parent().html();
+
             formData.append('page_' + c, page_html);
         });
 
@@ -238,6 +669,7 @@ if (document.URL.match(/edit_files/)) {
         formData.append('file_name', file_name);
         formData.append('Listing_ID', Listing_ID);
 
+        // reset all styles
         setTimeout(function () {
             $(els).each(function () {
                 let data_div = $(this);
@@ -253,7 +685,7 @@ if (document.URL.match(/edit_files/)) {
             .then(function (response) {
 
                 global_loading_off();
-                toastr['success']('PDF Exported Successfully');
+                toastr['success']('Document Saved Successfully');
             })
             .catch(function (error) {
                 //console.log(error);
@@ -265,6 +697,7 @@ if (document.URL.match(/edit_files/)) {
 
     function rotate_form() {
         $('.fa-sync-alt').addClass('fa-spin');
+        global_loading_on('', '<div class="text-white">Rotating Document</div>');
         $('.file-view-page-container, .file-view-thumb-container').addClass('fadeOut');
         let file_id = $('#file_id').val();
         let file_type = $('#file_type').val();
@@ -317,7 +750,7 @@ if (document.URL.match(/edit_files/)) {
         axios.post('/agents/doc_management/transactions/edit_files/save_field_input_values', field_data, axios_options)
             .then(function (response) {
                 if(on_load == 'no') {
-                    $('#modal_success').modal().find('.modal-body').html('Fields Successfully Saved');
+                    to_pdf();
                 }
             })
             .catch(function (error) {
@@ -458,7 +891,6 @@ if (document.URL.match(/edit_files/)) {
             textarea.data('default-value', text);
             split_lines(group_id, text);
 
-
         } else if (type == 'date') {
 
             let input = form_div.find('.fillable-field-input');
@@ -480,6 +912,14 @@ if (document.URL.match(/edit_files/)) {
                 input.data('default-value', 'checked');
                 input.prev('.data-div').html('x');
             }
+
+        } else if (type == 'user_text') {
+
+            let textarea = form_div.find('.fillable-field-input');
+            let text = textarea.val();
+
+            textarea.data('default-value', text);
+            form_div.closest('.field-div').find('.data-div').html(text);
 
         }
 
@@ -532,8 +972,7 @@ if (document.URL.match(/edit_files/)) {
     function field_list() {
         $('.field-list-container').html('');
         $('.file-view-page-container').each(function () {
-            let page_number = $(this).data('id');
-            $('.field-list-container').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
+
             // get unique group ids
             var group_ids = [];
             $(this).find('.field-div').each(function () {
@@ -544,23 +983,39 @@ if (document.URL.match(/edit_files/)) {
             $.each(group_ids, function (index, group_id) {
                 let group = $('.group_' + group_id);
                 let type = group.data('type');
+                let order = Math.ceil(group.data('y'));
+                let name = '';
                 if (group.data('type') == 'checkbox') {
                     group.each(function () {
-                        name = $(this).data('customname');
-                        $('.field-list-container').append('<div class="mb-1 border-bottom border-primary"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
+                        name = $(this).data('y');
+                        $('.field-list-container').append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
                     });
                 } else {
                     name = group.data('customname');
                     if (group.data('commonname') != undefined && group.data('commonname') != '') {
                         name = group.data('commonname');
                     }
-                    if (name == undefined || name == '') {
-                        name = '<span class="text-danger">Not Named</span>';
+
+                    if (name == undefined || name == 'undefined' || name == '' || name == 'User Field') {
+                        if(type == 'user_text') {
+                            $('.field-list-container').append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">User Text Field</a></div>');
+                        }
+                    } else {
+                        $('.field-list-container').append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
                     }
-                    $('.field-list-container').append('<div class="mb-1 border-bottom border-primary"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
+
                 }
 
             });
+
+            let fields = $('.field-list-div');
+            fields.sort(function(a, b){
+                return $(a).data('order')-$(b).data('order')
+            });
+            let page_number = $(this).data('id');
+            $('.field-list-container').html('').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
+            $('.field-list-container').append(fields);
+
             $('.field-list-link').off('click').on('click', function (e) {
                 //e.stopPropagation();
                 let group_id = $(this).data('group-id');

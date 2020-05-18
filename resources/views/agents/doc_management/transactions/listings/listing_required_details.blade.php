@@ -10,21 +10,21 @@
     <div class="row">
         <div class="col-12">
 
-            <div class="h3 text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.', '.$property_details -> PostalCode }}</div>
+            <div class="h3 responsive text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.', '.$property_details -> PostalCode }}</div>
 
             <div class="steps-container mx-auto">
                 <form id="steps_form" autocomplete="off">
                     <input autocomplete="false" name="hidden" type="text" style="display:none;">
-                    <div class="h4 text-primary mt-3 text-center">Jsut a few more details</div>
+                    <div class="h4 responsive text-primary mt-3 text-center">Jsut a few more details</div>
                     <ul class="stepper linear mt-2 pt-1">
                         <li class="step active">
-                            <div class="h4 step-title waves-effect waves-light text-gray">Seller(s)</div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Seller(s)</div>
                             <div class="step-new-content mt-3">
                                 <div class="row">
                                     <div class="col-12 seller-container">
 
                                         <div class="seller-div mb-3 border-bottom">
-                                            <div class="h5 text-orange seller-header">Seller 1</div>
+                                            <div class="h5 responsive text-orange seller-header">Seller 1</div>
                                             <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-seller-id="1"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a>
                                             <div class="row">
                                                 <div class="col-12 col-md-6 col-lg-3">
@@ -75,7 +75,7 @@
                             </div>
                         </li>
                         <li class="step">
-                            <div class="h4 step-title waves-effect waves-light text-gray">Dates</div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Dates</div>
                             <div class="step-new-content mt-3">
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-3">
@@ -94,7 +94,7 @@
 
 
                         <li class="step">
-                            <div class="h4 step-title waves-effect waves-light text-gray">Complete!</div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Complete!</div>
                             <div class="step-new-content mt-3">
                                 <div class="step-actions">
                                     <div class="d-flex justify-content-center w-100 h-100">

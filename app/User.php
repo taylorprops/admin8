@@ -36,4 +36,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function ScopeUserDetails($query, $user_id) {
+        $user = $this -> select('name', 'email', 'user_id', 'group') -> where('id', $user_id) -> first();
+        return compact('user');
+    }
 }

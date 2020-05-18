@@ -21,7 +21,7 @@ if($listing -> SaleRent == 'sale') {
             @endif
 
             <div class="ml-2 ml-md-3">
-                <div class="h3-responsive mb-2 text-gray">{!! $listing -> FullStreetAddress.' '.$listing -> Street.' '.$listing -> City.', '.$listing -> StateOrProvince.' '.$listing -> PostalCode !!}</div>
+                <div class="h3 mb-2 text-gray">{!! $listing -> FullStreetAddress.' '.$listing -> Street.' '.$listing -> City.', '.$listing -> StateOrProvince.' '.$listing -> PostalCode !!}</div>
                 <div class="mb-1 mb-md-3">
                     <span class="badge bg-orange p-1 p-sm-2"><span class="transaction-type text-white">Listing</span></span>
                     <span class="badge bg-primary ml-1 ml-lg-2 p-1 p-sm-2"><span class="transaction-sub-type text-white">{{ $sale_rent }}</span></span>
@@ -49,15 +49,18 @@ if($listing -> SaleRent == 'sale') {
 </div>
 
 <div class="row my-2 my-md-4 py-2 border-top border-bottom">
+    {{-- TODO: remove List Agent details --}}
+    @if(auth() -> user() -> group == 'admin')
     <div class="col-6 col-md-3 col-lg-2">
-        <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">List Agent</div>
+        <div class="h5 mb-1 text-gray border-bottom d-inline-block">List Agent</div>
         <br>
         {{ $listing -> ListAgentFirstName . ' ' . $listing -> ListAgentLastName }}<br>
         {{ format_phone($listing -> ListAgentPreferredPhone) }}<br>
         <a href="mailto:{{ $listing -> ListAgentEmail }}">{{ $listing -> ListAgentEmail }}</a>
     </div>
+    @endif
     <div class="col-6 col-md-3 col-lg-2 mt-0">
-        <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">Seller(s)</div>
+        <div class="h5 mb-1 text-gray border-bottom d-inline-block">Seller(s)</div>
         <br>
         @foreach($sellers as $seller)
         <div id="seller_one_display">{{ $seller -> first_name . ' ' . $seller -> last_name }}</div>
@@ -66,19 +69,19 @@ if($listing -> SaleRent == 'sale') {
     </div>
     <div class="col-6 col-md-3 col-lg-2 mt-3 mt-md-0">
 
-        <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">List Date</div>
+        <div class="h5 mb-1 text-gray border-bottom d-inline-block">List Date</div>
         <div class="mb-2">{{ date('n/j/Y', strtotime($listing -> MLSListDate)) }}</div>
 
-        <div class="h5-responsive pb-0 text-gray border-bottom d-inline-block">Expiration Date</div>
+        <div class="h5 pb-0 text-gray border-bottom d-inline-block">Expiration Date</div>
         <div>{{ date('n/j/Y', strtotime($listing -> ExpirationDate)) }}</div>
 
     </div>
     <div class="col-6 col-md-3 col-lg-2">
 
-        <div class="h5-responsive mb-1 text-gray border-bottom d-inline-block">Status</div>
+        <div class="h5 mb-1 text-gray border-bottom d-inline-block">Status</div>
         <div class="mb-2">{{ $resource_items -> GetResourceName($listing -> Status) }}</div>
 
-        <div class="h5-responsive pb-0 text-gray border-bottom d-inline-block">List Price</div>
+        <div class="h5 pb-0 text-gray border-bottom d-inline-block">List Price</div>
         <div id="list_price_display">${{ number_format($listing -> ListPrice) }}</div>
 
     </div>

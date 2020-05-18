@@ -18,7 +18,7 @@
                         @foreach($members as $member)
 
                         <div class="tab-pane animated fadeIn slow mt-0 @if($loop -> first) show active @endif member-div" id="member_{{ $member -> id }}_div" role="tabpanel">
-                            <div class="h3-responsive text-orange mb-2">@if($member -> first_name) {{ $member -> first_name . ' ' . $member -> last_name }} @else {{ $member -> company }} @endif</div>
+                            <div class="h3 text-orange mb-2">@if($member -> first_name) {{ $member -> first_name . ' ' . $member -> last_name }} @else {{ $member -> company }} @endif</div>
                             <div class="card" id="member_div_{{ $member -> id }}">
                                 <div class="card-body">
 

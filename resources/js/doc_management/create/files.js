@@ -30,6 +30,9 @@ if (document.URL.match(/create\/upload\/files/)) {
                     upload_options();
 
                     $('#upload_file_button').off('click').on('click', upload_file);
+
+                    $('.add-non-form-item-button').hide();
+
                 }, 500);
             }
         });
@@ -97,6 +100,16 @@ if (document.URL.match(/create\/upload\/files/)) {
             sort_uploads($(this));
         });
         global_tooltip();
+
+        $('.form-group-item').click(function() {
+            if($(this).hasClass('last')) {
+                $('.add-non-form-item-button').show();
+                $('.upload-file-button').hide();
+            } else {
+                $('.add-non-form-item-button').hide();
+                $('.upload-file-button').show();
+            }
+        });
     }
 
     function show_manage_upload(form_id, form_group_id) {
@@ -628,6 +641,8 @@ if (document.URL.match(/create\/upload\/files/)) {
         $('#no_form_form_group_id').val(form_group_id);
         $('#no_form_state').val(state);
         $('#no_form_sale_type').val('');
+
+        $('#select_all_form_sale_types').click(select_all_form_sale_types);
 
         $('#save_add_item_no_form_button').off('click').on('click', save_non_form_item);
 

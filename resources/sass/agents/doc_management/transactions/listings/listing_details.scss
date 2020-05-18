@@ -178,8 +178,182 @@
         border-bottom: 3px solid $border-color;
     }
 
+    .notes-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    .add-notes-div {
+        textarea {
+            height: 90px;
+        }
+    }
 
-    @media (max-width: 1200px) {
+
+    #add_to_checklist_items_wrapper, #add_to_checklist_documents_wrapper {
+        max-height: 65VH;
+        overflow-y: auto;
+    }
+    #add_to_checklist_items_div {
+        padding-bottom: 100px;
+    }
+    .add-to-checklist-document-div {
+        touch-action: none;
+        user-select: none;
+        cursor: move;
+        padding: .3rem .6rem !important;
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    /* .add-to-checklist-item-div, .add-to-checklist-document-div {
+        width: 95%;
+    } */
+
+    .checklist-item-droparea {
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+        border: 2px dashed $primary;
+        height: auto;
+    }
+    .checklist-item-badge {
+        width: 100px;
+    }
+
+
+
+    .drop-activated {
+        border: 2px dashed $success;
+
+        .drop-div-title {
+            color: $success;
+        }
+    }
+    .source-dropped {
+        width: 96%;
+        margin: 2px auto;
+        background: $success;
+
+        > .text-gray {
+            color: white !important;
+        }
+    }
+    .doc-match {
+        background: rgba($green-light, .5);
+    }
+
+    .image-container {
+        min-height: 380px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+
+        .image-holder {
+            position: relative;
+            width: auto;
+            height: auto;
+            display: inline-block;
+            cursor: pointer;
+
+            .document-image {
+                max-width: 290px !important;
+            }
+
+            .image-options-div {
+                position: absolute;
+                bottom: 0px;
+                left: 15px;
+
+                .add-to-selected-button {
+                    display: block;
+                }
+                .remove-from-selected-button, .image-order {
+                    display: none;
+                }
+                .image-zoom-div {
+                    position: absolute;
+                    bottom: 0px;
+                    right: 30px;
+                }
+            }
+
+        }
+    }
+
+    .selected-images-container{
+        min-height: 230px;
+        border: 1px solid $border-color;
+        height: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+
+        .image-holder {
+            position: relative;
+            width: auto;
+            height: auto;
+            display: inline-block;
+            cursor: pointer;
+
+            .document-image {
+                max-width: 170px !important;
+            }
+
+            .image-options-div {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+
+                .add-to-selected-button {
+                    display: none
+                }
+                .remove-from-selected-button, .image-order {
+                    display: block;
+                }
+                .image-zoom-div {
+                    position: absolute;
+                    bottom: -26px;
+                    right: 5px;
+
+                    .image-zoom-button {
+                        padding: 1px 4px;
+                    }
+                }
+            }
+
+
+        }
+
+    }
+
+    .image-preview {
+        max-height: 80VH;
+        max-width: 95VW;
+    }
+
+    .add-to-checklist-item-list-group {
+        max-height: 60VH;
+        overflow-y: auto;
+    }
+
+    #document_options_tabs_nav {
+
+        .nav-link.active {
+            color: $blue;
+            background-color: #ffffff;
+            border: none !important;
+            border-radius: 0px;
+        }
+
+    }
+
+    @media (min-width: 1200px) {
+        #split_document_modal_dialog {
+            max-width: 95% !important;
+        }
+    }
+
+    @media (max-width: 1199.99px) {
         .nav-link {
             font-size: 1rem;
             text-transform: initial;
@@ -204,7 +378,20 @@
             padding: .4rem .2rem;
         }
 
+        .form-check {
+            padding-left: .7rem;
+        }
+        .form-check-input[type="checkbox"] + label, label.btn input[type="checkbox"] + label {
+            padding-left: 10px;
+        }
 
+
+    }
+
+    @media (max-width: 768px) {
+        .form-check-input[type="checkbox"] + label, label.btn input[type="checkbox"] + label {
+            padding-left: 25px;
+        }
     }
 
 
@@ -232,6 +419,24 @@
 
         .add-buttons-div {
             float: none;
+        }
+
+        .add-notes-div {
+            textarea {
+                height: 50px;
+            }
+        }
+
+        #add_to_checklist_items_div {
+            padding-bottom: 10px;
+        }
+        #add_to_checklist_items_wrapper, #add_to_checklist_documents_wrapper {
+            max-height: 45VH;
+            overflow-y: auto;
+        }
+
+        .add-to-checklist-item-list-group {
+            max-height: 100%;
         }
 
 

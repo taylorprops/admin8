@@ -65,14 +65,14 @@
 
             @endphp
 
-            <div class="h3 text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.', '.$property_details -> PostalCode }}</div>
+            <div class="h3 responsive text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.', '.$property_details -> PostalCode }}</div>
 
             <div class="steps-container mx-auto">
                 <form id="steps_form">
-                    <div class="h4 text-primary mt-3 text-center">Please Enter and Verify the following details</div>
+                    <div class="h4 responsive text-primary mt-3 text-center">Please Enter and Verify the following details</div>
                     <ul class="stepper linear mt-2 pt-1">
                         <li class="step active">
-                            <div class="h4 step-title waves-effect waves-light text-gray">Listing Type <span class="step-value float-right text-orange"></span></div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Listing Type <span class="step-value float-right text-orange"></span></div>
                             <div class="step-new-content mt-3">
                                 <div class="row">
                                     <div class="col-12">
@@ -87,7 +87,7 @@
                             </div>
                         </li>
                         <li class="step">
-                            <div class="h4 step-title waves-effect waves-light text-gray">Property Type <span class="step-value float-right text-orange"></span></div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Property Type <span class="step-value float-right text-orange"></span></div>
                             <div class="step-new-content mt-3">
                                 <div class="row">
                                     <div class="col-12">
@@ -103,7 +103,7 @@
                             </div>
                         </li>
                         <li class="step property-sub-type">
-                            <div class="h4 step-title waves-effect waves-light text-gray">Sale Type <span class="step-value float-right text-orange"></span></div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Sale Type <span class="step-value float-right text-orange"></span></div>
                             <div class="step-new-content mt-3">
                                 <div class="row">
                                     <div class="col-12">
@@ -121,7 +121,7 @@
                             </div>
                         </li>
                         <li class="step year-built disclosures">
-                            <div class="h4 step-title waves-effect waves-light text-gray">Year Built <span class="step-value float-right text-orange"></span></div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Year Built <span class="step-value float-right text-orange"></span></div>
                             <div class="step-new-content mt-3">
                                 <div class="row">
                                     <div class="col-12 col-md-6">
@@ -135,7 +135,7 @@
                             </div>
                         </li>
                         <li class="step">
-                            <div class="h4 step-title waves-effect waves-light text-gray">List Price <span class="step-value float-right text-orange"></span></div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">List Price <span class="step-value float-right text-orange"></span></div>
                             <div class="step-new-content mt-3">
                                 <div class="row">
                                     <div class="col-12 col-md-6">
@@ -149,7 +149,7 @@
                             </div>
                         </li>
                         <li class="step hoa disclosures">
-                            <div class="h4 step-title waves-effect waves-light text-gray">HOA/Condo Fees <span class="step-value float-right text-orange"></span></div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">HOA/Condo Fees <span class="step-value float-right text-orange"></span></div>
                             <div class="step-new-content mt-3">
                                 <div class="row">
                                     <div class="col-12 col-md-6">
@@ -165,7 +165,7 @@
                             </div>
                         </li>
                         <li class="step">
-                            <div class="h4 step-title waves-effect waves-light text-gray">Verify</div>
+                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Verify</div>
                             <div class="step-new-content mt-3">
                                 <div class="step-actions">
                                     <div class="d-flex justify-content-center w-100 h-100">

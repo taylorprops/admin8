@@ -1,3 +1,4 @@
+
 if (document.URL.match(/listing_details/)) {
 
     $(document).ready(function () {
@@ -56,6 +57,7 @@ if (document.URL.match(/listing_details/)) {
                 $('#' + tab + '_tab').html(response.data);
 
                 if (tab == 'details') {
+
                     // update counties when state is changed
                     $('#StateOrProvince').change(update_county_select);
                     // date pickers
@@ -78,7 +80,9 @@ if (document.URL.match(/listing_details/)) {
                     $('#search_mls_button').off('click').on('click', search_mls);
 
                     $('.save-details-button').off('click').on('click', save_details);
+
                 } else if (tab == 'members') {
+
                     $(document).on('click', '.import-contact-button', function () {
                         show_import_modal($(this).data('ele'));
                     });
@@ -92,7 +96,9 @@ if (document.URL.match(/listing_details/)) {
                     $('#add_member_button').off('click').on('click', show_add_member);
                     //$('.save-member-div').off('click').on('click', '.save-member-button', save_add_member);
                     $('.delete-member-button').off('click').on('click', confirm_delete_member);
+
                 } else if (tab == 'documents') {
+
                     setTimeout(function () {
                         $('.check-all').next('label').css({ transform: 'scale(1.2)' });
                         select_form_group();
@@ -108,17 +114,47 @@ if (document.URL.match(/listing_details/)) {
                             $(this).next('.dropdown-menu').toggle();
                         });
 
-                        $('.form-in-use').each(function() {
+                        $('.form-in-use').each(function () {
                             $(this).find('.individual-template-form').prop('disabled', true);
                         });
 
+
+
                     }, 1000);
-                } else if(tab == 'checklist') {
+
+                } else if (tab == 'checklist') {
+
+                    /* setTimeout(function() {
+                        $('.save-notes-button').off().on('click', function() {
+                            save_add_notes($(this));
+                        });
+                    }, 200); */
+
+                    $('.notes-collapse').on('show.bs.collapse', function () {
+                        $('.documents-collapse.show').collapse('hide');
+                        //$('.checklist-item-div').removeClass('bg-green-light');
+                        $(this).closest('.checklist-item-div').addClass('bg-green-light');
+                    });
+                    $('.documents-collapse').on('show.bs.collapse', function () {
+                        $('.notes-collapse.show').collapse('hide');
+                        //$('.checklist-item-div').removeClass('bg-green-light');
+                        $(this).closest('.checklist-item-div').addClass('bg-green-light');
+                    });
+
+                    $('.collapse').on('hide.bs.collapse', function () {
+                        $(this).closest('.checklist-item-div').removeClass('bg-green-light');
+                    });
+
+
 
                 }
 
                 // init tooltips and form elements
                 global_tooltip();
+
+                $('.draggable').draggable({
+                    handle: '.draggable-handle'
+                });
 
                 setTimeout(form_elements, 500);
 

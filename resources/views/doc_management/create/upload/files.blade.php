@@ -9,7 +9,7 @@
                 <div class="list-group-container" data-simplebar data-simplebar-auto-hide="false">
                     <div class="list-group" role="tablist">
                         @foreach ($form_groups as $form_group)
-                            <a class="list-group-item list-group-item-action @if ($loop -> first) active @endif"
+                            <a class="list-group-item form-group-item list-group-item-action @if ($loop -> first) active @endif @if($loop -> last) last @endif"
                                 id="list_{{ $form_group -> resource_id }}"
                                 data-toggle="list"
                                 href="#list_div_{{ $form_group -> resource_id }}"
@@ -27,7 +27,7 @@
             <div class="tab-content">
                 @foreach ($form_groups as $form_group)
                     <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $form_group -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $form_group -> resource_id }}">
-                        <div class="h3 text-primary">{{ $form_group -> resource_name }}</div>
+                        <div class="h3 responsive text-primary">{{ $form_group -> resource_name }}</div>
                         <div class="row">
                             <div class="col-7">
                                 <div class="row">
@@ -207,7 +207,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-12">
-                                    <span id="edit_form_name" class="h5 text-primary"></span>
+                                    <span id="edit_form_name" class="h5 responsive text-primary"></span>
                                 </div>
                                 <div class="col-12">
                                     <input type="text" class="custom-form-element form-input required" name="edit_file_name_display" id="edit_file_name_display" data-label="Form Name">
@@ -283,6 +283,7 @@
                                 <div class="col-12">
                                     <select name="no_form_sale_type[]" id="no_form_sale_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
                                         <option value=""></option>
+                                        <option value="" id="select_all_form_sale_types">All</option>
                                         @foreach($resources as $resource)
                                             @if($resource -> resource_type == 'form_tags')
                                             <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
@@ -307,6 +308,7 @@
                                 <div class="col-12">
                                     <select name="no_form_state" id="no_form_state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
                                         <option value=""></option>
+                                        <option value="All">All</option>
                                         @foreach($states as $state)
                                             <option value="{{ $state }}">{{ $state }}</option>
                                         @endforeach

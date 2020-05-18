@@ -88,7 +88,7 @@ if (document.URL.match(/listing_required_details/)) {
         let seller_div = ' \
         <div class="seller-div border-bottom mb-3 hidden"> \
             <div class="d-flex justify-content-between"> \
-                <div class="h5 text-orange seller-header">Seller 1</div> \
+                <div class="h5 responsive text-orange seller-header">Seller 1</div> \
                 <div><a href="javascript: void(0)" class="seller-delete text-danger"><i class="fal fa-times fa-2x"></i></a></div> \
             </div> \
             <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-seller-id="' + seller_id + '"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a> \

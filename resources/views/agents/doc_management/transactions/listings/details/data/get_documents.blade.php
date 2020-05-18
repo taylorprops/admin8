@@ -2,7 +2,7 @@
 
     <div class="row mb-3 mb-sm-2 mb-md-1">
         <div class="col-12 col-sm-5">
-            <div class="h4-responsive text-primary ml-3 mt-2 mb-3"><i class="fad fa-copy mr-2"></i> Listing Documents</div>
+            <div class="h4 text-primary ml-3 mt-2 mb-3"><i class="fad fa-copy mr-2"></i> Listing Documents</div>
         </div>
         <div class="col-12 col-sm-7">
             <div class="add-buttons-div">
@@ -32,7 +32,7 @@
             <div class="col-12 col-md-12 col-lg-6 px-1">
                 <div class="add-docs-div bg-blue-light p-3 mb-1 mb-sm-3 border border-primary rounded-lg text-center">
                     <i class="fad fa-clone fa-3x text-primary mb-2"></i>
-                    <div class="h5-responsive text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="body"><i class="fad fa-question-circle ml-2"></i></a></div>
+                    <div class="h5 text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="body"><i class="fad fa-question-circle ml-2"></i></a></div>
                     <div class="row">
                         <div class="col-12 col-sm-6">
                             Checklist Documents<br>
@@ -48,14 +48,14 @@
             <div class="col-12 col-sm-6 col-lg-3 px-1">
                 <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
                     <i class="fad fa-file-upload fa-3x text-primary mb-2"></i>
-                    <div class="h5-responsive text-primary mb-3">Upload Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Uploading Documents" data-content="body"><i class="fad fa-question-circle ml-2"></i></a></div>
+                    <div class="h5 text-primary mb-3">Upload Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Uploading Documents" data-content="body"><i class="fad fa-question-circle ml-2"></i></a></div>
                     <a href="javascript:void(0);" class="btn btn-primary mt-1 mt-md-4" id="upload_documents_button"><i class="fa fa-plus mr-2"></i> Upload Documents</a>
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-lg-3 px-1">
                 <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
                     <i class="fad fa-envelope-square fa-3x text-primary mb-2"></i>
-                    <div class="h5-responsive text-primary mb-3">Email Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Emailing Documents" data-content="body"><i class="fad fa-question-circle ml-2"></i></a></div>
+                    <div class="h5 text-primary mb-3">Email Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Emailing Documents" data-content="body"><i class="fad fa-question-circle ml-2"></i></a></div>
                     <a href="mailto:" class="d-block mt-1 mt-md-5">email@email.com</a>
                 </div>
             </div>
@@ -65,10 +65,10 @@
 
 
     <div class="collapse" id="bulk_options_div">
-        <div class="h5-responsive text-orange d-none d-md-block">Bulk Options</div>
+        <div class="h5 text-orange d-none d-md-block">Bulk Options</div>
         <div class="d-flex justify-content-between justify-content-sm-start">
 
-            <button type="button" class="btn btn-sm btn-primary rounded-pill" id="add_to_checklist_button" title="Add To Checklist" data-toggle="tooltip"><i class="fad fa-tasks mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Add To Checklist</span></button>
+            <button type="button" class="btn btn-sm btn-primary rounded-pill add-to-checklist-button" title="Assign To Checklist" data-toggle="tooltip" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-tasks mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Assign To Checklist</span></button>
 
             <button type="button" class="btn btn-sm btn-primary rounded-pill" id="sign_documents_button" title="Get Signed" data-toggle="tooltip"><i class="fad fa-signature mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Get Signed</span></button>
 
@@ -100,7 +100,7 @@
                 <div class="mt-1 mr-2 mr-sm-4">
                     <input type="checkbox" class="custom-form-element form-checkbox check-all">
                 </div>
-                <div class="h5-responsive">
+                <div class="h5">
                     <a class="text-gray folder-collapse" data-toggle="collapse" href="#documents_folder_{{ $loop -> index }}" aria-expanded="false" aria-controls="documents_folder_{{ $loop -> index }}">
                         <i class="fal @if($folder -> folder_name == 'Trash' || $docs_count == 0) fa-angle-right @else fa-angle-down @endif fa-lg mr-3"></i>
                         <i class="fad fa-folder mr-1 mr-sm-3 fa-lg"></i>
@@ -109,29 +109,37 @@
                     <span class="badge badge-pill badge-primary ml-1 ml-sm-3 py-1">{{ $docs_count }}</span>
                 </div>
             </div>
-            @if(!$loop -> first && !$loop -> last)
+            @if(!$loop -> first && !$loop -> last && $documents -> where('folder', $folder -> id) -> where('assigned', 'yes') -> count() == 0)
             <div class="pt-1">
-                <a href="javascript: void(0)" class="btn btn-danger delete-folder-button" data-folder-id="{{ $folder -> id }}"><i class="fa fa-trash"></i> <span class="d-none d-sm-inline-block ml-2">Delete Folder</span></a>
+                <a href="javascript: void(0)" class="btn btn-sm btn-danger delete-folder-button" data-folder-id="{{ $folder -> id }}"><i class="fa fa-trash"></i> <span class="d-none d-sm-inline-block ml-2">Delete Folder</span></a>
             </div>
             @endif
         </div>
 
         <div class="collapse sortable-documents @if($folder -> folder_name != 'Trash' && $docs_count > 0) show @endif" id="documents_folder_{{ $loop -> index }}">
-            @foreach($documents as $document)
-                @if($document -> folder == $folder -> id)
-                <div class="document-div row mx-0" data-folder-id="{{ $folder -> id }}" data-document-id="{{ $document -> id }}">
 
-                    <div class="col-10 col-md-6">
+            @foreach($documents as $document)
+
+                @if($document -> folder == $folder -> id)
+
+                @php
+                $assigned = $document -> assigned == 'yes' ? 'assigned' : null;
+                $disabled = $assigned == 'yes' ? 'disabled' : null;
+                @endphp
+
+                <div class="document-div row mx-0 py-0" data-folder-id="{{ $folder -> id }}" data-document-id="{{ $document -> id }}">
+
+                    <div class="col-10 col-xl-4">
 
                         <div class="d-flex justify-content-start align-items-center">
                             <div class="mt-1">
                                 <a href="javascript:void(0)" class="document-handle text-blue"><i class="fal fa-bars fa-lg"></i></a>
                             </div>
-                            <div class="mt-1 ml-1 mr-4">
-                                <input type="checkbox" class="custom-form-element form-checkbox check-document" data-document-id="{{ $document -> id }}">
+                            <div class="mt-1 ml-1 mr-1 mr-md-4">
+                                <input type="checkbox" class="custom-form-element form-checkbox check-document  {{ $assigned }}" data-document-id="{{ $document -> id }}">
                             </div>
-                            <div class="text-gray document-title py-2">
-                                <a href="{{ $document -> file_location }}" target="_blank">{{ $document -> file_name_display }}</a>
+                            <div class="text-gray document-title py-1 py-sm-2">
+                                <a href="{{ $document -> file_location_converted }}" target="_blank">{{ $document -> file_name_display }}</a>
                                 <br>
                                 <span class="small">Added: {{ date('n/j/Y g:i:sA', strtotime($document -> created_at)) }}</span>
                             </div>
@@ -139,49 +147,71 @@
 
                     </div>
 
-                    <div class="col-2 col-md-6">
+                    <div class="col-2 col-xl-8">
 
-                        <div class="d-flex justify-content-end h-100">
+                        <div class="d-flex justify-content-end align-items-center h-100">
 
                             @if($folder -> folder_name != 'Trash')
 
                                 @php
                                 $menu_options = '';
 
-                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" title="Split Document"><i class="fad fa-page-break mr-1 mr-md-0 mr-xl-2"></i><span class="d-inline-block d-md-none d-xl-inline-block"> Split</button>';
+                                if($assigned) {
 
-                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Edit Form"><i class="fad fa-edit mr-2 mr-md-0 mr-xl-2"></i><span class="d-inline-block d-md-none d-xl-inline-block"> Edit</span></button>';
+                                    $menu_options .= '<div class="mr-1 mr-xl-2 text-success"><i class="fal fa-check mr-2"></i> <span class="d-inline-block d-xl-inline-block"> Assigned</span></div>';
 
-                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-get-signed-button" data-document-id="'.$document -> id.'" title="Get Signed"><i class="fad fa-signature mr-1 mr-md-0 mr-xl-2"></i><span class="d-inline-block d-md-none d-xl-inline-block"> Get Signed</button>';
+                                } else {
 
-                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-md-0"></i><span class="d-inline-block d-md-none"> Email</button>';
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary add-to-checklist-button" data-document-id="'.$document -> id.'"  data-checklist-id="'.$checklist_id.'" title="Assign Document To Checklist Item"><i class="fad fa-tasks mr-1 mr-xl-2"></i> Assign</button>';
+
+                                    if($document -> pages_total > 1) {
+                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" data-checklist-id="'.$checklist_id.'" data-file-type="'.$document -> file_type.'" title="Split Document"><i class="fad fa-page-break mr-1 mr-xl-2"></i> Split</button>';
+                                    }
+
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Fill Fields"><i class="fad fa-edit mr-2 mr-xl-2"></i> Fill Fields</button>';
+
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-get-signed-button" data-document-id="'.$document -> id.'" title="Get Signed"><i class="fad fa-signature mr-1 mr-xl-2"></i> Get Signed</button>';
+
+                                }
+
+                                if($document -> file_type == 'user') {
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 mr-xl-2"></i> Rename</button>';
+                                }
+
+                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-copy-button" data-document-id="'.$document -> id.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
+
+                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
 
                                 $menu_options .= '
                                 <div class="dropdown-submenu">
-                                    <button type="button" class="dropdown-item text-primary doc-print-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-document-id="'.$document -> id.'" title="Print Form"><i class="fad fa-print mr-2 mr-md-0"></i><span class="d-inline-block d-md-none"> Print</button>
+                                    <button type="button" class="dropdown-item text-primary doc-print-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-document-id="'.$document -> id.'" title="Print Form"><i class="fad fa-print mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Print</span></button>
                                     <div class="dropdown-menu">
                                         <a class="text-primary dropdown-item" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
                                         <a class="text-primary dropdown-item" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
                                     </div>
                                 </div>';
 
-                                $menu_options .= '<div class="dropdown-divider d-block d-md-none"></div>';
+                                $menu_options .= '<div class="dropdown-divider d-block d-xl-none"></div>';
 
-                                $menu_options .= '<button type="button" class="dropdown-item text-danger doc-delete-button" data-document-id="'.$document -> id.'" data-document-name="' . $document -> file_name_display . '" title="Delete Form"><i class="fad fa-trash mr-2 mr-md-0"></i><span class="d-inline-block d-md-none"> Trash</button>';
+                                if(!$assigned) {
+
+                                    $menu_options .= '<button type="button" class="dropdown-item text-danger doc-delete-button" data-document-id="'.$document -> id.'" data-document-name="' . $document -> file_name_display . '" title="Delete Form"><i class="fad fa-trash mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Trash</span></button>';
+
+                                }
 
                                 $menu_options_large = preg_replace('/dropdown-item\stext-primary/', 'btn btn-primary', $menu_options);
                                 $menu_options_large = preg_replace('/dropdown-item\stext-danger/', 'btn btn-danger', $menu_options_large);
                                 $menu_options_large = preg_replace('/dropdown-submenu/', 'btn-group dropleft', $menu_options_large);
                                 @endphp
 
-                                <div class="d-block d-md-none btn-group dropleft">
+                                <div class="d-block d-xl-none btn-group dropleft">
                                     <button type="button" class="btn btn-primary dropdown-toggle pl-2 pr-1 py-0 pl-sm-2 pt-sm-1 pb-sm-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                     <div class="dropdown-menu">
                                         {!! $menu_options !!}
                                     </div>
                                 </div>
 
-                                <div class="d-none d-md-flex align-items-center">
+                                <div class="d-none d-xl-flex align-items-center">
                                     {!! $menu_options_large !!}
                                 </div>
 
@@ -192,13 +222,107 @@
                     </div>
 
                 </div>
+
                 @endif
+
             @endforeach
+
         </div>
+
     </div>
 
     @endforeach
 
+</div>
+
+<div class="modal fade draggable" id="image_zoom_modal" tabindex="-1" role="dialog" aria-labelledby="image_zoom_modal_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header draggable-handle">
+                <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+                    <i class="fal fa-times mt-2"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="image_zoom_div" class="text-center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade draggable" id="split_document_modal" tabindex="-1" role="dialog" aria-labelledby="split_document_modal_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" id="split_document_modal_dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary draggable-handle">
+                <h4 class="modal-title" id="split_document_modal_title">Split Document</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <i class="fal fa-times mt-2"></i>
+                </button>
+            </div>
+            <div class="modal-body pt-0">
+                <div id="split_document_container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade draggable" id="rename_document_modal" tabindex="-1" role="dialog" aria-labelledby="rename_document_modal_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <form id="rename_document_form">
+                <div class="modal-header bg-primary draggable-handle">
+                    <h4 class="modal-title" id="rename_document_modal_title">Rename Document</h4>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <i class="fal fa-times mt-2"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="text-center">
+                                    Enter New Name<br>
+                                    <input type="text" class="custom-form-element form-input" id="new_document_name" data-title="Enter Document Name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-around">
+                    <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                    <a class="btn btn-success" id="save_rename_document_button"><i class="fad fa-check mr-2"></i> Save</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade draggable" id="add_to_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="add_to_checklist_modal_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <form id="add_to_checklist_form">
+                <div class="modal-header bg-primary draggable-handle">
+                    <h4 class="modal-title" id="add_to_checklist_modal_title">Assign To Checklist</h4>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <i class="fal fa-times mt-2"></i>
+                    </button>
+                </div>
+                <div class="modal-body p-2">
+                    <div class="container p-0 p-sm-1 p-md-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="add_items_to_checklist_div"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-around">
+                    <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                    <a class="btn btn-success" id="save_add_to_checklist_button" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-check mr-2"></i> Save</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade draggable" id="confirm_delete_document_modal" tabindex="-1" role="dialog" aria-labelledby="delete_document_title" aria-hidden="true">
@@ -357,7 +481,7 @@
                                     @foreach($form_groups as $form_group)
 
                                     <ul class="list-group form-group-div" data-form-group-id="{{ $form_group -> resource_id }}">
-                                        <li class="h4-responsive text-orange list-group-header mt-3">
+                                        <li class="h4 text-orange list-group-header mt-3">
                                             {{ $form_group -> resource_state }}
                                             @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif
                                         </li>
@@ -443,7 +567,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                <div class="h5-responsive text-primary">Import the selected templates below</div>
+                                <div class="h5 text-primary">Import the selected templates below</div>
                                 <br>
                                 <div class="row">
                                     <div class="col-12 col-lg-6 col-xl-4">
@@ -552,7 +676,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="p-3">
-                        <div class="h5-responsive text-primary text-center mb-4">Enter Folder Name <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding a Folder" data-content="You can create multiple folders for different types of documents. Examples include 'Original Files', 'Signed Docs'"><i class="fad fa-question-circle ml-2"></i></a>
+                        <div class="h5 text-primary text-center mb-4">Enter Folder Name <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding a Folder" data-content="You can create multiple folders for different types of documents. Examples include 'Original Files', 'Signed Docs'"><i class="fad fa-question-circle ml-2"></i></a>
                         </div>
                         <input type="text" class="custom-form-element form-input required" id="new_folder_name" data-label="Folder Name">
                     </div>

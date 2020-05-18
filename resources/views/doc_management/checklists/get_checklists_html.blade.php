@@ -1,4 +1,4 @@
-<div class="h3 text-secondary mb-4 property-type-div-header">{{ ucwords($checklist_type) }} Checklists</div>
+<div class="h3 responsive text-secondary mb-4 property-type-div-header">{{ ucwords($checklist_type) }} Checklists</div>
 
 @foreach($property_types as $property_type)
 

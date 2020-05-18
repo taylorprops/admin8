@@ -533,7 +533,9 @@ if (document.URL.match(/create\/add_fields/)) {
                     edit_div.find('.form-select.field-data-name').change(function () {
                         let helper_text = $(this).find('option:selected').text();
                         let helper_text_input = edit_div.find('.field-data-helper-text');
-                        helper_text_input.val(helper_text).data('default-value', helper_text).trigger('change');
+                        if(helper_text_input.val() == '') {
+                            helper_text_input.val(helper_text).data('default-value', helper_text).trigger('change');
+                        }
                     });
 
                 }

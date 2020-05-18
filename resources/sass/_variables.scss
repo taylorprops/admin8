@@ -22,6 +22,7 @@ $orange-dark: #943d31;
 $yellow: #ffed4a;
 $yellow-light: #f7efae;
 $green: #30a730;
+$green-light: #bef1be;
 $green-dark: #1b631b;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
@@ -42,6 +43,8 @@ $danger-color: $red;
 
 $border-color: #dee2e6;
 
+$text-gray: #7a7979;
+
 .text-primary-dark {
     color: $blue-dark;
 }
@@ -58,7 +61,7 @@ $border-color: #dee2e6;
     color: $orange;
 }
 .text-gray {
-    color: #7a7979;
+    color: $text-gray;
 }
 a.text-orange:hover {
     color: $orange-dark;
@@ -113,6 +116,7 @@ a.text-green:hover {
 }
 
 
+
 .btn-primary {
     background: $blue !important;
 }
@@ -123,5 +127,9 @@ a.text-green:hover {
 
 .btn-secondary {
     background: $orange !important;
+}
+
+.border-orange {
+    border: 1px solid $orange !important;
 }
 

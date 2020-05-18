@@ -14,7 +14,7 @@ class TransactionChecklistItemsDocs extends Model
 
     public function ScopeGetDocs($query, $checklist_item_id) {
 
-        $docs = $this -> where('checklist_item_id', $checklist_item_id) -> get();
+        $docs = $this -> where('checklist_item_id', $checklist_item_id) -> orderBy('created_at', 'DESC') -> get();
 
         return $docs;
     }

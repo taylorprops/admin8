@@ -369,7 +369,7 @@ if (document.URL.match(/checklists/)) {
                             <div class="mt-4"> \
                                 <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
                             </div> \
-                            <div class="h5 text-primary mt-4" title="' + text_orig + '"><a href="' + form_loc + '" target="_blank"> ' + text + '</a></div> \
+                            <div class="h5 responsive text-primary mt-4" title="' + text_orig + '"><a href="' + form_loc + '" target="_blank"> ' + text + '</a></div> \
                         </div> \
                     </div> \
                     <div class="col-5"> \

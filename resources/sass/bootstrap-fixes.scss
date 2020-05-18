@@ -1,4 +1,11 @@
 /// MODALS /////
+body.modal-open {
+    overflow-y: hidden;
+
+    main {
+        //padding-right: 12px;
+    }
+}
 .modal-content {
     border: 1px solid #fff;
     //border-radius: 0px;
@@ -57,8 +64,14 @@ table.dataTable thead .sorting_desc_disabled:before {
 .card, .card-header:first-child {
     //border-radius: 0px !important;
 }
+
+@media(max-width: 1200px) {
+    .modal-xl {
+        max-width: 95% !important;
+    }
+}
 // tabs
-@media (max-width: 767.98px) {
+@media (max-width: 768px) {
     // remove padding around card on small devices
     .tab-content {
         padding: .5rem 0;
@@ -68,6 +81,10 @@ table.dataTable thead .sorting_desc_disabled:before {
         width: auto;
         padding: 15px 15px 15px 50px;
         font-size: 1rem;
+    }
+
+    .modal-xl {
+        max-width: 100% !important;
     }
 }
 // popovers

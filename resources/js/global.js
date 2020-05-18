@@ -25,7 +25,7 @@ $(document).ready(function () {
         //console.log(response);
         // log out user on axios calls if session expired
         if (response.data.dismiss || response.data.error) {
-            window.location = '/';
+            window.parent.location = '/';
         }
         return response;
     }, function (error) {
@@ -62,6 +62,8 @@ $(document).ready(function () {
     global_tooltip();
 
 
+
+
     // confirm modals on enter | requires .modal-confirm and .modal-confirm-button
     /* $('.modal-confirm').on('show.bs.modal', function () {
         $('body').off('keyup').on('keyup', function(event) {
@@ -70,15 +72,32 @@ $(document).ready(function () {
             }
         });
     }); */
+
     // multiple modal stacking
     $(document).on('show.bs.modal', '.modal', function () {
+        // increase modal and backdrop z-index accordingly
         var zIndex = 1040 + (10 * $('.modal:visible').length);
         $(this).css('z-index', zIndex);
         setTimeout(function() {
             $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
         }, 0);
+        // make all but modal-xl draggable
+        if(!$(this).find('modal-dialog').hasClass('modal-xl')) {
+            $(this).addClass('draggable');
+        }
+
+        // modal-open gets stuck in the body class so have to remove it manually
+        let remove_modal_open = setInterval(function() {
+            if($('.modal.show').length == 0) {
+                $('body').removeClass('modal-open');
+                clearInterval(remove_modal_open);
+            } else {
+                $('body').addClass('modal-open');
+            }
+        }, 1000);
 
     });
+
 
 
 

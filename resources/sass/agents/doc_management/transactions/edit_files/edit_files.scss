@@ -1,18 +1,53 @@
 .page-fill-fields {
+
+    @function strip-unit($value) {
+        @return $value / ($value * 0 + 1);
+    }
+
+    @mixin fluid-type($min-vw, $max-vw, $min-font-size, $max-font-size) {
+        $u1: unit($min-vw);
+        $u2: unit($max-vw);
+        $u3: unit($min-font-size);
+        $u4: unit($max-font-size);
+
+        @if $u1==$u2 and $u1==$u3 and $u1==$u4 {
+            & {
+                font-size: $min-font-size;
+
+                @media screen and (min-width: $min-vw) {
+                    font-size: calc(#{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} * ((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)}));
+                }
+
+                @media screen and (min-width: $max-vw) {
+                    font-size: $max-font-size;
+                }
+            }
+        }
+    }
+
+    .btn-group {
+        z-index: 500;
+    }
+
     overflow-x: hidden;
     border: 1px solid $border-color;
 
     .file-viewer-container {
-        width: 1000px;
+        width: 100%;
+        max-width: 1200px;
     }
 
     .file-view {
         position: relative;
         width: 100%;
-        height: calc(100vh - 120px);
+        height: calc(100vh - 130px);
         overflow-y: scroll;
         -vendor-animation-duration: 2s;
         animation-duration: 2s;
+    }
+
+    .file-view-container {
+        padding: 8px 0px 0px 0px;
     }
 
     .file-view-page-container, .file-view-thumb-container {
@@ -32,6 +67,101 @@
 
     .file-view-thumb-footer {
         font-size: .7rem;
+    }
+
+    // options
+    .form-options-container {
+        max-width: 100%;
+        //overflow-x: auto;
+    }
+    .form-options-container > div {
+        width: 100px;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .fill-form-option {
+        width: 100%;
+        height: 100%;
+        display: block;
+        padding: 10px 0px;
+    }
+    .edit-options {
+        display: none;
+    }
+    .edit-form-action.active {
+        background: $primary;
+    }
+    // user fields
+    .textline-html {
+        height: 100%;
+    }
+
+    .field-options-holder {
+        position: absolute;
+        top: -50px;
+        //left:50%;
+        //transform: translate(-50%, 0%);
+        width: auto;
+        background: transparent;
+    }
+
+    .btn-group .btn {
+        margin-right: 2px;
+        width: 45px;
+    }
+
+    .field-handle {
+        cursor: move;
+    }
+    .field-close {
+        cursor: pointer;
+    }
+
+    // resizable handles
+    .ui-resizable-handle {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+        border-left: 10px solid $primary-color;
+    }
+    .ui-resizable-e {
+        bottom: 5px;
+        right: -20px;
+        cursor: e-resize;
+    }
+    .ui-resizable-w {
+        bottom: 5px;
+        left: -20px;
+        cursor: w-resize;
+        transform: rotate(180deg);
+    }
+
+    .ui-resizable-nw {
+        top: -15px;
+        left: -15px;
+        cursor: nw-resize;
+        transform: rotate(225deg);
+    }
+    .ui-resizable-ne {
+        top: -15px;
+        right: -15px;
+        cursor: ne-resize;
+        transform: rotate(315deg);
+    }
+    .ui-resizable-se {
+        bottom: -15px;
+        right: -15px;
+        cursor: se-resize;
+        transform: rotate(45deg);
+    }
+    .ui-resizable-sw {
+        bottom: -15px;
+        left: -15px;
+        cursor: sw-resize;
+        transform: rotate(135deg);
     }
 
 
@@ -71,12 +201,18 @@
         line-height: 1;
     }
 
+    $min_width: 320px;
+    $max_width: 1000px;
+    $min_font: 6px;
+    $max_font: 14px;
     .data-div:not(.data-div-radio-check) {
-        font-size: 12px;
+        @include fluid-type($min_width, $max_width, $min_font, $max_font);
         padding-left: 5px;
-        padding-top: 5px;
+        padding-top: .2VH;
     }
 
+    //$min_font: 1em;
+    //$max_font: 1.6em;
     .data-div.data-div-radio-check {
         top: -3px;
         left: 2px;
@@ -87,14 +223,45 @@
 
 
     // Fields
-    .field-div {
+    .field-div:not(.user-field-div) {
         background: rgba($orange, .1);
         cursor: pointer;
         color: #000;
         box-shadow: none;
     }
 
-    .field-div.active {
+    // user fields
+    .user-field-div {
+        cursor: pointer;
+        box-shadow: none;
+        color: #000;
+    }
+    .user-field-div.textline-div {
+        background: rgba($primary, .1);
+    }
+    .user-field-div.highlight-div, .data-div.highlight {
+        background: rgba($yellow, .1);
+        border: 1px solid rgba($yellow, .5);
+    }
+    .data-div.strikeout {
+        width: 100%;
+        height: 1px;
+        background: black;
+        top: 10px;
+    }
+    .user-field-div.strikeout-div::after {
+        content: '';
+        width: 100%;
+        height: 3px;
+        background: black;
+        display: block;
+        position: relative;
+        top: 10px;
+    }
+
+
+
+    /* .field-div.active {
         cursor: default;
         box-shadow: 0px 9px 0px -5px #FFFFFF,
         0px -9px 0px -5px #FFFFFF,
@@ -102,7 +269,7 @@
         -9px 0px 0px -5px  #FFFFFF,
         0px 0px 0px 5px $blue,
         5px 5px 10px 5px rgba(0, 0, 0, 0);
-    }
+    } */
 
     .modal-body {
         max-height: 65VH;
