@@ -731,7 +731,7 @@ if (document.URL.match(/create\/upload\/files/)) {
         setTimeout(function () {
             $('.file-path').bind('change', function () {
                 let form_name = $('.file-path').val().replace(/\.pdf/, '');
-                $('#file_name_display').val(form_name).trigger('change');
+                $('#file_name_display, #helper_text').val(form_name).trigger('change');
             });
             $('#form_group_id').change(function () {
                 $('#state').val(ele.find('option:selected').data('state'));

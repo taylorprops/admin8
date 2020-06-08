@@ -2,7 +2,7 @@
     {{-- Header --}}
     @slot('header')
         @component('mail::header', ['url' => config('app.url')])
-            {{ config('app.name') }}
+        <img class="email-header-logo" src="{{ asset(\Session::get('logo_src')) }}">
         @endcomponent
     @endslot
 
@@ -21,7 +21,7 @@
     {{-- Footer --}}
     @slot('footer')
         @component('mail::footer')
-            © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
+            © {{ date('Y') }} {{ \Session::get('agent_details') -> company }}. @lang('All rights reserved.')
         @endcomponent
     @endslot
 @endcomponent

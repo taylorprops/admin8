@@ -5,7 +5,7 @@ $(document).ready(function () {
     inactivityTime();
 
     toastr.options = {
-        "timeOut": 2000
+        "timeOut": 3000
     }
 
     // send csrf with every ajax request
@@ -87,14 +87,14 @@ $(document).ready(function () {
         }
 
         // modal-open gets stuck in the body class so have to remove it manually
-        let remove_modal_open = setInterval(function() {
+        /* let remove_modal_open = setInterval(function() {
             if($('.modal.show').length == 0) {
                 $('body').removeClass('modal-open');
                 clearInterval(remove_modal_open);
             } else {
                 $('body').addClass('modal-open');
             }
-        }, 1000);
+        }, 1000); */
 
     });
 

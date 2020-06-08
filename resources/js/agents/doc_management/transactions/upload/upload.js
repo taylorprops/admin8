@@ -32,6 +32,7 @@ window.upload_documents = function() {
             $('#upload_document_modal').modal('hide');
             $('.modal-stack').remove();
             load_tabs('documents');
+            load_tabs('checklist');
             $('#save_upload_documents_button').html('<i class="fad fa-check mr-2"></i> Upload Documents');
         },
         onNewFile: function (id, file) {

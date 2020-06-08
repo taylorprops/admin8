@@ -25,7 +25,7 @@ class FieldsController extends Controller
     public function add_fields(Request $request) {
 
         $file = Upload::whereFileId($request -> file_id) -> get();
-        $images = UploadImages::whereFileId($request -> file_id) -> get() -> toArray();
+        $images = UploadImages::whereFileId($request -> file_id) -> orderBy('page_number') -> get() -> toArray();
         $fields = Fields::where('file_id', $request -> file_id) -> orderBy('id') -> get() -> toArray();
         $common_fields = CommonFields::getCommonFields();
         $field_types = FieldTypes::select('field_type') -> get() -> toArray();
@@ -96,6 +96,8 @@ class FieldsController extends Controller
 
             }
 
+            return true;
+
         } else {
 
             return response() -> json([
@@ -117,7 +119,7 @@ class FieldsController extends Controller
 
         $file_id = $request -> file_id;
         $file = Upload::whereFileId($file_id) -> get();
-        $images = UploadImages::whereFileId($request -> file_id) -> get() -> toArray();
+        $images = UploadImages::whereFileId($request -> file_id) -> orderBy('page_number') -> get() -> toArray();
         $fields = Fields::where('file_id', $file_id) -> orderBy('id') -> get() -> toArray();
         $field_inputs = FieldInputs::where('file_id', $file_id) -> orderBy('id') -> get() -> toArray();
         $field_values = FilledFields::where('file_id', $file_id) -> get() -> toArray();

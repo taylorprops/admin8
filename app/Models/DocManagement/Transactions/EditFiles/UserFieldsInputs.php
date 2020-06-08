@@ -9,4 +9,5 @@ class UserFieldsInputs extends Model
     protected $connection = 'mysql';
     public $table = 'docs_transaction_fields_inputs';
     public $timestamps = false;
+    protected $guarded = [];
 }

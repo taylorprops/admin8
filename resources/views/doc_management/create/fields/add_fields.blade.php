@@ -112,9 +112,20 @@
                             <div class="file-view-thumb">
                                 <a href="javascript: void(0)"><img class="file-thumb w-100 h-100" src="{{ $image['file_location'] }}"></a>
                             </div>
-                            <div class="file-view-thumb-footer text-center mb-1">
-                                Page {{ $c }}
+                            @if($loop -> last)
+                            <div class="file-view-thumb-footer d-flex justify-content-between mb-1">
+                                <span class="ml-1">Page {{ $c }}</span>
+                                <span class="mr-1">
+                                    <a href="javascript:void(0)" class="delete-page-button" data-page-number="{{ $c }}" data-file-id="{{ $image['file_id'] }}">
+                                        <i class="fa fa-times text-danger fa-lg"></i>
+                                    </a>
+                                </span>
                             </div>
+                            @else
+                            <div class="file-view-thumb-footer mb-1">
+                                <span class="ml-1">Page {{ $c }}</span>
+                            </div>
+                            @endif
                         </div>
                     @endforeach
                 </div>

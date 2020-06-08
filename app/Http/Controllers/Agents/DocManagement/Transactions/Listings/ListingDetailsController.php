@@ -2,34 +2,43 @@
 
 namespace App\Http\Controllers\Agents\DocManagement\Transactions\Listings;
 
-use App\Http\Controllers\Controller;
+use File;
 use Config;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\User;
-
-
+use Illuminate\Http\Request;
 use App\Models\CRM\CRMContacts;
-use App\Models\DocManagement\Checklists\ChecklistsItems;
+use App\Models\Employees\Teams;
+
+use App\Models\Employees\Agents;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Resources\LocationData;
+use Illuminate\Support\Facades\Storage;
+use App\Models\DocManagement\Create\Fields\Fields;
+use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Resources\ResourceItems;
+use App\Models\DocManagement\Create\Fields\FieldInputs;
+use App\Models\DocManagement\Create\Upload\UploadPages;
+use App\Models\DocManagement\Checklists\ChecklistsItems;
+use App\Models\DocManagement\Create\Upload\UploadImages;
+use App\Models\DocManagement\Transactions\Members\Members;
+use App\Models\DocManagement\Transactions\Listings\Listings;
+use App\Models\DocManagement\Transactions\EditFiles\UserFields;
+use App\Models\DocManagement\Transactions\Upload\TransactionUpload;
+use App\Models\DocManagement\Transactions\EditFiles\UserFieldsInputs;
+use App\Models\DocManagement\Transactions\EditFiles\UserFieldsValues;
+use App\Models\DocManagement\Transactions\Upload\TransactionUploadPages;
+use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
+use App\Models\DocManagement\Transactions\Upload\TransactionUploadImages;
+use App\Models\DocManagement\Transactions\Members\TransactionCoordinators;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
+use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsNotes;
-use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
-use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
-use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
-use App\Models\DocManagement\Transactions\Listings\Listings;
-use App\Models\DocManagement\Transactions\Members\Members;
-use App\Models\DocManagement\Transactions\Members\TransactionCoordinators;
-use App\Models\Employees\Agents;
-use App\Models\Employees\Teams;
-use App\Models\Resources\LocationData;
-use App\Models\DocManagement\Create\Upload\Upload;
-use App\Models\DocManagement\Create\Upload\UploadImages;
-use App\Models\DocManagement\Create\Upload\UploadPages;
-use App\Models\DocManagement\Transactions\Upload\TransactionUpload;
-use App\Models\DocManagement\Transactions\Upload\TransactionUploadImages;
-use App\Models\DocManagement\Transactions\Upload\TransactionUploadPages;
+
+use App\Mail\DocManagement\Emails\Documents;
+
 
 
 class ListingDetailsController extends Controller {
@@ -193,14 +202,14 @@ class ListingDetailsController extends Controller {
 
         $data = $request -> all();
 
-        $FullStreetAddress = $data['StreetNumber'] . ' ' . $data['StreetName'] . ' ' . $data['StreetSuffix'];
+        $FullStreetAddress = $data['StreetNumber'].' '.$data['StreetName'].' '.$data['StreetSuffix'];
 
         if ($data['StreetDirSuffix']) {
-            $FullStreetAddress .= ' ' . $data['StreetDirSuffix'];
+            $FullStreetAddress .= ' '.$data['StreetDirSuffix'];
         }
 
         if ($data['UnitNumber']) {
-            $FullStreetAddress .= ' ' . $data['UnitNumber'];
+            $FullStreetAddress .= ' '.$data['UnitNumber'];
         }
 
         $data['FullStreetAddress'] = $FullStreetAddress;
@@ -231,7 +240,10 @@ class ListingDetailsController extends Controller {
         $Listing_ID = $request -> Listing_ID;
         $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
         $Agent_ID = $listing -> Agent_ID;
-        $documents = TransactionDocuments::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
+
+        $members = Members::where('Listing_ID', $Listing_ID) -> get();
+
+        $documents = TransactionDocuments::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> orderBy('created_at', 'DESC') -> get();
         $folders = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
         $checklist_items = TransactionChecklistItems::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> orderBy('checklist_item_order') -> get();
         $checklist_id = $checklist_items -> first() -> checklist_id;
@@ -244,7 +256,7 @@ class ListingDetailsController extends Controller {
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> where('resource_association', 'yes') -> orderBy('resource_order') -> get();
         $form_tags = $resource_items -> where('resource_type', 'form_tags') -> orderBy('resource_order') -> get();
 
-        return view('/agents/doc_management/transactions/listings/details/data/get_documents', compact('Agent_ID', 'Listing_ID', 'checklist_id', 'documents', 'folders', 'checklist_forms', 'available_files', 'resource_items', 'form_groups', 'form_tags'));
+        return view('/agents/doc_management/transactions/listings/details/data/get_documents', compact('listing', 'Agent_ID', 'Listing_ID', 'members', 'checklist_id', 'documents', 'folders', 'checklist_forms', 'available_files', 'resource_items', 'form_groups', 'form_tags'));
     }
 
     public function reorder_documents(Request $request) {
@@ -294,7 +306,8 @@ class ListingDetailsController extends Controller {
             $add_documents -> Agent_ID = $Agent_ID;
             $add_documents -> Listing_ID = $Listing_ID;
             $add_documents -> folder = $folder;
-            $add_documents -> file_id = $file_id;
+            $add_documents -> order = $file['order'];
+            $add_documents -> orig_file_id = $file_id;
             $add_documents -> file_type = 'system';
             $add_documents -> file_name = $file['file_name'];
             $add_documents -> file_name_display = $file['file_name_display'];
@@ -302,23 +315,96 @@ class ListingDetailsController extends Controller {
             $add_documents -> file_location = $file['file_location'];
             $add_documents -> save();
 
-            // copy all original documents from system uploads to document uploads
-            $base_path = base_path();
-            $storage_path = $base_path . '/storage/app/public/';
+            $new_document_id = $add_documents -> id;
 
-            $copy_from = $storage_path . 'doc_management/uploads/' . $file_id . '/*';
-            $copy_to = $storage_path . 'doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system';
-            Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system/converted');
-            Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system/layers');
-            Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system/combined');
-            $copy = exec('cp -r ' . $copy_from . ' ' . $copy_to);
-            $copy_converted = exec('cp '. $storage_path . 'doc_management/uploads/' . $file_id . '/'.$file['file_name'] . ' ' . $copy_to .'/converted/'.$file['file_name']);
+            $upload = Upload::where('file_id', $file_id) -> first();
 
-            $add_documents -> file_location_converted = '/storage/doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system/converted/'.$file['file_name'];
+            // create new upload
+            $upload_copy = $upload -> replicate();
+            $upload_copy -> orig_file_id = $file_id;
+            $upload_copy -> file_type = 'system';
+            $upload_copy -> ListingDocs_ID = $new_document_id;
+            $upload_copy -> file_name_display = $upload -> file_name_display;
+            $upload_copy -> Agent_ID = $Agent_ID;
+            $upload_copy -> Listing_ID = $Listing_ID;
+            $upload_new = $upload_copy -> toArray();
+            $upload_new = TransactionUpload::create($upload_new);
+
+            $new_file_id = $upload_new -> file_id;
+
+            // update file_id in docs
+            $add_documents -> file_id = $new_file_id;
             $add_documents -> save();
 
-        }
+            $base_path = base_path();
+            $storage_path = $base_path.'/storage/app/public/';
 
+            $copy_from = $storage_path.'doc_management/uploads/'.$file_id.'/*';
+            $copy_to = $storage_path.'doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_system';
+            Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_system/converted');
+            Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_system/layers');
+            Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_system/combined');
+
+            $copy = exec('cp -rp '.$copy_from.' '.$copy_to);
+            $copy_converted = exec('cp '. $storage_path.'doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_system/'.$file['file_name'].' '.$copy_to .'/converted/'.$file['file_name']);
+
+            $add_documents -> file_location = '/storage/doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_system/'.$file['file_name'];
+            $add_documents -> file_location_converted = '/storage/doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_system/converted/'.$file['file_name'];
+            $add_documents -> save();
+
+
+
+            $upload_images = UploadImages::where('file_id', $file_id) -> get();
+            $upload_pages = UploadPages::where('file_id', $file_id) -> get();
+
+            foreach ($upload_images as $upload_image) {
+                $copy = $upload_image -> replicate();
+                $copy -> file_id = $new_file_id;
+                $path = str_replace('/uploads/'.$file_id.'/', '/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_system/', $upload_image -> file_location);
+                $copy -> file_location = $path;
+                $copy -> Agent_ID = $Agent_ID;
+                $copy -> Listing_ID = $Listing_ID;
+                $new = $copy -> toArray();
+                TransactionUploadImages::create($new);
+            }
+
+            foreach ($upload_pages as $upload_page) {
+                $copy = $upload_page -> replicate();
+                $copy -> file_id = $new_file_id;
+                $path = str_replace('/uploads/'.$file_id.'/', '/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/', $upload_page -> file_location);
+                $copy -> file_location = $path;
+                $copy -> Agent_ID = $Agent_ID;
+                $copy -> Listing_ID = $Listing_ID;
+                $new = $copy -> toArray();
+                TransactionUploadPages::create($new);
+            }
+
+            $fields = Fields::where('file_id', $file_id) -> get();
+            $field_inputs = FieldInputs::where('file_id', $file_id) -> get();
+
+
+            foreach ($fields as $field) {
+                $copy = $field -> replicate();
+                $copy -> file_id = $new_file_id;
+                $copy -> Agent_ID = $Agent_ID;
+                $copy -> Listing_ID = $Listing_ID;
+                $copy -> file_type = 'system';
+                $copy -> field_inputs = 'yes';
+                $new = $copy -> toArray();
+                UserFields::create($new);
+            }
+
+            foreach ($field_inputs as $field_input) {
+                $copy = $field_input -> replicate();
+                $copy -> file_id = $new_file_id;
+                $copy -> Agent_ID = $Agent_ID;
+                $copy -> Listing_ID = $Listing_ID;
+                $copy -> file_type = 'system';
+                $new = $copy -> toArray();
+                UserFieldsInputs::create($new);
+            }
+
+        }
 
     }
 
@@ -336,20 +422,21 @@ class ListingDetailsController extends Controller {
             $filename = $file_name_display;
 
             $date = date('YmdHis');
-            $file_name_no_ext = str_replace('.' . $ext, '', $filename);
+            $file_name_remove_numbers = preg_replace('/[0-9-_]+\.'.$ext.'/', '.'.$ext, $filename);
+            $file_name_no_ext = str_replace('.'.$ext, '', $file_name_remove_numbers);
             $clean_filename = sanitize($file_name_no_ext);
-            $new_filename = $clean_filename . '_' . $date . '.' . $ext;
+            $new_filename = $date.'_'.$clean_filename.'.'.$ext;
 
             // convert to pdf if image
             if($ext != 'pdf') {
-                $new_filename = $clean_filename . '_' . $date . '.pdf';
+                $new_filename = $clean_filename.'_'.$date.'.pdf';
                 $file_name_display = $file_name_no_ext.'.pdf';
-                $create_images = exec('convert -quality 100 -density 300 -page letter ' . $file . ' /tmp/'.$new_filename, $output, $return);
+                $create_images = exec('convert -quality 100 -density 300 -page letter '.$file.' /tmp/'.$new_filename, $output, $return);
                 $file = '/tmp/'.$new_filename;
             }
-            $pages_total = exec('pdftk ' . $file . ' dump_data | sed -n \'s/^NumberOfPages:\s//p\'');
+            $pages_total = exec('pdftk '.$file.' dump_data | sed -n \'s/^NumberOfPages:\s//p\'');
 
-            // add to Documents first because of foreign key restraint on TransactionUpload
+            // add to Documents
             $add_documents = new TransactionDocuments();
             $add_documents -> file_type = 'user';
             $add_documents -> Agent_ID = $Agent_ID;
@@ -358,17 +445,18 @@ class ListingDetailsController extends Controller {
             $add_documents -> file_name = $new_filename;
             $add_documents -> file_name_display = $file_name_display;
             $add_documents -> pages_total = $pages_total;
+            $add_documents -> order = 0;
             $add_documents -> save();
             $ListingDocs_ID = $add_documents -> id;
 
-            // add original file to database
+            // add original file to uploads
             $upload = new TransactionUpload();
             $upload -> ListingDocs_ID = $ListingDocs_ID;
             $upload -> Agent_ID = $Agent_ID;
             $upload -> Listing_ID = $Listing_ID;
             $upload -> file_name = $new_filename;
             $upload -> file_name_display = $file_name_display;
-            $upload -> pages_total = $pages_total;
+            $upload -> file_type = 'user';
             $upload -> pages_total = $pages_total;
             $upload -> save();
             $file_id = $upload -> file_id;
@@ -377,57 +465,58 @@ class ListingDetailsController extends Controller {
             $add_documents -> save();
 
             $base_path = base_path();
-            $storage_path = $base_path . '/storage/app/public';
-            $storage_dir = 'doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_user';
+            $storage_path = $base_path.'/storage/app/public';
+            $storage_dir = 'doc_management/transactions/listings/'.$Listing_ID.'/'.$file_id.'_user';
             $storage_public_path = '/storage/'.$storage_dir;
-            $file_location = $storage_public_path . '/' . $new_filename;
+            $file_location = $storage_public_path.'/'.$new_filename;
 
-            if (!Storage::disk('public') -> put($storage_dir . '/' . $new_filename, file_get_contents($file))) {
+            if (!Storage::disk('public') -> put($storage_dir.'/'.$new_filename, file_get_contents($file))) {
                 $fail = json_encode(['fail' => 'File Not Uploaded']);
                 return ($fail);
             }
             // add to converted folder
-            if (!Storage::disk('public') -> put($storage_dir . '/converted/' . $new_filename, file_get_contents($file))) {
+            if (!Storage::disk('public') -> put($storage_dir.'/converted/'.$new_filename, file_get_contents($file))) {
                 $fail = json_encode(['fail' => 'File Not Added to Converted Directory']);
                 return ($fail);
             }
 
-            $storage_full_path = $storage_path . '/doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_user';
-            chmod($storage_full_path . '/' . $new_filename, 0775);
+            $storage_full_path = $storage_path.'/doc_management/transactions/listings/'.$Listing_ID.'/'.$file_id.'_user';
+            chmod($storage_full_path.'/'.$new_filename, 0775);
 
             // update directory path in database
             $upload -> file_location = $file_location;
             $upload -> save();
 
             // create directories
-            $storage_dir_pages = $storage_dir . '/pages';
+            $storage_dir_pages = $storage_dir.'/pages';
             Storage::disk('public') -> makeDirectory($storage_dir_pages);
-            $storage_dir_images = $storage_dir . '/images';
+            $storage_dir_images = $storage_dir.'/images';
             Storage::disk('public') -> makeDirectory($storage_dir_images);
 
 
             // split pdf into pages and images
-            $input_file = $storage_full_path . '/' . $new_filename;
-            $output_files = $storage_path . '/' . $storage_dir_pages . '/page_%02d.pdf';
+            $input_file = $storage_full_path.'/'.$new_filename;
+            $output_files = $storage_path.'/'.$storage_dir_pages.'/page_%02d.pdf';
             $new_image_name = str_replace($ext, 'jpg', $new_filename);
-            $output_images = $storage_path . '/' . $storage_dir_images . '/' . $new_image_name;
+            $output_images = $storage_path.'/'.$storage_dir_images.'/'.$new_image_name;
 
             // add individual pages to pages directory
-            $create_pages = exec('pdftk ' . $input_file . ' burst output ' . $output_files, $output, $return);
+            $create_pages = exec('pdftk '.$input_file.' burst output '.$output_files.' flatten', $output, $return);
             // remove data file
-            exec('rm ' . $storage_path . '/' . $storage_dir_pages . '/doc_data.txt');
+            exec('rm '.$storage_path.'/'.$storage_dir_pages.'/doc_data.txt');
 
             // add individual images to images directory
-            $create_images = exec('convert -density 300 -quality 100 ' . $input_file . ' -background white -alpha remove -strip ' . $output_images, $output, $return);
+            $create_images = exec('convert -density 300 -quality 100 '.$input_file.' -background white -alpha remove -strip '.$output_images, $output, $return);
 
             // get all image files images_storage_path to use as file location
-            $saved_images_directory = Storage::files('public/' . $storage_dir . '/images');
-            $images_public_path = $storage_public_path . '/images';
+            $saved_images_directory = Storage::files('public/'.$storage_dir.'/images');
+            $images_public_path = $storage_public_path.'/images';
 
-            $page_number = 1;
             foreach ($saved_images_directory as $saved_image) {
                 // get just filename
                 $images_file_name = basename($saved_image);
+                $page_number = preg_match('/([0-9]+)\.jpg/', $images_file_name, $matches);
+                $page_number = count($matches) > 1 ? $matches[1] + 1 : 1;
 
                 // add images to database
                 $upload_images = new TransactionUploadImages();
@@ -435,16 +524,15 @@ class ListingDetailsController extends Controller {
                 $upload_images -> Agent_ID = $Agent_ID;
                 $upload_images -> Listing_ID = $Listing_ID;
                 $upload_images -> file_name = $images_file_name;
-                $upload_images -> file_location = $images_public_path . '/' . $images_file_name;
+                $upload_images -> file_location = $images_public_path.'/'.$images_file_name;
                 $upload_images -> pages_total = $pages_total;
                 $upload_images -> page_number = $page_number;
                 $upload_images -> save();
-                $page_number += 1;
 
             }
 
-            $saved_pages_directory = Storage::files('public/' . $storage_dir . '/pages');
-            $pages_public_path = $storage_public_path . '/pages';
+            $saved_pages_directory = Storage::files('public/'.$storage_dir.'/pages');
+            $pages_public_path = $storage_public_path.'/pages';
 
             $page_number = 1;
             foreach ($saved_pages_directory as $saved_page) {
@@ -454,7 +542,7 @@ class ListingDetailsController extends Controller {
                 $upload_pages -> Listing_ID = $Listing_ID;
                 $upload_pages -> file_id = $file_id;
                 $upload_pages -> file_name = $pages_file_name;
-                $upload_pages -> file_location = $pages_public_path . '/' . $pages_file_name;
+                $upload_pages -> file_location = $pages_public_path.'/'.$pages_file_name;
                 $upload_pages -> pages_total = $pages_total;
                 $upload_pages -> page_number = $page_number;
                 $upload_pages -> save();
@@ -464,7 +552,7 @@ class ListingDetailsController extends Controller {
             }
 
             $add_documents -> file_location = $file_location;
-            $add_documents -> file_location_converted =  $storage_public_path . '/converted/' . $new_filename;
+            $add_documents -> file_location_converted = $storage_public_path.'/converted/'.$new_filename;
             $add_documents -> save();
 
 
@@ -531,10 +619,28 @@ class ListingDetailsController extends Controller {
     }
 
     public function save_rename_document(Request $request) {
+
+        $new_name = $request -> new_name;
         $document_id = $request -> document_id;
-        $new_name = str_replace('.pdf', '', $request -> new_name).'.pdf';
+        $document = TransactionDocuments::where('id', $document_id) -> first();
+
+        $file_name = sanitize(str_replace('.pdf', '', $new_name)).'.pdf';
+        $file_name_display = str_replace('.pdf', '', $new_name).'.pdf';
+        $file_location = str_replace($document -> file_name, $file_name, $document -> file_location);
+        $file_location_converted = str_replace($document -> file_name, $file_name, $document -> file_location_converted);
+
+        File::move($this -> get_path($document -> file_location), $this -> get_path($file_location));
+        File::move($this -> get_path($document -> file_location_converted), $this -> get_path($file_location_converted));
+
         $transaction_upload = TransactionUpload::where('ListingDocs_ID', $document_id) -> update(['file_name_display' => $new_name]);
         $transaction_document = TransactionDocuments::where('id', $document_id) -> update(['file_name_display' => $new_name]);
+
+        $document -> file_name = $file_name;
+        $document -> file_name_display = $file_name_display;
+        $document -> file_location = $file_location;
+        $document -> file_location_converted = $file_location_converted;
+        $document -> save();
+
         return true;
     }
 
@@ -545,12 +651,9 @@ class ListingDetailsController extends Controller {
         $document = TransactionDocuments::where('id', $document_id) -> first();
         $file_id = $document -> file_id;
         $file_type = $request -> file_type;
+        $file_name = $request -> file_name;
 
-        if($file_type == 'user') {
-            $document_images = TransactionUploadImages::where('file_id', $file_id) -> get();
-        } else {
-            $document_images = UploadImages::where('file_id', $file_id) -> get();
-        }
+        $document_images = TransactionUploadImages::where('file_id', $file_id) -> orderBy('page_number') -> get();
 
         $checklist_items_model = new ChecklistsItems();
         $transaction_checklist_items_modal = new TransactionChecklistItems();
@@ -559,60 +662,454 @@ class ListingDetailsController extends Controller {
         $transaction_checklist_item_documents = TransactionChecklistItemsDocs::where('checklist_id', $checklist_id) -> get();
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', ['listing', 'both']) -> orderBy('resource_order') -> get();
 
-        return view('/agents/doc_management/transactions/listings/details/data/get_split_document_html', compact('document_id', 'file_type', 'document', 'document_images', 'checklist_items', 'checklist_groups', 'transaction_checklist_item_documents', 'checklist_items_model', 'transaction_checklist_items_modal'));
+        return view('/agents/doc_management/transactions/listings/details/data/get_split_document_html', compact('document_id', 'file_id', 'file_type', 'file_name', 'document', 'document_images', 'checklist_items', 'checklist_groups', 'transaction_checklist_item_documents', 'checklist_items_model', 'transaction_checklist_items_modal'));
     }
 
-    public function save_split_document_to_documents(Request $request) {
+    public function copy_file($path, $newpath) {
+        $location = $this -> applyPathPrefix($path);
+        $destination = $this -> applyPathPrefix($newpath);
+        $this -> ensureDirectory(dirname($destination));
+        return copy($location, $destination);
+    }
 
+    public function save_split_document(Request $request) {
+
+        $Listing_ID = $request -> Listing_ID;
+        $Agent_ID = $request -> Agent_ID;
+        $folder_id = $request -> folder_id;
         $document_name = $request -> document_name;
-        $image_ids = $request -> image_ids;
+        $image_ids = explode(',', $request -> image_ids);
+        $pages_total = count($image_ids);
         $file_type = $request -> file_type;
+        $file_id = $request -> file_id;
         $checklist_item_id = $request -> checklist_item_id;
+        $checklist_id = $request -> checklist_id;
 
-        if($file_type == 'user') {
-            $document_images = TransactionUploadImages::whereIn('id', explode(',', $image_ids)) -> get();
-        } else {
-            $document_images = UploadImages::whereIn('id', $image_ids) -> get();
-        }
+        $document_images = TransactionUploadImages::whereIn('id', $image_ids) -> get();
 
         $document_image_files = [];
         $document_page_files = [];
+        $page_numbers = [];
         foreach($document_images as $document_image) {
 
-            $file_id = $document_image -> file_id;
-            $page_number = $document_image -> page_number;
+            $doc_file_id = $document_image -> file_id;
+            $doc_page_number = $document_image -> page_number;
+            $page_numbers[] = $doc_page_number;
 
-            if($file_type == 'user') {
-                $document_page = TransactionUploadPages::where('file_id', $file_id) -> where('page_number', $page_number) -> first();
-            } else {
-                $document_page = UploadPages::where('file_id', $file_id) -> where('page_number', $page_number) -> first();
-            }
+            $pages = [];
+            $images = [];
 
-            $document_image_files[] = $document_image -> file_location;
-            $document_page_files[] = $document_page -> file_location;
+            $document_page = TransactionUploadPages::where('file_id', $doc_file_id) -> where('page_number', $doc_page_number) -> first();
+            $pages = ['file_id' => $document_page -> file_id, 'file_location' => $document_page -> file_location];
+            $images = ['file_id' => $document_image -> file_id, 'file_location' => $document_image -> file_location, 'page_number' => $doc_page_number];
 
+            array_push($document_page_files, $pages);
+            array_push($document_image_files, $images);
         }
-        // TODO: all of this
-        // add to transaction uploads
-        // add images and pages and merged file
-        // add to docs_transaction_docs
-        // add to docs_transactions_uploads_images
-        // add to docs_transactions_uploads_pages
-        // copy from docs_transaction_fields
-        // copy from docs_transaction_fields_inputs ######### NOT THIS ONE????????????
-        // copy from docs_transaction_fields_inputs_values
-        // assign to checklist item
 
         // if manually saving to documents
         if($document_name) {
+            $file_name = sanitize($document_name).'.pdf';
+            $file_name_display = $document_name.'.pdf';
 
         // if adding to checklist item
+        // assign to checklist item
         } else {
+            $checklist_item = TransactionChecklistItems::where('id', $checklist_item_id) -> first();
+            $checklist_form_id = $checklist_item -> checklist_form_id;
+            $file_name_display = Upload::GetFormName($checklist_form_id);
+            $file_name = sanitize($file_name_display).'.pdf';
+        }
+
+        // add to docs_transaction_docs
+        $add_document = new TransactionDocuments();
+        $add_document -> file_type = 'user';
+        $add_document -> Agent_ID = $Agent_ID;
+        $add_document -> Listing_ID = $Listing_ID;
+        $add_document -> folder = $folder_id;
+        $add_document -> file_name = $file_name;
+        $add_document -> file_name_display = $file_name_display;
+        $add_document -> pages_total = $pages_total;
+        $add_document -> save();
+        $ListingDocs_ID = $add_document -> id;
+
+        // add to transaction uploads
+        $upload = new TransactionUpload();
+        $upload -> ListingDocs_ID = $ListingDocs_ID;
+        $upload -> Agent_ID = $Agent_ID;
+        $upload -> Listing_ID = $Listing_ID;
+        $upload -> file_name = $file_name;
+        $upload -> file_name_display = $file_name_display;
+        $upload -> pages_total = $pages_total;
+        $upload -> save();
+        $new_file_id = $upload -> file_id;
+
+        $add_document -> file_id = $new_file_id;
+        $add_document -> save();
+
+        Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/images');
+        Storage::disk('public') -> makeDirectory('doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/pages');
+
+        // copy images and pages and create merged file
+        // copy images
+        $page_number = 1;
+        foreach($document_image_files as $image_file) {
+            $image_file_name = basename($image_file['file_location']);
+            $old_file_loc = Storage::disk('public') -> path('doc_management/transactions/listings/'.$Listing_ID.'/'.$document_image_files[0]['file_id'].'_'.$file_type.'/images/'.$image_file_name);
+            $new_file_loc = Storage::disk('public') -> path('doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/images/'.$image_file_name);
+            exec('cp '.$old_file_loc.' '.$new_file_loc);
+
+            $upload_images = new TransactionUploadImages();
+            $upload_images -> file_id = $new_file_id;
+            $upload_images -> Agent_ID = $Agent_ID;
+            $upload_images -> Listing_ID = $Listing_ID;
+            $upload_images -> file_name = $file_name;
+            $upload_images -> file_location = '/storage/doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/images/'.$image_file_name;
+            $upload_images -> pages_total = count($document_image_files);
+            $upload_images -> page_number = $page_number;
+            $upload_images -> save();
+
+            // copy from docs_transaction_fields ** update new page for each
+            $add_user_fields = UserFields::where('file_id', $image_file['file_id']) -> where('page', $image_file['page_number']) -> get();
+            $field_ids = [];
+            foreach($add_user_fields as $add_user_field) {
+                $field_ids[] = $add_user_field -> field_id;
+                $add_user_fields_copy = $add_user_field -> replicate();
+                $add_user_fields_copy -> page = $page_number;
+                $add_user_fields_copy -> file_type = 'user';
+                $add_user_fields_copy -> file_id = $new_file_id;
+                $add_user_fields_copy -> save();
+            }
+
+            $user_fields_inputs = UserFieldsInputs::where('file_id', $image_file['file_id'])  -> get();
+
+            foreach ($user_fields_inputs as $user_fields_input) {
+                $add_user_fields_input_copy = $user_fields_input -> replicate();
+                $add_user_fields_input_copy -> file_id = $new_file_id;
+                $add_user_fields_input_copy -> file_type = 'user';
+                $add_user_fields_input_copy -> save();
+            }
+
+            // copy from docs_transaction_fields_inputs_values
+            $add_user_field_values = UserFieldsValues::whereIn('input_id', $field_ids) -> get();
+            foreach($add_user_field_values as $add_user_field_value) {
+                $add_user_field_values_copy = $add_user_field_value -> replicate();
+                $add_user_field_values_copy -> file_type = 'user';
+                $add_user_field_values_copy -> file_id = $new_file_id;
+                $add_user_field_values_copy -> save();
+            }
+
+            $page_number += 1;
+
+        }
+        // copy pages
+        $page_number = 1;
+        foreach($document_page_files as $page_file) {
+            $page_file_name = basename($page_file['file_location']);
+            $old_file_loc = Storage::disk('public') -> path('doc_management/transactions/listings/'.$Listing_ID.'/'.$document_page_files[0]['file_id'].'_'.$file_type.'/pages/'.$page_file_name);
+            $new_file_loc = Storage::disk('public') -> path('doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/pages/'.$page_file_name);
+            exec('cp '.$old_file_loc.' '.$new_file_loc);
+
+            $upload_pages = new TransactionUploadPages();
+            $upload_pages -> file_id = $new_file_id;
+            $upload_pages -> Agent_ID = $Agent_ID;
+            $upload_pages -> Listing_ID = $Listing_ID;
+            $upload_pages -> file_name = $file_name;
+            $upload_pages -> file_location = '/storage/doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/pages/'.$page_file_name;
+            $upload_pages -> pages_total = count($document_page_files);
+            $upload_pages -> page_number = $page_number;
+            $upload_pages -> save();
+            $page_number += 1;
+        }
+
+        //merge pages into main file and move to converted
+        $main_file_location = 'doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/'.$file_name;
+        $converted_file_location = 'doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/converted/'.$file_name;
+
+        $base_path = base_path();
+        exec('mkdir '.$base_path.'/storage/app/public/doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/converted');
+
+        // merge all pages and add to main directory and converted directory
+        $pages = Storage::disk('public') -> path('doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/pages');
+        exec('pdftk '.$pages.'/*.pdf cat output '.$base_path.'/storage/app/public/'.$main_file_location);
+        //exec('cd '.$base_path.'/storage/app/public/ && cp '.$main_file_location.' '.$converted_file_location);
+        // get split pages, merge and add to converted
+        $old_converted_location = Storage::disk('public') -> path('doc_management/transactions/listings/'.$Listing_ID.'/'.$file_id.'_'.$file_type.'/converted');
+        $new_converted_location = Storage::disk('public') -> path('doc_management/transactions/listings/'.$Listing_ID.'/'.$new_file_id.'_user/converted');
+
+        exec('pdftk '.$old_converted_location.'/*.pdf cat '.implode(' ', $page_numbers).' output '.$new_converted_location.'/'.$file_name);
+
+        // update file locations in docs_transaction and docs uploads
+        $add_document -> file_location = '/storage/'.$main_file_location;
+        $add_document -> file_location_converted = '/storage/'.$converted_file_location;
+        $add_document -> save();
+
+        $upload -> file_location = '/storage/'.$main_file_location;
+        $upload -> save();
+
+        // add to checklist
+        if($checklist_id > 0) {
+            $document_id = $ListingDocs_ID;
+            $checklist_id = $checklist_id;
+            $checklist_item_id = $checklist_item_id;
+            $Agent_ID = $Agent_ID;
+            $Listing_ID = $Listing_ID;
+
+            $add_checklist_item_doc = new TransactionChecklistItemsDocs();
+            $add_checklist_item_doc -> document_id = $document_id;
+            $add_checklist_item_doc -> checklist_id = $checklist_id;
+            $add_checklist_item_doc -> checklist_item_id = $checklist_item_id;
+            $add_checklist_item_doc -> Agent_ID = $Agent_ID;
+            $add_checklist_item_doc -> Listing_ID = $Listing_ID;
+            $add_checklist_item_doc -> save();
+
+            $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes']);
 
         }
 
+    }
+
+    public function duplicate_document(Request $request) {
+
+        $document_id = $request -> document_id;
+        $file_type = $request -> file_type;
+        // get document details
+        $document = TransactionDocuments::where('id', $document_id) -> first();
+        $orig_upload_id = $document -> file_id;
+        $Listing_ID = $document -> Listing_ID;
+        $Agent_ID = $document -> Agent_ID;
+
+        // copy to documents
+        $document_copy = $document -> replicate();
+        $document_copy -> save();
+        $new_document_id = $document_copy -> id;
+
+        $upload = TransactionUpload::where('file_id', $orig_upload_id) -> first();
+
+        // create new upload
+        $upload_copy = $upload -> replicate();
+        $upload_copy -> ListingDocs_ID = $new_document_id;
+        $upload_copy -> file_name_display = $upload -> file_name_display;
+        $upload_copy -> Agent_ID = $Agent_ID;
+        $upload_copy -> Listing_ID = $Listing_ID;
+        $upload_copy -> save();
+        $new_upload_id = $upload_copy -> file_id;
+
+        $orig_uploads_path = 'doc_management/transactions/listings/'.$Listing_ID.'/'.$orig_upload_id.'_'.$file_type;
+        $new_uploads_path = 'doc_management/transactions/listings/'.$Listing_ID.'/'.$new_upload_id.'_'.$file_type;
+
+        // copy original file
+        File::copyDirectory(Storage::disk('public') -> path($orig_uploads_path), Storage::disk('public') -> path($new_uploads_path));
+        // add file_location to upload
+        $upload_copy -> file_location = '/storage/'.$new_uploads_path.'/'.$upload -> file_name;
+        $upload_copy -> save();
+
+
+        // add other details to docs
+        $document_copy -> file_location = '/storage/'.$new_uploads_path.'/'.$upload -> file_name;
+        $document_copy -> file_location_converted = '/storage/'.$new_uploads_path.'/converted/'.$upload -> file_name;
+        $document_copy -> file_name_display = $upload -> file_name_display.'-COPY';
+        $document_copy -> file_id = $new_upload_id;
+        //$document_copy -> order = $document_copy -> order + 1;
+        $document_copy -> assigned = 'no';
+        $document_copy -> save();
+
+        $new_document_id = $document_copy -> id;
+
+        // update uploads with new doc id
+        $upload_copy -> ListingDocs_ID = $new_document_id;
+        $upload_copy -> save();
+
+        // copy all pages, images, fields and field values
+        $data_sets = [TransactionUploadImages::where('file_id', $orig_upload_id) -> get(), TransactionUploadPages::where('file_id', $orig_upload_id) -> get()];
+
+        foreach ($data_sets as $data_set) {
+            foreach ($data_set as $row) {
+                $copy = $row -> replicate();
+                $copy -> file_id = $new_upload_id;
+                $path = str_replace('/'.$orig_upload_id.'/', '/'.$new_upload_id.'_'.$file_type.'/', $row -> file_location);
+                $copy -> file_location = $path;
+                $copy -> save();
+            }
+        }
+
+        $user_fields = UserFields::where('file_id', $orig_upload_id) -> get();
+
+        foreach ($user_fields as $user_field) {
+            $copy = $user_field -> replicate();
+            $copy -> file_id = $new_upload_id;
+            $copy -> save();
+        }
+
+        $user_fields_inputs = UserFieldsInputs::where('file_id', $orig_upload_id)  -> get();
+
+        foreach ($user_fields_inputs as $user_fields_input) {
+            $copy = $user_fields_input -> replicate();
+            $copy -> file_id = $new_upload_id;
+            $copy -> save();
+        }
+
+        // add input values
+        $field_input_values = UserFieldsValues::where('file_id', $orig_upload_id) -> get();
+        foreach ($field_input_values as $field_input_value) {
+            $copy = $field_input_value -> replicate();
+            $copy -> file_id = $new_upload_id;
+            $copy -> file_type = $file_type;
+            $copy -> Agent_ID = $Agent_ID;
+            $copy -> Listing_ID = $Listing_ID;
+            $copy -> save();
+        }
 
     }
+
+    public function email_documents(Request $request) {
+
+        $email = [];
+
+        $from_address = $request -> from;
+        $from_name = '';
+
+        if(preg_match('/\<.*\>/', $from_address)) {
+            preg_match('/\<(.*)\>[\s]*(.*)/', $from_address, $match);
+            $from_name = $match[1];
+            $from_address = $match[2];
+        }
+        $email['from'] = ['address' => $from_address, 'name' => $from_name];
+
+        $email['subject'] = $request -> subject;
+        $email['message'] = $request -> message;
+
+        $email['tos_array'] = [];
+        foreach(json_decode($request -> to_addresses) as $to_address) {
+            $to = [];
+            $to['type'] = $to_address -> type;
+            $to['address'] = $to_address -> address;
+            $email['tos_array'][] = $to;
+        }
+
+        $email['attachments'] = [];
+        $attachment_size = 0;
+        foreach(json_decode($request -> attachments) as $attachment) {
+            $file = [];
+            $file['name'] = $attachment -> filename;
+            $file['location'] = $attachment -> file_location;
+            $email['attachments'][] = $file;
+
+            $attachment_size += filesize(Storage::disk('public') -> path($attachment -> file_location));
+
+        }
+
+        $attachment_size = get_mb($attachment_size);
+        if($attachment_size > 20) {
+            $fail = json_encode(['fail' => true, 'attachment_size' => $attachment_size]);
+            return ($fail);
+        }
+
+        $email['tos'] = [];
+        $email['ccs'] = [];
+        $email['bccs'] = [];
+
+        foreach($email['tos_array'] as $to) {
+
+            $to_address = $to['address'];
+            $to_name = '';
+
+            if(preg_match('/\<.*\>/', $to['address'])) {
+                preg_match('/\<(.*)\>[\s]*(.*)/', $to['address'], $match);
+                $to_name = $match[1];
+                $to_address = $match[2];
+            }
+
+            if($to['type'] == 'to') {
+                $email['tos'][] = ['name' => $to_name, 'email' => $to_address];
+            } else if($to['type'] == 'cc') {
+                $email['ccs'][] = ['name' => $to_name, 'email' => $to_address];
+            } else if($to['type'] == 'bcc') {
+                $email['bccs'][] = ['name' => $to_name, 'email' => $to_address];
+            }
+        }
+
+        //return (new Documents($email)) -> render();
+
+        Mail::to($email['tos'])
+            -> cc($email['ccs'])
+            -> bcc($email['bccs'])
+            -> send(new Documents($email));
+
+    }
+
+    public function email_get_documents(Request $request) {
+
+        $docs_type = $request -> docs_type;
+
+        $filenames = [];
+        $file_locations = [];
+
+        if($docs_type != '') {
+
+            $file = $this -> merge_documents($request);
+
+            // when multiple docs are emailed
+            if($docs_type == 'merged') {
+                $file_locations[] = str_replace('/storage/', '', $file['file_location']);
+                $filenames[] = $file['filename'];
+            } else if($docs_type == 'single') {
+                foreach($file['single_documents'] as $doc) {
+                    $file_locations[] = str_replace('/storage/', '', $doc -> file_location_converted);
+                    $filenames[] = $doc -> file_name_display;
+                }
+            }
+
+        } else {
+            // when a single doc is emailed
+            $doc = TransactionDocuments::where('id', $request -> document_ids) -> first();
+            $file_locations[] = str_replace('/storage/', '', $doc -> file_location_converted);
+            $filenames[] = $doc -> file_name_display;
+
+        }
+
+        return compact('file_locations', 'filenames');
+
+    }
+
+    public function get_path($url) {
+        //debug($url);
+        return Storage::disk('public') -> path(preg_replace('/^.*\/storage\//', '', $url));
+    }
+
+    public function merge_documents(Request $request) {
+
+        $Listing_ID = $request -> Listing_ID;
+        $folder_id = $request -> folder_id;
+        $type = $request -> type;
+        $docs_type = $request -> docs_type;
+
+        $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
+        // create filename for merged docs
+        $filename = sanitize($listing -> FullStreetAddress).'_'.date('YmdHis').'.pdf';
+
+        $document_ids = explode(',', $request -> document_ids);
+        $documents = [];
+        foreach($document_ids as $document_id) {
+            if($type == 'filled') {
+                $documents[] = TransactionDocuments::where('id', $document_id) -> pluck('file_location_converted') -> first();
+                $single_documents[] = TransactionDocuments::select('file_location_converted', 'file_name_display') -> where('id', $document_id) -> first();
+            } else if($type == 'blank') {
+                $documents[] = TransactionDocuments::where('id', $document_id) -> pluck('file_location') -> first();
+            }
+        }
+
+        $docs_array = array_map(array($this, 'get_path'), $documents);
+        $docs = implode(' ', $docs_array);
+
+        $tmp = Storage::disk('public') -> path('tmp');
+        exec('pdftk '.$docs.' cat output '.$tmp.'/'.$filename);
+
+        $file_location = '/storage/tmp/'.$filename;
+        return compact('file_location', 'filename', 'single_documents');
+
+    }
+
 
     // End Documents Tab
 
@@ -627,7 +1124,7 @@ class ListingDetailsController extends Controller {
         if ($listing -> ExpirationDate != '' && $listing -> ExpirationDate != '0000-00-00') {
             return view('/agents/doc_management/transactions/listings/details/listing_details', compact('listing', 'sellers'));
         } else {
-            return redirect('/agents/doc_management/transactions/listings/listing_required_details/' . $Listing_ID);
+            return redirect('/agents/doc_management/transactions/listings/listing_required_details/'.$Listing_ID);
         }
 
     }

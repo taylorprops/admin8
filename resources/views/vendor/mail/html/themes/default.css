@@ -84,7 +84,7 @@ img {
 /* Layout */
 
 .wrapper {
-    background-color: #f8fafc;
+    background-color: #1972bb;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -105,7 +105,7 @@ img {
 /* Header */
 
 .header {
-    padding: 25px 0;
+    padding: 10px 0;
     text-align: center;
 }
 
@@ -289,4 +289,11 @@ img {
 .promotion p {
     font-size: 15px;
     text-align: center;
+}
+
+
+/*//////////////////// CUSTOM ///////////////////////*/
+
+.email-header-logo {
+    max-width: 200px;
 }

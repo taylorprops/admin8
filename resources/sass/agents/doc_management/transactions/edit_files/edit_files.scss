@@ -100,8 +100,7 @@
     .field-options-holder {
         position: absolute;
         top: -50px;
-        //left:50%;
-        //transform: translate(-50%, 0%);
+        width: 110px;
         width: auto;
         background: transparent;
     }
@@ -204,11 +203,11 @@
     $min_width: 320px;
     $max_width: 1000px;
     $min_font: 6px;
-    $max_font: 14px;
+    $max_font: 13px;
     .data-div:not(.data-div-radio-check) {
         @include fluid-type($min_width, $max_width, $min_font, $max_font);
         padding-left: 5px;
-        padding-top: .2VH;
+        padding-top: .3VH;
     }
 
     //$min_font: 1em;
@@ -240,23 +239,21 @@
         background: rgba($primary, .1);
     }
     .user-field-div.highlight-div, .data-div.highlight {
-        background: rgba($yellow, .1);
-        border: 1px solid rgba($yellow, .5);
+        background: rgba($yellow, .3);
     }
     .data-div.strikeout {
-        width: 100%;
-        height: 1px;
-        background: black;
-        top: 10px;
+        height: 2px;
+    }
+    .strikeout-div {
+        padding-top: 7px;
     }
     .user-field-div.strikeout-div::after {
         content: '';
         width: 100%;
-        height: 3px;
+        height: 2px;
         background: black;
         display: block;
         position: relative;
-        top: 10px;
     }
 
 

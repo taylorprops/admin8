@@ -1,6 +1,6 @@
 /// MODALS /////
 body.modal-open {
-    overflow-y: hidden;
+    //overflow-y: hidden;
 
     main {
         //padding-right: 12px;
@@ -31,9 +31,9 @@ body.modal-open {
 }
 // toastr
 #toast-container > div {
-    width: 25.75rem;
+   /*  width: 25.75rem;
     padding: 25px 25px 25px 50px;
-    font-size: 1.2rem;
+    font-size: 1.2rem; */
 }
 // chips
 .chip {

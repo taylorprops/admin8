@@ -6,9 +6,7 @@ if (document.URL.match(/edit_files/)) {
 
     $(document).ready(function () {
 
-        if(window.location.href.match(/saved/)) {
-            $('#modal_success').modal().find('.modal-body').html('Fields Successfully Added');
-        }
+
 
         form_elements();
 
@@ -183,7 +181,7 @@ if (document.URL.match(/edit_files/)) {
 
         // action buttons
         $(document).on('click', '#rotate_form_button:not(.disabled)', rotate_form);
-        $(document).on('click', '#to_pdf_button:not(.disabled)', to_pdf);
+        //$(document).on('click', '#to_pdf_button:not(.disabled)', to_pdf);
         $(document).on('click', '#show_edit_options_button:not(.disabled)', show_edit_options);
         $(document).on('click', '#save_edit_options_button', save_edit_options);
         $(document).on('click', '#cancel_edit_options_button', close_edit_options);
@@ -192,6 +190,14 @@ if (document.URL.match(/edit_files/)) {
             $('.edit-form-action').removeClass('active text-white').addClass('text-primary-dark');
             $(this).removeClass('text-primary-dark').addClass('active text-white');
         });
+
+        /* setTimeout(function() {
+            if(window.location.href.match(/topdf/)) {
+                to_pdf();
+                window.history.pushState('data', 'Title', window.location.href.replace(/\/topdf/, ''));
+                change_url();
+            }
+        }, 1000); */
 
     });
 
@@ -256,12 +262,14 @@ if (document.URL.match(/edit_files/)) {
                     </div> \
                 ';
 
-                $('.field-container').append(field_div);
+                let field_container = $('.file-view-page-container[data-id="'+field['page']+'"]').find('.field-container');
+                field_container.append(field_div);
                 setTimeout(function() {
                     $('.focused').hide();
                 }, 500);
                 set_hwxy($('#field_' + field['group_id']), field['group_id'], type);
-                set_field_options(type, $('#field_' + field['group_id']), '', '', $('.field-container'));
+
+                set_field_options(type, $('#field_' + field['group_id']), '', '', field_container);
 
             });
         })
@@ -603,8 +611,7 @@ if (document.URL.match(/edit_files/)) {
         formData.append('data', data);
         axios.post('/agents/doc_management/transactions/edit_files/save_edit_options', formData, axios_options)
         .then(function (response) {
-            let url = window.location.href.replace(/\/saved/, '')+'/saved';
-            window.location.href = url;
+            location.reload();
         })
         .catch(function (error) {
             console.log(error);
@@ -612,17 +619,12 @@ if (document.URL.match(/edit_files/)) {
     }
 
     function close_edit_options() {
-        window.location.href = window.location.href.replace(/\/saved/, '');
-        /* $('.form-options-container').find('.form-options-div').not('.edit-options').show();
-        $('.edit-options').hide();
-        $('.field-div').removeClass('disabled');
-        $('.edit-form-action').removeClass('active text-white').addClass('text-primary-dark');
-        $('.field-div.new').remove(); */
+        location.reload();
     }
 
     function to_pdf() {
 
-        global_loading_on('', '<div class="h3 text-white">Merging Fields, Saving and Creating PDF.<br>Please be patient, this process can take up to 10 seconds for each page.</div>');
+        global_loading_on('', '<div class="h3 text-white">Merging Fields, Creating and Saving PDF.</div> <div class="h3 mt-5 text-yellow">Please be patient, this process can take <br>5 - 10 seconds for each page.</div>');
         // fields that css will be changed during export to pdf. They will be reset after
         let els = '.data-div, .file-image-bg, .field-div, .data-div-radio-check';
         let styles;
@@ -635,16 +637,21 @@ if (document.URL.match(/edit_files/)) {
         });
 
         // set inline styles for PDF
-        $('.data-div').not('.data-div-radio-check, .highlight, .strikeout').css({ 'font-size': '1rem', 'color': '#000', 'padding-left': '5px', 'font-family': 'sans-serif', 'letter-spacing': '0.03rem' });
+        // system fields
+        $('.data-div').not('.data-div-radio-check, .highlight, .strikeout').css({ 'font-size': '.9rem', 'color': '#000', 'padding-left': '5px', 'padding-top': '3px', 'font-family': 'Arial', 'letter-spacing': '0.03rem' });
+        $('.data-div-radio-check').css({ 'margin-left': '1px', 'color': '#000', 'font-size': '1.2em', 'line-height': '80%', 'font-weight': 'bold' });
+        // remove background
         $('.file-image-bg').css({ opacity: '0.0' });
         $('.field-div').css({ background: 'none' });
-        $('.data-div-radio-check').css({ 'margin-left': '1px', 'font-size': '1.2em', 'line-height': '80%', 'font-weight': 'bold' });
-        $('.data-div.highlight').css({ background: 'rgba(252, 234, 78, .3)', height: '100%' });
-        $('.data-div.strikeout').css({ width: '100%', height: '3px', background: 'black', display: 'block', position: 'relative', top: '10px' });
+
+        // user fields
+        $('.data-div.highlight').css({ background: 'yellow', opacity: '0.5', height: '100%' });
+        $('.data-div.strikeout').css({ width: '100%', height: '2px', background: 'black', display: 'block', position: 'relative', 'margin-top': '7px' });
 
 
         let file_id = $('#file_id').val();
         let file_name = $('#file_name').val();
+        let file_type = $('#file_type').val();
         let Listing_ID = $('#Listing_ID').val();
 
         // remove datepicker html, datepicker input, background img, modals, left over input fields
@@ -662,10 +669,12 @@ if (document.URL.match(/edit_files/)) {
             page_html = page_html.wrap('<div>').parent().html();
 
             formData.append('page_' + c, page_html);
+            console.log(page_html);
         });
 
         formData.append('page_count', c);
         formData.append('file_id', file_id);
+        formData.append('file_type', file_type);
         formData.append('file_name', file_name);
         formData.append('Listing_ID', Listing_ID);
 
@@ -973,8 +982,17 @@ if (document.URL.match(/edit_files/)) {
         $('.field-list-container').html('');
         $('.file-view-page-container').each(function () {
 
+            let page_number = $(this).data('id');
+
+            $('.field-list-container').append('<div class="page-container" id="page_container_' + page_number + '"></div>');
+
+            let page_container = $('#page_container_' + page_number);
+
+            page_container.append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
+
             // get unique group ids
             var group_ids = [];
+
             $(this).find('.field-div').each(function () {
                 group_ids.push($(this).data('group-id'));
             });
@@ -987,10 +1005,11 @@ if (document.URL.match(/edit_files/)) {
                 let name = '';
                 if (group.data('type') == 'checkbox') {
                     group.each(function () {
-                        name = $(this).data('y');
-                        $('.field-list-container').append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
+                        name = $(this).data('customname');
+                        page_container.append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
                     });
                 } else {
+
                     name = group.data('customname');
                     if (group.data('commonname') != undefined && group.data('commonname') != '') {
                         name = group.data('commonname');
@@ -998,23 +1017,23 @@ if (document.URL.match(/edit_files/)) {
 
                     if (name == undefined || name == 'undefined' || name == '' || name == 'User Field') {
                         if(type == 'user_text') {
-                            $('.field-list-container').append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">User Text Field</a></div>');
+                            page_container.append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">User Text Field</a></div>');
                         }
                     } else {
-                        $('.field-list-container').append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
+                        page_container.append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
                     }
 
                 }
 
             });
 
-            let fields = $('.field-list-div');
+            let fields = page_container.find('.field-list-div');
             fields.sort(function(a, b){
                 return $(a).data('order')-$(b).data('order')
             });
-            let page_number = $(this).data('id');
-            $('.field-list-container').html('').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
-            $('.field-list-container').append(fields);
+
+
+            page_container.append(fields);
 
             $('.field-list-link').off('click').on('click', function (e) {
                 //e.stopPropagation();
@@ -1040,7 +1059,9 @@ if (document.URL.match(/edit_files/)) {
                     scrollTop: (scrollTo.offset().top - container.offset().top + container.scrollTop()) - 200
                 });
                 setTimeout(function() {
-                    ele.trigger('click');
+                    if (type != 'checkbox' && type != 'radio') {
+                        ele.trigger('click');
+                    }
                     //$('.modal.show').find('input').eq(0).trigger('click').focus().next('label').addClass('active');
                 }, 200);
 

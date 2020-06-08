@@ -8,4 +8,5 @@ class TransactionUploadImages extends Model
 {
     protected $connection = 'mysql';
     public $table = 'docs_transactions_uploads_images';
+    protected $guarded = [];
 }

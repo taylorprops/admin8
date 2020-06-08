@@ -39,7 +39,7 @@ class CommonFields extends Model
     public function ScopeGetCommonNameValue($query, $common_name, $input_id, $field_type, $Listing_ID = null, $Contract_ID = null, $Agent_ID) {
         if($field_type == 'system') {
 
-            $field_input = FieldInputs::where('input_id', $input_id) -> where('field_type', 'common') -> get();
+            $field_input = UserFieldsInputs::where('input_id', $input_id) -> where('field_type', 'common') -> get();
             $common_name_search = $this -> where('field_name', $common_name) -> first();
 
             $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
@@ -90,6 +90,10 @@ class CommonFields extends Model
                     } else {
                         $member = null;
                     }
+                } else if($common_name == 'List Agent Company') {
+                    $value = $listing -> ListOfficeName;
+                } else if($common_name == 'Selling Agent Company') {
+                    $value = $listing -> BuyerOfficeName;
                 } else if($common_name == 'Full Address') {
                     $value = $listing -> FullStreetAddress . ' ' . $listing -> City . ' ' . $listing -> StateOrProvince .' '.$listing -> PostalCode;
                 } else if($common_name == 'Street Address') {

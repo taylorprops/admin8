@@ -14,6 +14,7 @@ use App\Models\DocManagement\Create\Upload\UploadImages;
 use App\Models\DocManagement\Create\Upload\UploadPages;
 use App\Models\Resources\LocationData;
 use Illuminate\Http\Request;
+use File;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -49,8 +50,8 @@ class UploadController extends Controller {
         $upload = Fields::where('file_id', $upload_id) -> delete();
         $upload = FieldInputs::where('file_id', $upload_id) -> delete();
         $upload = FilledFields::where('file_id', $upload_id) -> delete();
-        $upload_dir = base_path() . '/storage/app/public/doc_management/uploads/' . $upload_id;
-        exec('rm -r ' . $upload_dir);
+        $upload_dir = base_path().'/storage/app/public/doc_management/uploads/'.$upload_id;
+        exec('rm -r '.$upload_dir);
     }
 
     public function duplicate_upload(Request $request) {
@@ -65,10 +66,13 @@ class UploadController extends Controller {
         if ($upload -> file_location != '') {
 
             $file_id = $upload_copy -> file_id;
-            $uploads_path = base_path() . '/storage/app/public/doc_management/uploads';
-            exec('cp -r ' . $uploads_path . '/' . $upload_id . ' ' . $uploads_path . '/' . $file_id);
+            $uploads_path = 'doc_management/uploads';
 
-            $copy_path = str_replace('/' . $upload_id . '/', '/' . $file_id . '/', $upload -> file_location);
+            File::copyDirectory(Storage::disk('public') -> path($uploads_path.'/'.$upload_id), Storage::disk('public') -> path($uploads_path.'/'.$file_id));
+            //$uploads_path = base_path().'/storage/app/public/doc_management/uploads';
+            //exec('cp -r '.$uploads_path.'/'.$upload_id.' '.$uploads_path.'/'.$file_id);
+
+            $copy_path = str_replace('/'.$upload_id.'/', '/'.$file_id.'/', $upload -> file_location);
             // update file location
             $upload_copy -> file_location = $copy_path;
             $upload_copy -> published = 'no';
@@ -81,7 +85,7 @@ class UploadController extends Controller {
                 foreach ($data_set as $row) {
                     $copy = $row -> replicate();
                     $copy -> file_id = $file_id;
-                    $path = str_replace('/' . $upload_id . '/', '/' . $file_id . '/', $row -> file_location);
+                    $path = str_replace('/'.$upload_id.'/', '/'.$file_id.'/', $row -> file_location);
                     $copy -> file_location = $path;
                     $copy -> save();
                 }
@@ -335,18 +339,20 @@ class UploadController extends Controller {
 
             $file_name_orig = $file -> getClientOriginalName();
             $filename = $file_name_orig;
-            $date = date('YmdHis');
+
             $ext = $file -> getClientOriginalExtension();
-            $file_name_no_ext = str_replace('.' . $ext, '', $filename);
+            $file_name_remove_numbers = preg_replace('/[0-9-_]+\.'.$ext.'/', '.'.$ext, $filename);
+            $file_name_no_ext = str_replace('.'.$ext, '', $file_name_remove_numbers);
             $clean_filename = sanitize($file_name_no_ext);
-            $new_filename = $date . '_' . $clean_filename . '.' . $ext;
+            $new_filename = $clean_filename.'.'.$ext;
+
             $state = $request['state'];
             $helper_text = $request['helper_text'];
             $sale_type = implode(',', $request['sale_type']);
             $form_group_id = $request['form_group_id'];
             $file_name_display = $request['file_name_display'];
 
-            $pages_total = exec('pdftk ' . $file . ' dump_data | sed -n \'s/^NumberOfPages:\s//p\'');
+            $pages_total = exec('pdftk '.$file.' dump_data | sed -n \'s/^NumberOfPages:\s//p\'');
 
             // add original file to database
             $upload = new Upload();
@@ -363,64 +369,65 @@ class UploadController extends Controller {
             $file_id = $upload -> file_id;
 
             $base_path = base_path();
-            $storage_path = $base_path . '/storage/app/public';
-            $storage_dir = 'doc_management/uploads/' . $file_id;
+            $storage_path = $base_path.'/storage/app/public';
+            $storage_dir = 'doc_management/uploads/'.$file_id;
 
-            if (!Storage::disk('public') -> put($storage_dir . '/' . $new_filename, file_get_contents($file))) {
+            if (!Storage::disk('public') -> put($storage_dir.'/'.$new_filename, file_get_contents($file))) {
                 $fail = json_encode(['fail' => 'File Not Uploaded']);
                 return ($fail);
             }
-            $storage_full_path = $storage_path . '/doc_management/uploads/' . $file_id;
-            chmod($storage_full_path . '/' . $new_filename, 0775);
+            $storage_full_path = $storage_path.'/doc_management/uploads/'.$file_id;
+            chmod($storage_full_path.'/'.$new_filename, 0775);
 
             // update directory path in database
-            $storage_public_path = '/storage/doc_management/uploads/' . $file_id;
-            $upload -> file_location = $storage_public_path . '/' . $new_filename;
+            $storage_public_path = '/storage/doc_management/uploads/'.$file_id;
+            $upload -> file_location = $storage_public_path.'/'.$new_filename;
             $upload -> save();
 
             // create directories
-            $storage_dir_pages = $storage_dir . '/pages';
+            $storage_dir_pages = $storage_dir.'/pages';
             Storage::disk('public') -> makeDirectory($storage_dir_pages);
-            $storage_dir_images = $storage_dir . '/images';
+            $storage_dir_images = $storage_dir.'/images';
             Storage::disk('public') -> makeDirectory($storage_dir_images);
 
             // split pdf into pages and images
-            $input_file = $storage_full_path . '/' . $new_filename;
-            $output_files = $storage_path . '/' . $storage_dir_pages . '/page_%02d.pdf';
+            $input_file = $storage_full_path.'/'.$new_filename;
+            $output_files = $storage_path.'/'.$storage_dir_pages.'/page_%02d.pdf';
             $new_image_name = str_replace($ext, 'jpg', $new_filename);
-            $output_images = $storage_path . '/' . $storage_dir_images . '/' . $new_image_name;
+            $output_images = $storage_path.'/'.$storage_dir_images.'/'.$new_image_name;
 
             // add individual pages to pages directory
-            $create_pages = exec('pdftk ' . $input_file . ' burst output ' . $output_files, $output, $return);
+            $create_pages = exec('pdftk '.$input_file.' burst output '.$output_files.' flatten', $output, $return);
+
             // remove data file
-            exec('rm ' . $storage_path . '/' . $storage_dir_pages . '/doc_data.txt');
+            exec('rm '.$storage_path.'/'.$storage_dir_pages.'/doc_data.txt');
 
             // add individual images to images directory
-            $create_images = exec('convert -density 300 -quality 100 ' . $input_file . ' -background white -alpha remove -strip ' . $output_images, $output, $return);
+            $create_images = exec('convert -density 300 -quality 100 '.$input_file.' -background white -alpha remove -strip '.$output_images, $output, $return);
 
             // get all image files images_storage_path to use as file location
-            $saved_images_directory = Storage::files('public/' . $storage_dir . '/images');
-            $images_public_path = $storage_public_path . '/images';
+            $saved_images_directory = Storage::files('public/'.$storage_dir.'/images');
+            $images_public_path = $storage_public_path.'/images';
 
-            $page_number = 1;
+
             foreach ($saved_images_directory as $saved_image) {
                 // get just filename
                 $images_file_name = basename($saved_image);
-
+                $page_number = preg_match('/([0-9]+)\.jpg/', $images_file_name, $matches);
+                $page_number = count($matches) > 1 ? $matches[1] + 1 : 1;
                 // add images to database
                 $upload = new UploadImages();
                 $upload -> file_id = $file_id;
                 $upload -> file_name = $images_file_name;
-                $upload -> file_location = $images_public_path . '/' . $images_file_name;
+                $upload -> file_location = $images_public_path.'/'.$images_file_name;
                 $upload -> pages_total = $pages_total;
                 $upload -> page_number = $page_number;
                 $upload -> save();
-                $page_number += 1;
 
             }
 
-            $saved_pages_directory = Storage::files('public/' . $storage_dir . '/pages');
-            $pages_public_path = $storage_public_path . '/pages';
+            $saved_pages_directory = Storage::files('public/'.$storage_dir.'/pages');
+            $pages_public_path = $storage_public_path.'/pages';
 
             $page_number = 1;
             foreach ($saved_pages_directory as $saved_page) {
@@ -428,7 +435,7 @@ class UploadController extends Controller {
                 $upload = new UploadPages();
                 $upload -> file_id = $file_id;
                 $upload -> file_name = $pages_file_name;
-                $upload -> file_location = $pages_public_path . '/' . $pages_file_name;
+                $upload -> file_location = $pages_public_path.'/'.$pages_file_name;
                 $upload -> pages_total = $pages_total;
                 $upload -> page_number = $page_number;
                 $upload -> save();

@@ -4,8 +4,8 @@
         <div class="col-12 col-lg-8">
             <div class="row">
                 <div class="col-12">
-                    <div class="h3 text-orange">Step 1</div>
-                    <div class="h5 text-gray">Split combined documents by adding pages from the "Available Documents" section to the "Selected Documents" section.</div>
+                    <div class="h3 text-orange mt-1 mt-sm-0">Step 1</div>
+                    <div class="text-gray">Split combined documents by adding pages from the "Available Documents" section to the "Selected Documents" section.</div>
                 </div>
             </div>
             <div class="row">
@@ -47,8 +47,8 @@
         <div class="col-12 col-lg-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="h3 text-orange">Step 2</div>
-                    <div class="h5 text-gray">Add the "Selected Documents" to Checklist Item or Save to Documents</div>
+                    <div class="h3 text-orange mt-1 mt-sm-0">Step 2</div>
+                    <div class="text-gray">Add the "Selected Documents" to Checklist Item or Save to Documents</div>
                 </div>
             </div>
             <div class="row">
@@ -57,10 +57,10 @@
 
                         <ul class="nav nav-tabs nav-justified md-tabs bg-primary px-3" id="document_options_tabs_nav" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="add_to_checklist_item_button" data-toggle="tab" href="#add_to_checklist_item_div" role="tab" aria-controls="add_to_checklist_item_div" aria-selected="true">Add To Checklist</a>
+                                <a class="nav-link active add-to-checklist" id="add_to_checklist_item_button" data-toggle="tab" href="#add_to_checklist_item_div" role="tab" aria-controls="add_to_checklist_item_div" aria-selected="true">Add To Checklist</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="save_to_documents_button" data-toggle="tab" href="#save_to_documents_div" role="tab" aria-controls="save_to_documents_div" aria-selected="false">Save To Documents</a>
+                                <a class="nav-link add-to-checklist" id="save_to_documents_button" data-toggle="tab" href="#save_to_documents_div" role="tab" aria-controls="save_to_documents_div" aria-selected="false">Save To Documents</a>
                             </li>
                         </ul>
                         <div class="tab-content card p-2 pt-5 mt-n3" id="document_options_tabs">
@@ -93,15 +93,15 @@
                                                     $fa = str_replace('mr-2', 'mr-1', $status_details -> fa);
                                                     $helper_text = $status_details -> helper_text;
                                                     @endphp
-                                                    <div class="list-group-item p-1 mb-2 d-flex justify-content-start align-items-center" data-checklist-item-id="{{ $checklist_item -> id }}">
-                                                        <div class="mr-2">
-                                                            <button class="btn btn-success add-docs-to-checklist-item-button" data-checklist-item-id="{{ $checklist_item -> id }}" disabled><i class="fa fa-plus mr-2"></i> Add</button>
+                                                    <div class="list-group-item py-1 px-0 mb-2 d-flex justify-content-start align-items-center" data-checklist-item-id="{{ $checklist_item -> id }}">
+                                                        <div class="mr-1 mr-sm-2">
+                                                            <button class="btn btn-sm btn-success add-docs-to-checklist-item-button" data-checklist-item-id="{{ $checklist_item -> id }}" data-checklist-id="{{ $checklist_item -> checklist_id }}" data-file-id="{{ $file_id }}" disabled><i class="fa fa-plus mr-1 mr-sm-2"></i> Add</button>
+                                                        </div>
+                                                        <div class="mr-1 mr-sm-2">
+                                                            <span class="badge checklist-item-badge {{ $classes }} p-1" title="{{ $helper_text }}"><span class="d-none d-sm-inline-block">{!! $fa !!} </span>{{ $status }}</span>
                                                         </div>
                                                         <div class="mr-2">
-                                                            <span class="badge checklist-item-badge {{ $classes }} p-1 mr-2" title="{{ $helper_text }}">{!! $fa !!} {{ $status }}</span>
-                                                        </div>
-                                                        <div class="mr-2">
-                                                            <span class="badge badge-primary p-1 mr-2" title="Count of documents already submitted for this item">{{ $docs_count }}</span>
+                                                            <span class="badge badge-primary p-1" title="Count of documents already submitted for this item">{{ $docs_count }}</span>
                                                         </div>
                                                         <div class="font-weight-bold text-gray">
                                                             {{ $checklist_item_name }}
@@ -131,9 +131,9 @@
                                     <div class="mt-3 px-4">
                                         <div style="font-weight-bold text-primary">Enter Document Name</div>
                                         <form id="document_name_form">
-                                            <input type="text" class="custom-form-element form-input required" id="document_name" data-label="Document Name">
+                                            <input type="text" class="custom-form-element form-input required" id="document_name" data-label="Document Name" value="{{ $file_name }}">
                                             <div class="w-100 text-center">
-                                                <button type="button" class="btn btn-success" id="save_document_name_button" disabled><i class="fa fa-save mr-2"></i> Save Document</button>
+                                                <button type="button" class="btn btn-success" id="save_document_name_button" data-file-id="{{ $file_id }}" disabled><i class="fa fa-save mr-2"></i> Save Document</button>
                                             </div>
                                         </div>
                                     </div>

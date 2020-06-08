@@ -90,6 +90,7 @@ function show_delete_doc() {
         delete_doc(document_id, active_collapse);
     });
 }
+
 function delete_doc(document_id, active_collapse) {
     let formData = new FormData();
     formData.append('document_id', document_id);
@@ -97,6 +98,7 @@ function delete_doc(document_id, active_collapse) {
     .then(function (response) {
         toastr['success']('Document Removed From Checklist');
         load_tabs('checklist');
+        load_tabs('documents');
         setTimeout(function() {
             if($(active_collapse).find('.document-row').length > 0) {
                 $(active_collapse).collapse('show');
@@ -111,6 +113,7 @@ function delete_doc(document_id, active_collapse) {
 function toggle_view_docs_button() {
     $('.documents-collapse.show').not($(this).data('target')).collapse('hide');
 }
+
 function toggle_view_notes_button() {
     $('.notes-collapse.show').not($(this).data('target')).collapse('hide');
 }
@@ -142,6 +145,7 @@ function save_add_document(document_id, active_collapse) {
         $('#add_document_modal').modal('hide');
         toastr['success']('Document Added To Checklist');
         load_tabs('checklist');
+        load_tabs('documents');
         setTimeout(function() {
             $('#'+active_collapse).collapse('show');
         }, 500);

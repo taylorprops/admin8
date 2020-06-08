@@ -33,6 +33,8 @@ if (document.URL.match(/listing_details/)) {
                 toastr['success']('Member Successfully Added');
                 setTimeout(function() {
                     scrollToAnchor('scroll_to');
+                    load_tabs('documents');
+                    load_tabs('checklist');
                 }, 500);
             })
             .catch(function (error) {

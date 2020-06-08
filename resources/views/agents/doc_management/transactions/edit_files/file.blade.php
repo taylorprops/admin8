@@ -109,28 +109,21 @@
 
                             <?php $c = $image -> page_number; ?>
 
-                                <div class="h5 responsive text-white bg-primary p-2 text-center mb-0" id="page_{{ $c }}">
-                                    Page <?php echo $c.' of '.$total_pages; ?>
+                                <div class="h5 responsive bg-primary p-2 text-center mb-0" id="page_{{ $c }}">
+                                    <span class="badge">Page <?php echo $c.' of '.$total_pages; ?></span>
                                 </div>
                                 <div class="file-view-page-container border border-primary w-100 animated @if($loop -> first) active @endif" data-id="{{ $c }}">
                                     <div class="field-container w-100 h-100">
                                         <img class="file-image-bg w-100 h-100" src="{{ $image -> file_location }}">
-                                        @foreach($fields_system as $field_system)
-                                            @if($field_system -> page == $c)
-                                                @include('/agents/doc_management/transactions/edit_files/field_system', [$field_system, $c, $fields_system_inputs, $field_values, $Listing_ID, $Agent_ID, $common_fields])
-                                            @endif
-                                        @endforeach
-
                                         @foreach($fields_user as $field_user)
                                             @if($field_user -> page == $c)
-                                                @include('/agents/doc_management/transactions/edit_files/field_user', [$field_user, $c, $field_values, $Listing_ID, $Agent_ID, $common_fields])
+                                                @include('/agents/doc_management/transactions/edit_files/field_user_html', [$field_user, $c, $field_values, $Listing_ID, $Agent_ID, $common_fields, $fields_user_inputs])
                                             @endif
                                         @endforeach
-
-                                    </div> <!-- end field-container -->
-                                </div> <!-- end file-view-page-container -->
+                                    </div>
+                                </div>
                                 <div class="h5 responsive text-white bg-primary p-2 text-center">
-                                    Page {{ $c.' of '.$total_pages }}
+                                    <span class="badge">End Page {{ $c }}</span>
                                 </div>
 
                             @endforeach
@@ -147,11 +140,11 @@
                     <div class="h5 responsive text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
                     @foreach($images as $image)
                         @php $c = $image -> page_number; @endphp
-                        <div class="file-view-thumb-container animated w-50 mx-auto @if($c == 1) active @endif" id="thumb_{{ $c }}" data-id="{{ $c }}">
+                        <div class="file-view-thumb-container animated w-50 mb-2 mx-auto @if($c == 1) active @endif" id="thumb_{{ $c }}" data-id="{{ $c }}">
                             <div class="file-view-thumb">
                                 <a href="javascript: void(0)"><img class="file-thumb w-100 h-100" src="{{ $image -> file_location }}"></a>
                             </div>
-                            <div class="file-view-thumb-footer text-center mb-4">
+                            <div class="file-view-thumb-footer text-center mb-1">
                                 Page {{ $c }}
                             </div>
                         </div>

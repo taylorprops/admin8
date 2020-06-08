@@ -72,13 +72,27 @@
 
             <button type="button" class="btn btn-sm btn-primary rounded-pill" id="sign_documents_button" title="Get Signed" data-toggle="tooltip"><i class="fad fa-signature mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Get Signed</span></button>
 
-            <button type="button" class="btn btn-sm btn-primary rounded-pill" id="email_documents_button" title="Email Documents" data-toggle="tooltip"><i class="fad fa-envelope mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Email</span></button>
+            <div class="dropright" title="Print Documents">
+                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-envelope mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Email</span></button>
+                <div class="dropdown-menu">
+                    <a class="text-primary dropdown-item docs-email-button" data-docs-type="merged" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> As One Document</a>
+                    <a class="text-primary dropdown-item docs-email-button" data-docs-type="single" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> As Individual Documents</a>
+                </div>
+            </div>
 
-            <div class="btn-group dropright" title="Print Documents" data-toggle="tooltip">
+            <div class="dropright" title="Print Documents">
                 <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-print mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Print</span></button>
                 <div class="dropdown-menu">
-                    <a class="text-primary dropdown-item" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
-                    <a class="text-primary dropdown-item" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                    <a class="text-primary dropdown-item docs-print-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
+                    <a class="text-primary dropdown-item docs-print-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                </div>
+            </div>
+
+            <div class="dropright" title="Download Documents">
+                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-download mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Download</span></button>
+                <div class="dropdown-menu">
+                    <a class="text-primary dropdown-item docs-download-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
+                    <a class="text-primary dropdown-item docs-download-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
                 </div>
             </div>
 
@@ -100,7 +114,7 @@
                 <div class="mt-1 mr-2 mr-sm-4">
                     <input type="checkbox" class="custom-form-element form-checkbox check-all">
                 </div>
-                <div class="h5">
+                <div class="h5 mt-2">
                     <a class="text-gray folder-collapse" data-toggle="collapse" href="#documents_folder_{{ $loop -> index }}" aria-expanded="false" aria-controls="documents_folder_{{ $loop -> index }}">
                         <i class="fal @if($folder -> folder_name == 'Trash' || $docs_count == 0) fa-angle-right @else fa-angle-down @endif fa-lg mr-3"></i>
                         <i class="fad fa-folder mr-1 mr-sm-3 fa-lg"></i>
@@ -141,7 +155,7 @@
                             <div class="text-gray document-title py-1 py-sm-2">
                                 <a href="{{ $document -> file_location_converted }}" target="_blank">{{ $document -> file_name_display }}</a>
                                 <br>
-                                <span class="small">Added: {{ date('n/j/Y g:i:sA', strtotime($document -> created_at)) }}</span>
+                                <span class="small">Added: {{ date('n/j/Y g:i:sA', strtotime($document -> created_at)) }} @if($document -> file_type == 'user') <span class="badge badge-secondary p-1 ml-2">User File</span> @else <span class="badge badge-primary p-1 ml-2">System File</span>@endif</span>
                             </div>
                         </div>
 
@@ -158,36 +172,47 @@
 
                                 if($assigned) {
 
-                                    $menu_options .= '<div class="mr-1 mr-xl-2 text-success"><i class="fal fa-check mr-2"></i> <span class="d-inline-block d-xl-inline-block"> Assigned</span></div>';
+                                    $menu_options .= '<div class="mr-1  text-success"><i class="fal fa-check mr-2"></i> <span class="d-inline-block d-xl-inline-block"> Assigned</span></div>';
+
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
 
                                 } else {
 
-                                    $menu_options .= '<button type="button" class="dropdown-item text-primary add-to-checklist-button" data-document-id="'.$document -> id.'"  data-checklist-id="'.$checklist_id.'" title="Assign Document To Checklist Item"><i class="fad fa-tasks mr-1 mr-xl-2"></i> Assign</button>';
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary add-to-checklist-button" data-document-id="'.$document -> id.'"  data-checklist-id="'.$checklist_id.'" title="Assign Document To Checklist Item"><i class="fad fa-tasks mr-1 "></i> Assign</button>';
+
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
 
                                     if($document -> pages_total > 1) {
-                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" data-checklist-id="'.$checklist_id.'" data-file-type="'.$document -> file_type.'" title="Split Document"><i class="fad fa-page-break mr-1 mr-xl-2"></i> Split</button>';
+                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" data-checklist-id="'.$checklist_id.'" data-file-name="'.$document -> file_name_display.'" data-file-type="'.$document -> file_type.'" data-folder="'.$folder -> id.'" title="Split Document"><i class="fad fa-page-break mr-1 "></i> Split</button>';
                                     }
 
-                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Fill Fields"><i class="fad fa-edit mr-2 mr-xl-2"></i> Fill Fields</button>';
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Fill Fields"><i class="fad fa-edit mr-1 "></i> Fill Fields</button>';
 
-                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-get-signed-button" data-document-id="'.$document -> id.'" title="Get Signed"><i class="fad fa-signature mr-1 mr-xl-2"></i> Get Signed</button>';
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-get-signed-button" data-document-id="'.$document -> id.'" title="Get Signed"><i class="fad fa-signature mr-1 "></i> Get Signed</button>';
 
                                 }
 
-                                if($document -> file_type == 'user') {
-                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 mr-xl-2"></i> Rename</button>';
-                                }
 
-                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-copy-button" data-document-id="'.$document -> id.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
+
+                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
 
                                 $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
 
                                 $menu_options .= '
                                 <div class="dropdown-submenu">
-                                    <button type="button" class="dropdown-item text-primary doc-print-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-document-id="'.$document -> id.'" title="Print Form"><i class="fad fa-print mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Print</span></button>
+                                    <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Download Form"><i class="fad fa-download mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Download</span></button>
                                     <div class="dropdown-menu">
-                                        <a class="text-primary dropdown-item" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
-                                        <a class="text-primary dropdown-item" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                                        <a class="text-primary dropdown-item" href="'.$document -> file_location_converted.'" download="'.$document -> file_name_display.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
+                                        <a class="text-primary dropdown-item" href="'.$document -> file_location.'" download="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
+                                    </div>
+                                </div>';
+
+                                $menu_options .= '
+                                <div class="dropdown-submenu">
+                                    <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Print Form"><i class="fad fa-print mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Print</span></button>
+                                    <div class="dropdown-menu">
+                                        <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location_converted.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
+                                        <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location.'" data-filename="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
                                     </div>
                                 </div>';
 
@@ -201,10 +226,10 @@
 
                                 $menu_options_large = preg_replace('/dropdown-item\stext-primary/', 'btn btn-primary', $menu_options);
                                 $menu_options_large = preg_replace('/dropdown-item\stext-danger/', 'btn btn-danger', $menu_options_large);
-                                $menu_options_large = preg_replace('/dropdown-submenu/', 'btn-group dropleft', $menu_options_large);
+                                $menu_options_large = preg_replace('/dropdown-submenu/', 'dropleft', $menu_options_large);
                                 @endphp
 
-                                <div class="d-block d-xl-none btn-group dropleft">
+                                <div class="d-block d-xl-none dropleft">
                                     <button type="button" class="btn btn-primary dropdown-toggle pl-2 pr-1 py-0 pl-sm-2 pt-sm-1 pb-sm-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                     <div class="dropdown-menu">
                                         {!! $menu_options !!}
@@ -235,6 +260,143 @@
 
 </div>
 
+<div class="modal fade draggable" id="send_email_modal" tabindex="-1" role="dialog" aria-labelledby="send_email_modal_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary draggable-handle">
+                <h4 class="modal-title" id="send_email_modal_title">Email Documents</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <i class="fal fa-times mt-2"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="container">
+
+                    <div class="row">
+
+                        <div class="col-12">
+
+                            <div class="card">
+
+                                <div class="card-body">
+
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <div class="h-100 d-flex justify-content-end align-items-center">
+                                                <div>From:</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-10">
+                                            <input type="text" class="custom-form-element form-input" id="email_from" value="<{{ \Auth::user() -> name }}> {{ \Auth::user() -> email }}">
+                                        </div>
+                                    </div>
+
+                                    @foreach($members as $member)
+                                    <div class="row to-addresses">
+                                        <div class="col-2">
+                                            @if($loop -> first)
+                                                <input type="hidden" class="email-address-type" value="to">
+                                                <div class="h-100 d-flex justify-content-end align-items-center">
+                                                    <div>To:</div>
+                                                </div>
+                                            @else
+                                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search email-address-type">
+                                                    <option value="to">To:</option>
+                                                    <option value="cc">Cc:</option>
+                                                    <option value="bcc">Bcc:</option>
+                                                </select>
+                                            @endif
+                                        </div>
+                                        <div class="@if($loop -> first) col-10 @else col-9 @endif">
+                                            <input type="text" class="custom-form-element form-input email-to-address" value="<{{ $member -> first_name.' '.$member -> last_name }}> {{ $member -> email }}">
+                                        </div>
+                                        @if(!$loop -> first)
+                                        <div class="col-1">
+                                            <div class="h-100 d-flex justify-content-end align-items-center">
+                                                <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times"></i></button>
+                                            </div>
+                                        </div>
+                                        @endif
+                                    </div>
+                                    @endforeach
+
+                                    <div class="row">
+                                        <div class="col-2"></div>
+                                        <div class="col-10">
+                                            <a class="add-address-button"><i class="fal fa-plus mr-1 text-success"></i> Add Recipient</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="container mt-2">
+
+                    <div class="row">
+
+                        <div class="col-12">
+
+                            <div class="card">
+
+                                <div class="card-body">
+
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <div class="h-100 d-flex justify-content-end align-items-center">
+                                                <div>Subject:</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-10">
+                                            <input type="text" class="custom-form-element form-input" id="email_subject" value="Documents - {{ $listing -> FullStreetAddress }} {{ $listing -> City }}, {{ $listing -> StateOrProvince }} {{ $listing -> PostalCode }}">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-2">
+                                            <div class="h-100 d-flex justify-content-end align-items-center">
+                                                <div>Attachments:</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="w-100 border p-2" id="email_attachments"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-2">
+                                            <div class="h-100 d-flex justify-content-end align-items-center">
+                                                <div>Message:</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-10">
+                                            <textarea class="custom-form-input form-textarea" id="email_message" rows="4">&#13;&#10; &#13;&#10; Thank you,&#13;&#10; {{ \Auth::user() -> name }}</textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="d-flex justify-content-around pb-3">
+                <a class="btn btn-success" id="send_email_button"><i class="fad fa-share mr-2"></i> Send Email</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade draggable" id="image_zoom_modal" tabindex="-1" role="dialog" aria-labelledby="image_zoom_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -261,6 +423,7 @@
             </div>
             <div class="modal-body pt-0">
                 <div id="split_document_container"></div>
+                <input type="hidden" id="folder_id">
             </div>
         </div>
     </div>

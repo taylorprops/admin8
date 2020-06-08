@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Storage;
 use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Filesystem\Filesystem;
 
+
 class EditFilesController extends Controller
 {
 
@@ -45,24 +46,14 @@ class EditFilesController extends Controller
         $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
         $common_fields = new CommonFields();
 
-        if($file_type == 'system') {
+        $file = TransactionUpload::where('file_id', $file_id) -> first();
+        $images = TransactionUploadImages::where('file_id', $file_id) -> orderBy('page_number') -> get();
 
-            $file = Upload::where('file_id', $file_id) -> first();
-            $images = UploadImages::where('file_id', $file_id) -> get();
+        $fields_user = UserFields::where('file_id', $file_id) -> orderBy('id') -> get();
+        $fields_user_inputs = UserFieldsInputs::where('file_id', $file_id) -> orderBy('id') -> get();
+        $field_values = UserFieldsValues::where('file_id', $file_id) -> get();
 
-        } else if($file_type == 'user') {
-
-            $file = TransactionUpload::where('file_id', $file_id) -> first();
-            $images = TransactionUploadImages::where('file_id', $file_id) -> get();
-
-        }
-
-        $fields_system = Fields::where('file_id', $file_id) -> orderBy('id') -> get();
-        $fields_system_inputs = FieldInputs::where('file_id', $file_id) -> orderBy('id') -> get();
-        $fields_user = UserFields::where('file_id', $file_id) -> where('file_type', $file_type) -> orderBy('id') -> get();
-        $field_values = UserFieldsValues::where('file_id', $file_id) -> where('file_type', $file_type) -> get();
-
-        return view('/agents/doc_management/transactions/edit_files/file', compact('listing', 'Listing_ID', 'Agent_ID', 'file', 'images', 'fields_system', 'fields_system_inputs', 'fields_user', 'file_id', 'document_id', 'field_values', 'file_type', 'common_fields'));
+        return view('/agents/doc_management/transactions/edit_files/file', compact('listing', 'Listing_ID', 'Agent_ID', 'file', 'images', 'fields_user', 'fields_user_inputs', 'file_id', 'document_id', 'field_values', 'file_type', 'common_fields'));
 
     }
 
@@ -84,7 +75,7 @@ class EditFilesController extends Controller
 
         $Agent_ID = $request[0]['Agent_ID'];
 
-        $delete_filled_fields = UserFieldsValues::where('Agent_ID', $Agent_ID) -> where('file_id', $file_id) -> where('file_type', $file_type)
+        $delete_filled_fields = UserFieldsValues::where('Agent_ID', $Agent_ID) -> where('file_id', $file_id)
             -> where(function ($query) use ($Listing_ID, $Contract_ID) {
                 if($Listing_ID > 0) {
                     $query -> where('Listing_ID', $Listing_ID);
@@ -131,12 +122,14 @@ class EditFilesController extends Controller
 
         $Listing_ID = $request -> Listing_ID;
         $file_id = $request -> file_id;
+        $file_type = $request -> file_type;
 
-        $upload_dir = 'doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_system';
+        $upload_dir = 'doc_management/transactions/listings/' . $Listing_ID . '/' . $file_id . '_'.$file_type;
 
-        $doc_root = $_SERVER['DOCUMENT_ROOT'];
-        $full_path_dir = $doc_root . 'storage/' . $upload_dir;
-        $pdf_output_dir = $doc_root . 'storage/' . $upload_dir . '/combined/';
+        Storage::disk('public') -> makeDirectory($upload_dir . '/combined/');
+        Storage::disk('public') -> makeDirectory($upload_dir . '/layers/');
+        $full_path_dir = Storage::disk('public') -> path($upload_dir);
+        $pdf_output_dir = Storage::disk('public') -> path($upload_dir . '/combined/');
 
         // get file name to use for the final converted file
         $file = glob($full_path_dir.'/converted/*pdf');
@@ -146,7 +139,7 @@ class EditFilesController extends Controller
         $clean_dir = new Filesystem;
         $clean_dir -> cleanDirectory('storage/' . $upload_dir . '/layers');
         $clean_dir -> cleanDirectory('storage/' . $upload_dir . '/combined');
-        //$clean_dir -> cleanDirectory('storage/' . $upload_dir . '/converted');
+        $clean_dir -> cleanDirectory('storage/' . $upload_dir . '/converted');
 
         $options = array(
             'binary' => '/usr/bin/xvfb-run -- /usr/bin/wkhtmltopdf',
@@ -165,6 +158,7 @@ class EditFilesController extends Controller
         for ($c = 1; $c <= $request['page_count']; $c++) {
 
             $html = preg_replace('/\>[\s]+\</', '><', $request['page_' . $c]);
+
             $pdf = new Pdf($options);
             $pdf -> addPage($html);
 
@@ -183,10 +177,12 @@ class EditFilesController extends Controller
             $layer1 = $full_path_dir . '/pages/page_' . $page_number . '.pdf';
             $layer2 = $full_path_dir . '/layers/layer_' . $c . '.pdf';
 
+            // remove background from both layers
             exec('convert -quality 100 -density 300 ' . $layer2 . ' -transparent white -background none ' . $layer2);
 
-            //exec('pdftk ' . $layer2 . ' background ' . $layer1 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf');
+            // merge layers
             exec('pdftk ' . $layer1 . ' background ' . $layer2 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf');
+            //exec('pdftk ' . $layer2 . ' background ' . $layer1 . ' output ' . $pdf_output_dir . '/' . date('YmdHis') . '_combined_' . $c . '.pdf');
 
         }
 
@@ -216,7 +212,7 @@ class EditFilesController extends Controller
         $Agent_ID = $request -> Agent_ID;
         $file_id = $request -> file_id;
         $file_type = $request -> file_type;
-        $user_fields = UserFields::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('file_id', $file_id) -> where('file_type', $file_type) -> get();
+        $user_fields = UserFields::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('file_id', $file_id) -> get();
 
         return response() -> json($user_fields);
 
@@ -231,16 +227,18 @@ class EditFilesController extends Controller
 
         if(isset($file_id)) {
 
-            // delete all fields for this document
-            $delete_fields = UserFields::where('file_id', $file_id) -> where('file_type', $file_type) -> delete();
+            // delete all fields for this document - user fields only
+            $delete_fields = UserFields::where('file_id', $file_id) -> where('field_inputs', 'no') -> delete();
 
             // add fields
             foreach($data as $field) {
-                $fields = new UserFields;
+                $new_fields = new UserFields;
                 foreach($field as $key => $val) {
-                    $fields -> $key = $val;
+                    $new_fields -> $key = $val;
                 }
-                $fields -> save();
+                $new_fields -> file_type = 'user';
+                $new_fields -> field_inputs = 'no';
+                $new_fields -> save();
             }
 
         }

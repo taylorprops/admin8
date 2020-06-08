@@ -76,7 +76,15 @@
     // get split document html
     Route::get('/agents/doc_management/transactions/listings/get_split_document_html', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@get_split_document_html');
     // save add split document to documents
-    Route::post('/agents/doc_management/transactions/listings/save_split_document_to_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@save_split_document_to_documents');
+    Route::post('/agents/doc_management/transactions/listings/save_split_document', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@save_split_document');
+    // duplicate document
+    Route::post('/agents/doc_management/transactions/listings/duplicate_document', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@duplicate_document');
+    // get email documents
+    Route::post('/agents/doc_management/transactions/listings/email_get_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@email_get_documents');
+    // email documents
+    Route::post('/agents/doc_management/transactions/listings/email_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@email_documents');
+    // merge documents
+    Route::post('/agents/doc_management/transactions/listings/merge_documents', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@merge_documents');
 
 
 

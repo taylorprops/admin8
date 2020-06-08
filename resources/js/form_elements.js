@@ -347,7 +347,7 @@ window.form_elements = function () {
                         element.closest('.form-ele').append('<div class="required-div">R</div>');
                     }
                     if(element.hasClass('datepicker')) {
-                        element.closest('.form-ele').append('<div class="datepicker-div"><i class="fal fa-calendar-alt"></i></div>');
+                        element.closest('.form-ele').append('<div class="datepicker-div"><i class="fal fa-calendar-alt fa-xs"></i></div>');
                     }
                 }
 

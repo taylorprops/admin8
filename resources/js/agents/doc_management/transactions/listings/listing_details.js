@@ -118,7 +118,7 @@ if (document.URL.match(/listing_details/)) {
                             $(this).find('.individual-template-form').prop('disabled', true);
                         });
 
-
+                        reorder_documents('yes');
 
                     }, 1000);
 
@@ -171,45 +171,52 @@ if (document.URL.match(/listing_details/)) {
             placeholder: 'bg-sortable',
             handle: '.document-handle',
             stop: function (event, ui) {
-                let els = $(ui.item).parent('.sortable-documents').find('.document-div');
-                reorder_documents(els);
+                reorder_documents('no');
             }
 
         });
         $('.sortable-documents').disableSelection();
     }
 
-    function reorder_documents(els) {
+    window.reorder_documents = function(on_load) {
 
-        let documents = {
-            document: []
-        }
+        $('.sortable-documents').each(function() {
+            let els = $(this).find('.document-div');
 
-        els.each(function () {
-            let el, folder_id, document_id, document_index;
-            el = $(this);
-            folder_id = el.data('folder-id');
-            document_id = el.data('document-id');
-            document_index = el.index();
-            documents.document.push(
-                {
-                    'folder_id': folder_id,
-                    'document_id': document_id,
-                    'document_index': document_index
-                }
-            );
-        });
-
-        let formData = new FormData();
-        documents = JSON.stringify(documents);
-        formData.append('data', documents);
-        axios.post('/agents/doc_management/transactions/listings/reorder_documents', formData, axios_options)
-            .then(function (response) {
-                toastr['success']('Documents Reordered');
-            })
-            .catch(function (error) {
-
+            let documents = {
+                document: []
+            }
+            let c = 0;
+            let stop = els.length - 1;
+            els.each(function () {
+                let el, folder_id, document_id, document_index;
+                el = $(this);
+                folder_id = el.data('folder-id');
+                document_id = el.data('document-id');
+                document_index = el.index();
+                documents.document.push(
+                    {
+                        'folder_id': folder_id,
+                        'document_id': document_id,
+                        'document_index': document_index
+                    }
+                );
             });
+
+            let formData = new FormData();
+            documents = JSON.stringify(documents);
+            formData.append('data', documents);
+            axios.post('/agents/doc_management/transactions/listings/reorder_documents', formData, axios_options)
+                .then(function (response) {
+                    if(c == stop && on_load == 'no') {
+                        toastr['success']('Documents Reordered');
+                    }
+                })
+                .catch(function (error) {
+
+                });
+
+        });
 
     }
 

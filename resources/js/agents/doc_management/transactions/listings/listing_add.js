@@ -1,4 +1,4 @@
-if (document.URL.match(/listing_add$/)) {
+if (document.URL.match(/listing_add/)) {
 
     $(document).ready(function () {
 

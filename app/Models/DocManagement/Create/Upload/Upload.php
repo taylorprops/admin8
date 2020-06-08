@@ -13,7 +13,29 @@ class Upload extends Model
     public $table = 'docs_create_uploads';
     protected $primaryKey = 'file_id';
 
+
     public function scopeFormGroupFiles($query, $location_id, $Listing_ID) {
+
+        $forms_available = $this -> where('form_group_id', $location_id)
+            -> where('published', 'yes')
+            -> orderBy('file_name_display', 'ASC') -> get();
+
+        $forms_in_use = null;
+
+        if($Listing_ID) {
+            $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('folder_name', 'Trash') -> first();
+            $forms_in_use = TransactionDocuments::select('orig_file_id')
+                -> where('Listing_ID', $Listing_ID)
+                -> where('orig_file_id', '>', '0')
+                -> where('folder', '!=', $trash_folder -> id)
+                -> pluck('orig_file_id');
+        }
+
+        return compact('forms_available', 'forms_in_use');
+
+    }
+
+    /* public function scopeFormGroupFiles($query, $location_id, $Listing_ID) {
 
         $forms_available = $this -> where('form_group_id', $location_id)
             -> where('published', 'yes')
@@ -33,7 +55,7 @@ class Upload extends Model
 
         return compact('forms_available', 'forms_in_use');
 
-    }
+    } */
 
     public function scopeGetFormName($query, $form_id) {
         if($form_id) {

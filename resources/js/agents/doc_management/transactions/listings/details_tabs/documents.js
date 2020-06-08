@@ -43,16 +43,211 @@ if (document.URL.match(/listing_details/)) {
 
         $(document).on('click', '.doc-split-button', show_split_document);
 
+        $(document).on('click', '.doc-duplicate-button', duplicate_document);
+
+        $(document).on('click', '.doc-print-button', function () {
+            print_pdf($(this).data('link'));
+        });
+
+        $(document).on('click', '.docs-print-button', function() {
+            print_download_documents('print');
+        });
+
+        $(document).on('click', '.docs-download-button', function() {
+            print_download_documents('download', $(this).data('type'));
+        });
+
+        $(document).on('click', '.docs-print-button', function() {
+            print_download_documents('print', $(this).data('type'));
+        });
+
+        $(document).on('click', '.doc-email-button', email_get_documents);
+        $(document).on('click', '.docs-email-button', email_get_documents);
+        $(document).on('click', '#send_email_button', email_documents);
+
+        $(document).on('click', '.delete-address-button', function() {
+            $(this).closest('.row').remove();
+        });
+
+
+        function print_download_documents(task, type) {
+            let document_ids = [];
+            $('.check-document:checked').each(function () {
+                document_ids.push($(this).data('document-id'));
+            });
+
+            let formData = new FormData();
+            let Listing_ID = $('#Listing_ID').val();
+
+            formData.append('document_ids', document_ids);
+            formData.append('Listing_ID', Listing_ID);
+            formData.append('type', type);
+
+            axios.post('/agents/doc_management/transactions/listings/merge_documents', formData, axios_options)
+                .then(function (response) {
+                    let file_location = response.data.file_location;
+                    let filename = response.data.filename;
+                    if(task == 'print') {
+                        print_pdf(file_location);
+                    } else if(task == 'download') {
+                        let a = document.createElement('A');
+                        a.href = file_location;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function email_documents() {
+            let from = $('#email_from').val();
+            let to_addresses = [];
+            $('.to-addresses').each(function() {
+                to_addresses.push({
+                    type: $(this).find('.email-address-type').val(),
+                    address: $(this).find('.email-to-address').val()
+                });
+            });
+            let subject = $('#email_subject').val();
+            let message = $('#email_message').val();
+            let attachments = [];
+            $('#email_attachments').find('.attachment-row').each(function() {
+                attachments.push({
+                    filename: $(this).data('file-name'),
+                    file_location: $(this).data('file-location')
+                });
+            });
+
+            let formData = new FormData();
+            formData.append('from', from);
+            formData.append('to_addresses', JSON.stringify(to_addresses));
+            formData.append('subject', subject);
+            formData.append('message', message);
+            formData.append('attachments', JSON.stringify(attachments));
+            axios.post('/agents/doc_management/transactions/listings/email_documents', formData, axios_options)
+            .then(function (response) {
+                if(response.data.fail) {
+                    $('#modal_danger').modal().find('.modal-body').html('The attachments you are sending are too large. They must total less than 20MB and they are currently '+response.data.attachment_size+'MB');
+                }
+                $('#send_email_modal').modal('hide');
+                toastr['success']('Documents Successfully Emailed');
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        function email_get_documents() {
+
+            let docs_type = $(this).data('docs-type') ? $(this).data('docs-type') : '';
+            let document_ids = [];
+            if(docs_type) {
+                $('.check-document:checked').each(function () {
+                    document_ids.push($(this).data('document-id'));
+                });
+            } else {
+                document_ids.push($(this).data('document-id'));
+            }
+
+            let formData = new FormData();
+            let Listing_ID = $('#Listing_ID').val();
+
+            formData.append('document_ids', document_ids);
+            formData.append('Listing_ID', Listing_ID);
+            formData.append('docs_type', docs_type);
+            formData.append('type', 'filled');
+
+            axios.post('/agents/doc_management/transactions/listings/email_get_documents', formData, axios_options)
+                .then(function (response) {
+
+                    let file_locations = response.data.file_locations;
+                    let filenames = response.data.filenames;
+
+                    file_locations.forEach(function (file_location, index) {
+                        let file_name = filenames[index];
+                        let attachment = ' \
+                        <div class="d-flex justify-content-start attachment-row" data-file-name="' + file_name + '" data-file-location="' + file_location + '"> \
+                            <div><a href="javascript: void(0)" class="delete-attachment-button"><i class="fal fa-times text-danger mr-2"></i></a></div> \
+                            <div>' + file_name + '</div> \
+                        </div>';
+                        $('#email_attachments').append(attachment);
+                    });
+
+                    $('.delete-attachment-button').click(function() {
+                        $(this).closest('.attachment-row').remove();
+                    });
+
+                    $('#send_email_modal').modal();
+                    $('#send_email_modal').on('hide.bs.modal', function () {
+                        $('#email_attachments').html('');
+                    });
+
+                    $('.add-address-button').click(function() {
+                        let new_address_row = ' \
+                        <div class="row to-addresses"> \
+                            <div class="col-2"> \
+                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search email-address-type"> \
+                                    <option value="to">To:</option> \
+                                    <option value="cc" selected>Cc:</option> \
+                                    <option value="bcc">Bcc:</option> \
+                                </select> \
+                            </div> \
+                            <div class="col-9"> \
+                                <input type="text" class="custom-form-element form-input email-to-address"> \
+                            </div> \
+                            <div class="col-1"> \
+                                <div class="h-100 d-flex justify-content-end align-items-center"> \
+                                    <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times"></i></button> \
+                                </div> \
+                            </div> \
+                        </div> \
+                        ';
+                        $(new_address_row).insertBefore($(this).closest('.row'));
+                        form_elements();
+
+                    });
+
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function duplicate_document() {
+            let document_id = $(this).data('document-id');
+            let file_type = $(this).data('file-type');
+
+            let formData = new FormData();
+            formData.append('document_id', document_id);
+            formData.append('file_type', file_type);
+            axios.post('/agents/doc_management/transactions/listings/duplicate_document', formData, axios_options)
+                .then(function (response) {
+                    load_tabs('documents');
+                    toastr['success']('Document successfully duplicated');
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
         function show_split_document() {
+            $('#folder_id').val($(this).data('folder'));
             let document_id = $(this).data('document-id');
             let checklist_id = $(this).data('checklist-id');
             let file_type = $(this).data('file-type');
+            let file_name = $(this).data('file-name');
             $('#split_document_modal').modal();
             axios.get('/agents/doc_management/transactions/listings/get_split_document_html', {
                 params: {
                     document_id: document_id,
                     checklist_id: checklist_id,
-                    file_type: file_type
+                    file_type: file_type,
+                    file_name: file_name
                 },
                 headers: {
                     'Accept-Version': 1,
@@ -62,36 +257,36 @@ if (document.URL.match(/listing_details/)) {
             })
                 .then(function (response) {
                     $('#split_document_container').html(response.data);
-                    setTimeout(function() {
+                    setTimeout(function () {
 
                         $('.image-slider').draggable({ axis: "x" });
                         $('.selected-images-slider').draggable({ axis: "x" });
 
-                        $(document).on('click', '.image-zoom-button', function() {
+                        $(document).on('click', '.image-zoom-button', function () {
                             $('#image_zoom_modal').modal();
-                            $('#image_zoom_div').html('<img src="'+$(this).data('image-src')+'" class="image-preview">');
+                            $('#image_zoom_div').html('<img src="' + $(this).data('image-src') + '" class="image-preview">');
                         });
 
-                        $(document).on('click', '.add-to-selected-button', function() {
+                        $(document).on('click', '.add-to-selected-button', function () {
                             let image_holder = $(this).closest('.image-holder');
                             image_holder.appendTo('.selected-images-slider').find('.image-order').text(image_holder.index() + 1);
                             $('.add-docs-to-checklist-item-button, #save_document_name_button').prop('disabled', false);
                         });
-                        $(document).on('click', '.remove-from-selected-button', function() {
+                        $(document).on('click', '.remove-from-selected-button', function () {
 
                             let image_holder = $(this).closest('.image-holder');
                             image_holder.prependTo('.image-slider');
 
                             let image_divs = $('.image-slider').find('.image-holder');
-                            image_divs.sort(function(a, b){
-                                return $(a).data('index')-$(b).data('index')
+                            image_divs.sort(function (a, b) {
+                                return $(a).data('index') - $(b).data('index')
                             });
                             $('.image-slider').html(image_divs);
 
-                            if($('.selected-images-slider').find('.image-holder').length == 0) {
+                            if ($('.selected-images-slider').find('.image-holder').length == 0) {
                                 $('.add-docs-to-checklist-item-button, #save_document_name_button').prop('disabled', true);
                             } else {
-                                $('.selected-images-slider').find('.image-holder').each(function() {
+                                $('.selected-images-slider').find('.image-holder').each(function () {
                                     let index = $(this).index() + 1;
                                     $(this).find('.image-order').text(index);
                                 });
@@ -115,13 +310,19 @@ if (document.URL.match(/listing_details/)) {
 
         function save_document_name() {
 
+            let Listing_ID = $('#Listing_ID').val();
+            let Agent_ID = $('#Agent_ID').val();
+            let folder_id = $('#folder_id').val();
+            let file_id = $(this).data('file-id') ?? null;
             let checklist_item_id = $(this).data('checklist-item-id') ?? null;
+            let checklist_id = $(this).data('checklist-id') ?? null;
             let validate = 'yes';
-            if(!checklist_item_id) {
+            if (!checklist_item_id) {
                 let form = $('#document_name_form');
                 validate = validate_form(form);
             }
-            if(validate == 'yes') {
+            if (validate == 'yes') {
+                global_loading_on();
                 let document_name = $('#document_name').val() ?? null;
                 let image_ids = [];
                 let file_type = '';
@@ -131,17 +332,25 @@ if (document.URL.match(/listing_details/)) {
                 });
 
                 let formData = new FormData();
+                formData.append('Listing_ID', Listing_ID);
+                formData.append('Agent_ID', Agent_ID);
+                formData.append('folder_id', folder_id);
                 formData.append('document_name', document_name);
                 formData.append('image_ids', image_ids);
                 formData.append('file_type', file_type);
+                formData.append('file_id', file_id);
                 formData.append('checklist_item_id', checklist_item_id);
-                axios.post('/agents/doc_management/transactions/listings/save_split_document_to_documents', formData, axios_options)
-                .then(function (response) {
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                formData.append('checklist_id', checklist_id);
+                axios.post('/agents/doc_management/transactions/listings/save_split_document', formData, axios_options)
+                    .then(function (response) {
+                        load_tabs('documents');
+                        load_tabs('checklist');
+                        $('#split_document_modal').modal('hide');
+                        global_loading_off();
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             }
         }
 
@@ -487,16 +696,21 @@ if (document.URL.match(/listing_details/)) {
             formData.append('folder', folder);
 
             let files = [];
+            let c = 0;
             forms.each(function () {
+
                 let file_data = {};
                 file_data['file_id'] = $(this).data('file-id');
                 file_data['file_name'] = $(this).data('file-name');
                 file_data['file_name_display'] = $(this).data('file-name-display');
                 file_data['pages_total'] = $(this).data('pages-total');
                 file_data['file_location'] = $(this).data('file-location');
+                file_data['order'] = c;
                 files.push(file_data);
+
+                c += 1;
+
             });
-            console.log(files);
 
             files = JSON.stringify(files);
             formData.append('files', files);
@@ -508,6 +722,8 @@ if (document.URL.match(/listing_details/)) {
                         toastr['success']('Documents Successfully Added')
                         load_tabs('documents');
                         load_tabs('checklist');
+                        let sortables = $('.document-div[data-folder-id="' + folder + '"]');
+                        reorder_documents(sortables);
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -729,6 +945,16 @@ if (document.URL.match(/listing_details/)) {
             } else if (i.hasClass('fa-angle-down')) {
                 i.removeClass('fa-angle-down').addClass('fa-angle-right');
             }
+        }
+
+        function print_pdf(url) {
+
+            var wnd = window.open(url);
+            setTimeout(function() {
+                wnd.print();
+                wnd.close();
+            }, 1000);
+
         }
 
 

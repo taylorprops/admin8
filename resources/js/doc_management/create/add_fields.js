@@ -809,7 +809,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 ';
             } else if (type == 'radio') {
                 properties = properties + ' \
-                            <div class="row> \
+                            <div class="row"> \
                                 <div class="col-12"> \
                                     <h5 class="text-primary mt-4 mb-2">Radio Input Value</h5> \
                                 </div> \
@@ -1176,10 +1176,15 @@ if (document.URL.match(/create\/add_fields/)) {
         function field_list() {
             $('.field-list-container').html('');
             $('.file-view-page-container').each(function () {
+
                 let page_number = $(this).data('id');
+
+
                 $('.field-list-container').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
+
                 // get unique group ids
                 let group_ids = [];
+
                 $(this).find('.field-div').each(function () {
                     group_ids.push($(this).data('group-id'));
                 });
