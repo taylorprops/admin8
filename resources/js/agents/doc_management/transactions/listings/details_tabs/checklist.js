@@ -3,9 +3,8 @@ const { active } = require("sortablejs");
 $(document).ready(function() {
 
 
+
     $(document).on('click', '.add-document-button', show_add_document);
-
-
 
     $(document).on('click', '.view-docs-button', toggle_view_docs_button);
 
@@ -21,9 +20,66 @@ $(document).ready(function() {
 
     $(document).on('click', '.mark-read-button', mark_note_read);
 
+    $(document).on('click', '#change_checklist_button', confirm_change_checklist);
+
 
 });
 
+
+function confirm_change_checklist() {
+
+    let checklist_id = $(this).data('checklist-id');
+
+    $('#confirm_change_checklist_modal').modal();
+    $('#confirm_change_checklist_button').click(function() {
+
+        $('#confirm_change_checklist_modal').modal('hide');
+        change_checklist(checklist_id);
+
+    });
+
+}
+
+function change_checklist(checklist_id) {
+
+    let Listing_ID = $('#Listing_ID').val();
+    let Agent_ID = $('#Agent_ID').val();
+
+    $('#change_checklist_modal').modal();
+
+    $('#save_change_checklist_button').off('click').on('click', function() {
+
+        let form = $('#change_checklist_form');
+
+        let validate = validate_form(form);
+        if(validate == 'yes') {
+
+            $('#save_change_checklist_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Saving Checklist');
+
+            let formData = new FormData(form[0]);
+            formData.append('checklist_id', checklist_id);
+            formData.append('Listing_ID', Listing_ID);
+            formData.append('Agent_ID', Agent_ID);
+
+            axios.post('/agents/doc_management/transactions/listings/change_checklist', formData, axios_options)
+            .then(function (response) {
+
+                $('#save_change_checklist_button').html('<i class="fad fa-check mr-2"></i> Save');
+                load_tabs('checklist');
+                load_tabs('documents');
+                $('#change_checklist_modal').modal('hide');
+                toastr['success']('Checklist Successfully Changed');
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        }
+
+    });
+
+}
 
 function mark_note_read() {
     let note_id = $(this).data('note-id');

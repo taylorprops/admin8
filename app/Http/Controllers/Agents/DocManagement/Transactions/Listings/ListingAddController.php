@@ -613,9 +613,11 @@ class ListingAddController extends Controller {
         $checklist_sale_rent = $listing -> SaleRent;
         $checklist_state = $listing -> StateOrProvince;
         $checklist_location_id = $listing -> Location_ID;
+        $checklist_hoa_condo = $listing -> HoaCondoFees;
+        $checklist_year_built = $listing -> YearBuilt;
         $checklist_id = '';
 
-        TransactionChecklists::CreateListingChecklist($checklist_id, $Listing_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id);
+        TransactionChecklists::CreateListingChecklist($checklist_id, $Listing_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
 
         return $Listing_ID;
 

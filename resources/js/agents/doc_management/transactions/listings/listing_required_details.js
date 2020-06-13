@@ -31,7 +31,10 @@ if (document.URL.match(/listing_required_details/)) {
             }
         });
 
-        $('#steps_submit').click(save_listing_required_details);
+        $('#continue').click(function(e) {
+            e.preventDefault();
+            save_listing_required_details();
+        });
 
         $('#contacts_table').DataTable({
             "aaSorting": [],
@@ -71,27 +74,30 @@ if (document.URL.match(/listing_required_details/)) {
 
     function save_listing_required_details() {
 
-        let form = $('#steps_form');
-        let formData = new FormData(form[0]);
-        axios.post('/agents/doc_management/transactions/save_listing_required_details', formData, axios_options)
-        .then(function (response) {
-            window.location = '/agents/doc_management/transactions/listings/listing_details/' + response.data;
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        let form = $('#details_form');
+        let validate = validate_form(form);
+        if(validate == 'yes') {
+            let formData = new FormData(form[0]);
+            axios.post('/agents/doc_management/transactions/save_listing_required_details', formData, axios_options)
+            .then(function (response) {
+                window.location = '/agents/doc_management/transactions/listings/listing_details/' + response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
 
     }
 
     function add_seller() {
         let seller_id = $('.seller-div').length + 1;
         let seller_div = ' \
-        <div class="seller-div border-bottom mb-3 hidden"> \
+        <div class="seller-div mb-3 hidden"> \
+            <div class="h5 responsive text-orange seller-header">Seller 1</div> \
             <div class="d-flex justify-content-between"> \
-                <div class="h5 responsive text-orange seller-header">Seller 1</div> \
+                <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-seller-id="' + seller_id + '"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a> \
                 <div><a href="javascript: void(0)" class="seller-delete text-danger"><i class="fal fa-times fa-2x"></i></a></div> \
             </div> \
-            <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-seller-id="' + seller_id + '"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a> \
             <div class="row"> \
                 <div class="col-12 col-md-6 col-lg-3"> \
                     <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name"> \

@@ -104,13 +104,17 @@ if (document.URL.match(/listing_details/)) {
         }
 
         function email_documents() {
+
+            $('#send_email_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Send Email');
             let from = $('#email_from').val();
             let to_addresses = [];
             $('.to-addresses').each(function() {
-                to_addresses.push({
-                    type: $(this).find('.email-address-type').val(),
-                    address: $(this).find('.email-to-address').val()
-                });
+                if($(this).find('.email-to-address').val() != '') {
+                    to_addresses.push({
+                        type: $(this).find('.email-address-type').val(),
+                        address: $(this).find('.email-to-address').val()
+                    });
+                }
             });
             let subject = $('#email_subject').val();
             let message = $('#email_message').val();
@@ -133,6 +137,7 @@ if (document.URL.match(/listing_details/)) {
                 if(response.data.fail) {
                     $('#modal_danger').modal().find('.modal-body').html('The attachments you are sending are too large. They must total less than 20MB and they are currently '+response.data.attachment_size+'MB');
                 }
+                $('#send_email_button').html('<i class="fad fa-share mr-2"></i> Send Email');
                 $('#send_email_modal').modal('hide');
                 toastr['success']('Documents Successfully Emailed');
             })
@@ -184,11 +189,12 @@ if (document.URL.match(/listing_details/)) {
                     $('#send_email_modal').modal();
                     $('#send_email_modal').on('hide.bs.modal', function () {
                         $('#email_attachments').html('');
+                        $('.new-address').remove();
                     });
 
-                    $('.add-address-button').click(function() {
+                    $('.add-address-button').off('click').on('click', function() {
                         let new_address_row = ' \
-                        <div class="row to-addresses"> \
+                        <div class="row to-addresses new-address"> \
                             <div class="col-2"> \
                                 <select class="custom-form-element form-select form-select-no-cancel form-select-no-search email-address-type"> \
                                     <option value="to">To:</option> \
@@ -499,7 +505,7 @@ if (document.URL.match(/listing_details/)) {
                                 name: 'shared',
                             },
                             animation: 150,
-                            sort: false,
+                            sort: true,
                             onStart: function (evt) {
                                 let source = evt.srcElement;
                                 let el = evt.item;

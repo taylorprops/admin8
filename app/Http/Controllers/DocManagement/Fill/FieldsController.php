@@ -11,6 +11,7 @@ use App\Models\DocManagement\Create\Fields\FieldInputs;
 use App\Models\DocManagement\Create\FilledFields\FilledFields;
 use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Create\Upload\UploadImages;
+use App\Models\DocManagement\Create\Upload\UploadPages;
 use App\Models\Resources\LocationData;
 use Illuminate\Support\Facades\Storage;
 use mikehaertl\wkhtmlto\Pdf;
@@ -18,6 +19,31 @@ use Illuminate\Filesystem\Filesystem;
 
 class FieldsController extends Controller
 {
+
+    public function delete_page(Request $request) {
+        $file_id = $request -> file_id;
+        $page = $request -> page;
+
+        $upload = Upload::where('file_id', $file_id) -> first();
+        $images = UploadImages::where('file_id', $file_id) -> where('page_number', $page) -> first();
+        $pages = UploadPages::where('file_id', $file_id) -> where('page_number', $page) -> first();
+
+        $files_remove = [$images -> file_location, $pages -> file_location];
+        foreach($files_remove as $file_remove) {
+            Storage::disk('public') -> delete(str_replace('/storage/', '', $file_remove));
+        }
+
+        $images -> delete();
+        $pages -> delete();
+
+        $file = Storage::disk('public') -> path(str_replace('/storage/', '', $upload -> file_location));
+        $file_location = Storage::disk('public') -> path(str_replace('/storage/', '', $upload -> file_location));
+        $temp_location = Storage::disk('public') -> path('tmp/'.$upload -> file_name);
+
+        exec('pdftk '.$file.' cat 1-r2 output '.$temp_location.' && mv '.$temp_location.' '.$file_location);
+
+    }
+
     public function get_common_fields(Request $request) {
         return CommonFields::getCommonFields();
     }

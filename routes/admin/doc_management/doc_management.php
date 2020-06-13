@@ -56,6 +56,8 @@ Route::middleware('admin') -> group(function () {
 
     // Fields //
     Route::post('/doc_management/save_add_fields', 'DocManagement\Fill\FieldsController@save_add_fields');
+    // delete page from upload
+    Route::post('/doc_management/delete_page', 'DocManagement\Fill\FieldsController@delete_page');
 
 
     /* checklists */

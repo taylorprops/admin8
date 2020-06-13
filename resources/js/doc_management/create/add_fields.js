@@ -176,6 +176,27 @@ if (document.URL.match(/create\/add_fields/)) {
             }
         });
 
+        $('.delete-page-button').click(delete_page);
+
+        function delete_page() {
+            let page = $(this).data('page-number');
+            let file_id = $(this).data('file-id');
+
+            $('#page_div_'+page).next('.file-view-page-info').fadeOut('slow').remove();
+            $('#page_'+page+', #page_div_'+page+', #thumb_'+page).fadeOut('slow').remove();
+
+            let formData = new FormData();
+            formData.append('page', page);
+            formData.append('file_id', file_id);
+            axios.post('/doc_management/delete_page', formData, axios_options)
+            .then(function (response) {
+                toastr['success']('Page Successfully Removed')
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+
         function reset_field_properties() {
             // reset name fields
             $('.form-div').each(function () {

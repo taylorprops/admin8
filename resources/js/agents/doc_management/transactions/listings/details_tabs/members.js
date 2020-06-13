@@ -35,6 +35,7 @@ if (document.URL.match(/listing_details/)) {
                     scrollToAnchor('scroll_to');
                     load_tabs('documents');
                     load_tabs('checklist');
+                    load_details_header($('#Listing_ID').val());
                 }, 500);
             })
             .catch(function (error) {
@@ -103,6 +104,7 @@ if (document.URL.match(/listing_details/)) {
             toastr['success']('Member Successfully Deleted');
             setTimeout(function() {
                 scrollToAnchor('scroll_to');
+                load_details_header($('#Listing_ID').val());
             }, 500);
         })
         .catch(function (error) {

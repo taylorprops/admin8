@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TransactionChecklistItems extends Model {
-    use SoftDeletes;
 
     public $table = 'docs_transactions_checklist_items';
 

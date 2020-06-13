@@ -19,6 +19,7 @@ use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Resources\ResourceItems;
 use App\Models\DocManagement\Create\Fields\FieldInputs;
 use App\Models\DocManagement\Create\Upload\UploadPages;
+use App\Models\DocManagement\Checklists\Checklists;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\DocManagement\Create\Upload\UploadImages;
 use App\Models\DocManagement\Transactions\Members\Members;
@@ -58,6 +59,11 @@ class ListingDetailsController extends Controller {
 
         $transaction_checklist = TransactionChecklists::where('Listing_ID', $Listing_ID) -> first();
         $transaction_checklist_id = $transaction_checklist -> id;
+        $original_checklist_id = $transaction_checklist -> checklist_id;
+        $transaction_checklist_hoa_condo = $transaction_checklist -> hoa_condo;
+        $transaction_checklist_year_built = $transaction_checklist -> year_built;
+
+        $checklist = Checklists::where('id', $original_checklist_id) -> first();
 
         $transaction_checklist_items = $transaction_checklist_items_model -> where('Listing_ID', $Listing_ID) -> where('checklist_id' , $transaction_checklist_id)  -> orderBy('checklist_item_order') -> get();
 
@@ -69,7 +75,11 @@ class ListingDetailsController extends Controller {
         $documents_checklist = $documents_model -> where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
         $folders = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('folder_name', '!=', 'Trash') -> orderBy('order') -> get();
 
-        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('Listing_ID', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents_model', 'users_model', 'documents_available', 'documents_checklist', 'folders'));
+        $resource_items = new ResourceItems();
+        $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
+        $property_sub_types = $resource_items -> where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
+
+        return view('/agents/doc_management/transactions/listings/details/data/get_checklist', compact('Listing_ID', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents_model', 'users_model', 'documents_available', 'documents_checklist', 'folders', 'resource_items', 'property_types', 'property_sub_types', 'checklist', 'transaction_checklist_hoa_condo', 'transaction_checklist_year_built'));
     }
 
     public function add_document_to_checklist_item(Request $request) {
@@ -87,7 +97,7 @@ class ListingDetailsController extends Controller {
         $add_checklist_item_doc -> Listing_ID = $Listing_ID;
         $add_checklist_item_doc -> save();
 
-        $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes']);
+        $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
     }
 
     public function remove_document_from_checklist_item(Request $request) {
@@ -113,6 +123,34 @@ class ListingDetailsController extends Controller {
         $mark_read = TransactionChecklistItemsNotes::where('id', $request -> note_id) -> update(['note_status' => 'read']);
     }
 
+
+    public function change_checklist(Request $request) {
+
+        $checklist_id = $request -> checklist_id;
+        $Listing_ID = $request -> Listing_ID;
+        $Agent_ID = $request -> Agent_ID;
+
+        $transaction_checklist = TransactionChecklists::where('id', $checklist_id) -> first();
+        $original_checklist_id = $transaction_checklist -> checklist_id;
+
+        $checklist = Checklists::where('id', $original_checklist_id) -> first();
+        $checklist_state = $checklist -> checklist_state;
+        $checklist_location_id = $checklist -> checklist_location_id;
+        $checklist_sale_rent = $transaction_checklist -> sale_rent;
+        $checklist_hoa_condo = $transaction_checklist -> hoa_condo;
+        $checklist_year_built = $transaction_checklist -> year_built;
+
+        $checklist_property_type_id = ResourceItems::GetResourceID($request -> property_type, 'checklist_property_types');
+        $checklist_property_sub_type_id = ResourceItems::GetResourceID($request -> property_sub_type, 'checklist_property_sub_types');
+
+        $checklist_represent = 'seller';
+        $checklist_type = 'listing';
+
+        TransactionChecklists::CreateListingChecklist($checklist_id, $Listing_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
+
+        return true;
+    }
+
     // End Checklist Tab
 
     // Members Tab
@@ -120,14 +158,14 @@ class ListingDetailsController extends Controller {
         $listing = Listings::find($request -> Listing_ID);
         $members = Members::where('Listing_ID', $request -> Listing_ID) -> get();
         $resource_items = new ResourceItems();
-        $contact_types = $resource_items -> where('resource_type', 'contact_type') -> get();
+        $contact_types = $resource_items -> where('resource_type', 'contact_type') -> whereIn('resource_form_group_type', ['listing', 'both']) -> get();
         $states = LocationData::AllStates();
         $contacts = CRMContacts::where('Agent_ID', $listing -> Agent_ID) -> get();
         return view('/agents/doc_management/transactions/listings/details/data/get_members', compact('members', 'contact_types', 'resource_items', 'states', 'contacts'));
     }
 
     public function add_member_html(Request $request) {
-        $contact_types = ResourceItems::where('resource_type', 'contact_type') -> get();
+        $contact_types = ResourceItems::where('resource_type', 'contact_type') -> whereIn('resource_form_group_type', ['listing', 'both']) -> get();
         $states = LocationData::AllStates();
         return view('/agents/doc_management/transactions/listings/details/data/add_member_html', compact('contact_types', 'states'));
     }
@@ -610,7 +648,7 @@ class ListingDetailsController extends Controller {
                 $add_checklist_item_doc -> Listing_ID = $Listing_ID;
                 $add_checklist_item_doc -> save();
 
-                $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes']);
+                $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
 
             }
 
@@ -863,7 +901,7 @@ class ListingDetailsController extends Controller {
             $add_checklist_item_doc -> Listing_ID = $Listing_ID;
             $add_checklist_item_doc -> save();
 
-            $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes']);
+            $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
 
         }
 
@@ -970,7 +1008,7 @@ class ListingDetailsController extends Controller {
         $from_name = '';
 
         if(preg_match('/\<.*\>/', $from_address)) {
-            preg_match('/\<(.*)\>[\s]*(.*)/', $from_address, $match);
+            preg_match('/(.*)[\s]*\<(.*)\>/', $from_address, $match);
             $from_name = $match[1];
             $from_address = $match[2];
         }
@@ -1015,7 +1053,7 @@ class ListingDetailsController extends Controller {
             $to_name = '';
 
             if(preg_match('/\<.*\>/', $to['address'])) {
-                preg_match('/\<(.*)\>[\s]*(.*)/', $to['address'], $match);
+                preg_match('/(.*)[\s]*\<(.*)\>/', $to['address'], $match);
                 $to_name = $match[1];
                 $to_address = $match[2];
             }
@@ -1235,7 +1273,7 @@ class ListingDetailsController extends Controller {
             $location_id = $resource_items -> GetResourceID($mls_search_details -> StateOrProvince, 'checklist_locations');
         }
 
-        TransactionChecklists::CreateListingChecklist($checklist_id, $request -> Listing_ID, $listing_details -> Agent_ID, 'seller', 'listing', $property_type_id, $property_sub_type_id, $sale_rent, $mls_search_details -> StateOrProvince, $location_id);
+        TransactionChecklists::CreateListingChecklist($checklist_id, $request -> Listing_ID, $listing_details -> Agent_ID, 'seller', 'listing', $property_type_id, $property_sub_type_id, $sale_rent, $mls_search_details -> StateOrProvince, $location_id, '', '');
 
         $listing_details -> ListingId = $request -> ListingId;
 

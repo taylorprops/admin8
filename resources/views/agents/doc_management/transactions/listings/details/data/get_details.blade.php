@@ -52,7 +52,7 @@
                     <div class="col-12 col-md-6 mt-4 mt-md-2">
                         <div class="listing-details-div z-depth-1 h-100">
                             <div class="h5 responsive m-2 mb-4 text-default">
-                                <i class="fad fa-users mr-3"></i> Listing Agent(s)
+                                <i class="fad fa-users mr-3"></i> Agent(s)
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6">
@@ -163,8 +163,8 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-1 pl-0 pt-4">
-                                            <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="County" data-content="You cannot change the County here because it will change the checklist requirements.<br><br>To change the County you must click on the <strong>Checklist</strong> tab or click <a href='javascript: void(0)' class='btn btn-sm btn-primary' id='open_checklist_button'>Here</a>."><i class="fad fa-question-circle ml-2 fa-lg"></i></a>
+                                        <div class="col-1 pl-0 pt-2">
+                                            <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="County" data-content="You cannot change the County here because it will change the checklist requirements. To change the county you must withdraw the listing and create a new one."><i class="fad fa-question-circle ml-2 fa-lg"></i></a>
                                         </div>
                                     </div>
                                 </div>

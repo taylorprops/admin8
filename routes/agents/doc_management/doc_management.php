@@ -71,6 +71,8 @@
     Route::post('/agents/doc_management/transactions/listings/add_document_to_checklist_item', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@add_document_to_checklist_item');
     // save assign items to checklist from documents
     Route::post('/agents/doc_management/transactions/listings/save_assign_documents_to_checklist', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@save_assign_documents_to_checklist');
+    // change checklist
+    Route::post('/agents/doc_management/transactions/listings/change_checklist', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@change_checklist');
     // save rename document
     Route::post('/agents/doc_management/transactions/listings/save_rename_document', 'Agents\DocManagement\Transactions\Listings\ListingDetailsController@save_rename_document');
     // get split document html

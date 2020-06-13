@@ -6,110 +6,95 @@
 <script>
     let states = JSON.parse({!!json_encode($states_json)!!});
 </script>
-<div class="container page-required-details">
+<div class="container-1000 page-required-details mx-auto
+">
     <div class="row">
         <div class="col-12">
 
             <div class="h3 responsive text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.', '.$property_details -> PostalCode }}</div>
 
-            <div class="steps-container mx-auto">
-                <form id="steps_form" autocomplete="off">
-                    <input autocomplete="false" name="hidden" type="text" style="display:none;">
-                    <div class="h4 responsive text-primary mt-3 text-center">Jsut a few more details</div>
-                    <ul class="stepper linear mt-2 pt-1">
-                        <li class="step active">
-                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Seller(s)</div>
-                            <div class="step-new-content mt-3">
-                                <div class="row">
-                                    <div class="col-12 seller-container">
+            <div class="h4 responsive text-primary mt-3 text-center">Just a few more details</div>
 
-                                        <div class="seller-div mb-3 border-bottom">
-                                            <div class="h5 responsive text-orange seller-header">Seller 1</div>
-                                            <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-seller-id="1"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a>
-                                            <div class="row">
-                                                <div class="col-12 col-md-6 col-lg-3">
-                                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name">
-                                                </div>
-                                                <div class="col-12 col-md-6 col-lg-3">
-                                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name">
-                                                </div>
-                                                <div class="col-12 col-md-6 col-lg-3">
-                                                    <input type="text" class="custom-form-element form-input phone required" name="seller_phone[]" data-label="Phone">
-                                                </div>
-                                                <div class="col-12 col-md-6 col-lg-3">
-                                                    <input type="text" class="custom-form-element form-input" name="seller_email[]" data-label="Email">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12 col-md-6 col-lg-5">
-                                                    <input type="text" class="custom-form-element form-input seller-street required" name="seller_street[]" data-label="Home Address">
-                                                </div>
-                                                <div class="col-12 col-md-6 col-lg-3">
-                                                    <input type="text" class="custom-form-element form-input seller-city required" name="seller_city[]" data-label="City">
-                                                </div>
-                                                <div class="col-12 col-md-6 col-lg-2">
-                                                    <select class="custom-form-element form-select seller-state required" name="seller_state[]" data-label="State">
-                                                        <option value=""></option>
-                                                        @foreach($states as $state)
-                                                        <option value="{{ $state -> state }}">{{ $state -> state }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-12 col-md-6 col-lg-2">
-                                                    <input type="text" class="custom-form-element form-input seller-zip required" name="seller_zip[]" data-label="Zip Code">
-                                                </div>
-                                                <input type="hidden" name="seller_crm_contact_id[]">
-                                            </div>
-                                        </div> {{-- end seller-div --}}
+            <form id="details_form" autocomplete="off">
+                <input autocomplete="false" name="hidden" type="text" style="display:none;">
 
-                                    </div>
+                <div class="h4 responsive step-title waves-effect waves-light text-gray mb-4">Seller(s)</div>
 
-                                    <div class="col-12">
-                                        <a href="javascript: void(0);" class="btn btn-sm btn-success float-right" id="add_seller_button"><i class="fa fa-plus mr-2"></i> Add Seller</a>
-                                    </div>
+                <div class="row border-bottom">
+                    <div class="col-12 seller-container">
 
+                        <div class="seller-div mb-3">
+                            <div class="h5 responsive text-orange seller-header">Seller 1</div>
+                            <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-seller-id="1"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name">
                                 </div>
-                                <div class="step-actions">
-                                    <button class="waves-effect waves-light btn btn-success next-step">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name">
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <input type="text" class="custom-form-element form-input phone required" name="seller_phone[]" data-label="Phone">
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <input type="text" class="custom-form-element form-input" name="seller_email[]" data-label="Email">
                                 </div>
                             </div>
-                        </li>
-                        <li class="step">
-                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Dates</div>
-                            <div class="step-new-content mt-3">
-                                <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-3">
-                                        <input type="text" class="custom-form-element form-input datepicker required" name="MLSListDate" id="MLSListDate" data-label="List Date" value="{{ $property_details -> MLSListDate }}">
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-3">
-                                        <input type="text" class="custom-form-element form-input datepicker required" name="ExpirationDate" id="ExpirationDate" data-label="Expiration Date" value="{{ $property_details -> ExpirationDate }}">
-                                    </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-5">
+                                    <input type="text" class="custom-form-element form-input seller-street required" name="seller_street[]" data-label="Home Address">
                                 </div>
-                                <div class="step-actions">
-                                    <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                                    <button class="waves-effect waves-light btn btn-success next-step">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <input type="text" class="custom-form-element form-input seller-city required" name="seller_city[]" data-label="City">
                                 </div>
+                                <div class="col-12 col-md-6 col-lg-2">
+                                    <select class="custom-form-element form-select seller-state required" name="seller_state[]" data-label="State">
+                                        <option value=""></option>
+                                        @foreach($states as $state)
+                                        <option value="{{ $state -> state }}">{{ $state -> state }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-2">
+                                    <input type="text" class="custom-form-element form-input seller-zip required" name="seller_zip[]" data-label="Zip Code">
+                                </div>
+                                <input type="hidden" name="seller_crm_contact_id[]">
                             </div>
-                        </li>
+                        </div> {{-- end seller-div --}}
 
+                    </div>
 
-                        <li class="step">
-                            <div class="h4 responsive step-title waves-effect waves-light text-gray">Complete!</div>
-                            <div class="step-new-content mt-3">
-                                <div class="step-actions">
-                                    <div class="d-flex justify-content-center w-100 h-100">
-                                        <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                                        <button id="steps_submit" class="waves-effect waves-light btn btn-lg btn-success">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <input type="hidden" name="Listing_ID" value="{{ $property_details -> Listing_ID }}">
-                    <input type="hidden" name="Agent_ID" value="{{ $property_details -> Agent_ID }}">
+                    <div class="col-12">
+                        <a href="javascript: void(0);" class="btn btn-sm btn-success" id="add_seller_button"><i class="fa fa-plus mr-2"></i> Add Seller</a>
+                    </div>
 
-                </form>
-            </div>
+                </div>
+
+                <div class="h4 responsive step-title waves-effect waves-light text-gray my-4">Dates</div>
+
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <input type="text" class="custom-form-element form-input datepicker required" name="MLSListDate" id="MLSListDate" data-label="List Date" value="{{ ($property_details -> MLSListDate != '0000-00-00' ? $property_details -> MLSListDate : '') }}">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <input type="text" class="custom-form-element form-input datepicker required" name="ExpirationDate" id="ExpirationDate" data-label="Expiration Date" value="{{ $property_details -> ExpirationDate }}">
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center w-100 h-100">
+                            <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
+                            <button id="continue" class="waves-effect waves-light btn btn-lg btn-success">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="Listing_ID" value="{{ $property_details -> Listing_ID }}">
+                <input type="hidden" name="Agent_ID" value="{{ $property_details -> Agent_ID }}">
+
+            </form>
+
 
         </div>
     </div>

@@ -182,6 +182,7 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
         if (resource_form_group_type == 'contract') {
             selected = 'selected';
         }
+        resource_html += '<option value="contract" ' + selected + '>Listing</option>';
         selected = '';
         if (resource_form_group_type == 'both') {
             selected = 'selected';

@@ -1,5 +1,6 @@
 .page-listing-details {
 
+
     .nav-link:not(.add-to-checklist) {
         text-transform: uppercase;
         font-size: 1.1rem;
@@ -188,10 +189,17 @@
         }
     }
 
+    .checklist-attachment {
+        width: 70px;
+        text-align: right;
+    }
 
     #add_to_checklist_items_wrapper, #add_to_checklist_documents_wrapper {
         max-height: 65VH;
         overflow-y: auto;
+    }
+    #add_to_checklist_documents_div {
+        min-height: 200px;
     }
     #add_to_checklist_items_div {
         padding-bottom: 100px;
@@ -214,6 +222,7 @@
         margin-left: auto;
         margin-right: auto;
         border: 2px dashed $primary;
+        min-height: 20px;
         height: auto;
     }
     .checklist-item-badge {
@@ -232,14 +241,15 @@
     .source-dropped {
         width: 96%;
         margin: 2px auto;
-        background: $success;
+        background: rgba($success, .5);
 
         > .text-gray {
             color: white !important;
         }
     }
     .doc-match {
-        background: rgba($green-light, .5);
+        background: rgba($orange, .2);
+        min-height: 40px;
     }
 
     .image-container {
@@ -347,6 +357,12 @@
 
     }
 
+    .property-options {
+        max-height: 70VH;
+        overflow: visible;
+
+    }
+
     #send_email_modal {
 
         [class*='col'] {
@@ -370,8 +386,8 @@
         }
     }
 
-    @media (max-width: 1199.99px) {
-        .nav-link {
+    @media (max-width: 1200px) {
+        .details-list-group .nav-link {
             font-size: 1rem;
             text-transform: initial;
             padding: 0.5rem 1rem;
@@ -413,7 +429,7 @@
 
 
     @media (max-width: 576px) {
-        .nav-link {
+        .details-list-group .nav-link {
             padding: 0.2rem .2rem;
             font-size: .8rem;
         }

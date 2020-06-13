@@ -34,6 +34,7 @@ if (document.URL.match(/listing_details/)) {
         })
             .then(function (response) {
                 $('#details_header').html(response.data);
+                $('[data-toggle="popover"]').popover( { placement: 'bottom' });
             })
             .catch(function (error) {
                 console.log(error);
@@ -145,7 +146,9 @@ if (document.URL.match(/listing_details/)) {
                         $(this).closest('.checklist-item-div').removeClass('bg-green-light');
                     });
 
+                    $('.listing-option-trigger').off('change').on('change', listing_options);
 
+                    listing_options();
 
                 }
 
@@ -222,6 +225,33 @@ if (document.URL.match(/listing_details/)) {
 
     window.format_money = function () {
         $('#ListPrice').val('$' + global_format_number($('#ListPrice').val().replace('/\$/', '')));
+    }
+
+    window.listing_options = function() {
+
+        let sale_type = $('[name=property_sub_type]').val();
+        if(sale_type == 'Standard' || sale_type == 'Short Sale') {
+            $('.hoa').show();
+        } else {
+            $('.hoa').hide();
+            $('[name=hoa_condo]').val('none').trigger('change').attr('required', false);
+        }
+
+        let listing_type = $('[name=listing_type]').val();
+        if(listing_type == 'rental') {
+            $('.property-sub-type').hide().find('[name=property_sub_type]').val('Standard');
+            $('.year-built, .hoa').hide();
+            $('[name=year_built], [name=hoa_condo]').attr('required', false);
+        } else {
+            if(sale_type == 'Standard' || sale_type == 'Short Sale') {
+                $('.property-sub-type, .year-built, .hoa').show();
+                $('[name=year_built], [name=hoa_condo]').attr('required', true);
+            } else {
+                $('.property-sub-type, .year-built').show();
+                $('[name=year_built]').attr('required', true);
+            }
+        }
+
     }
 
 }

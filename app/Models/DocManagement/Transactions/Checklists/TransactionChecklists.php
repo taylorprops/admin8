@@ -8,6 +8,7 @@ use App\Models\DocManagement\Checklists\Checklists;
 use App\Models\DocManagement\Transactions\Listings\Listings;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
+use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
 
 class TransactionChecklists extends Model
 {
@@ -15,7 +16,7 @@ class TransactionChecklists extends Model
     public $table = 'docs_transactions_checklists';
     protected $primaryKey = 'id';
 
-    public function ScopeCreateListingChecklist($request, $checklist_id, $Listing_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id) {
+    public function ScopeCreateListingChecklist($request, $checklist_id, $Listing_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built) {
 
         $where = [
             ['checklist_represent', $checklist_represent],
@@ -29,6 +30,7 @@ class TransactionChecklists extends Model
 
         // get checklist
         $checklist = Checklists::where($where) -> first();
+
         // get checklist items
         $checklist_items = new ChecklistsItems();
         $items = $checklist_items -> where('checklist_id', $checklist -> id) -> orderBy('checklist_item_order') -> get();
@@ -62,10 +64,13 @@ class TransactionChecklists extends Model
                     $remove_ids[] = $existing_item -> id;
                 }
             }
+
             // if there are items no longer needed, remove them
-            // TransactionChecklistItemsDocs and TransactionChecklistItemsNotes will delete on cascade
             if(count($remove_ids) > 0) {
                 $remove_items = TransactionChecklistItems::whereIn('id', $remove_ids) -> delete();
+                $remove_item_docs = TransactionChecklistItemsDocs::whereIn('checklist_item_id', $remove_ids) -> delete();
+                $remove_item_notes = TransactionChecklistItemsNotes::whereIn('checklist_item_id', $remove_ids) -> delete();
+                $remove_docs = TransactionDocuments::whereIn('checklist_item_id', $remove_ids) -> update(['assigned' => 'no', 'checklist_item_id' => '0']);
             }
 
         } else {
@@ -75,6 +80,9 @@ class TransactionChecklists extends Model
             $add_checklist -> checklist_id = $checklist -> id;
             $add_checklist -> Listing_ID = $Listing_ID;
             $add_checklist -> Agent_ID = $Agent_ID;
+            $add_checklist -> hoa_condo = $checklist_hoa_condo;
+            $add_checklist -> year_built = $checklist_year_built;
+            $add_checklist -> sale_rent = $checklist_sale_rent;
             $add_checklist -> save();
             $checklist_id = $add_checklist -> id;
 

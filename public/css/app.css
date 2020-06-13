@@ -13069,6 +13069,7 @@ body:after {
 
 body {
   padding-top: 60px;
+  padding-right: 0px !important;
 }
 
 /* body:not(.y-scroll-none) {
@@ -13123,6 +13124,14 @@ input {
 
 .container {
   max-width: 1500px !important;
+}
+
+.container-1200 {
+  max-width: 1200px !important;
+}
+
+.container-1000 {
+  max-width: 1000px !important;
 }
 
 .uppercase {
@@ -13203,6 +13212,10 @@ ul {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+}
+
+.modal {
+  overflow: auto;
 }
 
 .modal-content {
@@ -13289,7 +13302,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 }
 
 .popover-header {
-  background-color: #df7935;
+  background-color: rgba(223, 121, 53, 0.7);
   border-bottom: none;
   color: white;
 }
@@ -13658,7 +13671,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 
 .form-ele .datepicker-div {
   position: absolute;
-  top: 2px;
+  top: 4px;
   right: 6px;
   font-size: 1.2rem;
   color: #4c9bdb;
@@ -13668,10 +13681,10 @@ table.dataTable thead .sorting_desc_disabled:before {
 .form-ele .form-textarea,
 .form-ele .form-select-value-input {
   width: 100%;
-  padding: 5px 3px 0px 5px;
+  padding: 8px 3px 0px 5px;
   border: 1px solid #ccc;
   color: #686767;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .form-ele .caret {
@@ -13688,7 +13701,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 .form-ele .form-textarea-label,
 .form-ele .form-select-label {
   position: absolute;
-  top: 6px;
+  top: 7px;
   left: 5px;
   width: 95%;
   background: transparent;
@@ -13707,14 +13720,12 @@ table.dataTable thead .sorting_desc_disabled:before {
   position: absolute;
   top: -7px;
   width: auto;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: #647c96;
   background: rgba(255, 255, 255, 0.9);
-  line-height: 0.6rem;
-  border-radius: 10px;
+  line-height: 0.8rem;
   padding-bottom: 2px;
   padding-top: 1px;
-  box-shadow: 0px 5px 11px 5px rgba(255, 255, 255, 0.59);
   z-index: 1000;
 }
 
@@ -15140,10 +15151,19 @@ header .navbar #sub_menu_divs a {
   height: 90px;
 }
 
+.page-listing-details .checklist-attachment {
+  width: 70px;
+  text-align: right;
+}
+
 .page-listing-details #add_to_checklist_items_wrapper,
 .page-listing-details #add_to_checklist_documents_wrapper {
   max-height: 65VH;
   overflow-y: auto;
+}
+
+.page-listing-details #add_to_checklist_documents_div {
+  min-height: 200px;
 }
 
 .page-listing-details #add_to_checklist_items_div {
@@ -15168,6 +15188,7 @@ header .navbar #sub_menu_divs a {
   margin-left: auto;
   margin-right: auto;
   border: 2px dashed #4c9bdb;
+  min-height: 20px;
   height: auto;
 }
 
@@ -15186,7 +15207,7 @@ header .navbar #sub_menu_divs a {
 .page-listing-details .source-dropped {
   width: 96%;
   margin: 2px auto;
-  background: #30a730;
+  background: rgba(48, 167, 48, 0.5);
 }
 
 .page-listing-details .source-dropped > .text-gray {
@@ -15194,7 +15215,8 @@ header .navbar #sub_menu_divs a {
 }
 
 .page-listing-details .doc-match {
-  background: rgba(190, 241, 190, 0.5);
+  background: rgba(223, 121, 53, 0.2);
+  min-height: 40px;
 }
 
 .page-listing-details .image-container {
@@ -15300,6 +15322,11 @@ header .navbar #sub_menu_divs a {
   border-radius: 0px;
 }
 
+.page-listing-details .property-options {
+  max-height: 70VH;
+  overflow: visible;
+}
+
 .page-listing-details #send_email_modal [class*=col] {
   padding-left: 3px;
   padding-right: 3px;
@@ -15321,8 +15348,8 @@ header .navbar #sub_menu_divs a {
   }
 }
 
-@media (max-width: 1199.99px) {
-  .page-listing-details .nav-link {
+@media (max-width: 1200px) {
+  .page-listing-details .details-list-group .nav-link {
     font-size: 1rem;
     text-transform: initial;
     padding: 0.5rem 1rem;
@@ -15364,7 +15391,7 @@ header .navbar #sub_menu_divs a {
 }
 
 @media (max-width: 576px) {
-  .page-listing-details .nav-link {
+  .page-listing-details .details-list-group .nav-link {
     padding: 0.2rem 0.2rem;
     font-size: 0.8rem;
   }

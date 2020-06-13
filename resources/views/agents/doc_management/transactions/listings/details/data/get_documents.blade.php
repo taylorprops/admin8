@@ -32,7 +32,7 @@
             <div class="col-12 col-md-12 col-lg-6 px-1">
                 <div class="add-docs-div bg-blue-light p-3 mb-1 mb-sm-3 border border-primary rounded-lg text-center">
                     <i class="fad fa-clone fa-3x text-primary mb-2"></i>
-                    <div class="h5 text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="body"><i class="fad fa-question-circle ml-2"></i></a></div>
+                    <div class="h5 text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="Add a preset template of all forms available for the checklist"><i class="fad fa-question-circle ml-2"></i></a></div>
                     <div class="row">
                         <div class="col-12 col-sm-6">
                             Checklist Documents<br>
@@ -48,14 +48,14 @@
             <div class="col-12 col-sm-6 col-lg-3 px-1">
                 <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
                     <i class="fad fa-file-upload fa-3x text-primary mb-2"></i>
-                    <div class="h5 text-primary mb-3">Upload Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Uploading Documents" data-content="body"><i class="fad fa-question-circle ml-2"></i></a></div>
+                    <div class="h5 text-primary mb-3">Upload Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Uploading Documents" data-content="Add a singel form from all forms available"><i class="fad fa-question-circle ml-2"></i></a></div>
                     <a href="javascript:void(0);" class="btn btn-primary mt-1 mt-md-4" id="upload_documents_button"><i class="fa fa-plus mr-2"></i> Upload Documents</a>
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-lg-3 px-1">
                 <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
                     <i class="fad fa-envelope-square fa-3x text-primary mb-2"></i>
-                    <div class="h5 text-primary mb-3">Email Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Emailing Documents" data-content="body"><i class="fad fa-question-circle ml-2"></i></a></div>
+                    <div class="h5 text-primary mb-3">Email Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Emailing Documents" data-content="body{{-- TODO: needs description --}}"><i class="fad fa-question-circle ml-2"></i></a></div>
                     <a href="mailto:" class="d-block mt-1 mt-md-5">email@email.com</a>
                 </div>
             </div>
@@ -104,157 +104,168 @@
 
     @foreach($folders as $folder)
 
-    @php
-    $docs_count = $documents -> where('folder', $folder -> id) -> count();
-    @endphp
-    <div class="folder-div mb-2 border-top border-bottom border-primary" data-folder="{{ $folder -> id }}">
+        @php
+        $docs_count = $documents -> where('folder', $folder -> id) -> count();
+        @endphp
+        <div class="folder-div mb-4 border-top border-bottom border-primary" data-folder="{{ $folder -> id }}">
 
-        <div class="folder-header d-flex justify-content-between">
-            <div class="d-flex justify-content-start align-items-center">
-                <div class="mt-1 mr-2 mr-sm-4">
-                    <input type="checkbox" class="custom-form-element form-checkbox check-all">
+            <div class="folder-header d-flex justify-content-between">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="mt-1 mr-2 mr-sm-4">
+                        <input type="checkbox" class="custom-form-element form-checkbox check-all">
+                    </div>
+                    <div class="h5 mt-2">
+                        <a class="text-gray folder-collapse" data-toggle="collapse" href="#documents_folder_{{ $loop -> index }}" aria-expanded="false" aria-controls="documents_folder_{{ $loop -> index }}">
+                            <i class="fal @if($folder -> folder_name == 'Trash' || $docs_count == 0) fa-angle-right @else fa-angle-down @endif fa-lg mr-3"></i>
+                            <i class="fad fa-folder mr-1 mr-sm-3 fa-lg"></i>
+                            {{ $folder -> folder_name }}
+                        </a>
+                        <span class="badge badge-pill badge-primary ml-1 ml-sm-3 py-1">{{ $docs_count }}</span>
+                    </div>
                 </div>
-                <div class="h5 mt-2">
-                    <a class="text-gray folder-collapse" data-toggle="collapse" href="#documents_folder_{{ $loop -> index }}" aria-expanded="false" aria-controls="documents_folder_{{ $loop -> index }}">
-                        <i class="fal @if($folder -> folder_name == 'Trash' || $docs_count == 0) fa-angle-right @else fa-angle-down @endif fa-lg mr-3"></i>
-                        <i class="fad fa-folder mr-1 mr-sm-3 fa-lg"></i>
-                        {{ $folder -> folder_name }}
-                    </a>
-                    <span class="badge badge-pill badge-primary ml-1 ml-sm-3 py-1">{{ $docs_count }}</span>
+                @if(!$loop -> first && !$loop -> last && $documents -> where('folder', $folder -> id) -> where('assigned', 'yes') -> count() == 0)
+                <div class="pt-1">
+                    <a href="javascript: void(0)" class="btn btn-sm btn-danger delete-folder-button" data-folder-id="{{ $folder -> id }}"><i class="fa fa-trash"></i> <span class="d-none d-sm-inline-block ml-2">Delete Folder</span></a>
                 </div>
+                @endif
             </div>
-            @if(!$loop -> first && !$loop -> last && $documents -> where('folder', $folder -> id) -> where('assigned', 'yes') -> count() == 0)
-            <div class="pt-1">
-                <a href="javascript: void(0)" class="btn btn-sm btn-danger delete-folder-button" data-folder-id="{{ $folder -> id }}"><i class="fa fa-trash"></i> <span class="d-none d-sm-inline-block ml-2">Delete Folder</span></a>
-            </div>
-            @endif
-        </div>
 
-        <div class="collapse sortable-documents @if($folder -> folder_name != 'Trash' && $docs_count > 0) show @endif" id="documents_folder_{{ $loop -> index }}">
+            <div class="collapse sortable-documents @if($folder -> folder_name != 'Trash' && $docs_count > 0) show @endif" id="documents_folder_{{ $loop -> index }}">
 
-            @foreach($documents as $document)
+                @foreach($documents as $document)
 
-                @if($document -> folder == $folder -> id)
+                    @if($document -> folder == $folder -> id)
 
-                @php
-                $assigned = $document -> assigned == 'yes' ? 'assigned' : null;
-                $disabled = $assigned == 'yes' ? 'disabled' : null;
-                @endphp
+                    @php
+                    $assigned = $document -> assigned == 'yes' ? 'assigned' : null;
+                    $disabled = $assigned == 'yes' ? 'disabled' : null;
+                    @endphp
 
-                <div class="document-div row mx-0 py-0" data-folder-id="{{ $folder -> id }}" data-document-id="{{ $document -> id }}">
+                    <div class="document-div row mx-0 py-0" data-folder-id="{{ $folder -> id }}" data-document-id="{{ $document -> id }}">
 
-                    <div class="col-10 col-xl-4">
+                        <div class="col-10 col-xl-4">
 
-                        <div class="d-flex justify-content-start align-items-center">
-                            <div class="mt-1">
-                                <a href="javascript:void(0)" class="document-handle text-blue"><i class="fal fa-bars fa-lg"></i></a>
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div class="mt-1">
+                                    <a href="javascript:void(0)" class="document-handle text-blue"><i class="fal fa-bars fa-lg"></i></a>
+                                </div>
+                                <div class="mt-1 mx-2 mr-md-4">
+                                    <input type="checkbox" class="custom-form-element form-checkbox check-document  {{ $assigned }}" data-document-id="{{ $document -> id }}">
+                                </div>
+                                <div class="text-gray document-title py-1 py-sm-2">
+                                    <a href="{{ $document -> file_location_converted }}" target="_blank">{{ $document -> file_name_display }}</a>
+                                    <div class="d-flex justify-content-start flex-wrap">
+                                        <div>
+                                            <span class="small">Added: {{ date('n/j/Y g:i:sA', strtotime($document -> created_at)) }} </span>
+                                        </div>
+                                        <div>
+                                            @if($document -> file_type == 'user')
+                                                <span class="badge badge-secondary p-1 ml-2">User File</span>
+                                            @else
+                                                <span class="badge badge-primary p-1 ml-2">System File</span>
+                                            @endif
+                                            <span class="small ml-2">{{ get_mb(filesize(Storage::disk('public') -> path(str_replace('/storage/', '', $document -> file_location_converted)))).'MB' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mt-1 ml-1 mr-1 mr-md-4">
-                                <input type="checkbox" class="custom-form-element form-checkbox check-document  {{ $assigned }}" data-document-id="{{ $document -> id }}">
-                            </div>
-                            <div class="text-gray document-title py-1 py-sm-2">
-                                <a href="{{ $document -> file_location_converted }}" target="_blank">{{ $document -> file_name_display }}</a>
-                                <br>
-                                <span class="small">Added: {{ date('n/j/Y g:i:sA', strtotime($document -> created_at)) }} @if($document -> file_type == 'user') <span class="badge badge-secondary p-1 ml-2">User File</span> @else <span class="badge badge-primary p-1 ml-2">System File</span>@endif</span>
-                            </div>
+
                         </div>
 
-                    </div>
+                        <div class="col-2 col-xl-8">
 
-                    <div class="col-2 col-xl-8">
+                            <div class="d-flex justify-content-end align-items-center h-100">
 
-                        <div class="d-flex justify-content-end align-items-center h-100">
+                                @if($folder -> folder_name != 'Trash')
 
-                            @if($folder -> folder_name != 'Trash')
+                                    @php
+                                    $menu_options = '';
 
-                                @php
-                                $menu_options = '';
+                                    if($assigned) {
 
-                                if($assigned) {
+                                        $menu_options .= '<div class="mr-1  text-success"><i class="fal fa-check mr-2"></i> <span class="d-inline-block d-xl-inline-block"> Assigned</span></div>';
 
-                                    $menu_options .= '<div class="mr-1  text-success"><i class="fal fa-check mr-2"></i> <span class="d-inline-block d-xl-inline-block"> Assigned</span></div>';
+                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
 
-                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
+                                    } else {
 
-                                } else {
+                                        $menu_options .= '<button type="button" class="dropdown-item text-primary add-to-checklist-button" data-document-id="'.$document -> id.'"  data-checklist-id="'.$checklist_id.'" title="Assign Document To Checklist Item"><i class="fad fa-tasks mr-1 "></i> Assign</button>';
 
-                                    $menu_options .= '<button type="button" class="dropdown-item text-primary add-to-checklist-button" data-document-id="'.$document -> id.'"  data-checklist-id="'.$checklist_id.'" title="Assign Document To Checklist Item"><i class="fad fa-tasks mr-1 "></i> Assign</button>';
+                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
 
-                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
+                                        if($document -> pages_total > 1) {
+                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" data-checklist-id="'.$checklist_id.'" data-file-name="'.$document -> file_name_display.'" data-file-type="'.$document -> file_type.'" data-folder="'.$folder -> id.'" title="Split Document"><i class="fad fa-page-break mr-1 "></i> Split</button>';
+                                        }
 
-                                    if($document -> pages_total > 1) {
-                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" data-checklist-id="'.$checklist_id.'" data-file-name="'.$document -> file_name_display.'" data-file-type="'.$document -> file_type.'" data-folder="'.$folder -> id.'" title="Split Document"><i class="fad fa-page-break mr-1 "></i> Split</button>';
+                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Fill Fields"><i class="fad fa-edit mr-1 "></i> Fill Fields</button>';
+
+                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-get-signed-button" data-document-id="'.$document -> id.'" title="Get Signed"><i class="fad fa-signature mr-1 "></i> Get Signed</button>';
+
                                     }
 
-                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Fill Fields"><i class="fad fa-edit mr-1 "></i> Fill Fields</button>';
-
-                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-get-signed-button" data-document-id="'.$document -> id.'" title="Get Signed"><i class="fad fa-signature mr-1 "></i> Get Signed</button>';
-
-                                }
 
 
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
 
-                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
+                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
 
-                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
+                                    $menu_options .= '
+                                    <div class="dropdown-submenu">
+                                        <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Download Form"><i class="fad fa-download mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Download</span></button>
+                                        <div class="dropdown-menu">
+                                            <a class="text-primary dropdown-item" href="'.$document -> file_location_converted.'" download="'.$document -> file_name_display.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
+                                            <a class="text-primary dropdown-item" href="'.$document -> file_location.'" download="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
+                                        </div>
+                                    </div>';
 
-                                $menu_options .= '
-                                <div class="dropdown-submenu">
-                                    <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Download Form"><i class="fad fa-download mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Download</span></button>
-                                    <div class="dropdown-menu">
-                                        <a class="text-primary dropdown-item" href="'.$document -> file_location_converted.'" download="'.$document -> file_name_display.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
-                                        <a class="text-primary dropdown-item" href="'.$document -> file_location.'" download="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
+                                    $menu_options .= '
+                                    <div class="dropdown-submenu">
+                                        <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Print Form"><i class="fad fa-print mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Print</span></button>
+                                        <div class="dropdown-menu">
+                                            <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location_converted.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
+                                            <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location.'" data-filename="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                                        </div>
+                                    </div>';
+
+                                    $menu_options .= '<div class="dropdown-divider d-block d-xl-none"></div>';
+
+                                    if(!$assigned) {
+
+                                        $menu_options .= '<button type="button" class="dropdown-item text-danger doc-delete-button" data-document-id="'.$document -> id.'" data-document-name="' . $document -> file_name_display . '" title="Delete Form"><i class="fad fa-trash mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Trash</span></button>';
+
+                                    }
+
+                                    $menu_options_large = preg_replace('/dropdown-item\stext-primary/', 'btn btn-primary', $menu_options);
+                                    $menu_options_large = preg_replace('/dropdown-item\stext-danger/', 'btn btn-danger', $menu_options_large);
+                                    $menu_options_large = preg_replace('/dropdown-submenu/', 'dropleft', $menu_options_large);
+                                    @endphp
+
+                                    <div class="d-block d-xl-none dropleft">
+                                        <button type="button" class="btn btn-primary dropdown-toggle pl-2 pr-1 py-0 pl-sm-2 pt-sm-1 pb-sm-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                        <div class="dropdown-menu">
+                                            {!! $menu_options !!}
+                                        </div>
                                     </div>
-                                </div>';
 
-                                $menu_options .= '
-                                <div class="dropdown-submenu">
-                                    <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Print Form"><i class="fad fa-print mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Print</span></button>
-                                    <div class="dropdown-menu">
-                                        <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location_converted.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
-                                        <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location.'" data-filename="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                                    <div class="d-none d-xl-flex align-items-center">
+                                        {!! $menu_options_large !!}
                                     </div>
-                                </div>';
 
-                                $menu_options .= '<div class="dropdown-divider d-block d-xl-none"></div>';
+                                @endif
 
-                                if(!$assigned) {
-
-                                    $menu_options .= '<button type="button" class="dropdown-item text-danger doc-delete-button" data-document-id="'.$document -> id.'" data-document-name="' . $document -> file_name_display . '" title="Delete Form"><i class="fad fa-trash mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Trash</span></button>';
-
-                                }
-
-                                $menu_options_large = preg_replace('/dropdown-item\stext-primary/', 'btn btn-primary', $menu_options);
-                                $menu_options_large = preg_replace('/dropdown-item\stext-danger/', 'btn btn-danger', $menu_options_large);
-                                $menu_options_large = preg_replace('/dropdown-submenu/', 'dropleft', $menu_options_large);
-                                @endphp
-
-                                <div class="d-block d-xl-none dropleft">
-                                    <button type="button" class="btn btn-primary dropdown-toggle pl-2 pr-1 py-0 pl-sm-2 pt-sm-1 pb-sm-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                                    <div class="dropdown-menu">
-                                        {!! $menu_options !!}
-                                    </div>
-                                </div>
-
-                                <div class="d-none d-xl-flex align-items-center">
-                                    {!! $menu_options_large !!}
-                                </div>
-
-                            @endif
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
+                    @endif
 
-                @endif
+                @endforeach
 
-            @endforeach
+            </div>
 
         </div>
-
-    </div>
 
     @endforeach
 
@@ -288,7 +299,7 @@
                                             </div>
                                         </div>
                                         <div class="col-10">
-                                            <input type="text" class="custom-form-element form-input" id="email_from" value="<{{ \Auth::user() -> name }}> {{ \Auth::user() -> email }}">
+                                            <input type="text" class="custom-form-element form-input" id="email_from" value="{{ \Auth::user() -> name }} <{{ \Auth::user() -> email }}>">
                                         </div>
                                     </div>
 
@@ -309,7 +320,7 @@
                                             @endif
                                         </div>
                                         <div class="@if($loop -> first) col-10 @else col-9 @endif">
-                                            <input type="text" class="custom-form-element form-input email-to-address" value="<{{ $member -> first_name.' '.$member -> last_name }}> {{ $member -> email }}">
+                                            <input type="text" class="custom-form-element form-input email-to-address" value="{{ $member -> first_name.' '.$member -> last_name }} <{{ $member -> email }}>">
                                         </div>
                                         @if(!$loop -> first)
                                         <div class="col-1">

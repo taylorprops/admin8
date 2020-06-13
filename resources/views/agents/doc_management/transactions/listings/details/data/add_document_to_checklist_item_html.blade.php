@@ -49,7 +49,7 @@
 
                         @foreach($checklist_groups as $checklist_group)
 
-                            <div class="h5 responsive text-gray mt-1">{{ $checklist_group -> resource_name }}</div>
+                            <div class="h4 responsive bg-primary text-white mt-1 mb-0 p-2">{{ $checklist_group -> resource_name }}</div>
 
                             @if(count($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)
 
@@ -64,20 +64,25 @@
                                     $fa = str_replace('mr-2', 'mr-1', $status_details -> fa);
                                     $helper_text = $status_details -> helper_text;
                                     @endphp
-                                    <div class="add-to-checklist-item-div mb-3" data-checklist-id="{{ $checklist_item -> checklist_id }}" data-checklist-item-id="{{ $checklist_item -> id }}"data-file-name="{{ $checklist_item_name }}">
-                                        <div class="checklist-item-droparea rounded p-2">
-                                            <div class="font-weight-bold drop-div-title text-gray mb-2 d-flex justify-content-start">
-                                                <div>
-                                                    <span class="badge checklist-item-badge {{ $classes }} p-1 mr-2" title="{{ $helper_text }}">{!! $fa !!} {{ $status }}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="badge badge-primary p-1 mr-2" title="Count of documents already submitted for this item">{{ $docs_count }}</span>
-                                                </div>
-                                                <div>
-                                                    {{ $checklist_item_name }}
-                                                </div>
+
+                                    <div class="bg-primary-light p-2 m-2">
+
+                                        <div class="font-weight-bold drop-div-title text-gray mb-3 d-flex justify-content-start">
+                                            <div>
+                                                <span class="badge checklist-item-badge {{ $classes }} p-1 mr-2" title="{{ $helper_text }}">{!! $fa !!} {{ $status }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-primary p-1 mr-2" title="Count of documents already submitted for this item">{{ $docs_count }}</span>
+                                            </div>
+                                            <div>
+                                                {{ $checklist_item_name }}
                                             </div>
                                         </div>
+                                        <div class="add-to-checklist-item-div" data-checklist-id="{{ $checklist_item -> checklist_id }}" data-checklist-item-id="{{ $checklist_item -> id }}"data-file-name="{{ $checklist_item_name }}">
+                                            <div class="checklist-item-droparea rounded p-0">
+                                            </div>
+                                        </div>
+
                                     </div>
                                 @endforeach
 
