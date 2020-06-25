@@ -1,3 +1,4 @@
+import datepicker from 'js-datepicker';
 $(document).ready(function () {
 
     global_page_transition();
@@ -54,10 +55,11 @@ $(document).ready(function () {
         $(this).attr('maxlength', 14);
     });
 
-    $('.datepicker').pickadate({
-        format: 'yyyy-mm-dd',
-        formatSubmit: 'yyyy-mm-dd',
-    });
+    setInterval(function() {
+        datepicker_custom();
+    }, 1000);
+
+
 
     global_tooltip();
 
@@ -103,6 +105,30 @@ $(document).ready(function () {
 
 
 });
+
+window.datepicker_custom = function() {
+    $('.datepicker').not('.datepicker-added').each(function() {
+        $(this).addClass('datepicker-added');
+        let id = $(this).prop('id');
+        if(!id) {
+            id = new Date();
+        }
+        window.picker = datepicker('#'+id, {
+            onSelect: (instance, date) => {
+
+            },
+            onHide: instance => {
+
+            },
+            formatter: (input, date, instance) => {
+                const value = date.toJSON().slice(0, 10);
+                input.value = value;
+                $('#'+id).focus().trigger('click');
+            },
+            showAllDates: true,
+        });
+    });
+}
 
 // session timeout
 window.inactivityTime = function () {

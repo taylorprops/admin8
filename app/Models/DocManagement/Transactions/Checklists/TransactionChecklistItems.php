@@ -9,9 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TransactionChecklistItems extends Model {
 
     public $table = 'docs_transactions_checklist_items';
-
     protected $_connection = 'mysql';
-
     protected $_primaryKey = 'id';
 
     public function ScopeGetStatus($query, $checklist_item_id) {

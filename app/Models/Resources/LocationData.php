@@ -8,6 +8,7 @@ class LocationData extends Model
 {
     protected $connection = 'mysql';
     public $table = 'docs_zips';
+    protected $guarded = [];
 
     public function scopeActiveStates() {
         $states = config('global.vars.active_states');

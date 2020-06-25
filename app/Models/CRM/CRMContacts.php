@@ -8,4 +8,5 @@ class CRMContacts extends Model
 {
     protected $connection = 'mysql';
     public $table = 'crm_contacts';
+    protected $guarded = [];
 }

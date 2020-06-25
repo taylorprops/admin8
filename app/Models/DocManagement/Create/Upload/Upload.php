@@ -12,9 +12,10 @@ class Upload extends Model
     protected $connection = 'mysql';
     public $table = 'docs_create_uploads';
     protected $primaryKey = 'file_id';
+    protected $guarded = [];
 
 
-    public function scopeFormGroupFiles($query, $location_id, $Listing_ID) {
+    public function scopeFormGroupFiles($query, $location_id, $id, $type) {
 
         $forms_available = $this -> where('form_group_id', $location_id)
             -> where('published', 'yes')
@@ -22,13 +23,19 @@ class Upload extends Model
 
         $forms_in_use = null;
 
-        if($Listing_ID) {
-            $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('folder_name', 'Trash') -> first();
-            $forms_in_use = TransactionDocuments::select('orig_file_id')
-                -> where('Listing_ID', $Listing_ID)
-                -> where('orig_file_id', '>', '0')
-                -> where('folder', '!=', $trash_folder -> id)
-                -> pluck('orig_file_id');
+        if($type != '') {
+            $field = 'Listing_ID';
+            if($type == 'contract') {
+                $field = 'Contract_ID';
+            }
+            if($id) {
+                $trash_folder = TransactionDocumentsFolders::where($field, $id) -> where('folder_name', 'Trash') -> first();
+                $forms_in_use = TransactionDocuments::select('orig_file_id')
+                    -> where($field, $id)
+                    -> where('orig_file_id', '>', '0')
+                    -> where('folder', '!=', $trash_folder -> id)
+                    -> pluck('orig_file_id');
+            }
         }
 
         return compact('forms_available', 'forms_in_use');

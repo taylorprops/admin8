@@ -13,7 +13,7 @@
         <link href="/css/app.css" rel="stylesheet">
         <link href="/vendor/fontawesome/fontawesome/css/all.css" rel="stylesheet">
         <link href="/resources/mdbootstrap/css/addons/datatables.min.css" rel="stylesheet">
-        <link href="/resources/mdbootstrap/css/addons-pro/timeline.min.css" rel="stylesheet">
+        {{-- <link href="/resources/mdbootstrap/css/addons-pro/timeline.min.css" rel="stylesheet"> --}}
         {{-- mdbootsrap stepper --}}
         <link href="/resources/mdbootstrap/css/addons-pro/steppers.min.css" rel="stylesheet">
 

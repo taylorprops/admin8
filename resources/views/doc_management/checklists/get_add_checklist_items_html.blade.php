@@ -112,7 +112,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                     </li>
 
                     @php
-                    $forms = $files -> formGroupFiles($form_group -> resource_id, null);
+                    $forms = $files -> formGroupFiles($form_group -> resource_id, null, '');
                     $forms = $forms['forms_available'];
                     @endphp
 

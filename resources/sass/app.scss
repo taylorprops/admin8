@@ -31,13 +31,12 @@
 @import 'doc_management/checklists/checklists.scss';
 
 // ++++++ Agents ++++++ //
-@import 'agents/doc_management/transactions/listings/listing_add.scss';
-@import 'agents/doc_management/transactions/listings/listing_details_add.scss';
-@import 'agents/doc_management/transactions/listings/listing_details.scss';
-@import 'agents/doc_management/transactions/listings/listing_required_details.scss';
-@import 'agents/doc_management/transactions/contracts/contract_add.scss';
-@import 'agents/doc_management/transactions/contracts/contract_add_details.scss';
-@import 'agents/doc_management/transactions/contracts/contract_details.scss';
+@import 'agents/doc_management/transactions/add/transaction_add.scss';
+@import 'agents/doc_management/transactions/add/transaction_details_add.scss';
+@import 'agents/doc_management/transactions/add/transaction_required_details.scss';
+@import 'agents/doc_management/transactions/details/transaction_details.scss';
+
 @import 'agents/doc_management/transactions/upload/upload.scss';
+
 @import 'agents/doc_management/transactions/edit_files/edit_files.scss';
 

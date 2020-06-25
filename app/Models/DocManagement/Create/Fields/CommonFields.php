@@ -16,6 +16,7 @@ class CommonFields extends Model
     protected $connection = 'mysql';
     public $table = 'docs_create_common_fields';
     public $timestamps = false;
+    protected $guarded = [];
 
     public function scopeGetCommonFields() {
         $common_fields = CommonFields::select('field_name', 'field_type') -> orderBy('field_order', 'ASC') -> get();

@@ -11,6 +11,7 @@ class TransactionChecklistItemsNotes extends Model
     protected $connection = 'mysql';
     public $table = 'docs_transactions_checklist_item_notes';
     protected $primaryKey = 'id';
+    protected $guarded = [];
 
     public function ScopeGetNotes($query, $checklist_item_id, $document_id) {
 

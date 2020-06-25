@@ -1,5 +1,5 @@
 const writtenNumber = require('written-number');
-import datepicker from 'js-datepicker';
+/* import datepicker from 'js-datepicker'; */
 
 
 if (document.URL.match(/edit_files/)) {

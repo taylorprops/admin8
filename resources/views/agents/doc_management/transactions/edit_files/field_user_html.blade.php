@@ -76,7 +76,7 @@ if($field_inputs == 'no') {
     style="position: absolute;
     top: {{ $top }}%;
     left: {{ $left }}%;
-    height: {{ $height + ($height * .1) }}%;
+    height: {{ $height }}%;
     width: {{ $width }}%;"
     id="field_{{ $field_user -> field_id }}"
     data-field-id="{{ $field_user -> field_id }}"

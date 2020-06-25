@@ -9,4 +9,5 @@ class TransactionDocumentsFolders extends Model
     protected $connection = 'mysql';
     public $table = 'docs_transactions_docs_folders';
     protected $primaryKey = 'id';
+    protected $guarded = [];
 }

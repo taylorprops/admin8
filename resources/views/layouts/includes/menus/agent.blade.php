@@ -13,17 +13,17 @@
     <div class="tab-pane fade show active" id="doc_management_div" role="tabpanel" aria-labelledby="doc_management_tab">
         <ul class="mt-5">
             <li>
-                <a class="text-primary" href="/agents/doc_management/transactions/listings/listings_all">
+                <a class="text-primary" href="/agents/doc_management/transactions">
                     <i class="fas fa-caret-right pl-2 pr-3"></i>View Listings
                 </a>
             </li>
             <li>
-                <a class="text-primary" href="/agents/doc_management/transactions/listings/listing_add">
+                <a class="text-primary" href="/agents/doc_management/transactions/add/listing">
                     <i class="fas fa-caret-right pl-2 pr-3"></i>Add Listing
                 </a>
             </li>
             <li>
-                <a class="text-primary" href="/agents/doc_management/transactions/contracts/contract_add">
+                <a class="text-primary" href="/agents/doc_management/transactions/add/contract">
                     <i class="fas fa-caret-right pl-2 pr-3"></i>Add Sales Contract
                 </a>
             </li>

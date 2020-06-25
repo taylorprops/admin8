@@ -15,6 +15,7 @@ class ResourceItems extends Model
     public $table = 'docs_resource_items';
     protected $primaryKey = 'resource_id';
     public $timestamps = false;
+    protected $guarded = [];
 
     // allow only active records on all queries
     /* public static function boot() {
@@ -50,6 +51,18 @@ class ResourceItems extends Model
     public function scopeSellerResourceId() {
         $seller_resource_id = ResourceItems::where('resource_name', 'Seller') -> first();
         return $seller_resource_id -> resource_id;
+    }
+    public function scopeBuyerResourceId() {
+        $buyer_resource_id = ResourceItems::where('resource_name', 'Buyer') -> first();
+        return $buyer_resource_id -> resource_id;
+    }
+    public function scopeBuyerAgentResourceId() {
+        $buyer_resource_id = ResourceItems::where('resource_name', 'Buyer Agent') -> first();
+        return $buyer_resource_id -> resource_id;
+    }
+    public function scopeListingAgentResourceId() {
+        $buyer_resource_id = ResourceItems::where('resource_name', 'Listing Agent') -> first();
+        return $buyer_resource_id -> resource_id;
     }
 
     public function getCountFormGroup($id) {

@@ -1,0 +1,510 @@
+.page-listing-details {
+
+    min-height: 90VH;
+
+    .listing-header-details .btn {
+        padding: 0.1rem 0.2rem;
+    }
+
+    .nav-link:not(.add-to-checklist) {
+        text-transform: uppercase;
+        font-size: 1.1rem;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0px;
+    }
+
+    .nav-link.active {
+        color: $orange;
+    }
+
+    .property-image-div img {
+        height: 85px;
+        border: 1px solid $primary-color;
+    }
+
+    .transaction-type {
+        font-size: 1.3rem;
+    }
+
+    .transaction-sub-type {
+        font-size: .8rem;
+    }
+
+    .badge:not(.form-pill) {
+        padding: .5rem;
+        box-shadow: none;
+    }
+
+    .details-main-tabs {
+        padding: 0rem;
+        padding-top: 1rem;
+        border: 1px solid $border-color !important;
+        border-top: none !important;
+        margin-top: 0px;
+    }
+
+    .get-members-tabs {
+        border: none;
+    }
+
+    .member-entity-name-div {
+        display: none;
+    }
+
+    #add_member_div .form-check {
+        padding-left: 0px;
+    }
+
+    .transaction-details-div {
+        width: 100%;
+        height: auto;
+        padding: 10px 20px;
+        border: 1px solid $border-color;
+    }
+
+    .confirm-import-image {
+        width: 100%;
+        max-height: 150px;
+    }
+
+    .folder-header {
+        border-bottom: 2px solid $border-color;
+
+        .form-ele {
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+    }
+
+    .sortable-documents {
+        min-height: 55px;
+    }
+
+    .document-div {
+        border-bottom: 1px dotted $border-color;
+        line-height: 1;
+
+        .form-ele {
+            margin-top: .25rem;
+            margin-bottom: 0rem;
+        }
+
+        .document-title {
+            line-height: 1.3rem;
+        }
+
+        .btn {
+            padding: .2rem .5rem;
+        }
+        .dropdown-submenu {
+            position:relative;
+        }
+        .dropdown-submenu .dropdown-menu {
+            top:0;
+            right:100%;
+        }
+
+    }
+
+    .bg-sortable {
+        width: 100%;
+        height: 80px;
+        border: 3px dotted $primary;
+    }
+
+
+
+
+    .document-div:hover {
+        background: $blue-light;
+    }
+
+    #upload_documents_modal .form-ele {
+        margin-bottom: 0rem;
+
+        .form-select-wrapper {
+            height: auto;
+        }
+    }
+
+    #add_checklist_template_modal .form-ele,
+    #add_individual_template_modal .form-ele,
+    #add_document_modal .form-ele {
+        margin-top: 0rem;
+        margin-bottom: 0rem;
+    }
+
+    .form-in-use {
+        opacity: 0.6;
+    }
+
+    .form-groups-container {
+        height: 420px;
+    }
+
+    #form_search_div {
+        position: relative;
+    }
+
+    #form_search_div:after {
+        position: absolute;
+        font-family: 'Font Awesome 5 Pro';
+        top: 0;
+        right: 10px;
+        content: "\f002";
+        color: $primary;
+        font-size: 1.6rem;
+        z-index: 1;
+    }
+    .dropleft .dropdown-toggle::before {
+        display: inline-block;
+        margin-right: 0.255em;
+        vertical-align: 0.255em;
+        border: none;
+        font-family: 'Font Awesome 5 Pro';
+        content: "\f0c9";
+    }
+
+    .add-docs-div {
+        height: 200px;
+    }
+
+    .add-buttons-div {
+        float: right;
+
+        /* .btn-block {
+            padding-right: 1.5rem;
+        } */
+    }
+
+    #bulk_options_div {
+        position: sticky;
+        top: 60px;
+        background: rgba(255, 255, 255, .8);
+        width: 100%;
+        padding: 10px;
+        border-top: 1px solid $border-color;
+        border-bottom: 1px solid $border-color;
+        z-index: 1000;
+    }
+
+    .status-badge {
+        width: 100px;
+    }
+
+    .checklist-group-header {
+        border-bottom: 3px solid $border-color;
+    }
+
+    .notes-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    .add-notes-div {
+        textarea {
+            height: 90px;
+        }
+    }
+
+    .checklist-attachment {
+        width: 70px;
+        text-align: right;
+    }
+
+    #add_to_checklist_items_wrapper, #add_to_checklist_documents_wrapper {
+        max-height: 65VH;
+        overflow-y: auto;
+    }
+    #add_to_checklist_documents_div {
+        min-height: 200px;
+    }
+    #add_to_checklist_items_div {
+        padding-bottom: 100px;
+    }
+    .add-to-checklist-document-div {
+        touch-action: none;
+        user-select: none;
+        cursor: move;
+        padding: .3rem .6rem !important;
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    /* .add-to-checklist-item-div, .add-to-checklist-document-div {
+        width: 95%;
+    } */
+
+    .checklist-item-droparea {
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+        border: 2px dashed $primary;
+        min-height: 20px;
+        height: auto;
+    }
+    .checklist-item-badge {
+        width: 100px;
+    }
+
+
+
+    .drop-activated {
+        border: 2px dashed $success;
+
+        .drop-div-title {
+            color: $success;
+        }
+    }
+    .source-dropped {
+        width: 96%;
+        margin: 2px auto;
+        background: rgba($success, .5);
+
+        > .text-gray {
+            color: white !important;
+        }
+    }
+    .doc-match {
+        background: rgba($orange, .2);
+        min-height: 40px;
+    }
+
+    .image-container {
+        min-height: 380px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+
+        .image-holder {
+            position: relative;
+            width: auto;
+            height: auto;
+            display: inline-block;
+            cursor: pointer;
+
+            .document-image {
+                max-width: 250px !important;
+            }
+
+            .image-options-div {
+                position: absolute;
+                bottom: 0px;
+                left: 15px;
+
+                .add-to-selected-button {
+                    display: block;
+                }
+                .remove-from-selected-button, .image-order {
+                    display: none;
+                }
+                .image-zoom-div {
+                    position: absolute;
+                    bottom: 0px;
+                    right: 30px;
+                }
+            }
+
+        }
+    }
+
+    .selected-images-container{
+        min-height: 230px;
+        border: 1px solid $border-color;
+        height: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+
+        .image-holder {
+            position: relative;
+            width: auto;
+            height: auto;
+            display: inline-block;
+            cursor: pointer;
+
+            .document-image {
+                max-width: 170px !important;
+            }
+
+            .image-options-div {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+
+                .add-to-selected-button {
+                    display: none
+                }
+                .remove-from-selected-button, .image-order {
+                    display: block;
+                }
+                .image-zoom-div {
+                    position: absolute;
+                    bottom: -26px;
+                    right: 5px;
+
+                    .image-zoom-button {
+                        padding: 1px 4px;
+                    }
+                }
+            }
+
+
+        }
+
+    }
+
+    .image-preview {
+        max-height: 80VH;
+        max-width: 95VW;
+    }
+
+    .add-to-checklist-item-list-group {
+        max-height: 50VH;
+        overflow-y: auto;
+    }
+
+    #document_options_tabs_nav {
+
+        .nav-link.active {
+            color: $blue;
+            background-color: #ffffff;
+            border: none !important;
+            border-radius: 0px;
+        }
+
+    }
+
+    .property-options {
+        max-height: 70VH;
+        overflow: visible;
+
+    }
+
+    #send_email_modal {
+
+        [class*='col'] {
+            padding-left: 3px;
+            padding-right: 3px;
+        }
+        .form-select-wrapper {
+            height: auto;
+        }
+        #email_attachments {
+            max-height: 100px;
+            overflow: auto;
+            font-size: .8rem;
+        }
+
+    }
+
+    @media (min-width: 1200px) {
+        #split_document_modal_dialog {
+            max-width: 95% !important;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .details-list-group .nav-link {
+            font-size: 1rem;
+            text-transform: initial;
+            padding: 0.5rem 1rem;
+        }
+
+        .transaction-type {
+            font-size: 1rem;
+        }
+
+        .transaction-sub-type {
+            font-size: .7rem;
+        }
+
+        .badge {
+            padding: .5rem .3rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .badge {
+            padding: .4rem .2rem;
+        }
+
+        .form-check {
+            padding-left: .7rem;
+        }
+        .form-check-input[type="checkbox"] + label, label.btn input[type="checkbox"] + label {
+            padding-left: 10px;
+        }
+
+
+    }
+
+    @media (max-width: 768px) {
+        .form-check-input[type="checkbox"] + label, label.btn input[type="checkbox"] + label {
+            padding-left: 25px;
+        }
+    }
+
+
+    @media (max-width: 576px) {
+
+        .details-list-group .nav-link {
+            padding: 0.2rem .2rem;
+            font-size: .8rem;
+        }
+
+        .transaction-type {
+            font-size: .9rem;
+        }
+
+        .transaction-sub-type {
+            font-size: .7rem;
+        }
+
+        .badge {
+            padding: .3rem;
+        }
+
+        .add-docs-div {
+            height: auto;
+        }
+
+        .add-buttons-div {
+            float: none;
+        }
+
+        .add-notes-div {
+            textarea {
+                height: 50px;
+            }
+        }
+
+        #add_to_checklist_items_div {
+            padding-bottom: 10px;
+        }
+        #add_to_checklist_items_wrapper, #add_to_checklist_documents_wrapper {
+            max-height: 45VH;
+            overflow-y: auto;
+        }
+
+        .add-to-checklist-item-list-group {
+            max-height: 100%;
+        }
+
+        .checklist-item-badge {
+            width: 65px;
+        }
+
+
+    }
+
+    @media (max-width: 450px) {
+
+        .agent-section {
+            border: none !important;
+        }
+
+    }
+
+
+}

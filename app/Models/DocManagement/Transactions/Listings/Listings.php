@@ -12,4 +12,5 @@ class Listings extends Model
     public $table = 'docs_transactions_listings';
     protected $primaryKey = 'Listing_ID';
     public $timestamps = false;
+    protected $guarded = [];
 }

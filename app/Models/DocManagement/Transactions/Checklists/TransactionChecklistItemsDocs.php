@@ -11,6 +11,7 @@ class TransactionChecklistItemsDocs extends Model
     protected $connection = 'mysql';
     public $table = 'docs_transactions_checklist_item_docs';
     protected $primaryKey = 'id';
+    protected $guarded = [];
 
     public function ScopeGetDocs($query, $checklist_item_id) {
 

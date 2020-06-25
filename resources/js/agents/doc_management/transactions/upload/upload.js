@@ -5,12 +5,14 @@ window.upload_documents = function() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         auto: false,
-        url: '/agents/doc_management/transactions/listings/upload_documents',
+        url: '/agents/doc_management/transactions/upload_documents',
         extFilter: ["jpg", "jpeg", "png", "gif", "pdf"],
         maxFileSize: 100000000, // 100 Megs
         extraData: function() {
             return {
                 'Listing_ID': $('#Listing_ID').val(),
+                'Contract_ID': $('#Contract_ID').val(),
+                'transaction_type': $('#transaction_type').val(),
                 'Agent_ID': $('#Agent_ID').val(),
                 'folder': $('#documents_folder').val()
             };

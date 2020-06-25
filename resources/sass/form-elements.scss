@@ -6,7 +6,7 @@
 
 .form-ele {
     position: relative;
-    margin-top: .6rem;
+    margin-top: .9rem;
     margin-bottom: .6rem;
 
     /* .disabled {
@@ -81,11 +81,11 @@
 
     .form-input-label.active, .form-textarea-label.active, .form-select-label.active {
         position: absolute;
-        top: -7px;
+        top: -15px;
         width: auto;
         font-size: .8rem;
         color: $default;
-        background: rgba(white, 0.9);
+        //background: rgba(white, 0.9);
         line-height: .8rem;
         //border-radius: 10px;
         padding-bottom: 2px;
@@ -101,6 +101,8 @@
 
     .form-select-wrapper {
         position: relative;
+        margin-top: .9rem;
+    margin-bottom: .6rem;
     }
     .form-select-value-cancel {
         display: none;
@@ -119,7 +121,7 @@
     .form-select-dropdown {
         display: none;
         position: absolute;
-        top: 30px;
+        top: 35px;
         left: 0px;
         background: #fff;
         border: 1px solid #ccc;

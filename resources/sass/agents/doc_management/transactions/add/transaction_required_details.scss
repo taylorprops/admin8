@@ -1,0 +1,39 @@
+.page-required-details {
+
+    .hidden {
+        display: none !important;
+    }
+    .steps-container {
+        max-width: 1100px;
+    }
+
+    label.invalid {
+        display: none !important;
+    }
+
+    .address-autocomplete-container {
+        position: relative;
+    }
+
+    .address-autocomplete-div {
+        display: none;
+        position: absolute;
+        top: -15px;
+        left: 0px;
+        width: 100%;
+        padding: 8px;
+        background: #fff;
+        border: 1px solid #ccc;
+    }
+
+    .buyer-div, .seller-div {
+        border: 1px solid $border-color;
+        padding: 10px;
+    }
+
+    @media (max-width: 1199.98px) {
+        .modal-xl {
+            max-width: 98% !important;
+        }
+    }
+}

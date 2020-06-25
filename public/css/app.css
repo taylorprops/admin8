@@ -13640,7 +13640,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 
 .form-ele {
   position: relative;
-  margin-top: 0.6rem;
+  margin-top: 0.9rem;
   margin-bottom: 0.6rem;
   /* .disabled {
       background: rgba($primary-color, .1);
@@ -13718,11 +13718,10 @@ table.dataTable thead .sorting_desc_disabled:before {
 .form-ele .form-textarea-label.active,
 .form-ele .form-select-label.active {
   position: absolute;
-  top: -7px;
+  top: -15px;
   width: auto;
   font-size: 0.8rem;
   color: #647c96;
-  background: rgba(255, 255, 255, 0.9);
   line-height: 0.8rem;
   padding-bottom: 2px;
   padding-top: 1px;
@@ -13736,6 +13735,8 @@ table.dataTable thead .sorting_desc_disabled:before {
 
 .form-ele .form-select-wrapper {
   position: relative;
+  margin-top: 0.9rem;
+  margin-bottom: 0.6rem;
 }
 
 .form-ele .form-select-value-cancel {
@@ -13757,7 +13758,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 .form-ele .form-select-dropdown {
   display: none;
   position: absolute;
-  top: 30px;
+  top: 35px;
   left: 0px;
   background: #fff;
   border: 1px solid #ccc;
@@ -14878,35 +14879,35 @@ header .navbar #sub_menu_divs a {
   color: #4c9bdb !important;
 }
 
-.page-add-listing .property-container {
+.page-add-transaction .property-container {
   max-width: 1000px;
 }
 
-.page-add-listing #address_search_container {
+.page-add-transaction #address_search_container {
   max-width: 750px;
 }
 
-.page-add-listing #mls_search_container {
+.page-add-transaction #mls_search_container {
   max-width: 400px;
 }
 
-.page-add-listing .property-loading-div {
+.page-add-transaction .property-loading-div {
   width: 100%;
   height: 100%;
 }
 
-.page-add-listing #address_search_street,
-.page-add-listing #address_search_unit,
-.page-add-listing #mls_search {
+.page-add-transaction #address_search_street,
+.page-add-transaction #address_search_unit,
+.page-add-transaction #mls_search {
   padding: 10px;
   font-size: 1.2rem;
 }
 
-.page-add-listing #mls_search {
+.page-add-transaction #mls_search {
   text-transform: uppercase;
 }
 
-.page-add-listing .property-results-image {
+.page-add-transaction .property-results-image {
   width: 100%;
   height: 250px;
   -o-object-fit: cover;
@@ -14914,7 +14915,7 @@ header .navbar #sub_menu_divs a {
 }
 
 @media (min-width: 576px) {
-  .page-add-listing .property-results-image {
+  .page-add-transaction .property-results-image {
     max-width: 400px;
     height: 300px;
     -o-object-fit: center;
@@ -14923,7 +14924,7 @@ header .navbar #sub_menu_divs a {
 }
 
 @media (min-width: 768px) {
-  .page-add-listing .property-results-image {
+  .page-add-transaction .property-results-image {
     height: 200px;
     width: 100%;
     -o-object-fit: cover;
@@ -14931,7 +14932,7 @@ header .navbar #sub_menu_divs a {
   }
 }
 
-.page-add-listing .property-details span {
+.page-add-transaction .property-details span {
   color: #df7935;
 }
 
@@ -14942,27 +14943,81 @@ header .navbar #sub_menu_divs a {
   color: #999;
 }
 
-.page-add-listing-details {
+.page-add-transaction-details {
   margin-bottom: 300px;
 }
 
-.page-add-listing-details .steps-container {
+.page-add-transaction-details .steps-container {
   max-width: 450px;
 }
 
-.page-add-listing-details .form-ele {
+.page-add-transaction-details .form-ele {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
 }
 
-.page-add-listing-details ul.stepper .step-title {
+.page-add-transaction-details ul.stepper .step-title {
   padding: 0.75rem 4rem;
 }
 
+.page-add-transaction-details input::-webkit-outer-spin-button,
+.page-add-transaction-details input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.page-add-transaction-details input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.page-required-details .hidden {
+  display: none !important;
+}
+
+.page-required-details .steps-container {
+  max-width: 1100px;
+}
+
+.page-required-details label.invalid {
+  display: none !important;
+}
+
+.page-required-details .address-autocomplete-container {
+  position: relative;
+}
+
+.page-required-details .address-autocomplete-div {
+  display: none;
+  position: absolute;
+  top: -15px;
+  left: 0px;
+  width: 100%;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #ccc;
+}
+
+.page-required-details .buyer-div,
+.page-required-details .seller-div {
+  border: 1px solid #dee2e6;
+  padding: 10px;
+}
+
+@media (max-width: 1199.98px) {
+  .page-required-details .modal-xl {
+    max-width: 98% !important;
+  }
+}
+
 .page-listing-details {
+  min-height: 90VH;
   /* .add-to-checklist-item-div, .add-to-checklist-document-div {
       width: 95%;
   } */
+}
+
+.page-listing-details .listing-header-details .btn {
+  padding: 0.1rem 0.2rem;
 }
 
 .page-listing-details .nav-link:not(.add-to-checklist) {
@@ -15006,7 +15061,15 @@ header .navbar #sub_menu_divs a {
   border: none;
 }
 
-.page-listing-details .listing-details-div {
+.page-listing-details .member-entity-name-div {
+  display: none;
+}
+
+.page-listing-details #add_member_div .form-check {
+  padding-left: 0px;
+}
+
+.page-listing-details .transaction-details-div {
   width: 100%;
   height: auto;
   padding: 10px 20px;
@@ -15025,6 +15088,10 @@ header .navbar #sub_menu_divs a {
 .page-listing-details .folder-header .form-ele {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
+}
+
+.page-listing-details .sortable-documents {
+  min-height: 55px;
 }
 
 .page-listing-details .document-div {
@@ -15311,7 +15378,7 @@ header .navbar #sub_menu_divs a {
 }
 
 .page-listing-details .add-to-checklist-item-list-group {
-  max-height: 60VH;
+  max-height: 50VH;
   overflow-y: auto;
 }
 
@@ -15439,32 +15506,9 @@ header .navbar #sub_menu_divs a {
   }
 }
 
-.page-required-details .steps-container {
-  max-width: 1100px;
-}
-
-.page-required-details label.invalid {
-  display: none !important;
-}
-
-.page-required-details .address-autocomplete-container {
-  position: relative;
-}
-
-.page-required-details .address-autocomplete-div {
-  display: none;
-  position: absolute;
-  top: -15px;
-  left: 0px;
-  width: 100%;
-  padding: 8px;
-  background: #fff;
-  border: 1px solid #ccc;
-}
-
-@media (max-width: 1199.98px) {
-  .page-required-details .modal-xl {
-    max-width: 98% !important;
+@media (max-width: 450px) {
+  .page-listing-details .agent-section {
+    border: none !important;
   }
 }
 

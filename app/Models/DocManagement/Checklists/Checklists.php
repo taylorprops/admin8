@@ -8,6 +8,7 @@ class Checklists extends Model
 {
     protected $connection = 'mysql';
     public $table = 'docs_checklists';
+    protected $guarded = [];
 
     public static function boot() {
         parent::boot();

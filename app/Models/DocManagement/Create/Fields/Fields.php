@@ -9,4 +9,5 @@ class Fields extends Model
     protected $connection = 'mysql';
     public $table = 'docs_create_fields';
     public $timestamps = false;
+    protected $guarded = [];
 }

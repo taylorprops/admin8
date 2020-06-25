@@ -584,6 +584,8 @@ window.validate_form = function (form) {
                 ele.removeClass(classname);
             }
 
+        } else {
+            console.log(required.attr('id'), required.attr('class'));
         }
         // on change if ele has value remove invalid
         ele.change(function () {
@@ -597,14 +599,24 @@ window.validate_form = function (form) {
 
 
     });
-    // focus on first invalid
-    let invalid_focus = form.find('.invalid').first();
-    if (invalid_focus.hasClass('file-path')) {
-        invalid_focus.parent().prev('input').trigger('click');
-    } else {
-        invalid_focus.focus().trigger('click');
-    }
 
+    if(pass == 'no') {
+        // focus on first invalid
+        let invalid_focus = form.find('.invalid').first();
+
+        if (invalid_focus.hasClass('file-path')) {
+            invalid_focus.parent().prev('input').trigger('click');
+        } else {
+            invalid_focus.focus().trigger('click');
+        }
+
+        $('html, body').animate({
+            scrollTop: invalid_focus.offset().top - 140
+        }, 800);
+
+        toastr['error']('All Required Fields Must Be Completed');
+
+    }
 
     return pass;
 
