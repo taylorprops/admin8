@@ -2,7 +2,7 @@
 
     <div class="row mb-3 mb-sm-2 mb-md-1">
         <div class="col-12 col-sm-5">
-            <div class="h4 text-primary ml-3 mt-2 mb-3"><i class="fad fa-copy mr-2"></i> Documents</div>
+            <div class="h4-responsive text-primary ml-3 mt-2 mb-3"><i class="fad fa-copy mr-2"></i> Documents</div>
         </div>
         <div class="col-12 col-sm-7">
             <div class="add-buttons-div">
@@ -106,6 +106,23 @@
 
         @php
         $docs_count = $documents -> where('folder', $folder -> id) -> count();
+
+        $show_folder = '';
+        if($transaction_type == 'listing') {
+            if($folder -> folder_name == 'Listing Documents' && $docs_count > 0) {
+                $show_folder = 'show';
+            }
+        }
+        if($transaction_type == 'contract') {
+            if($folder -> folder_name == 'Contract Documents' && $docs_count > 0) {
+                $show_folder = 'show';
+            }
+        }
+
+        $deletable_folder = true;
+        if(preg_match('/(Listing\sDocuments|Contract\sDocuments|Trash)/', $folder -> folder_name)) {
+            $deletable_folder = false;
+        }
         @endphp
         <div class="folder-div mb-4 border-top border-bottom border-primary" data-folder="{{ $folder -> id }}">
 
@@ -115,22 +132,23 @@
                         <input type="checkbox" class="custom-form-element form-checkbox check-all">
                     </div>
                     <div class="h5 mt-2">
-                        <a class="text-gray folder-collapse" data-toggle="collapse" href="#documents_folder_{{ $loop -> index }}" aria-expanded="false" aria-controls="documents_folder_{{ $loop -> index }}">
-                            <i class="fal @if($folder -> folder_name == 'Trash' || $docs_count == 0) fa-angle-right @else fa-angle-down @endif fa-lg mr-3"></i>
+                        <a class="folder-collapse text-orange" data-toggle="collapse" href="#documents_folder_{{ $loop -> index }}" aria-expanded="false" aria-controls="documents_folder_{{ $loop -> index }}">
+                            <i class="fal @if($folder -> folder_name == 'Trash' || $show_folder == '') fa-angle-right @else fa-angle-down @endif fa-lg mr-3"></i>
                             <i class="fad fa-folder mr-1 mr-sm-3 fa-lg"></i>
                             {{ $folder -> folder_name }}
                         </a>
                         <span class="badge badge-pill badge-primary ml-1 ml-sm-3 py-1 docs-count">{{ $docs_count }}</span>
                     </div>
                 </div>
-                @if(!$loop -> first && !$loop -> last && $documents -> where('folder', $folder -> id) -> where('assigned', 'yes') -> count() == 0)
+                @if($deletable_folder && $documents -> where('folder', $folder -> id) -> where('assigned', 'yes') -> count() == 0)
                 <div class="pt-1">
                     <a href="javascript: void(0)" class="btn btn-sm btn-danger delete-folder-button" data-folder-id="{{ $folder -> id }}"><i class="fa fa-trash"></i> <span class="d-none d-sm-inline-block ml-2">Delete Folder</span></a>
                 </div>
                 @endif
             </div>
 
-            <div class="collapse sortable-documents @if($folder -> folder_name != 'Trash' && $docs_count > 0) show @endif" id="documents_folder_{{ $loop -> index }}" data-folder-id="{{ $folder -> id }}">
+
+            <div class="collapse sortable-documents @if($folder -> folder_name != 'Trash') {{ $show_folder }} @endif" id="documents_folder_{{ $loop -> index }}" data-folder-id="{{ $folder -> id }}">
 
                 @if(count($documents) > 0)
 
@@ -199,7 +217,7 @@
                                                 $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" data-checklist-id="'.$checklist_id.'" data-file-name="'.$document -> file_name_display.'" data-file-type="'.$document -> file_type.'" data-folder="'.$folder -> id.'" title="Split Document"><i class="fad fa-page-break mr-1 "></i> Split</button>';
                                             }
 
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Fill Fields"><i class="fad fa-edit mr-1 "></i> Fill Fields</button>';
+                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Edit and Fill Fields"><i class="fad fa-edit mr-1 "></i> Edit/Fill</button>';
 
                                             $menu_options .= '<button type="button" class="dropdown-item text-primary doc-get-signed-button" data-document-id="'.$document -> id.'" title="Get Signed"><i class="fad fa-signature mr-1 "></i> Get Signed</button>';
 
@@ -307,7 +325,9 @@
                                         </div>
                                     </div>
 
+
                                     @foreach($members as $member)
+
                                     <div class="row to-addresses">
                                         <div class="col-2">
                                             @if($loop -> first)
@@ -665,13 +685,12 @@
                                         </li>
 
                                         @php
-                                        $id = ($Contract_ID > 0 ? $Contract_ID : $Listing_ID);
-                                        $forms = $available_files -> formGroupFiles($form_group -> resource_id, $id, $transaction_type);
+                                        $forms = $available_files -> formGroupFiles($form_group -> resource_id, $Listing_ID, $Contract_ID, $transaction_type);
                                         $forms_available = $forms['forms_available'];
-                                        $forms_in_use = null;
+                                        /* $forms_in_use = null;
                                         if($forms['forms_in_use']){
                                             $forms_in_use = $forms['forms_in_use'] -> toArray();
-                                        }
+                                        } */
                                         @endphp
 
                                         @foreach($forms_available as $form)
@@ -755,9 +774,17 @@
                                     <div class="col-12 col-lg-6 col-xl-4">
                                         <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="checklist_templates_folder" data-label="Select Folder">
                                             @foreach($folders as $folder)
-                                            @if($folder -> folder_name != 'Trash')
-                                            <option value="{{ $folder -> id }}">{{ $folder -> folder_name }}</option>
-                                            @endif
+                                                @php
+                                                if($transaction_type == 'listing') {
+                                                    $selected_folder = 'Listing Documents';
+                                                } else if($transaction_type == 'contract') {
+                                                    $selected_folder = 'Contract Documents';
+                                                }
+
+                                                @endphp
+                                                @if($folder -> folder_name != 'Trash')
+                                                <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder -> folder_name }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
@@ -813,7 +840,7 @@
                                 </select>
 
                                 <div id="file_upload" class="dm-uploader p-5 mt-3">
-                                    <h3 class="mb-5 mt-5 text-muted">Drag &amp; drop files here</h3>
+                                    <h3-responsive class="mb-5 mt-5 text-muted">Drag &amp; drop files here</h3>
 
                                     <div class="btn btn-primary btn-block mb-5">
                                         <span>Click to browse files</span>

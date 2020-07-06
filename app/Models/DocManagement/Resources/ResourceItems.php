@@ -100,4 +100,14 @@ class ResourceItems extends Model
         $tags = $query -> where('resource_id', $id) -> first();
         return $tags -> resource_color;
     }
+
+    public function scopeGetActiveListingStatuses() {
+        $ids = $this -> where('resource_type', 'listing_status') -> whereIn('resource_name', ['Pre-Listing', 'Active', 'Under Contract']) -> pluck('resource_id');
+        return $ids;
+    }
+
+    public function scopeGetActiveContractStatuses() {
+        $ids = $this -> where('resource_type', 'contract_status') -> where('resource_name', 'Active') -> pluck('resource_id');
+        return $ids;
+    }
 }

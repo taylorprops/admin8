@@ -39,7 +39,7 @@
                         <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $location -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $location -> resource_id }}">
 
                             <div class="d-flex justify-content-between">
-                                <div class="h3 responsive text-primary">{{ $location -> resource_name }} @if($location -> resource_name != $location -> resource_state) | {{ $location -> resource_state }} @endif</div>
+                                <div class="h3-responsive text-primary">{{ $location -> resource_name }} @if($location -> resource_name != $location -> resource_state) | {{ $location -> resource_state }} @endif</div>
                                 <div class="d-flex justify-content-end">
                                     <div>
                                         <select class="custom-form-element form-select form-select-no-search form-select-no-cancel checklist-type-option" data-label="Checklist Type">
@@ -130,7 +130,7 @@
             <div class="modal-content">
                 <form id="checklist_items_form">
                     <div class="modal-header bg-primary">
-                        <h3 class="modal-title text-white" id="checklist_items_modal_title"></h3>
+                        <h3-responsive class="modal-title text-white" id="checklist_items_modal_title"></h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times fa-2x"></i>
                         </button>
@@ -231,7 +231,7 @@
             <div class="modal-content">
                 <form id="confirm_delete_checklist_form">
                     <div class="modal-header bg-danger draggable-handle">
-                        <h3 class="modal-title" id="confirm_delete_checklist_modal_title">Delete Checklist</h3>
+                        <h3-responsive class="modal-title" id="confirm_delete_checklist_modal_title">Delete Checklist</h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times fa-2x"></i>
                         </button>
@@ -258,7 +258,7 @@
 
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="modal-title" id="confirm_remove_file_modal_title">Remove Form From Checklist</h3>
+                <h3-responsive class="modal-title" id="confirm_remove_file_modal_title">Remove Form From Checklist</h3>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times fa-2x"></i>
                 </button>

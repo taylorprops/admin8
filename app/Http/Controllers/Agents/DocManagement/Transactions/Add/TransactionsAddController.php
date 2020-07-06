@@ -21,7 +21,7 @@ use App\Models\DocManagement\Transactions\Members\Members;
 use App\Models\Employees\Agents;
 use App\Models\Resources\LocationData;
 use App\Models\CRM\CRMContacts;
-
+use App\Models\BrightMLS\Offices;
 
 
 class TransactionsAddController extends Controller {
@@ -220,7 +220,7 @@ class TransactionsAddController extends Controller {
         // add agent details
         $property_details -> Agent_ID = $agent -> id;
 
-        if($transaction_type == 'listing') {
+        /* if($transaction_type == 'listing') {
             $property_details -> ListAgentFirstName = $agent -> first_name;
             $property_details -> ListAgentLastName = $agent -> last_name;
             $property_details -> ListAgentEmail = $agent -> email;
@@ -230,6 +230,10 @@ class TransactionsAddController extends Controller {
             $property_details -> BuyerAgentLastName = $agent -> last_name;
             $property_details -> BuyerAgentEmail = $agent -> email;
             $property_details -> BuyerAgentPreferredPhone = $agent -> cell_phone;
+            $property_details -> ContractPrice = preg_replace('/[\$,]+/', '', $request -> contract_price) ?? null;
+        } */
+
+        if($transaction_type == 'contract') {
             $property_details -> ContractPrice = preg_replace('/[\$,]+/', '', $request -> contract_price) ?? null;
         }
 
@@ -308,21 +312,97 @@ class TransactionsAddController extends Controller {
         if($transaction_type == 'contract') {
             $field = 'Contract_ID';
             $id = $Contract_ID;
+            $property = Contracts::find($Contract_ID);
+        } else {
+            $property = Listings::find($Listing_ID);
+        }
+
+        $agent = Agents::where('id', $Agent_ID) -> first();
+        // get state to see which bright_mls_id is required
+        $state = $property -> StateOrProvince;
+
+        $bright_mls_id = $agent -> bright_mls_id_md_dc_tp;
+        if($state == 'MD' && $agent -> company == 'Anne Arundel Properties'){
+            $bright_mls_id = $agent -> bright_mls_id_md_aap;
+        } else if($state == 'VA') {
+            $bright_mls_id = $agent -> bright_mls_id_va_tp;
         }
 
         // get property details to add listing agent to members if contract
-        if($Contract_ID > 0) {
-            $property = Contracts::where('Contract_ID', $Contract_ID) -> first();
+        if($transaction_type == 'contract') {
+
             $listing_agent = new Members();
             $listing_agent -> first_name = $property -> ListAgentFirstName;
             $listing_agent -> last_name = $property -> ListAgentLastName;
             $listing_agent -> cell_phone = $property -> ListAgentPreferredPhone;
             $listing_agent -> email = $property -> ListAgentEmail;
             $listing_agent -> company = $property -> ListOfficeName;
+
+            $list_office_mls_id = $property -> ListOfficeMlsId;
+            $list_office_details = Offices::where('OfficeMlsId', $list_office_mls_id) -> first();
+
+            $listing_agent -> bright_mls_id = $property -> ListAgentMlsId;
+            $listing_agent -> address_office_street = $list_office_details -> OfficeAddress1;
+            $listing_agent -> address_office_city = $list_office_details -> OfficeCity;
+            $listing_agent -> address_office_state = $list_office_details -> OfficeStateOrProvince;
+            $listing_agent -> address_office_zip = $list_office_details -> OfficePostalCode;
             $listing_agent -> Contract_ID = $Contract_ID;
-            $listing_agent -> Agent_ID = $Agent_ID;
             $listing_agent -> member_type_id = ResourceItems::ListingAgentResourceId();
             $listing_agent -> save();
+
+            $buyers_agent = new Members();
+            $buyers_agent -> first_name = $agent -> first_name;
+            $buyers_agent -> last_name = $agent -> last_name;
+            $buyers_agent -> cell_phone = $agent -> cell_phone;
+            $buyers_agent -> email = $agent -> email;
+            $buyers_agent -> company = $agent -> company;
+            $buyers_agent -> bright_mls_id = $bright_mls_id;
+            $buyers_agent -> address_office_street = config('global.vars.company_street');
+            $buyers_agent -> address_office_city = config('global.vars.company_city');
+            $buyers_agent -> address_office_state = config('global.vars.company_state');
+            $buyers_agent -> address_office_zip = config('global.vars.company_zip');
+            $buyers_agent -> Contract_ID = $Contract_ID;
+            $buyers_agent -> Agent_ID = $Agent_ID;
+            $buyers_agent -> member_type_id = ResourceItems::BuyerAgentResourceId();
+            $buyers_agent -> disabled = true;
+            $buyers_agent -> save();
+
+        } else {
+            // add listing agent to members if just a listing
+            $listing_agent = new Members();
+            $listing_agent -> first_name = $agent -> first_name;
+            $listing_agent -> last_name = $agent -> last_name;
+            $listing_agent -> cell_phone = $agent -> cell_phone;
+            $listing_agent -> email = $agent -> email;
+            $listing_agent -> company = $agent -> company;
+            $listing_agent -> bright_mls_id = $bright_mls_id;
+            $listing_agent -> address_office_street = config('global.vars.company_street');
+            $listing_agent -> address_office_city = config('global.vars.company_city');
+            $listing_agent -> address_office_state = config('global.vars.company_state');
+            $listing_agent -> address_office_zip = config('global.vars.company_zip');
+            $listing_agent -> Listing_ID = $Listing_ID;
+            $listing_agent -> Agent_ID = $Agent_ID;
+            $listing_agent -> member_type_id = ResourceItems::ListingAgentResourceId();
+            $listing_agent -> disabled = true;
+            $listing_agent -> save();
+
+            $property -> ListAgentFirstName = $agent -> first_name;
+            $property -> ListAgentLastName = $agent -> last_name;
+            $property -> ListAgentEmail = $agent -> email;
+            $property -> ListAgentPreferredPhone = $agent -> cell_phone;
+            $property -> ListAgentMlsId = $bright_mls_id;
+            $property -> ListOfficeName = $agent -> company;
+
+            $office_bright_mls_id = 'AAP1';
+            if($property -> StateOrProvince == 'VA') {
+                $office_bright_mls_id = 'TAYL13';
+            } else {
+                if(stristr($agent -> company, 'taylor')) {
+                    $office_bright_mls_id = 'TAYL1';
+                }
+            }
+            $property -> ListOfficeMlsId = $office_bright_mls_id;
+
         }
 
 
@@ -354,10 +434,10 @@ class TransactionsAddController extends Controller {
             $sellers -> last_name = $seller_last[$i];
             $sellers -> cell_phone = $seller_phone[$i] ?? null;
             $sellers -> email = $seller_email[$i] ?? null;
-            $sellers -> address_street = $seller_address_street[$i] ?? null;
-            $sellers -> address_city = $seller_address_city[$i] ?? null;
-            $sellers -> address_state = $seller_address_state[$i] ?? null;
-            $sellers -> address_zip = $seller_address_zip[$i] ?? null;
+            $sellers -> address_home_street = $seller_address_street[$i] ?? null;
+            $sellers -> address_home_city = $seller_address_city[$i] ?? null;
+            $sellers -> address_home_state = $seller_address_state[$i] ?? null;
+            $sellers -> address_home_zip = $seller_address_zip[$i] ?? null;
             $sellers -> CRMContact_ID = $seller_crm_contact_id[$i] ?? 0;
             $sellers -> member_type_id = ResourceItems::SellerResourceId();
             $sellers -> Agent_ID = $Agent_ID;
@@ -406,10 +486,10 @@ class TransactionsAddController extends Controller {
                 $buyers -> last_name = $buyer_last[$i];
                 $buyers -> cell_phone = $buyer_phone[$i] ?? null;
                 $buyers -> email = $buyer_email[$i] ?? null;
-                $buyers -> address_street = $buyer_address_street[$i] ?? null;
-                $buyers -> address_city = $buyer_address_city[$i] ?? null;
-                $buyers -> address_state = $buyer_address_state[$i] ?? null;
-                $buyers -> address_zip = $buyer_address_zip[$i] ?? null;
+                $buyers -> address_home_street = $buyer_address_street[$i] ?? null;
+                $buyers -> address_home_city = $buyer_address_city[$i] ?? null;
+                $buyers -> address_home_state = $buyer_address_state[$i] ?? null;
+                $buyers -> address_home_zip = $buyer_address_zip[$i] ?? null;
                 $buyers -> CRMContact_ID = $buyer_crm_contact_id[$i] ?? 0;
                 $buyers -> member_type_id = ResourceItems::BuyerResourceId();
                 $buyers -> Agent_ID = $Agent_ID;
@@ -434,54 +514,52 @@ class TransactionsAddController extends Controller {
         if($transaction_type == 'listing') {
 
             // update listing
-            $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
-            $listing -> SellerOneFirstName = $seller_one_first;
-            $listing -> SellerOneLastName = $seller_one_last;
-            $listing -> SellerTwoFirstName = $seller_two_first;
-            $listing -> SellerTwoLastName = $seller_two_last;
-            $listing -> MLSListDate = $request -> MLSListDate;
-            $listing -> ExpirationDate = $request -> ExpirationDate;
+            $property -> SellerOneFirstName = $seller_one_first;
+            $property -> SellerOneLastName = $seller_one_last;
+            $property -> SellerTwoFirstName = $seller_two_first;
+            $property -> SellerTwoLastName = $seller_two_last;
+            $property -> MLSListDate = $request -> MLSListDate;
+            $property -> ExpirationDate = $request -> ExpirationDate;
             if(date('Y-m-d') < $request -> MLSListDate) {
-                $listing -> Status = ResourceItems::GetResourceID('Pre-Listing', 'listing_status');
+                $property -> Status = ResourceItems::GetResourceID('Pre-Listing', 'listing_status');
             } else if(date('Y-m-d') > $request -> MLSListDate && date('Y-m-d') < $request -> ExpirationDate) {
-                $listing -> Status = ResourceItems::GetResourceID('Active', 'listing_status');
+                $property -> Status = ResourceItems::GetResourceID('Active', 'listing_status');
             } else {
-                $listing -> Status = ResourceItems::GetResourceID('Expired', 'listing_status');
+                $property -> Status = ResourceItems::GetResourceID('Expired', 'listing_status');
             }
-            $listing -> save();
+            $property -> save();
 
-            $checklist_property_type_id = $listing -> PropertyType;
-            $checklist_property_sub_type_id = $listing -> PropertySubType;
-            $checklist_sale_rent = $listing -> SaleRent;
-            $checklist_state = $listing -> StateOrProvince;
-            $checklist_location_id = $listing -> Location_ID;
-            $checklist_hoa_condo = $listing -> HoaCondoFees;
-            $checklist_year_built = $listing -> YearBuilt;
+            $checklist_property_type_id = $property -> PropertyType;
+            $checklist_property_sub_type_id = $property -> PropertySubType;
+            $checklist_sale_rent = $property -> SaleRent;
+            $checklist_state = $property -> StateOrProvince;
+            $checklist_location_id = $property -> Location_ID;
+            $checklist_hoa_condo = $property -> HoaCondoFees;
+            $checklist_year_built = $property -> YearBuilt;
 
         } else if($transaction_type == 'contract') {
 
             // update contract
-            $contract = Contracts::where('Contract_ID', $Contract_ID) -> first();
-            $contract -> SellerOneFirstName = $seller_one_first;
-            $contract -> SellerOneLastName = $seller_one_last;
-            $contract -> SellerTwoFirstName = $seller_two_first;
-            $contract -> SellerTwoLastName = $seller_two_last;
-            $contract -> BuyerOneFirstName = $buyer_one_first;
-            $contract -> BuyerOneLastName = $buyer_one_last;
-            $contract -> BuyerTwoFirstName = $buyer_two_first;
-            $contract -> BuyerTwoLastName = $buyer_two_last;
-            $contract -> ContractDate = $request -> ContractDate;
-            $contract -> CloseDate = $request -> CloseDate;
-            $contract -> Status = ResourceItems::GetResourceID('Active', 'contract_status');
-            $contract -> save();
+            $property -> SellerOneFirstName = $seller_one_first;
+            $property -> SellerOneLastName = $seller_one_last;
+            $property -> SellerTwoFirstName = $seller_two_first;
+            $property -> SellerTwoLastName = $seller_two_last;
+            $property -> BuyerOneFirstName = $buyer_one_first;
+            $property -> BuyerOneLastName = $buyer_one_last;
+            $property -> BuyerTwoFirstName = $buyer_two_first;
+            $property -> BuyerTwoLastName = $buyer_two_last;
+            $property -> ContractDate = $request -> ContractDate;
+            $property -> CloseDate = $request -> CloseDate;
+            $property -> Status = ResourceItems::GetResourceID('Active', 'contract_status');
+            $property -> save();
 
-            $checklist_property_type_id = $contract -> PropertyType;
-            $checklist_property_sub_type_id = $contract -> PropertySubType;
-            $checklist_sale_rent = $contract -> SaleRent;
-            $checklist_state = $contract -> StateOrProvince;
-            $checklist_location_id = $contract -> Location_ID;
-            $checklist_hoa_condo = $contract -> HoaCondoFees;
-            $checklist_year_built = $contract -> YearBuilt;
+            $checklist_property_type_id = $property -> PropertyType;
+            $checklist_property_sub_type_id = $property -> PropertySubType;
+            $checklist_sale_rent = $property -> SaleRent;
+            $checklist_state = $property -> StateOrProvince;
+            $checklist_location_id = $property -> Location_ID;
+            $checklist_hoa_condo = $property -> HoaCondoFees;
+            $checklist_year_built = $property -> YearBuilt;
 
         }
 

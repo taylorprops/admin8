@@ -222,7 +222,7 @@ if (document.URL.match(/transactions\/add\/contract/) || document.URL.match(/tra
     function show_loader() {
         // clear current data and show loader
         $('.property-loading-div').fadeIn();
-        global_loading_on('.property-loading-div', '<div class="h3 responsive text-primary"><i class="fad fa-home-lg-alt mr-3"></i> Searching Properties</div>');
+        global_loading_on('.property-loading-div', '<div class="h3-responsive text-primary"><i class="fad fa-home-lg-alt mr-3"></i> Searching Properties</div>');
         $('.property-results-container').hide();
         $('#property_details_photo').prop('src', '');
         $('#property_details_address').text('');

@@ -2,8 +2,14 @@
 @section('title', 'title here')
 
 @section('content')
-Admin Dashboard
+
+<div class="container page-dashboard-admin-container">
+    <div class="row">
+        <div class="col-12">
+
+        </div>
+    </div>
+</div>
 @endsection
 
-@section('js')
-@endsection
+

@@ -18,6 +18,9 @@ if (document.URL.match(/transaction_add_details_/)) {
         }
 
 
+        if($('#contract_price').val() == '$0') {
+            $('#contract_price').val('');
+        }
 
         // add value next to title on change
         show_values();
@@ -34,21 +37,25 @@ if (document.URL.match(/transaction_add_details_/)) {
 
         form_elements();
 
-        $('#steps_submit').off('click').on('click', function() {
+        $('#submit_details_form_button').off('click').on('click', function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
             save_add_transaction();
+        });
+        $('#details_form').submit(function(e) {
+            e.preventDefault();
         });
 
     });
 
     function save_add_transaction() {
 
-        //global_loading_on('', '<div class="h3 text-white">Creating Checklist</div>');
-        let form = $('#steps_form');
+        let form = $('#details_form');
         let transaction_type = $('#transaction_type').val();
         let formData = new FormData(form[0]);
+
         axios.post('/agents/doc_management/transactions/save_add_transaction', formData, axios_options)
         .then(function (response) {
-            //global_loading_off();
             window.location = '/agents/doc_management/transactions/add/transaction_required_details/'+response.data.id+'/'+transaction_type;
         })
         .catch(function (error) {

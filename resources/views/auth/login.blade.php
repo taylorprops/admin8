@@ -72,6 +72,7 @@
                                 @endif
                             </div>
                         </div>
+                        <input type="hidden" id="previous_url" name="previous_url" value="{{ url() -> previous() }}">
                     </form>
                 </div>
             </div>

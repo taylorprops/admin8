@@ -619,12 +619,16 @@ if (document.URL.match(/edit_files/)) {
     }
 
     function close_edit_options() {
-        location.reload();
+        $('#confirm_modal').modal().find('.modal-body').html('This will delete all changes made. Continue?');
+        $('#confirm_modal').modal().find('.modal-title').html('Delete Changes?');
+        $('#confirm_button').click(function() {
+            location.reload();
+        });
     }
 
     function to_pdf() {
 
-        global_loading_on('', '<div class="h3 text-white">Merging Fields, Creating and Saving PDF.</div> <div class="h3 mt-5 text-yellow">Please be patient, this process can take <br>5 - 10 seconds for each page.</div>');
+        global_loading_on('', '<div class="h3-responsive text-white">Merging Fields, Creating and Saving PDF.</div> <div class="h3-responsive mt-5 text-yellow">Please be patient, this process can take <br>5 - 10 seconds for each page.</div>');
         // fields that css will be changed during export to pdf. They will be reset after
         let els = '.data-div, .file-image-bg, .field-div, .data-div-radio-check';
         let styles;

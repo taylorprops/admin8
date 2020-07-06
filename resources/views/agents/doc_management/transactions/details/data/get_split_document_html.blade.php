@@ -4,7 +4,7 @@
         <div class="col-12 col-lg-8">
             <div class="row">
                 <div class="col-12">
-                    <div class="h3 text-orange mt-1 mt-sm-0">Step 1</div>
+                    <div class="h3-responsive text-orange mt-1 mt-sm-0">Step 1</div>
                     <div class="text-gray">Split combined documents by adding pages from the "Available Documents" section to the "Selected Documents" section.</div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
         <div class="col-12 col-lg-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="h3 text-orange mt-1 mt-sm-0">Step 2</div>
+                    <div class="h3-responsive text-orange mt-1 mt-sm-0">Step 2</div>
                     <div class="text-gray">Add the "Selected Documents" to Checklist Item or Save to Documents</div>
                 </div>
             </div>

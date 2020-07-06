@@ -6,6 +6,12 @@ if($property -> SaleRent == 'rental') {
 } else if($property -> SaleRent == 'both' && $transaction_type == 'listing') {
     $sale_rent = 'For Sale And Rent';
 }
+
+if($transaction_type == 'listing') {
+    $header_transaction_type = '<i class="fad fa-sign mr-2"></i> '.ucwords($transaction_type);
+} else {
+    $header_transaction_type = '<i class="fad fa-signature mr-2"></i> '.ucwords($transaction_type);
+}
 @endphp
 <div class="row mt-1 mt-sm-4">
 
@@ -22,13 +28,13 @@ if($property -> SaleRent == 'rental') {
             @endif
 
             <div class="ml-2 ml-md-3">
-                <div class="h3 mb-2 text-gray text-uppercase">{!! $property -> FullStreetAddress.' '.$property -> Street.' '.$property -> City.', '.$property -> StateOrProvince.' '.$property -> PostalCode !!}</div>
+                <div class="h3-responsive mb-2 text-gray text-uppercase">{!! $property -> FullStreetAddress.' '.$property -> Street.' '.$property -> City.', '.$property -> StateOrProvince.' '.$property -> PostalCode !!}</div>
                 <div class="mb-1 mb-md-3">
-                    <span class="badge bg-orange p-1 p-sm-2"><span class="transaction-type text-white">{{ ucwords($transaction_type) }}</span></span>
-                    <span class="badge bg-primary ml-1 ml-lg-2 p-1 p-sm-2"><span class="transaction-sub-type text-white">{{ $sale_rent }}</span></span>
-                    <span class="badge bg-primary ml-1 ml-lg-2 p-1 p-sm-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertyType) }}</span></span>
+                    <span class="badge bg-orange"><span class="transaction-type text-white">{!! $header_transaction_type !!}</span></span>
+                    <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $sale_rent }}</span></span>
+                    <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertyType) }}</span></span>
                     @if($sale_rent != 'Rental' && $property -> PropertySubType > '0')
-                    <span class="badge bg-primary ml-1 ml-lg-2 p-1 p-sm-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertySubType) }}</span></span>
+                    <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertySubType) }}</span></span>
                     @endif
                 </div>
             </div>
@@ -37,21 +43,36 @@ if($property -> SaleRent == 'rental') {
 
     </div>
     <div class="col-12 col-lg-3 mt-3 mt-lg-0">
+
         @if($transaction_type == 'listing')
-        <div class="row">
-            <div class="col-6 col-lg-12 text-center text-sm-right">
-                <a href="javascript: void(0);" class="btn btn-sm btn-success mt-2" id="accept_contract_button"><i class="fa fa-plus mr-2"></i> Accept Contract</a>
+
+            <div class="row">
+                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-right">
+                    <a href="javascript: void(0);" class="btn btn-success mt-2 d-block d-sm-inline-block" @if($active_contracts_count == 0) id="accept_contract_button" @else id="disabled_accept_contract_button" @endif><i class="fa fa-plus mr-2"></i> Accept Contract</a>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-left text-lg-right">
+                    <a href="javascript: void(0);" class="btn btn-danger mt-2 d-block d-sm-inline-block" @if($active_contracts_count == 0) id="withdraw_listing_button" @else id="disabled_withdraw_listing_button" @endif><i class="fa fa-minus mr-2"></i> Withdraw Listing</a>
+                </div>
             </div>
-            <div class="col-6 col-lg-12 text-center text-sm-left text-lg-right">
-                <a href="javascript: void(0);" class="btn btn-sm btn-danger mt-2" id="withdraw_listing_button"><i class="fa fa-minus mr-2"></i> Withdraw Listing</a>
-            </div>
-        </div>
+
         @else
-        <div class="row">
-            <div class="col-6 col-lg-12 text-sm-left text-lg-right">
-                <a href="javascript: void(0);" class="btn btn-sm btn-danger mt-2" id="release_contract_button"><i class="fa fa-minus mr-2"></i> Release Contract</a>
+
+            <div class="row">
+                <div class="col-12 col-sm-6 col-lg-12 text-sm-left text-lg-right">
+                    <a href="javascript: void(0);" class="btn btn-danger mt-2 d-block d-sm-inline-block" id="release_contract_button"><i class="fa fa-minus mr-2"></i> Release Contract</a>
+                </div>
             </div>
-        </div>
+
+            @if($property -> Listing_ID > 0 && $property -> Contract_ID > 0)
+
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-lg-12 text-sm-left text-lg-right">
+                        <a href="/agents/doc_management/transactions/transaction_details/{{ $property -> Listing_ID }}/listing" class="btn btn-primary mt-2"><i class="fad fa-sign mr-2 d-block d-sm-inline-block"></i> View Listing</a>
+                    </div>
+                </div>
+
+            @endif
+
         @endif
     </div>
 
@@ -66,26 +87,23 @@ if($property -> SaleRent == 'rental') {
                 <div class="text-white d-none d-sm-inline-block mr-2">
                     <i class="fad fa-users fa-2x"></i>
                 </div>
-                <div class="ml-2 pr-2 agent-section border-right">
+                <div class="ml-2 pr-2 agent-section border-right header-section">
                     <span class="font-weight-bold text-yellow">List Agent</span>
                     <br>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            {{ $property -> ListAgentFirstName . ' ' . $property -> ListAgentLastName }}
-                            <br>
-                            {{ $property -> ListOfficeName }}
-                        </div>
-                        <div class="ml-2">
-                            @php
-                            $contact_details = '<i class=\'fad fa-phone-alt mr-2 text-primary\'></i> <a href=\'tel:'.format_phone($property -> ListAgentPreferredPhone).'\'>'.format_phone($property -> ListAgentPreferredPhone).'</a><br>
-                            <i class=\'fad fa-at mr-2 text-primary\'></i> <a href=\'mailto:'.$property -> ListAgentEmail.'\'>'.$property -> ListAgentEmail.'</a>';
-                            @endphp
-                            <a href="javascript: void(0)" class="btn btn-sm btn-primary" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Contact Details" data-content="{!! $contact_details !!}"><i class="fad fa-address-book mr-1"></i> Contact</a>
-                        </div>
+                    <div>
+                        {{ $property -> ListAgentFirstName . ' ' . $property -> ListAgentLastName }}
+                        <br>
+                        {{ $property -> ListOfficeName }}
+                        <br>
+                        @php
+                        $contact_details = '<i class=\'fad fa-phone-alt mr-2 text-primary\'></i> <a href=\'tel:'.format_phone($property -> ListAgentPreferredPhone).'\'>'.format_phone($property -> ListAgentPreferredPhone).'</a><br>
+                        <i class=\'fad fa-at mr-2 text-primary\'></i> <a href=\'mailto:'.$property -> ListAgentEmail.'\'>'.$property -> ListAgentEmail.'</a>';
+                        @endphp
+                        <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Contact Details" data-content="{!! $contact_details !!}"><i class="fad fa-address-book mr-1"></i> Contact</a>
                     </div>
                 </div>
                 @if($sellers)
-                <div class="ml-2">
+                <div class="ml-2 header-section">
                     <span class="font-weight-bold text-yellow">Sellers</span>
                     <br>
                     <div>
@@ -120,26 +138,23 @@ if($property -> SaleRent == 'rental') {
                 <div class="text-white d-none d-sm-inline-block mr-2">
                     <i class="fad fa-users fa-2x"></i>
                 </div>
-                <div class="ml-2 pr-2 agent-section border-right">
+                <div class="ml-2 pr-2 agent-section border-right header-section">
                     <span class="font-weight-bold text-yellow">Buyer's Agent</span>
                     <br>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            {{ $property -> BuyerAgentFirstName . ' ' . $property -> BuyerAgentLastName }}
-                            <br>
-                            {{ $property -> BuyerOfficeName }}
-                        </div>
-                        <div class="ml-2">
-                            @php
-                            $contact_details = '<i class=\'fad fa-phone-alt mr-2 text-primary\'></i> <a href=\'tel:'.format_phone($property -> BuyerAgentPreferredPhone).'\'>'.format_phone($property -> BuyerAgentPreferredPhone).'</a><br>
-                            <i class=\'fad fa-at mr-2 text-primary\'></i> <a href=\'mailto:'.$property -> BuyerAgentEmail.'\'>'.$property -> BuyerAgentEmail.'</a>';
-                            @endphp
-                            <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-2" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Contact Details" data-content="{!! $contact_details !!}"><i class="fad fa-address-book mr-1"></i> Contact</a>
-                        </div>
+                    <div>
+                        {{ $property -> BuyerAgentFirstName . ' ' . $property -> BuyerAgentLastName }}
+                        <br>
+                        {{ $property -> BuyerOfficeName }}
+                        <br>
+                        @php
+                        $contact_details = '<i class=\'fad fa-phone-alt mr-2 text-primary\'></i> <a href=\'tel:'.format_phone($property -> BuyerAgentPreferredPhone).'\'>'.format_phone($property -> BuyerAgentPreferredPhone).'</a><br>
+                        <i class=\'fad fa-at mr-2 text-primary\'></i> <a href=\'mailto:'.$property -> BuyerAgentEmail.'\'>'.$property -> BuyerAgentEmail.'</a>';
+                        @endphp
+                        <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Contact Details" data-content="{!! $contact_details !!}"><i class="fad fa-address-book mr-1"></i> Contact</a>
                     </div>
                 </div>
                 @if(count($buyers) > 0)
-                <div class="ml-2">
+                <div class="ml-2 header-section">
                     <span class="font-weight-bold text-yellow">Buyers</span>
                     <br>
                     <div>
@@ -174,7 +189,7 @@ if($property -> SaleRent == 'rental') {
                 <div class="text-white d-none d-sm-inline-block mr-2">
                     <i class="fad fa-home-alt fa-2x"></i>
                 </div>
-                <div class="container">
+                <div class="container pr-5">
                     <div class="row">
                         <div class="col-6 text-right pr-0">
                             <span class="font-weight-bold text-yellow text-nowrap">Status</span>

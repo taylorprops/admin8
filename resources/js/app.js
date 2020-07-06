@@ -14,6 +14,10 @@ require('./global.js');
 require('./form_elements.js');
 require('./nav/nav.js');
 
+// dashboard
+require('./dashboard/admin.js');
+require('./dashboard/agent.js');
+
 // Document Management
 require('./doc_management/create/add_fields.js');
 require('./doc_management/create/files.js');
@@ -38,6 +42,8 @@ require('./agents/doc_management/transactions/upload/upload.js');
 
 // edit files
 require('./agents/doc_management/transactions/edit_files/edit_files.js');
+
+
 
 
 

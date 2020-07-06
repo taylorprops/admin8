@@ -218,20 +218,20 @@ $skins: () !default;
 $skins: map-merge(
   (
     "white": (
-      "skin-primary-color":      #4c9bdb,
+      "skin-primary-color":      #4285f4,
       "skin-navbar":             $white,
       "skin-footer-color":       #6f7178,
-      "skin-accent":             #4c9bdb,
+      "skin-accent":             #4285f4,
       "skin-flat":               #f9f9f9,
-      "skin-sidenav-item":       #4c9bdb,
+      "skin-sidenav-item":       #4285f4,
       "skin-sidenav-item-hover": rgba($black-base, .05),
       "skin-gradient-start":     #ababab,
       "skin-gradient-end":       $white,
       "skin-mask-slight":        rgba($white, .5),
       "skin-mask-light":         rgba($white, .65),
       "skin-mask-strong":        rgba($white, .8),
-      "skin-sn-child":           #4c9bdb,
-      "skin-btn-primary":        #4c9bdb,
+      "skin-sn-child":           #4285f4,
+      "skin-btn-primary":        #4285f4,
       "skin-btn-secondary":      #fc685f,
       "skin-btn-default":        #454545,
       "skin-text":               #424242
@@ -748,8 +748,8 @@ $timepicker-clockpicker-dial-tick-hover-bg-opacity:     rgba($teal-base, .25) !d
 
 $timepicker-clockpicker-dial-out-transform:             scale(1.2, 1.2) !default;
 $timepicker-clockpicker-dial-out-transform-minutes:     scale(.8, .8) !default;
-$timepicker-clockpicker-canvas-transition:              opacity 300ms !default;
 
+$timepicker-clockpicker-canvas-transition:              opacity 300ms !default;
 $timepicker-clockpicker-canvas-stroke:                  rgba($teal-base, .25) !default;
 $timepicker-clockpicker-canvas-stroke-width:            1 !default;
 $timepicker-clockpicker-canvas-out-opacity:             .25 !default;
@@ -761,6 +761,7 @@ $timepicker-clockpicker-canvas-bg-trans-fill:           rgba($teal-base, .25) !d
 
 $timepicker-clockpicker-am-pm-block-mt:                 -.625rem !default;
 $timepicker-clockpicker-am-pm-block-height:             3.125rem !default;
+
 $timepicker-clockpicker-button-am-button-height:        2.8125rem !default;
 $timepicker-clockpicker-button-am-button-width:         $timepicker-clockpicker-button-am-button-height !default;
 $timepicker-clockpicker-button-pm-button-height:        $timepicker-clockpicker-button-am-button-height !default;
@@ -771,15 +772,14 @@ $timepicker-clockpicker-btn-floating-active-bg:         darken($primary-color, $
 
 $timepicker-clockpicker-footer-button-mt:               .9375rem !default;
 $timepicker-clockpicker-footer-button-active-bg:        rgba($teal-base, .25) !default;
+$timepicker-clockpicker-footer-button-focus-outline:    5px auto $primary-color !default;
 
 $timepicker-darktheme-clockpicker-plate-bg:             rgba($pink-accent-2, 0) !default;
 $timepicker-darktheme-clockpicker-plate-active-bg:      rgba($pink-accent-2, .25) !default;
 
 $timepicker-darktheme-clockpicker-canvas-line-stroke:   $timepicker-darktheme-clockpicker-plate-active-bg !default;
-
 $timepicker-darktheme-clockpicker-canvas-fg-fill:         $timepicker-darktheme-clockpicker-plate-bg !default;
 $timepicker-darktheme-clockpicker-canvas-active-fg-fill:  rgba($pink-accent-2, .5) !default;
-
 $timepicker-darktheme-clockpicker-canvas-bg-fill:         $timepicker-darktheme-clockpicker-plate-active-bg !default;
 $timepicker-darktheme-clockpicker-canvas-bg-trans-fill:   $timepicker-darktheme-clockpicker-canvas-active-fg-fill !default;
 
@@ -941,7 +941,7 @@ $carousel-thumbnails-indicators-li-max-width:           $carousel-thumbnails-ind
 $carousel-thumbnails-indicators-active-opacity:         1 !default;
 
 $carousel-multi-item-mb:                                5rem !default;
-$carousel-multi-item-indicators-mb:                     -2em !default;
+$carousel-multi-item-indicators-mb:                     -1em !default;
 $carousel-multi-item-indicators-li-height:              1.25rem !default;
 $carousel-multi-item-indicators-li-width:               $carousel-multi-item-indicators-li-height !default;
 $carousel-multi-item-indicators-li-max-width:           $carousel-multi-item-indicators-li-width !default;
@@ -954,6 +954,8 @@ $carousel-multi-item-controls-top-mb:                   1.88rem !default;
 $carousel-multi-item-card-cascade-narrower-mt:          1.25rem !default;
 $carousel-multi-item-card-cascade-narrower-mb:          .3rem !default;
 $carousel-multi-item-medium-screen-mb:                  -1.88rem !default;
+$carousel-multi-item-inner-pt:                          .5rem !default;
+$carousel-multi-item-inner-pb:                          1rem !default;
 
 // Advanced table with checkboxes
 $advanced-table-a-mr:                                   1rem !default;

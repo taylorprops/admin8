@@ -2,7 +2,6 @@
 @import "mdb-free";
 
 // PRO
-
 @import "pro/variables";
 @import "pro/buttons";
 @import "pro/social-buttons";
@@ -27,6 +26,7 @@
 @import "pro/modules/accordion-extended/module";
 @import "pro/modules/parallax/module";
 @import "pro/sidenav";
+@import "pro/sidenav2";
 @import "pro/ecommerce";
 @import "pro/carousels";
 @import "pro/blog";
@@ -61,6 +61,4 @@
 // @import "addons-pro/cards-extended";
 // @import "addons-pro/chat";
 // @import "addons-pro/charts/module";
-
-// Your custom styles
-@import "custom-variables";
+// @import "addons-pro/vector-map";

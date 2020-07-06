@@ -618,18 +618,18 @@ $stylish-rgba: (
 // Material colors
 $primary-color:        #4c9bdb !default;
 $primary-color-dark:   #0d47a1 !default;
-$secondary-color:      #a6c !default;
-$secondary-color-dark: #93c !default;
-$default-color:        #2bbbad !default;
-$default-color-dark:   #00695c !default;
+$secondary-color:      #df7935 !default;
+$secondary-color-dark: #ac5b25 !default;
+$default-color:        #647c96 !default;
+$default-color-dark:   #4d6074 !default;
 $info-color:           #33b5e5 !default;
 $info-color-dark:      #09c !default;
-$success-color:        #4cb476 !default;
-$success-color-dark:   #007e33 !default;
+$success-color:        #30a730 !default;
+$success-color-dark:   #1b631b !default;
 $warning-color:        #fb3 !default;
 $warning-color-dark:   #f80 !default;
-$danger-color:         #ff3547 !default;
-$danger-color-dark:    #c00 !default;
+$danger-color:         #b64341 !default;
+$danger-color-dark:    #8d3331 !default;
 $elegant-color:        #2e2e2e !default;
 $elegant-color-dark:   #212121 !default;
 $stylish-color:        #4b515d !default;
@@ -640,7 +640,7 @@ $special-color:        #37474f !default;
 $special-color-dark:   #263238 !default;
 $white:                #fff;
 $black:                #000;
-$error-color:          $red-base !default;
+$error-color:          #b64341 !default;
 
 $material-colors: () !default;
 $material-colors: map-merge(

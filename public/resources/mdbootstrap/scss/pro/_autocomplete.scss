@@ -10,6 +10,17 @@
   }
 }
 
+.mdb-autocomplete ~ label {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mdb-autocomplete:focus ~ label {
+  color: $primary;
+}
+
 button {
   &:focus {
     outline: 0 !important;
@@ -36,7 +47,6 @@ button {
   right: 0;
   left: 0;
   z-index: 100;
-  max-height: $autocomplete-wrap-max-height;
   padding-left: 0;
   overflow-y: auto;
   list-style-type: none;

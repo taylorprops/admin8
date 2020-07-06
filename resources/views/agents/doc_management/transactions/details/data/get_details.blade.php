@@ -66,9 +66,20 @@
                             <div class="h5 responsive m-2 mb-4 text-default">
                                 <i class="fad fa-users mr-3"></i> Agent(s)
                             </div>
+
+
+                            {{-- if a contract --}}
+                            @if($transaction_type == 'contract')
                             <div class="row">
                                 <div class="col-12 col-md-6">
-                                    <select class="custom-form-element form-select required" @if(Auth::user() -> group == 'agent') disabled @endif data-label="{{ $agent_type }} Agent" name="Agent_ID" id="Agent_ID">
+                                    <input type="text" class="custom-form-element form-input" disabled value="{{ $list_agent }}" data-label="Listing Agent">
+                                </div>
+                            </div>
+                            {{-- if a listing --}}
+                            @else
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <select class="custom-form-element form-select required" @if(Auth::user() -> group == 'agent') disabled @endif data-label="Listing Agent" name="Agent_ID" id="Agent_ID">
                                         <option value=""></option>
                                         @foreach($agents as $agent)
                                         <option value="{{ $agent -> id }}" @if($property -> Agent_ID == $agent -> id) selected @endif>{{ $agent -> last_name . ', ' . $agent -> first_name }}</option>
@@ -76,14 +87,48 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <select class="custom-form-element form-select" data-label="Co-{{ $agent_type }} Agent" name="CoAgent_ID" id="CoAgent_ID">
+                                    <select class="custom-form-element form-select" data-label="Co-Listing Agent" name="CoAgent_ID" id="CoAgent_ID">
                                         <option value=""></option>
                                         @foreach($agents as $agent)
                                         <option value="{{ $agent -> id }}" @if($property -> CoAgent_ID == $agent -> id) selected @endif>{{ $agent -> last_name . ', ' . $agent -> first_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
+                            </div>
+                            @endif
 
+                            {{-- if our contract --}}
+                            {{-- if our listing --}}
+                            @if($transaction_type == 'contract' && $property -> Listing_ID > 0)
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <input type="text" class="custom-form-element form-input" disabled value="{{ $property -> BuyerAgentFirstName.' '.$property -> BuyerAgentLastName }}" data-label="Buyer's Agent">
+                                </div>
+                            </div>
+
+                            {{-- if not our listing --}}
+                            @elseif($transaction_type == 'contract' && $property -> Listing_ID == 0)
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <select class="custom-form-element form-select required" @if(Auth::user() -> group == 'agent') disabled @endif data-label="Buyer's Agent" name="Agent_ID" id="Agent_ID">
+                                        <option value=""></option>
+                                        @foreach($agents as $agent)
+                                        <option value="{{ $agent -> id }}" @if($property -> Agent_ID == $agent -> id) selected @endif>{{ $agent -> last_name . ', ' . $agent -> first_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <select class="custom-form-element form-select" data-label="Co-Buyer's Agent" name="CoAgent_ID" id="CoAgent_ID">
+                                        <option value=""></option>
+                                        @foreach($agents as $agent)
+                                        <option value="{{ $agent -> id }}" @if($property -> CoAgent_ID == $agent -> id) selected @endif>{{ $agent -> last_name . ', ' . $agent -> first_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            @endif
+
+                            <div class="row">
                                 <div class="col-12 col-md-6">
                                     <select class="custom-form-element form-select" data-label="Transaction Coordinator" name="TransCoordinator_ID" id="TransCoordinator_ID">
                                         <option value=""></option>

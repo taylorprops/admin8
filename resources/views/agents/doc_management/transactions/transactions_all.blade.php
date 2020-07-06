@@ -2,46 +2,163 @@
 @section('title', 'Transactions')
 
 @section('content')
-<div class="container page-listings-all">
-    <div class="row">
-        <div class="col-12 mt-5">
-            <div class="list-group">
-                <h4>Listings</h4>
-                @foreach($listings as $listing)
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-2">
-                                <a href="/agents/doc_management/transactions/transaction_details/{{ $listing -> Listing_ID }}/listing" class="btn btn-primary">View Listing</a>
+<div class="container page-transactions">
+    <div class="row my-3">
+
+        <div class="col-12 col-sm-6">
+
+            <div class="card p-2">
+
+                <div class="h4-responsive text-orange"><i class="fad fa-sign mr-2"></i> Active Listings</div>
+
+                <!-- Card content -->
+                <div class="card-body">
+
+                    <div class="row">
+
+                        @foreach($listings as $listing)
+
+                            <div class="col-12 col-md-6">
+                                <a href="/agents/doc_management/transactions/transaction_details/{{ $listing -> Listing_ID }}/listing">
+
+                                    <div class="bg-primary p-2 m-2 z-depth-1 text-white">
+
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="h5-responsive text-center">{!! $listing -> FullStreetAddress. '<br>' . $listing -> City . ' ' . $listing -> StateOrProvince .' '.$listing -> PostalCode !!}</div>
+                                            </div>
+                                        </div>
+                                        <hr class="bg-white">
+
+                                        <div class="d-flex justify-content-around align-items-center">
+                                            <div class="mr-3"><i class="fad fa-sign mx-2 fa-3x"></i></div>
+                                            <div>
+                                                @if($listing -> ListPictureURL)
+                                                <img src="{{ $listing -> ListPictureURL }}" class="property-image image-fluid mr-2 z-depth-1">
+                                                @else
+                                                <i class="fad fa-home-alt fa-5x"></i>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <hr class="bg-white">
+                                        <div class="d-flex justify-content-around">
+                                            <div class="h4-responsive">{{ $resource_items -> GetResourceName($listing -> Status) }}</div>
+                                            <div class="h4-responsive">${{ number_format($listing -> ListPrice) }}</div>
+                                        </div>
+
+                                        <hr class="bg-white">
+
+                                        <div class="row">
+                                            <div class="col-5 pr-0 text-right">List Date</div>
+                                            <div class="col-7 text-left">{{ date('n/j/Y', strtotime($listing -> MLSListDate)) }}</div>
+                                            <div class="col-5 pr-0 text-right">Expire Date</div>
+                                            <div class="col-7 text-left">{{ date('n/j/Y', strtotime($listing -> ExpirationDate)) }}</div>
+
+                                            <div class="col-12">
+                                                <hr class="bg-white">
+                                            </div>
+
+                                            <div class="col-5 pr-0 text-right">Seller</div>
+                                            <div class="col-7 text-left">{{ $listing -> SellerOneFirstName.' '.$listing -> SellerOneLastName }}</div>
+                                            @if($listing -> SellerTwoFirstName)
+                                            <div class="col-5 pr-0 text-right">Seller</div>
+                                            <div class="col-7 text-left">{{ $listing -> SellerTwoFirstName.' '.$listing -> SellerTwoLastName }}</div>
+                                            @else
+                                            <div class="col-12">&nbsp;</div>
+                                            @endif
+
+                                        </div>
+                                    </div>
+
+                                </a>
                             </div>
-                            <div class="col-10">
-                                {{ $listing -> FullStreetAddress.' '.$listing -> City.' '.$listing -> StateOrProvince.' '.$listing -> PostalCode }}
-                            </div>
-                        </div>
+
+                        @endforeach
 
                     </div>
-                @endforeach
+
+                </div>
+
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12 mt-5">
-            <div class="list-group">
-                <h4>Contracts</h4>
-                @foreach($contracts as $contract)
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-2">
-                                <a href="/agents/doc_management/transactions/transaction_details/{{ $contract -> Contract_ID }}/contract" class="btn btn-primary">View Contract</a>
+
+        <div class="col-12 col-sm-6">
+
+            <div class="card p-2">
+
+                <div class="h4-responsive text-orange"><i class="fad fa-file-signature mr-2"></i> Active Contracts</div>
+
+                <!-- Card content -->
+                <div class="card-body">
+
+                    <div class="row">
+
+                        @foreach($contracts as $contract)
+
+                            <div class="col-12 col-md-6">
+                                <a href="/agents/doc_management/transactions/transaction_details/{{ $contract -> Contract_ID }}/contract">
+
+                                    <div class="bg-primary p-2 m-2 z-depth-1 text-white">
+
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="h5-responsive text-center">{!! $contract -> FullStreetAddress. '<br>' . $contract -> City . ' ' . $contract -> StateOrProvince .' '.$contract -> PostalCode !!}</div>
+                                            </div>
+                                        </div>
+                                        <hr class="bg-white">
+
+                                        <div class="d-flex justify-content-around align-items-center">
+                                            <div class="mr-3"><i class="fad fa-file-signature mx-2 fa-3x"></i></div>
+                                            <div>
+                                                @if($contract -> ListPictureURL)
+                                                <img src="{{ $contract -> ListPictureURL }}" class="property-image image-fluid mr-2 z-depth-1">
+                                                @else
+                                                <i class="fad fa-home-alt fa-5x"></i>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <hr class="bg-white">
+                                        <div class="d-flex justify-content-around">
+                                            <div class="h4-responsive">{{ $resource_items -> GetResourceName($contract -> Status) }}</div>
+                                            <div class="h4-responsive">${{ number_format($contract -> ContractPrice) }}</div>
+                                        </div>
+
+                                        <hr class="bg-white">
+
+                                        <div class="row">
+                                            <div class="col-5 pr-0 text-right">Contact Date</div>
+                                            <div class="col-7 text-left">{{ date('n/j/Y', strtotime($contract -> ContractDate)) }}</div>
+                                            <div class="col-5 pr-0 text-right">Settle Date</div>
+                                            <div class="col-7 text-left">{{ date('n/j/Y', strtotime($contract -> CloseDate)) }}</div>
+
+                                            <div class="col-12">
+                                                <hr class="bg-white">
+                                            </div>
+
+                                            <div class="col-5 pr-0 text-right">Buyer</div>
+                                            <div class="col-7 text-left">{{ $contract -> BuyerOneFirstName.' '.$contract -> BuyerOneLastName }}</div>
+                                            @if($contract -> BuyerTwoFirstName)
+                                            <div class="col-5 pr-0 text-right">Buyer</div>
+                                            <div class="col-7 text-left">{{ $contract -> BuyerTwoFirstName.' '.$contract -> BuyerTwoLastName }}</div>
+                                            @else
+                                            <div class="col-12">&nbsp;</div>
+                                            @endif
+
+                                        </div>
+                                    </div>
+
+                                </a>
                             </div>
-                            <div class="col-10">
-                                {{ $contract -> FullStreetAddress.' '.$contract -> City.' '.$contract -> StateOrProvince.' '.$contract -> PostalCode }}
-                            </div>
-                        </div>
+
+                        @endforeach
 
                     </div>
-                @endforeach
+
+                </div>
+
             </div>
         </div>
+
     </div>
 </div>
 @endsection

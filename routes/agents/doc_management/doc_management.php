@@ -32,12 +32,14 @@
     Route::get('/agents/doc_management/transactions/transaction_details/{id}/{type}', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@transaction_details');
     // get header for listing details page
     Route::get('/agents/doc_management/transactions/transaction_details_header', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@transaction_details_header');
+
     // get details, members, checklist, etc for listing page
     Route::get('/agents/doc_management/transactions/get_details', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_details');
     Route::get('/agents/doc_management/transactions/get_members', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_members');
     Route::get('/agents/doc_management/transactions/get_checklist', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checklist');
     Route::get('/agents/doc_management/transactions/get_documents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_documents');
     Route::get('/agents/doc_management/transactions/get_contracts', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_contracts');
+
     // get mls details
     Route::get('/agents/doc_management/transactions/mls_search', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@mls_search');
     Route::get('/agents/doc_management/transactions/save_mls_search', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_mls_search');
@@ -100,8 +102,10 @@
     // Accept new contract for listing
     Route::post('/agents/doc_management/transactions/accept_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@accept_contract');
 
-    // TODO this is shared by add listing and add contract
-    // Add listing and contract
+    // search bright mls agents
+    Route::get('/agents/doc_management/transactions/search_bright_agents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@search_bright_agents');
+
+
     Route::get('/agents/doc_management/transactions/get_property_info', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@get_property_info');
     Route::get('/agents/doc_management/transactions/update_county_select', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@update_county_select');
 

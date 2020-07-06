@@ -42,7 +42,7 @@
   &.wide {
     width: $sidenav-width;
     transition-timing-function: linear, linear, ease;
-    transition-duration: .2s, .2s, .35s;
+    transition-duration: .5s, .5s, .55s;
     transition-property: top, bottom, width;
 
     .logo-wrapper {
@@ -50,6 +50,7 @@
         height: 5rem;
         padding: 19px 10px;
         border-bottom: 1px solid $sidenav-logo-wrapper-border-bottom-color;
+        overflow: hidden;
 
         a {
           line-height: 2.6rem;
@@ -107,9 +108,9 @@
 
     &.slim {
       right: 3.75rem;
-      width: 3.75rem;
+      width: 3.75rem !important;
       transition-timing-function: linear, linear, ease;
-      transition-duration: .2s, .2s, .35s;
+      transition-duration: .5s, .5s, .55s;
       transition-property: top, bottom, width;
 
       .collapsible {

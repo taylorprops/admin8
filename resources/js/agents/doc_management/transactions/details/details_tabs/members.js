@@ -4,25 +4,50 @@ if (document.URL.match(/transaction_details/)) {
         $(document).on('click', '.save-member-button', save_add_member);
     });
 
-    window.show_bank_trust_option = function() {
+    window.show_hide_fields = function() {
 
-        $('.member-type-id').each(function() {
+        let member_div = $('.member-div.active');
+        member_div.not('.disabled').find('input, select').attr('disabled', false);
+        let type = member_div.find('.member-type-id option:selected').text();
 
-            let type = $(this).find('option:selected').text() ?? null;
-            let option_div = $(this).closest('.col-12').next().next('.bank-trust-div');
-            let input_div = option_div.closest('.col-12').next('.member-entity-name-div');
+        let bank_trust_div = member_div.find('.bank-trust-div');
+        let member_entity_name_div = member_div.find('.member-entity-name-div');
+        let company_div = member_div.find('.company-div');
+        let home_address_div = member_div.find('.home-address-div');
+        let office_address_div = member_div.find('.office-address-div');
+        let bright_mls_id_div = member_div.find('.bright-mls-id-div');
 
-            if(type == 'Buyer' || type == 'Seller') {
-                option_div.show();
-                if(input_div.find('input').val() != '') {
-                    input_div.show();
-                }
-            } else {
-                option_div.hide();
-                input_div.hide();
+        if(type == 'Buyer' || type == 'Seller') {
+
+            bank_trust_div.show();
+            if(member_entity_name_div.find('input').val() != '') {
+                member_entity_name_div.show();
             }
+            company_div.hide();
+            home_address_div.show();
+            office_address_div.hide();
+            bright_mls_id_div.hide();
 
-        });
+        } else if(type == 'Listing Agent' || type == 'Buyer Agent') {
+
+            bank_trust_div.hide();
+            member_entity_name_div.hide();
+            company_div.show();
+            home_address_div.hide();
+            office_address_div.show();
+            bright_mls_id_div.show();
+
+        } else {
+
+            bank_trust_div.hide();
+            member_entity_name_div.hide();
+            company_div.show();
+            home_address_div.hide();
+            office_address_div.show();
+            bright_mls_id_div.hide();
+
+        }
+
 
     }
 
@@ -54,11 +79,16 @@ if (document.URL.match(/transaction_details/)) {
             formData.append('company', form.find('.member-company').val());
             formData.append('cell_phone', form.find('.member-phone').val());
             formData.append('email', form.find('.member-email').val());
-            formData.append('address_street', form.find('.member-street').val());
-            formData.append('address_city', form.find('.member-city').val());
-            formData.append('address_state', form.find('.member-state').val());
-            formData.append('address_zip', form.find('.member-zip').val());
+            formData.append('address_home_street', form.find('.member-home-street').val());
+            formData.append('address_home_city', form.find('.member-home-city').val());
+            formData.append('address_home_state', form.find('.member-home-state').val());
+            formData.append('address_home_zip', form.find('.member-home-zip').val());
+            formData.append('address_office_street', form.find('.member-office-street').val());
+            formData.append('address_office_city', form.find('.member-office-city').val());
+            formData.append('address_office_state', form.find('.member-office-state').val());
+            formData.append('address_office_zip', form.find('.member-office-zip').val());
             formData.append('CRMContact_ID', form.find('.member-crm-contact-id').val());
+            formData.append('bright_mls_id', form.find('.member-bright-mls-id').val());
 
             axios.post('/agents/doc_management/transactions/save_member', formData, axios_options)
             .then(function (response) {
@@ -79,7 +109,11 @@ if (document.URL.match(/transaction_details/)) {
     }
 
     window.show_add_member = function() {
+        let transaction_type = $('#transaction_type').val();
         axios.get('/agents/doc_management/transactions/add_member_html', {
+            params: {
+                transaction_type: transaction_type
+            },
             headers: {
                 'Accept-Version': 1,
                 'Accept': 'text/html',
@@ -106,8 +140,7 @@ if (document.URL.match(/transaction_details/)) {
             });
 
             setTimeout(function() {
-                show_bank_trust_option();
-                $('.member-type-id').change(show_bank_trust_option);
+                $('.member-type-id').change(show_hide_fields);
                 $('.bank-trust').click(show_bank_trust);
             }, 500);
 
@@ -181,7 +214,7 @@ if (document.URL.match(/transaction_details/)) {
             $('#import_contact_modal').modal('hide');
 
             setTimeout(function() {
-                //scrollToAnchor('scroll_to');
+                show_hide_fields();
             }, 500);
         });
     }

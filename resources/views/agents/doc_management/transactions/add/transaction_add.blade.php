@@ -10,7 +10,7 @@
 
             <div class="row mb-5">
                 <div class="col-12">
-                    <div class="h1 text-primary mt-4 mb-2">Add {{ $transaction_type }}</div>
+                    <div class="h1-responsive text-primary mt-4 mb-2">Add {{ $transaction_type }}</div>
                 </div>
             </div>
 
@@ -18,7 +18,7 @@
                 <!-- address search container -->
                 <div class="d-flex justify-content-center w-100">
                     <div id="address_search_container" class="address-container mls-container collapse show">
-                        <div class="h3 text-center text-orange mb-4">To Begin, Search By Property Address</div>
+                        <div class="h3-responsive text-center text-orange mb-4">To Begin, Search By Property Address</div>
                         <div class="mt-5">
                             <div class="row">
                                 <div class="col-sm-9 col-lg-10">
@@ -53,7 +53,7 @@
 
                 <!-- address enter container -->
                 <div id="address_enter_container" class="address-container collapse">
-                    <div class="h3 text-center text-orange mb-4">To Begin, Enter The Street Address</div>
+                    <div class="h3-responsive text-center text-orange mb-4">To Begin, Enter The Street Address</div>
                     <form id="enter_address_form">
                         <div class="container">
                             <div class="row">
@@ -117,7 +117,7 @@
 
                 <!-- mls search container -->
                 <div id="mls_search_container" class="mls-container mx-auto collapse">
-                    <div class="h3 text-center text-orange mb-4">Search By Bright MLS ID</div>
+                    <div class="h3-responsive text-center text-orange mb-4">Search By Bright MLS ID</div>
                     <div class="mt-5">
                         <div class="row">
                             <div class="col-12">
@@ -155,7 +155,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="h2 text-gray mb-3 text-center">We found the following matching property</div>
+                                <div class="h2-responsive text-gray mb-3 text-center">We found the following matching property</div>
                             </div>
                         </div>
                         <div class="row">

@@ -165,7 +165,7 @@ window.form_elements = function () {
                         ' + clear_value + ' \
                         <label class="' + form_type + '-label" for="select_value_' + select_input_id + '">' + label + '</label> \
                         <input type="text" class="form-select-value-input caret '+ disabled + '" id="select_value_' + select_input_id + '" readonly ' + disabled + '> \
-                        <div class="form-select-dropdown z-depth-1"> \
+                        <div class="form-select-dropdown shadow-sm"> \
                             <div class="form-select-search-div"> \
                                 <div class="w-100 d-flex justify-content-center"> \
                                     <input type="text" class="form-select-search-input" placeholder="Search"> \

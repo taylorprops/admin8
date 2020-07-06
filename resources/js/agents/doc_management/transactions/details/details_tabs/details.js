@@ -103,7 +103,7 @@ if (document.URL.match(/transaction_details/)) {
 
             } else if(response.data.status == 'not found') {
 
-                $('#modal_danger').modal().find('.modal-body').html('<div class="h4 responsive text-danger w-100 text-center"><i class="fad fa-exclamation-triangle mr-2"></i> Listing not found in BrightMLS</div>');
+                $('#modal_danger').modal().find('.modal-body').html('<div class="h4-responsive text-danger w-100 text-center"><i class="fad fa-exclamation-triangle mr-2"></i> Listing not found in BrightMLS</div>');
 
             }
         })

@@ -1,4 +1,5 @@
 import datepicker from 'js-datepicker';
+
 $(document).ready(function () {
 
     global_page_transition();
@@ -21,6 +22,12 @@ $(document).ready(function () {
         headers: { 'X-CSRF-TOKEN': _token }
     };
 
+    window.axios_headers_html = {
+        'Accept-Version': 1,
+        'Accept': 'text/html',
+        'Content-Type': 'text/html'
+    }
+
     // Add a response interceptor
     axios.interceptors.response.use(function (response) {
         //console.log(response);
@@ -30,27 +37,21 @@ $(document).ready(function () {
         }
         return response;
     }, function (error) {
-        console.log(error.response);
-        location.reload();
+        console.log('error = '+error);
+        //location.reload();
         /* if(error.response.status === 404 || error.response.match(/404/) || error.response.status === 500 || error.response.match(/500/)) {
             window.location = '/';
         } */
         //return Promise.reject('error '+error);
     });
 
-    // go to dashboard on ctrl + d
-    window.addEventListener("keydown", function (event) {
-        if ((window.navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey) && event.keyCode == 68) {
-            event.preventDefault();
-            window.location = '/dashboard';
-        }
-    }, false);
+
 
     $('.draggable').draggable({
         handle: '.draggable-handle'
     });
 
-    $(document).on('keyup', '.phone', function () {
+    $(document).on('keyup change', '.phone', function () {
         global_format_phone(this);
         $(this).attr('maxlength', 14);
     });
@@ -58,7 +59,6 @@ $(document).ready(function () {
     setInterval(function() {
         datepicker_custom();
     }, 1000);
-
 
 
     global_tooltip();
@@ -77,6 +77,7 @@ $(document).ready(function () {
 
     // multiple modal stacking
     $(document).on('show.bs.modal', '.modal', function () {
+        $('.modal').addClass('disable-scrollbars');
         // increase modal and backdrop z-index accordingly
         var zIndex = 1040 + (10 * $('.modal:visible').length);
         $(this).css('z-index', zIndex);
@@ -101,10 +102,8 @@ $(document).ready(function () {
     });
 
 
-
-
-
 });
+
 
 window.datepicker_custom = function() {
     $('.datepicker').not('.datepicker-added').each(function() {
@@ -227,11 +226,7 @@ window.global_tooltip = function() {
     $('[data-toggle="popover"]').popover();
 }
 
-window.axios_headers_html = {
-    'Accept-Version': 1,
-    'Accept': 'text/html',
-    'Content-Type': 'text/html'
-}
+
 
 window.global_get_url_parameters = function(key) {
     const queryString = window.location.search;

@@ -63,19 +63,19 @@ ul.stepper {
     }
 
     &.active:before {
-      background-color: #4c9bdb;
+      background-color: #4285f4;
     }
 
     &.done:before {
-      font-family: "Font Awesome 5 Pro", "Font Awesome 5 Pro", sans-serif;
+      font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", sans-serif;
       font-size: 1rem;
       font-weight: 900;
       content: "\f00c";
-      background-color: #4cb476;
+      background-color: #00c851;
     }
 
     &.wrong:before {
-      font-family: "Font Awesome 5 Pro", "Font Awesome 5 Pro", sans-serif;
+      font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", sans-serif;
       font-size: 1.1rem;
       font-weight: 900;
       content: "\f071";
@@ -217,19 +217,19 @@ ul.stepper {
         content: "";
       }
       &.active .step-title:before {
-        background-color: #4c9bdb;
+        background-color: #4285f4;
       }
 
       &.done .step-title:before {
-        font-family: "Font Awesome 5 Pro", "Font Awesome 5 Pro", sans-serif;
+        font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", sans-serif;
         font-size: 1rem;
         font-weight: 900;
         content: "\f00c";
-        background: #4cb476;
+        background: #00c851;
       }
 
       &.wrong .step-title:before {
-        font-family: "Font Awesome 5 Pro", "Font Awesome 5 Pro", sans-serif;
+        font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", sans-serif;
         font-size: 1.1rem;
         font-weight: 900;
         content: "\f071";

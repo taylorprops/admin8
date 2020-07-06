@@ -58,4 +58,22 @@
     </div>
 </div>
 
-
+{{-- Confirm Modal --}}
+<div class="modal fade draggable" id="confirm_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary draggable-handle">
+                <h4 class="modal-title" id="confirm_title"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <i class="fal fa-times mt-2"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+                <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                <a class="btn btn-success modal-confirm-button" id="confirm_button"><i class="fad fa-check mr-2"></i> Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>

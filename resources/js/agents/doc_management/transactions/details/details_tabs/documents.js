@@ -12,12 +12,14 @@ if (document.URL.match(/transaction_details/)) {
         $(document).on('click', '#add_checklist_template_button', show_add_checklist_template);
 
         $(document).on('click', '#save_add_checklist_template_button', function () {
+            $('#save_add_checklist_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
             save_add_template_documents('checklist');
         });
 
         $(document).on('click', '#add_individual_template_button', show_add_individual_template);
 
         $(document).on('click', '#save_add_individual_template_button', function () {
+            $('#save_add_individual_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
             save_add_template_documents('individual');
         });
 
@@ -344,7 +346,7 @@ if (document.URL.match(/transaction_details/)) {
             let Agent_ID = $('#Agent_ID').val();
             let folder_id = $('#folder_id').val();
             let file_id = ele.data('file-id') ?? null;
-            console.log(file_id);
+
             let checklist_item_id = ele.data('checklist-item-id') ?? null;
             let checklist_id = ele.data('checklist-id') ?? null;
             let validate = 'yes';
@@ -379,8 +381,8 @@ if (document.URL.match(/transaction_details/)) {
                 axios.post('/agents/doc_management/transactions/save_split_document', formData, axios_options)
                     .then(function (response) {
                         toastr['success']('New Document Successfully Created');
-                        $('.add-docs-to-checklist-item-button').html('<i class="fa fa-plus mr-1 mr-sm-2"></i> Add');
-                        $('#save_document_name_button').html('<i class="fa fa-save mr-2"></i> Save Document');
+                        $('.add-docs-to-checklist-item-button').html('<i class="fa fa-plus mr-1 mr-sm-2"></i> Add').prop('disabled', true);
+                        $('#save_document_name_button').html('<i class="fa fa-save mr-2"></i> Save Document').prop('disabled', true);
                         $('.selected-images-slider').html('');
                         $('#split_document_modal').on('hide.bs.modal', function () {
                             load_tabs('documents');

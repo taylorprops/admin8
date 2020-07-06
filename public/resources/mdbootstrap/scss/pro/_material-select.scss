@@ -9,14 +9,31 @@
 
 .select-wrapper {
   position: relative;
+  &:not(.md-outline) .select-dropdown {
+    &:focus {
+      border-bottom: 1px solid $input-md-focus-color; 
+      box-shadow: 0 1px 0 0 $input-md-focus-color;
+    }
+  }
 
+  &.active {
+    span.caret,
+    label.mdb-main-label {
+      color: $primary;
+    }
+    & + label {
+      color: $primary;
+    }
+  }
+  
   input {
+
     &.select-dropdown {
       position: relative;
       z-index: 2;
       display: block;
       width: 100%;
-      height: 38px;
+      height: 40px;
       padding: 0;
       margin: 0 0 $material-select-wrapper-input-dropdown-margin 0;
       font-size: $material-select-wrapper-input-dropdown-font-size;
@@ -51,8 +68,8 @@
     }
 
     &.active {
-      border-bottom: 1px solid #4c9bdb;
-      box-shadow: 0 1px 0 0 #4c9bdb;
+      border-bottom: 1px solid #4285f4;
+      box-shadow: 0 1px 0 0 #4285f4;
     }
   }
 
@@ -72,6 +89,14 @@
       input {
         padding-bottom: $material-select-wrapper-search-wrap-input-pb;
         margin-bottom: 0;
+        border: none;
+        border-bottom: 1px solid #ced4da;
+        border-radius: 0;
+      
+        &:focus {
+          box-shadow: none !important;
+          box-shadow: 0 1px 0 0 #4285f4 !important;
+        }
       }
     }
   }
@@ -82,7 +107,7 @@
     top: .8rem;
     right: 0;
     font-size: $material-select-wrapper-span-caret-font-size;
-    color: initial;
+    color: #495057;;
 
     &.disabled {
       color: rgba(0, 0, 0, .3);
@@ -104,7 +129,7 @@
     }
 
     &.active-check {
-      color: #4c9bdb;
+      color: #4285f4;
     }
   }
 
@@ -118,7 +143,7 @@
 
   & > label.mdb-main-label {
     position: absolute;
-    top: 0.5rem;
+    top: 0;
     left: 0;
     font-weight: 300;
     color: #757575;
@@ -134,7 +159,6 @@
       left: 0;
       font-size: .8rem;
       transform: translateY(-14px);
-      color: #4c9bdb;
     }
 
     &.disabled {
@@ -142,11 +166,11 @@
     }
   }
 
-  &.dropdown-primary    > label.mdb-main-label.active { color: #4c9bdb; }
+  &.dropdown-primary    > label.mdb-main-label.active { color: #4285f4; }
   &.dropdown-danger     > label.mdb-main-label.active { color: #c00; }
   &.dropdown-default    > label.mdb-main-label.active { color: #2bbbad; }
   &.dropdown-secondary  > label.mdb-main-label.active { color: #a6c; }
-  &.dropdown-success    > label.mdb-main-label.active { color: #4cb476; }
+  &.dropdown-success    > label.mdb-main-label.active { color: #00c851; }
   &.dropdown-info       > label.mdb-main-label.active { color: #33b5e5; }
   &.dropdown-warning    > label.mdb-main-label.active { color: #fb3; }
   &.dropdown-ins        > label.mdb-main-label.active { color: #2e5e86; }
@@ -167,7 +191,7 @@
         label {
           top: 0;
           font-size: .9rem;
-          color: #4c9bdb;
+          color: #4285f4;
           transform: none;
         }
 
@@ -198,10 +222,8 @@
         &.caret {
           padding-right: .75rem;
           padding-left: .75rem;
-          color: #495057 !important;
-
           &.active {
-            color: #4c9bdb !important;
+            color: #4285f4 !important;
           }
         }
       }
@@ -216,8 +238,8 @@
           color: #495057;
 
           &:focus {
-            border-color: #4c9bdb;
-            box-shadow: inset 0 0 0 1px #4c9bdb;
+            border-color: #4285f4;
+            box-shadow: inset 0 0 0 1px #4285f4;
           }
         }
       }
@@ -231,12 +253,11 @@
         padding-left: 5px;
         font-size: 13px;
         font-weight: 500;
-        color: #757575;
         background: #fff;
         transform: translateY(40%);
 
         &.active {
-          color: #4c9bdb;
+          color: #4285f4;
         }
       }
     }
@@ -247,7 +268,7 @@
     top: 1.5rem;
     right: 1rem;
     display: none;
-    color: #4c9bdb;
+    color: #4285f4;
     cursor: pointer;
   }
 
@@ -260,14 +281,17 @@
 select {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-  &.mdb-select {
+  &.mdb-select.initialized {
     display: none !important;
+    & ~ .btn {
+      display: none !important;
+    }
   }
 
   &.browser-default {
     display: block !important;
   }
-
+  
   &:disabled {
     color: $material-select-wrapper-input-dropdown-disabled-color;
   }

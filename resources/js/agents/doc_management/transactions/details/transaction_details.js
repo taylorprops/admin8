@@ -24,39 +24,255 @@ if (document.URL.match(/transaction_details/)) {
         load_details_header();
 
 
+        let agent_search_request = null;
+
+        function search_bright_agents() {
+
+            let val = $(this).val();
+
+            if (val.length > 3) {
+
+                if (agent_search_request) {
+                    agent_search_request.cancel();
+                }
+                agent_search_request = axios.CancelToken.source();
+
+                axios.get('/agents/doc_management/transactions/search_bright_agents', {
+                    cancelToken: agent_search_request.token,
+                    params: {
+                        val: val
+                    },
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(function (response) {
+                    let data = response.data;
+                    $('.search-results').html('');
+                    $.each(data, function (k, agents) {
+                        if (agents.length > 0) {
+                            $.each(agents, function (k, agent) {
+                                let agent_div = ' \
+                                <div class="search-result list-group-item" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
+                                    <div class="row"> \
+                                        <div class="col-6 col-md-3"> \
+                                            <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
+                                        </div> \
+                                        <div class="col-6 col-md-3"> \
+                                        <span class="font-weight-bold">'+ agent.OfficeName + '</span><br><span class="small">' + agent.OfficeMlsId + '</span>\
+                                        </div> \
+                                        <div class="col-12 col-md-6"> \
+                                            '+ agent.OfficeAddress1 + '<br>' + agent.OfficeCity + ', ' + agent.OfficeStateOrProvince + ' ' + agent.OfficePostalCode + ' \
+                                        </div> \
+                                    </div> \
+                                </div> \
+                            ';
+                                $('.search-results').show().append(agent_div);
+                            });
+                        } else {
+                            $('.search-results').show().append('<div class="search-result list-group-item text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> No Matching Results</div>');
+                        }
+                    });
+
+                    $('.search-result').off('click').on('click', function () {
+                        add_buyers_agent($(this));
+                    });
+
+                    $(document).mouseup(function (e) {
+                        var container = $('.search-results');
+                        if (!container.is(e.target) && container.has(e.target).length === 0) {
+                            container.hide();
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    if (axios.isCancel(error)) {
+
+                    } else {
+                        //console.log(error);
+                    }
+                });
+
+
+            } else {
+
+                $('.search-results').hide().html('');
+
+            }
+
+        }
+
+        $('#agent_search').on('keyup', search_bright_agents);
     });
+
+
+    /* function search_bright_agents() {
+
+        let val = $(this).val();
+
+        if (val.length > 3) {
+
+            axios.get('/agents/doc_management/transactions/search_bright_agents', {
+                params: {
+                    val: val
+                },
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(function (response) {
+                    let data = response.data;
+                    $('.search-results').html('');
+                    $.each(data, function (k, agents) {
+                        if (agents.length > 0) {
+                            $.each(agents, function (k, agent) {
+                                let agent_div = ' \
+                                <div class="search-result list-group-item" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
+                                    <div class="row"> \
+                                        <div class="col-6 col-md-3"> \
+                                            <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
+                                        </div> \
+                                        <div class="col-6 col-md-3"> \
+                                        <span class="font-weight-bold">'+ agent.OfficeName + '</span><br><span class="small">' + agent.OfficeMlsId + '</span>\
+                                        </div> \
+                                        <div class="col-12 col-md-6"> \
+                                            '+ agent.OfficeAddress1 + '<br>' + agent.OfficeCity + ', ' + agent.OfficeStateOrProvince + ' ' + agent.OfficePostalCode + ' \
+                                        </div> \
+                                    </div> \
+                                </div> \
+                            ';
+                                $('.search-results').show().append(agent_div);
+                            });
+                        } else {
+                            $('.search-results').show().append('<div class="search-result list-group-item text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> No Matching Results</div>');
+                        }
+                    });
+
+                    $('.search-result').off('click').on('click', function () {
+                        add_buyers_agent($(this));
+                    });
+
+                    $(document).mouseup(function (e) {
+                        var container = $('.search-results');
+                        if (!container.is(e.target) && container.has(e.target).length === 0) {
+                            container.hide();
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+        } else {
+
+            $('.search-results').hide().html('');
+
+        }
+
+    } */
 
     function show_accept_contract() {
         $('#accept_contract_modal').modal();
         $('#save_accept_contract_button').off('click').on('click', save_accept_contract);
+        $('#agent_search_div').on('show.bs.collapse', function () {
+            setTimeout(function () {
+                $('#agent_search').focus().trigger('click');
+            }, 500);
+        });
+    }
+
+    function add_buyers_agent(ele) {
+
+        let agent_first = ele.data('agent-first');
+        let agent_last = ele.data('agent-last');
+        let agent_email = ele.data('agent-email');
+        let agent_phone = ele.data('agent-phone');
+        let agent_mls_id = ele.data('agent-mls-id');
+        let agent_company = ele.data('agent-company');
+        let office_street = ele.data('agent-street');
+        let office_city = ele.data('agent-city');
+        let office_state = ele.data('agent-state');
+        let office_zip = ele.data('agent-zip');
+
+        $('#accept_contract_buyer_agent_first').val(agent_first).trigger('change');
+        $('#accept_contract_buyer_agent_last').val(agent_last).trigger('change');
+        $('#accept_contract_buyer_agent_email').val(agent_email).trigger('change');
+        $('#accept_contract_buyer_agent_phone').val(agent_phone).trigger('change');
+        $('#accept_contract_buyer_agent_mls_id').val(agent_mls_id).trigger('change');
+        $('#accept_contract_buyer_agent_company').val(agent_company).trigger('change');
+        $('#accept_contract_buyer_agent_street').val(office_street);
+        $('#accept_contract_buyer_agent_city').val(office_city);
+        $('#accept_contract_buyer_agent_state').val(office_state);
+        $('#accept_contract_buyer_agent_zip').val(office_zip);
+
+        $('.search-results').fadeOut('slow');
+        $('#agent_search_div').collapse('hide');
     }
 
     function save_accept_contract() {
-        let buyer_one_first = $('#accept_contract_buyer_one_first').val();
-        let buyer_one_last = $('#accept_contract_buyer_one_last').val();
-        let buyer_two_first = $('#accept_contract_buyer_two_first').val();
-        let buyer_two_last = $('#accept_contract_buyer_two_last').val();
-        let contract_date = $('#accept_contract_contract_date').val();
-        let close_date = $('#accept_contract_close_date').val();
-        let contract_price = $('#accept_contract_contract_price').val();
-        let Listing_ID = $('#Listing_ID').val();
 
-        let formData = new FormData();
-        formData.append('buyer_one_first', buyer_one_first);
-        formData.append('buyer_one_last', buyer_one_last);
-        formData.append('buyer_two_first', buyer_two_first);
-        formData.append('buyer_two_last', buyer_two_last);
-        formData.append('contract_date', contract_date);
-        formData.append('close_date', close_date);
-        formData.append('contract_price', contract_price);
-        formData.append('Listing_ID', Listing_ID);
-        axios.post('/agents/doc_management/transactions/accept_contract', formData, axios_options)
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        if ($('#accept_contract_contract_price').val() == '$0') {
+            $('#accept_contract_contract_price').val('');
+        }
+
+        let form = $('#accept_contract_form');
+        let validate = validate_form(form);
+
+        if (validate == 'yes') {
+
+            let agent_first = $('#accept_contract_buyer_agent_first').val();
+            let agent_last = $('#accept_contract_buyer_agent_last').val();
+            let agent_email = $('#accept_contract_buyer_agent_email').val();
+            let agent_phone = $('#accept_contract_buyer_agent_phone').val();
+            let agent_mls_id = $('#accept_contract_buyer_agent_mls_id').val();
+            let agent_company = $('#accept_contract_buyer_agent_company').val();
+            let agent_street = $('#accept_contract_buyer_agent_street').val();
+            let agent_city = $('#accept_contract_buyer_agent_city').val();
+            let agent_state = $('#accept_contract_buyer_agent_state').val();
+            let agent_zip = $('#accept_contract_buyer_agent_zip').val();
+
+            let buyer_one_first = $('#accept_contract_buyer_one_first').val();
+            let buyer_one_last = $('#accept_contract_buyer_one_last').val();
+            let buyer_two_first = $('#accept_contract_buyer_two_first').val();
+            let buyer_two_last = $('#accept_contract_buyer_two_last').val();
+            let contract_date = $('#accept_contract_contract_date').val();
+            let close_date = $('#accept_contract_close_date').val();
+            let contract_price = $('#accept_contract_contract_price').val();
+            let Listing_ID = $('#Listing_ID').val();
+
+            let formData = new FormData();
+            formData.append('agent_first', agent_first);
+            formData.append('agent_last', agent_last);
+            formData.append('agent_email', agent_email);
+            formData.append('agent_phone', agent_phone);
+            formData.append('agent_mls_id', agent_mls_id);
+            formData.append('agent_company', agent_company);
+            formData.append('agent_street', agent_street);
+            formData.append('agent_city', agent_city);
+            formData.append('agent_state', agent_state);
+            formData.append('agent_zip', agent_zip);
+            formData.append('buyer_one_first', buyer_one_first);
+            formData.append('buyer_one_last', buyer_one_last);
+            formData.append('buyer_two_first', buyer_two_first);
+            formData.append('buyer_two_last', buyer_two_last);
+            formData.append('contract_date', contract_date);
+            formData.append('close_date', close_date);
+            formData.append('contract_price', contract_price);
+            formData.append('Listing_ID', Listing_ID);
+            axios.post('/agents/doc_management/transactions/accept_contract', formData, axios_options)
+                .then(function (response) {
+                    $('#accept_contract_modal').modal('hide');
+                    load_tabs('contracts');
+                    let Contract_ID = response.data.Contract_ID;
+                    $('#modal_info').modal().find('.modal-body').html('<div class="w-100 text-center">Your Contract was successfully added. You will find it in the "Contracts" tab<br><br><a class="btn btn-primary" href="/agents/doc_management/transactions/transaction_details/' + Contract_ID + '/contract">View Contract</a></div>');
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+        }
     }
 
     window.load_details_header = function () {
@@ -73,8 +289,14 @@ if (document.URL.match(/transaction_details/)) {
         })
             .then(function (response) {
                 $('#details_header').html(response.data);
-                $('[data-toggle="popover"]').popover( { placement: 'bottom' });
+                $('[data-toggle="popover"]').popover({ placement: 'bottom' });
                 $('#accept_contract_button').click(show_accept_contract);
+                $('#disabled_accept_contract_button').click(function () {
+                    $('#modal_danger').modal().find('.modal-body').html('You cannot accept a contract until the current one is released');
+                });
+                $('#disabled_withdraw_listing_button').click(function () {
+                    $('#modal_danger').modal().find('.modal-body').html('You cannot withdraw the listing while it is under contract. Once the contract is released you can withdraw the listing');
+                });
             })
             .catch(function (error) {
                 console.log(error);
@@ -139,11 +361,15 @@ if (document.URL.match(/transaction_details/)) {
                     //$('.save-member-div').off('click').on('click', '.save-member-button', save_add_member);
                     $('.delete-member-button').off('click').on('click', confirm_delete_member);
 
-                    setTimeout(function() {
-                        show_bank_trust_option();
-                        $('.member-type-id').change(show_bank_trust_option);
+                    setTimeout(function () {
+                        show_hide_fields();
+                        $('.member-type-id').change(show_hide_fields);
                         $('.bank-trust').click(show_bank_trust);
                     }, 1000);
+
+                    $('a[data-toggle="list"]').on('shown.bs.tab', function (e) {
+                        show_hide_fields();
+                    });
 
                 } else if (tab == 'documents') {
 
@@ -193,9 +419,17 @@ if (document.URL.match(/transaction_details/)) {
                         $(this).closest('.checklist-item-div').removeClass('bg-green-light');
                     });
 
-                    $('.listing-option-trigger').off('change').on('change', listing_options);
+                    $('.transaction-option-trigger').off('change').on('change', listing_options);
 
                     listing_options();
+
+                } else if (tab == 'contracts') {
+                    $('.contract-div').mouseenter(function () {
+                        $(this).addClass('z-depth-3').removeClass('z-depth-1');
+                    });
+                    $('.contract-div').mouseleave(function () {
+                        $(this).removeClass('z-depth-3').addClass('z-depth-1');
+                    });
 
                 }
 
@@ -229,12 +463,12 @@ if (document.URL.match(/transaction_details/)) {
         $('.sortable-documents').disableSelection();
     }
 
-    window.reorder_documents = function(on_load) {
+    window.reorder_documents = function (on_load) {
 
         let c = 0;
         let stop = $('.sortable-documents').length - 1;
 
-        $('.sortable-documents').each(function() {
+        $('.sortable-documents').each(function () {
             let els = $(this).find('.document-div');
             let folder_id = $(this).data('folder-id');
 
@@ -261,7 +495,7 @@ if (document.URL.match(/transaction_details/)) {
             formData.append('data', documents);
             axios.post('/agents/doc_management/transactions/reorder_documents', formData, axios_options)
                 .then(function (response) {
-                    if(c == stop && on_load == 'no') {
+                    if (c == stop && on_load == 'no') {
                         toastr['success']('Documents Reordered');
                         docs_count();
                     }
@@ -276,22 +510,22 @@ if (document.URL.match(/transaction_details/)) {
     }
 
     function docs_count() {
-        $('.folder-div').each(function() {
+        $('.folder-div').each(function () {
             let docs_count = $(this).find('.sortable-documents').find('.document-div').length;
             $(this).find('.docs-count').text(docs_count);
         });
     }
 
     window.format_money = function () {
-        $('.money').each(function() {
+        $('.money').each(function () {
             $(this).val('$' + global_format_number($(this).val().replace('/\$/', '')));
         });
     }
 
-    window.listing_options = function() {
+    window.listing_options = function () {
 
         let sale_type = $('[name=property_sub_type]').val();
-        if(sale_type == 'Standard' || sale_type == 'Short Sale') {
+        if (sale_type == 'Standard' || sale_type == 'Short Sale') {
             $('.hoa').show();
         } else {
             $('.hoa').hide();
@@ -299,12 +533,12 @@ if (document.URL.match(/transaction_details/)) {
         }
 
         let listing_type = $('[name=listing_type]').val();
-        if(listing_type == 'rental') {
+        if (listing_type == 'rental') {
             $('.property-sub-type').hide().find('[name=property_sub_type]').val('Standard');
             $('.year-built, .hoa').hide();
             $('[name=year_built], [name=hoa_condo]').attr('required', false);
         } else {
-            if(sale_type == 'Standard' || sale_type == 'Short Sale') {
+            if (sale_type == 'Standard' || sale_type == 'Short Sale') {
                 $('.property-sub-type, .year-built, .hoa').show();
                 $('[name=year_built], [name=hoa_condo]').attr('required', true);
             } else {

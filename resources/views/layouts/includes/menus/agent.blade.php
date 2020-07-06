@@ -1,40 +1,19 @@
-<!-- Search form -->
-<div class="ml-5">
-    <input class="form-input-search" id="main_search" type="text" placeholder="Search" aria-label="Search">
-</div>
-<ul class="nav nav-tabs mt-5" id="sub_nav_tabs" role="tablist">
-    <li class="nav-item">
-        <a class="nav-link active" id="doc_management_tab" data-toggle="tab" href="#doc_management_div" role="tab" aria-controls="doc_management_div"
-            aria-selected="true">Doc Management</a>
-    </li>
+<!-- Side navigation links -->
+<li>
+    <ul class="collapsible collapsible-accordion">
+        <li>
+            <a href="/dashboard_agent" class="waves-effect side-nav-link"><i class="fad fa-tachometer-alt mr-2"></i> Dashboard</a>
+        </li>
+        <li>
+            <a href="/agents/doc_management/transactions" class="waves-effect side-nav-link"><i class="fad fa-cabinet-filing mr-2"></i> Transactions</a>
+        </li>
+        <li>
+            <a href="/agents/doc_management/transactions/add/listing" class="waves-effect side-nav-link"><i class="fad fa-sign mr-2"></i> Add Listing</a>
+        </li>
+        <li>
+            <a href="/agents/doc_management/transactions/add/contract" class="waves-effect side-nav-link"><i class="fad fa-file-signature mr-2"></i> Add Contract</a>
+        </li>
 
-</ul>
-<div class="tab-content card pt-1" id="sub_menu_divs">
-    <div class="tab-pane fade show active" id="doc_management_div" role="tabpanel" aria-labelledby="doc_management_tab">
-        <ul class="mt-5">
-            <li>
-                <a class="text-primary" href="/agents/doc_management/transactions">
-                    <i class="fas fa-caret-right pl-2 pr-3"></i>View Listings
-                </a>
-            </li>
-            <li>
-                <a class="text-primary" href="/agents/doc_management/transactions/add/listing">
-                    <i class="fas fa-caret-right pl-2 pr-3"></i>Add Listing
-                </a>
-            </li>
-            <li>
-                <a class="text-primary" href="/agents/doc_management/transactions/add/contract">
-                    <i class="fas fa-caret-right pl-2 pr-3"></i>Add Sales Contract
-                </a>
-            </li>
-
-        </ul>
-    </div>
-
-</div>
-
-
-
-
-
-
+    </ul>
+</li>
+<!--/. Side navigation links -->

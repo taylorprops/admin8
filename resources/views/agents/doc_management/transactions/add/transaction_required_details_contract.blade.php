@@ -10,14 +10,14 @@
     <div class="row">
         <div class="col-12 mb-5">
 
-            <div class="h3 responsive text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.' '.$property_details -> PostalCode }}</div>
+            <div class="h3-responsive text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.' '.$property_details -> PostalCode }}</div>
 
-            <div class="h4 responsive text-primary mt-3 text-center">Just a few more details</div>
+            <div class="h4-responsive text-primary mt-3 text-center">Just a few more details</div>
 
             <form id="details_form" autocomplete="off">
                 <input autocomplete="false" name="hidden" type="text" style="display:none;">
 
-                <div class="h4 responsive step-title waves-effect waves-light text-gray mb-4">Buyer(s)</div>
+                <div class="h4-responsive step-title waves-effect waves-light text-gray mb-4">Buyer(s)</div>
 
 
                 <div class="row">
@@ -81,7 +81,7 @@
 
                 </div>
 
-                <div class="h4 responsive step-title waves-effect waves-light text-gray mb-4 mt-5">Seller(s)</div>
+                <div class="h4-responsive step-title waves-effect waves-light text-gray mb-4 mt-5">Seller(s)</div>
 
 
                 <div class="row">
@@ -98,10 +98,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-3">
-                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ substr($property_details -> Owner1, strrpos($property_details -> Owner1, ' ') + 1) }}">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ substr($property_details -> Owner1, strpos($property_details -> Owner1, ' ') + 1) }}">
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-3">
-                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ substr($property_details -> Owner1, 0, strrpos($property_details -> Owner1, ' ')) }}">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ substr($property_details -> Owner1, 0, strpos($property_details -> Owner1, ' ')) }}">
                                 </div>
                             </div>
                         </div>
@@ -114,10 +114,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-3">
-                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ substr($property_details -> Owner2, strrpos($property_details -> Owner2, ' ') + 1) }}">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ substr($property_details -> Owner2, strpos($property_details -> Owner2, ' ') + 1) }}">
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-3">
-                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ substr($property_details -> Owner2, 0, strrpos($property_details -> Owner2, ' ')) }}">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ substr($property_details -> Owner2, 0, strpos($property_details -> Owner2, ' ')) }}">
                                 </div>
                             </div>
                         </div>
@@ -131,7 +131,7 @@
 
                 </div>
 
-                <div class="h4 responsive step-title waves-effect waves-light text-gray mb-4 mt-5">Dates</div>
+                <div class="h4-responsive step-title waves-effect waves-light text-gray mb-4 mt-5">Dates</div>
 
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-3">

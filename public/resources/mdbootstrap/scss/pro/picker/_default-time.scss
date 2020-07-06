@@ -6,6 +6,50 @@
 // stylelint-disable selector-max-combinators
 // stylelint-disable selector-max-compound-selectors
 
+.clockpicker_container.clockpicker {
+  .picker__box {
+    .clockpicker-am-pm-block {
+      padding-left: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      font-size: 1.125rem;
+      height: 100%;
+      span {
+        cursor: pointer;
+      }
+      .active {
+        @extend .white-text !optional;
+      }
+    }
+    .picker__footer {
+      display: flex;
+      padding: 16px 0;
+      justify-content: flex-end;
+      .clockpicker-button {
+        margin: 0;
+        margin-top: 1rem;
+        padding: 6px 8px;
+        font-size: 0.8rem;
+        min-width: 64px;
+        &:focus {
+          outline: $timepicker-clockpicker-footer-button-focus-outline !important;
+        }
+      }
+      .clockpicker-button.clear-button {
+        margin-right: auto;
+      }
+    }
+  }
+}
+
+div.timepicker input{
+  ~ i.input-prefix {
+    cursor: pointer; 
+    pointer-events: all;
+  }
+}
+
 /**
  * The list of times.
  */
@@ -97,7 +141,6 @@
       cursor: pointer;
       background: $timepicker-pickertime-button-clear-hover-bg;
       border-color: $timepicker-pickertime-button-clear-hover-border-color;
-      outline: none;
       // color: #fff !important
       @extend .white-text !optional;
       &::before {
@@ -347,8 +390,6 @@
 
 .clockpicker-am-pm-block{
   width: 100%;
-  height: $timepicker-clockpicker-am-pm-block-height;
-  margin-top: $timepicker-clockpicker-am-pm-block-mt;
   .clockpicker-button.am-button {
     float: left;
     width: $timepicker-clockpicker-button-am-button-width;
@@ -385,8 +426,10 @@
   .clockpicker-button {
     margin: auto;
     margin-top: $timepicker-clockpicker-footer-button-mt;
+    padding: 6px 8px;
     text-transform: uppercase;
     background-color: transparent;
+    font-size: 1rem;
     &:focus {
       background-color: transparent;
     }

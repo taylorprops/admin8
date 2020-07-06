@@ -55,7 +55,7 @@
     }
 
     .caret {
-        background-image: url(/images/form_elements/arrow-down.jpg);
+        background-image: url(/images/form_elements/arrow-down.png);
         background-position: 95% 50%;
         background-repeat: no-repeat;
     }
@@ -66,14 +66,13 @@
 
     .form-input-label, .form-textarea-label, .form-select-label {
         position: absolute;
-        top: 7px;
+        top: 9px;
         left: 5px;
         width: 95%;
         background: transparent;
         padding: 0 2px;
         font-size: 0.9rem;
         color: #b9b5b5;
-        overflow: hidden;
         white-space: nowrap;
         transition: all .3s;
         cursor: pointer;
@@ -102,7 +101,7 @@
     .form-select-wrapper {
         position: relative;
         margin-top: .9rem;
-    margin-bottom: .6rem;
+        margin-bottom: .6rem;
     }
     .form-select-value-cancel {
         display: none;
@@ -110,7 +109,7 @@
         height: 12px;
         position: absolute;
         color: gray;
-        top: 12px;
+        top: 7px;
         right: 5px;
         cursor: pointer;
         z-index: 2;

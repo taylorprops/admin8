@@ -1,11 +1,11 @@
-<div class="container checklist-container">
+<div class="container checklist-container p-1 p-md-4">
     <div class="row">
         <div class="col-12">
             <div class="mb-5">
 
                 <div class="row">
                     <div class="col-12 col-sm-6">
-                        <div class="h4 text-primary ml-3 my-1 my-sm-3"><i class="fad fa-tasks mr-2"></i> Listing Checklist</div>
+                        <div class="h4-responsive text-primary ml-3 my-1 my-sm-3"><i class="fad fa-tasks mr-3"></i> {{ ucwords($transaction_type) }} Checklist</div>
                     </div>
                     <div class="col-12 col-sm-6">
                         <div class="small text-danger text-right">Wrong Checklist? <a href="javascript: void(0)" class="btn btn-sm btn-primary" id="change_checklist_button" data-checklist-id="{{ $transaction_checklist_id }}"><i class="fad fa-repeat-alt mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Change Checklist</span></a></div>
@@ -283,7 +283,7 @@
     </div>
 </div>
 
-<div class="modal fade draggable" id="change_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="change_checklist_modal_title" aria-hidden="true">
+<div class="modal fade draggable " id="change_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="change_checklist_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary draggable-handle">
@@ -305,7 +305,7 @@
 
                                     <div class="row my-3">
                                         <div class="col-12">
-                                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel listing-option-trigger required" name="listing_type" id="listing_type" data-label="Sale/Rental" required>
+                                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel transaction-option-trigger required" name="listing_type" id="listing_type" data-label="Sale/Rental" required>
                                                 <option value="sale" @if($checklist -> checklist_sale_rent == 'sale') selected @endif>Sale</option>
                                                 <option value="rental" @if($checklist -> checklist_sale_rent == 'rental') selected @endif>Rental</option>
                                                 <option value="both" @if($checklist -> checklist_sale_rent == 'both') selected @endif>Both</option>
@@ -314,7 +314,7 @@
                                     </div>
                                     <div class="row my-3">
                                         <div class="col-12">
-                                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel listing-option-trigger required" name="property_type" id="property_type" data-label="Listing Type" required>
+                                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel transaction-option-trigger required" name="property_type" id="property_type" data-label="Listing Type" required>
                                                 @foreach($property_types as $property_type)
                                                 <option value="{{ $property_type -> resource_name}}" @if($property_type -> resource_id == $checklist -> checklist_property_type_id) selected @endif>{{ $property_type -> resource_name}}</option>
                                                 @endforeach
@@ -323,7 +323,7 @@
                                     </div>
                                     <div class="row my-3 property-sub-type">
                                         <div class="col-12">
-                                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel listing-option-trigger required" name="property_sub_type" id="property_sub_type" data-label="Property Type" required>
+                                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel transaction-option-trigger required" name="property_sub_type" id="property_sub_type" data-label="Property Type" required>
                                                 @foreach($property_sub_types as $property_sub_type)
                                                     @if($property_sub_type -> resource_name != 'For Sale By Owner')
                                                     <option value="{{ $property_sub_type -> resource_name }}" @if($property_sub_type -> resource_id == $checklist -> checklist_property_sub_type_id) selected @endif>{{ $property_sub_type -> resource_name }}</option>
@@ -362,7 +362,7 @@
     </div>
 </div>
 
-<div class="modal fade draggable" id="confirm_change_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="change_checklist_title" aria-hidden="true">
+<div class="modal fade draggable disable-scrollbars" id="confirm_change_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="change_checklist_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary draggable-handle">
@@ -389,7 +389,7 @@
 </div>
 
 
-<div class="modal fade draggable" id="add_document_modal" tabindex="-1" role="dialog" aria-labelledby="add_document_modal_title" aria-hidden="true">
+<div class="modal fade draggable disable-scrollbars" id="add_document_modal" tabindex="-1" role="dialog" aria-labelledby="add_document_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <form id="add_document_form">
@@ -403,19 +403,23 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                @foreach($folders as $folder)
-                                @if(count($documents_available -> where('folder', $folder -> id)) > 0)
-                                <div class="h5 responsive text-orange">{{ $folder -> folder_name }}</div>
-                                @foreach($documents_available -> where('folder', $folder -> id) as $document_available)
-                                <div class="d-flex justify-content-start align-items-center border-bottom">
-                                    <div>
-                                        <button type="button" class="btn btn-sm btn-success select-document-button" data-document-id="{{ $document_available -> id }}">Add</button>
-                                    </div>
-                                    <div class="ml-2">{{ $document_available -> file_name_display }}</div>
-                                </div>
-                                @endforeach
+                                @if(count($documents_available) > 0)
+                                    @foreach($folders as $folder)
+                                        @if(count($documents_available -> where('folder', $folder -> id)) > 0)
+                                            <div class="h5 responsive text-orange">{{ $folder -> folder_name }}</div>
+                                            @foreach($documents_available -> where('folder', $folder -> id) as $document_available)
+                                                <div class="d-flex justify-content-start align-items-center border-bottom">
+                                                    <div>
+                                                        <button type="button" class="btn btn-sm btn-success select-document-button" data-document-id="{{ $document_available -> id }}">Add</button>
+                                                    </div>
+                                                    <div class="ml-2">{{ $document_available -> file_name_display }}</div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    @endforeach
+                                @else
+                                    <div class="h5-responsive text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> You do not have any available documents yet. Add documents in the "Documents" tab.</div>
                                 @endif
-                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -430,7 +434,7 @@
     </div>
 </div>
 
-<div class="modal fade draggable" id="confirm_delete_checklist_item_doc_modal" tabindex="-1" role="dialog" aria-labelledby="delete_checklist_item_doc_title" aria-hidden="true">
+<div class="modal fade draggable disable-scrollbars" id="confirm_delete_checklist_item_doc_modal" tabindex="-1" role="dialog" aria-labelledby="delete_checklist_item_doc_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary draggable-handle">

@@ -27,7 +27,7 @@
             <div class="tab-content">
                 @foreach ($form_groups as $form_group)
                     <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $form_group -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $form_group -> resource_id }}">
-                        <div class="h3 responsive text-primary">{{ $form_group -> resource_name }}</div>
+                        <div class="h3-responsive text-primary">{{ $form_group -> resource_name }}</div>
                         <div class="row">
                             <div class="col-7">
                                 <div class="row">
@@ -407,7 +407,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
-                    <h3 class="modal-title" id="confirm_publish_modal_title">Delete Form</h3>
+                    <h3-responsive class="modal-title" id="confirm_publish_modal_title">Delete Form</h3>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times fa-2x"></i>
                     </button>
@@ -429,7 +429,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
-                    <h3 class="modal-title" id="confirm_delete_modal_title">Delete Form</h3>
+                    <h3-responsive class="modal-title" id="confirm_delete_modal_title">Delete Form</h3>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times fa-2x"></i>
                     </button>

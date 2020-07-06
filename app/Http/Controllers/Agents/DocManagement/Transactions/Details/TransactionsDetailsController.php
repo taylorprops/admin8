@@ -38,9 +38,9 @@ use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsNotes;
-
+use App\Models\BrightMLS\AgentRoster;
 use App\Mail\DocManagement\Emails\Documents;
-
+use Illuminate\Support\Facades\DB;
 
 
 class TransactionsDetailsController extends Controller {
@@ -89,8 +89,11 @@ class TransactionsDetailsController extends Controller {
         $buyers = $members -> where('member_type_id', $resource_items -> BuyerResourceId());
         $sellers = $members -> where('member_type_id', $resource_items -> SellerResourceId());
 
+        $status = ResourceItems::GetResourceID('Active', 'contract_status');
+        $active_contracts_count = Contracts::where('Listing_ID', $Listing_ID) -> where('Status', $status) -> count();
+
         $statuses = $resource_items -> where('resource_type', 'listing_status') -> orderBy('resource_order') -> get();
-        return view('/agents/doc_management/transactions/details/transaction_details_header', compact('transaction_type', 'property', 'buyers', 'sellers', 'resource_items', 'statuses'));
+        return view('/agents/doc_management/transactions/details/transaction_details_header', compact('transaction_type', 'property', 'buyers', 'sellers', 'resource_items', 'statuses', 'active_contracts_count'));
     }
 
     // accept contract
@@ -101,10 +104,50 @@ class TransactionsDetailsController extends Controller {
         $buyer_two_first = $request -> buyer_two_first;
         $buyer_two_last = $request -> buyer_two_last;
 
+        $agent_first = $request -> agent_first;
+        $agent_last = $request -> agent_last;
+        $agent_email = $request -> agent_email;
+        $agent_phone = $request -> agent_phone;
+        $agent_mls_id = $request -> agent_mls_id;
+        $agent_company = $request -> agent_company;
+        $agent_street = $request -> agent_street;
+        $agent_city = $request -> agent_city;
+        $agent_state = $request -> agent_state;
+        $agent_zip = $request -> agent_zip;
+
         $Listing_ID = $request -> Listing_ID;
-        $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
+        $listing = Listings::find($Listing_ID);
+
+
+        // update listing
+        $listing -> BuyerAgentFirstName = $agent_first;
+        $listing -> BuyerAgentLastName = $agent_last;
+        $listing -> BuyerAgentEmail = $agent_email;
+        $listing -> BuyerAgentPreferredPhone = $agent_phone;
+        $listing -> BuyerAgentMlsId = $agent_mls_id;
+        $listing -> BuyerOfficeName = $agent_company;
+
+        $listing -> BuyerOneFirstName = $buyer_one_first;
+        $listing -> BuyerOneLastName = $buyer_one_last;
+        $listing -> BuyerTwoFirstName = $buyer_two_first;
+        $listing -> BuyerTwoLastName = $buyer_two_last;
+        $listing -> Status = ResourceItems::GetResourceID('Under Contract', 'listing_status');
+        /* $listing -> ContractDate = $request -> contract_date;
+        $listing -> CloseDate = $request -> close_date;
+        $listing -> ContractPrice = preg_replace('/[\$,]+/', '', $request -> contract_price); */
+        $listing -> save();
+
+
+        // new contract data
         $contract_data = $listing -> replicate();
         $contract_data -> Listing_ID = $Listing_ID;
+        $contract_data -> BuyerAgentFirstName = $agent_first;
+        $contract_data -> BuyerAgentLastName = $agent_last;
+        $contract_data -> BuyerAgentEmail = $agent_email;
+        $contract_data -> BuyerAgentPreferredPhone = $agent_phone;
+        $contract_data -> BuyerAgentMlsId = $agent_mls_id;
+        $contract_data -> BuyerOfficeName = $agent_company;
+
         $contract_data -> BuyerOneFirstName = $buyer_one_first;
         $contract_data -> BuyerOneLastName = $buyer_one_last;
         $contract_data -> BuyerTwoFirstName = $buyer_two_first;
@@ -112,15 +155,106 @@ class TransactionsDetailsController extends Controller {
         $contract_data -> ContractDate = $request -> contract_date;
         $contract_data -> CloseDate = $request -> close_date;
         $contract_data -> ContractPrice = preg_replace('/[\$,]+/', '', $request -> contract_price);
+        $contract_data -> Status = ResourceItems::GetResourceID('Active', 'contract_status');
+
+        $contract_data = collect($contract_data -> toArray()) -> except(['Contract_ID']);
+
         $contract_data = json_decode($contract_data, true);
-        Contracts::create($contract_data);
+        $new_contract = Contracts::create($contract_data);
+        $Contract_ID = $new_contract -> Contract_ID;
+
+
+
+        // add Contract_ID to members already in members
+        $import_members_from_listing = Members::where('Listing_ID', $Listing_ID) -> update(['Contract_ID' => $Contract_ID]);
 
         // add buyers and buyers agent to members
+        $add_buyer_to_members = new Members();
+        $add_buyer_to_members -> member_type_id = ResourceItems::BuyerResourceId();
+        $add_buyer_to_members -> first_name = $buyer_one_first;
+        $add_buyer_to_members -> last_name = $buyer_one_last;
+        $add_buyer_to_members -> Contract_ID = $Contract_ID;
+        $add_buyer_to_members -> Agent_ID = $listing -> Agent_ID;
+        $add_buyer_to_members -> save();
 
-        return true;
+        if($buyer_two_first != '') {
+            $add_buyer_to_members = new Members();
+            $add_buyer_to_members -> member_type_id = ResourceItems::BuyerResourceId();
+            $add_buyer_to_members -> first_name = $buyer_two_first;
+            $add_buyer_to_members -> last_name = $buyer_two_last;
+            $add_buyer_to_members -> Contract_ID = $Contract_ID;
+            $add_buyer_to_members -> Agent_ID = $listing -> Agent_ID;
+            $add_buyer_to_members -> save();
+        }
+
+        $add_buyer_agent_to_members = new Members();
+        $add_buyer_agent_to_members -> member_type_id = ResourceItems::BuyerAgentResourceId();
+        $add_buyer_agent_to_members -> first_name = $agent_first;
+        $add_buyer_agent_to_members -> last_name = $agent_last;
+        $add_buyer_agent_to_members -> cell_phone = $agent_phone;
+        $add_buyer_agent_to_members -> email = $agent_email;
+        $add_buyer_agent_to_members -> bright_mls_id = $agent_mls_id;
+        $add_buyer_agent_to_members -> company = $agent_company;
+        $add_buyer_agent_to_members -> address_office_street = $agent_street;
+        $add_buyer_agent_to_members -> address_office_city = $agent_city;
+        $add_buyer_agent_to_members -> address_office_state = $agent_state;
+        $add_buyer_agent_to_members -> address_office_zip = $agent_zip;
+        $add_buyer_agent_to_members -> Contract_ID = $Contract_ID;
+        $add_buyer_agent_to_members -> Agent_ID = $listing -> Agent_ID;
+        $add_buyer_agent_to_members -> save();
+
+        // add checklist
+        $checklist_represent = 'buyer';
+        if($Listing_ID > 0) {
+            $checklist_represent = 'seller';
+        }
+        $checklist_property_type_id = $listing -> PropertyType;
+        $checklist_property_sub_type_id = $listing -> PropertySubType;
+        $checklist_sale_rent = $listing -> SaleRent;
+        $checklist_state = $listing -> StateOrProvince;
+        $checklist_location_id = $listing -> Location_ID;
+        $transaction_checklist = TransactionChecklists::where('Listing_ID', $Listing_ID) -> first();
+        $checklist_hoa_condo = $transaction_checklist -> hoa_condo;
+        $checklist_year_built = $listing -> YearBuilt;
+
+        // create checklist
+        TransactionChecklists::CreateTransactionChecklist('', $Listing_ID, $Contract_ID, $listing -> Agent_ID, 'seller', 'contract', $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
+
+        // add folders from listing
+        $folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> update(['Contract_ID' => $Contract_ID]);
+
+        return response() -> json([
+            'Contract_ID' => $Contract_ID
+        ]);
+
+    }
+
+    // search bright mls agents
+    public function search_bright_agents(Request $request) {
+
+        $val = $request -> val;
+
+        $agents = AgentRoster::where('MemberLastName', 'like', '%'.$val.'%')
+            -> orWhere('MemberEmail', 'like', '%'.$val.'%')
+            -> orWhere('MemberMlsId', 'like', '%'.$val.'%')
+            -> orWhereRaw('CONCAT(MemberFirstName, " ", MemberLastName) like \'%'.$val.'%\'')
+            -> orWhereRaw('CONCAT(MemberNickname, " ", MemberLastName) like \'%'.$val.'%\'')
+            -> orderBy('MemberLastName')
+            -> get();
+
+        return compact('agents');
     }
 
     // TABS
+
+    // Contracts tab
+    public function get_contracts(Request $request) {
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $contracts = Contracts::where('Listing_ID', $Listing_ID) -> orderBy('Contract_ID', 'DESC') -> get();
+        $resource_items = new ResourceItems();
+
+        return view('/agents/doc_management/transactions/details/data/get_contracts', compact('contracts', 'resource_items'));
+    }
 
     // Checklist Tab
     public function get_checklist(Request $request) {
@@ -165,7 +299,7 @@ class TransactionsDetailsController extends Controller {
         $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
         $property_sub_types = $resource_items -> where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
 
-        return view('/agents/doc_management/transactions/details/data/get_checklist', compact('Listing_ID', 'Contract_ID', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents_model', 'users_model', 'documents_available', 'documents_checklist', 'folders', 'resource_items', 'property_types', 'property_sub_types', 'checklist', 'transaction_checklist_hoa_condo', 'transaction_checklist_year_built'));
+        return view('/agents/doc_management/transactions/details/data/get_checklist', compact('Listing_ID', 'Contract_ID', 'transaction_type', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents_model', 'users_model', 'documents_available', 'documents_checklist', 'folders', 'resource_items', 'property_types', 'property_sub_types', 'checklist', 'transaction_checklist_hoa_condo', 'transaction_checklist_year_built'));
     }
 
     public function add_document_to_checklist_item(Request $request) {
@@ -258,12 +392,14 @@ class TransactionsDetailsController extends Controller {
         $Agent_ID = $request -> Agent_ID;
 
         $members = Members::where('Listing_ID', $Listing_ID) -> get();
+        $transaction_type = 'listing';
         if($Contract_ID > 0) {
             $members = Members::where('Contract_ID', $Contract_ID) -> get();
+            $transaction_type = 'contract';
         }
 
         $resource_items = new ResourceItems();
-        $contact_types = $resource_items -> where('resource_type', 'contact_type') -> orderBy('resource_order') -> get();
+        $contact_types = $resource_items -> where('resource_type', 'contact_type') -> whereIn('resource_form_group_type', [$transaction_type, 'both']) -> orderBy('resource_order') -> get();
 
         $states = LocationData::AllStates();
         $contacts = CRMContacts::where('Agent_ID', $Agent_ID) -> get();
@@ -273,7 +409,8 @@ class TransactionsDetailsController extends Controller {
     }
 
     public function add_member_html(Request $request) {
-        $contact_types = ResourceItems::where('resource_type', 'contact_type') -> orderBy('resource_order') -> get();
+        $transaction_type = $request -> transaction_type;
+        $contact_types = ResourceItems::where('resource_type', 'contact_type') -> whereIn('resource_form_group_type', [$transaction_type, 'both']) -> orderBy('resource_order') -> get();
         $states = LocationData::AllStates();
         return view('/agents/doc_management/transactions/details/data/add_member_html', compact('contact_types', 'states'));
     }
@@ -335,12 +472,17 @@ class TransactionsDetailsController extends Controller {
         $Contract_ID = $request -> Contract_ID ?? 0;
         $transaction_type = strtolower($request -> transaction_type);
 
-        $agent_type = ($Contract_ID > 0 ? 'Buyer\'s' : 'Listing');
         $id = ($transaction_type == 'contract' ? $Contract_ID : $Listing_ID);
 
+        $list_agent = '';
         $property = Listings::where('Listing_ID', $id) -> first();
         if($transaction_type == 'contract') {
             $property = Contracts::where('Contract_ID', $id) -> first();
+            $list_agent = $property -> ListAgentFirstName.' '.$property -> ListAgentLastName;
+            if($property -> Listing_ID > 0) {
+                $listing = Listings::where('Listing_ID', $property -> Listing_ID) -> first();
+                $list_agent = $listing -> ListAgentFirstName.' '.$listing -> ListAgentLastName;
+            }
         }
 
         $agents = Agents::where('active', 'yes') -> orderBy('last_name') -> get();
@@ -353,26 +495,39 @@ class TransactionsDetailsController extends Controller {
         $counties = LocationData::CountiesByState($property_state);
         $trans_coords = TransactionCoordinators::where('active', 'yes') -> orderBy('last_name') -> get();
 
-        return view('/agents/doc_management/transactions/details/data/get_details', compact('transaction_type', 'agent_type', 'id', 'property', 'agents', 'teams', 'street_suffixes', 'street_dir_suffixes', 'states', 'counties', 'trans_coords'));
+        return view('/agents/doc_management/transactions/details/data/get_details', compact('transaction_type', 'property', 'list_agent', 'agents', 'teams', 'street_suffixes', 'street_dir_suffixes', 'states', 'counties', 'trans_coords'));
     }
 
     public function save_details(Request $request) {
 
+        // TODO: if the agent has both the listing and contract both need to be updated (except for some fields? )
+
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
         $transaction_type = strtolower($request -> transaction_type);
+        $has_listing = false;
 
         if($transaction_type == 'listing') {
             $property = Listings::find($Listing_ID);
         } else {
             $property = Contracts::find($Contract_ID);
+            if($property -> Listing_ID > 0) {
+                $has_listing = true;
+                $property_listing = Listings::find($property -> Listing_ID);
+            }
         }
 
         // mls needs to be verified. if not MLS_Verified needs to be set to no
         $property -> MLS_Verified = 'no';
+        if($has_listing) {
+            $property_listing -> MLS_Verified = 'no';
+        }
 
         if (bright_mls_search($request -> ListingId)) {
             $property -> MLS_Verified = 'yes';
+            if($has_listing) {
+                $property_listing -> MLS_Verified = 'yes';
+            }
         }
 
         $data = $request -> all();
@@ -398,11 +553,17 @@ class TransactionsDetailsController extends Controller {
                 }
 
                 $property -> $col = $val;
+                if($has_listing) {
+                    $property_listing -> $col = $val;
+                }
             }
 
         }
 
         $property -> save();
+        if($has_listing) {
+            $property_listing -> save();
+        }
         return response() -> json([
             'status' => 'ok',
         ]);
@@ -416,36 +577,66 @@ class TransactionsDetailsController extends Controller {
         $Contract_ID = $request -> Contract_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
         $transaction_type = strtolower($request -> transaction_type);
+        $contracts = [];
 
         if($transaction_type == 'listing') {
+
             $property = Listings::where('Listing_ID', $Listing_ID) -> first();
             $field = 'Listing_ID';
             $id = $Listing_ID;
             $member_type_id = ResourceItems::SellerResourceId();
+            $active_status_id = ResourceItems::GetResourceID('Active', 'contract_status');
+            $contracts = Contracts::where('Listing_ID', $Listing_ID) -> where('Status', $active_status_id) -> pluck('Contract_ID');
+            if(count($contracts) > 0) {
+                $Contract_ID = $contracts[0];
+            }
+
         } else {
+
             $property = Contracts::where('Contract_ID', $Contract_ID) -> first();
             $field = 'Contract_ID';
             $id = $Contract_ID;
             $member_type_id = ResourceItems::BuyerResourceId();
+
         }
 
+        $member_type_id = Members::GetMemberTypeID('Buyer');
+        if($Listing_ID > 0) {
+            $member_type_id = Members::GetMemberTypeID('Seller');
+        }
         $members = Members::where($field, $id) -> where('member_type_id', $member_type_id) -> get();
+        // if our listing and contract include listing folders with contract
+        if(($property -> Contract_ID > 0 && $property -> Listing_ID > 0) || count($contracts) > 0) {
 
-        if($property -> Contract_ID > 0 && $property -> Listing_ID > 0) {
             $folders = TransactionDocumentsFolders::where('Agent_ID', $Agent_ID) -> where(function($query) use($Listing_ID, $Contract_ID) {
                 $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
             })
             -> orderBy('order') -> get();
+
             $documents = TransactionDocuments::where('Agent_ID', $Agent_ID) -> where(function($query) use($Listing_ID, $Contract_ID) {
                 $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
             })
             -> orderBy('order') -> orderBy('created_at', 'DESC') -> get();
+
         } else {
+
             $folders = TransactionDocumentsFolders::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
+
             $documents = TransactionDocuments::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> orderBy('created_at', 'DESC') -> get();
+
         }
 
-        $checklist_items = TransactionChecklistItems::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('checklist_item_order') -> get();
+        // if listing then only where Contract_ID = 0
+        $checklist_items = TransactionChecklistItems::where(function($query) use($id) {
+            $query -> where(function($q) use($id) {
+                $q -> where('Listing_ID', $id) -> where(function($q) {
+                    $q -> where('Contract_ID', '0') -> orWhere('Contract_ID', null);
+                });
+            })
+            -> orWhere('Contract_ID', $id);
+        })
+        -> where('Agent_ID', $Agent_ID) -> orderBy('checklist_item_order') -> get();
+
         $checklist_id = $checklist_items -> first() -> checklist_id;
         $checklist_form_ids = $checklist_items -> pluck('checklist_form_id') -> all();
         $checklist_forms = Upload::whereIn('file_id', $checklist_form_ids) -> get();

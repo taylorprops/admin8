@@ -14,7 +14,7 @@
             <div class="resource-div">
                 <div class="card">
                     <div class="card-header bg-primary">
-                        <div class="h4 responsive text-white mb-0">{{ $resource -> resource_type_title }}
+                        <div class="h4-responsive text-white mb-0">{{ $resource -> resource_type_title }}
                             <div class="float-right">
                                 <a href="javascript:void(0)" class="add-resource-button" data-resource-type="{{ $resource -> resource_type }}"><i class="fal fa-plus text-white"></i></i></a>
                                 <a href="javascript:void(0)" class="cancel-add-resource-button"><i class="fal fa-times text-danger"></i></i></a>
@@ -183,7 +183,7 @@
 
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="modal-title" id="confirm_delete_deactivate_resource_modal_title"></h3>
+                <h3-responsive class="modal-title" id="confirm_delete_deactivate_resource_modal_title"></h3>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times fa-2x"></i>
                 </button>

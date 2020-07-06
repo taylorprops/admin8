@@ -14,6 +14,7 @@
 @import 'vendor/simplebar/simplebar.scss';
 @import '~jquery-ui/themes/base/all.css';
 @import 'nav/nav.scss';
+@import 'nav/mdbootstrap_nav.scss';
 @import '~dm-file-uploader/src/css/jquery.dm-uploader.css';
 @import '~dragula/dist/dragula.min.css';
 
@@ -24,6 +25,9 @@
 
 // ++++++ Pages ++++++ //
 
+@import 'dashboard/admin.scss';
+@import 'dashboard/agent.scss';
+
 // ++++++ doc_management ++++++ //
 @import 'doc_management/create/files.scss';
 @import 'doc_management/create/add_fields.scss';
@@ -31,6 +35,7 @@
 @import 'doc_management/checklists/checklists.scss';
 
 // ++++++ Agents ++++++ //
+@import 'agents/doc_management/transactions/transactions.scss';
 @import 'agents/doc_management/transactions/add/transaction_add.scss';
 @import 'agents/doc_management/transactions/add/transaction_details_add.scss';
 @import 'agents/doc_management/transactions/add/transaction_required_details.scss';
@@ -39,4 +44,5 @@
 @import 'agents/doc_management/transactions/upload/upload.scss';
 
 @import 'agents/doc_management/transactions/edit_files/edit_files.scss';
+
 

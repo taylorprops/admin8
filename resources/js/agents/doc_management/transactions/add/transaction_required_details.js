@@ -2,7 +2,7 @@ if (document.URL.match(/transaction_required_details/)) {
 // TODO: need to add company, bank, LLC  as seller
     $(document).ready(function () {
 
-        $('.stepper').mdbStepper();
+        //$('.stepper').mdbStepper();
 
         form_elements();
 
@@ -12,11 +12,11 @@ if (document.URL.match(/transaction_required_details/)) {
 
         $('#MLSListDate').focus(function() {
             $('.custom-picker-header').remove();
-            $('.picker__box').prepend('<h3 class="py-3 bg-primary text-yellow-light my-0 border-bottom custom-picker-header">List Date</h3>');
+            $('.picker__box').prepend('<h3-responsive class="py-3 bg-primary text-yellow-light my-0 border-bottom custom-picker-header">List Date</h3>');
         });
         $('#ExpirationDate').focus(function() {
             $('.custom-picker-header').remove();
-            $('.picker__box').prepend('<h3 class="py-3 bg-primary text-yellow-light my-0 border-bottom custom-picker-header">Expiration Date</h3>');
+            $('.picker__box').prepend('<h3-responsive class="py-3 bg-primary text-yellow-light my-0 border-bottom custom-picker-header">Expiration Date</h3>');
         });
 
         // disable opening steps unless complete
@@ -26,6 +26,7 @@ if (document.URL.match(/transaction_required_details/)) {
         // validate section
         $('.next-step').off('click').on('click', function(e) {
             e.preventDefault();
+
             let step = $(this).closest('.step');
             let validate = validate_form(step);
             if(validate == 'no') {
@@ -96,8 +97,6 @@ if (document.URL.match(/transaction_required_details/)) {
             return false;
         }
 
-        global_loading_on('', '<div class="h3 text-white">Completing transaction setup</div>');
-
         let form = $('#details_form');
         let validate = validate_form(form);
         if(validate == 'yes') {
@@ -108,11 +107,11 @@ if (document.URL.match(/transaction_required_details/)) {
                 window.location = '/agents/doc_management/transactions/transaction_details/' + response.data.id + '/' + response.data.type;
             })
             .catch(function (error) {
-                global_loading_off();
+                //global_loading_off();
                 console.log(error);
             });
         } else {
-            global_loading_off();
+            //global_loading_off();
         }
 
     }

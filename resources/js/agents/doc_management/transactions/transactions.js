@@ -1,4 +1,4 @@
-if (document.URL.match(/transactions_all/)) {
+if (document.URL.match(/transactions$/)) {
 
     $(document).ready(function() {
 

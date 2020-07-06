@@ -31,7 +31,12 @@
 
 body {
     padding-top: 60px;
-    padding-right: 0px !important;
+    //padding-right: 0px !important;
+}
+
+// padding above main to clear nav
+.hidden-sn main {
+    padding-top: 1rem !important;
 }
 
 /* body:not(.y-scroll-none) {
@@ -83,6 +88,7 @@ input {
 .btn:disabled {
     opacity: 0.25;
 }
+
 
 .container {
     max-width: 1500px !important;

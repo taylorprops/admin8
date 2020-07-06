@@ -49,7 +49,7 @@
 
                         @foreach($checklist_groups as $checklist_group)
 
-                            <div class="h4 responsive bg-primary text-white mt-1 mb-0 p-2">{{ $checklist_group -> resource_name }}</div>
+                            <div class="h4-responsive bg-primary text-white mt-1 mb-0 p-2">{{ $checklist_group -> resource_name }}</div>
 
                             @if(count($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)
 

@@ -1,7 +1,10 @@
-.page-listing-details {
+.page-transaction-details {
 
     min-height: 90VH;
 
+    .header-section {
+        max-width: 300px;
+    }
     .listing-header-details .btn {
         padding: 0.1rem 0.2rem;
     }
@@ -43,6 +46,33 @@
         margin-top: 0px;
     }
 
+
+    // bright mls agent search
+    #agent_search_div {
+        background: rgba($blue, 0.1);
+    }
+    #agent_search {
+        max-width: 300px;
+    }
+    .search-results-container {
+        position: relative;
+    }
+    .search-results {
+        display: none;
+        position: absolute;
+        top: -10px;
+        left: 0;
+        max-height: 400px;
+        overflow: auto;
+        font-size: .9em;
+        z-index: 5000;
+    }
+    .search-result {
+        cursor: pointer;
+    }
+    .search-result:hover {
+        color: $orange;
+    }
     .get-members-tabs {
         border: none;
     }
@@ -113,8 +143,9 @@
         border: 3px dotted $primary;
     }
 
-
-
+    .contract-div {
+        cursor: pointer;
+    }
 
     .document-div:hover {
         background: $blue-light;
