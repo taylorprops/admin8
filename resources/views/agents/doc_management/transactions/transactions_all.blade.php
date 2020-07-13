@@ -160,5 +160,65 @@
         </div>
 
     </div>
+
+    <div class="row">
+        <div class="col-12 col-sm-6">
+
+            <div class="card p-2">
+
+                <div class="h4-responsive text-orange"><i class="fad fa-sign mr-2"></i> Active Referrals</div>
+
+                <!-- Card content -->
+                <div class="card-body">
+
+                    <div class="row">
+
+                        @foreach($referrals as $referral)
+
+                            <div class="col-12 col-md-6">
+                                <a href="/agents/doc_management/transactions/transaction_details/{{ $referral -> Referral_ID }}/referral">
+
+                                    <div class="bg-primary p-2 m-2 z-depth-1 text-white">
+
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="h5-responsive text-center">{!! $referral -> FullStreetAddress. '<br>' . $referral -> City . ' ' . $referral -> StateOrProvince .' '.$referral -> PostalCode !!}</div>
+                                            </div>
+                                        </div>
+                                        <hr class="bg-white">
+
+                                        <div class="d-flex justify-content-around align-items-center">
+                                            <div><i class="fad fa-handshake fa-3x"></i></div>
+                                            <div class="h4-responsive">{{ $resource_items -> GetResourceName($referral -> Status) }}</div>
+
+                                        </div>
+                                        <hr class="bg-white">
+
+                                        <div class="row">
+                                            <div class="col-5 pr-0 text-right">Date Added</div>
+                                            <div class="col-7 text-left">{{ date('n/j/Y', strtotime($referral -> created_at)) }}</div>
+                                            <div class="col-5 pr-0 text-right">Client </div>
+                                            <div class="col-7 text-left">{{ $referral -> ClientFirstName.' '.$referral -> ClientLastName }}</div>
+                                            <div class="col-5 pr-0 text-right">Agent </div>
+                                            <div class="col-7 text-left">{{ $referral -> ReceivingAgentFirstName.' '.$referral -> ReceivingAgentLastName }}</div>
+                                            <div class="col-5 pr-0 text-right">Company </div>
+                                            <div class="col-7 text-left">{{ $referral -> ReceivingAgentOfficeName }}</div>
+
+
+                                        </div>
+                                    </div>
+
+                                </a>
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

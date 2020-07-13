@@ -22,6 +22,7 @@ window.addEventListener("keydown", function (event) {
     if ((window.navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey) && (event.keyCode == 77)) {
         event.preventDefault();
         $('.button-collapse').trigger('click');
+        $('.side-nav-link').first().focus();
     }
 }, false);
 

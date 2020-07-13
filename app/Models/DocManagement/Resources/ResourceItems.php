@@ -101,8 +101,13 @@ class ResourceItems extends Model
         return $tags -> resource_color;
     }
 
-    public function scopeGetActiveListingStatuses() {
-        $ids = $this -> where('resource_type', 'listing_status') -> whereIn('resource_name', ['Pre-Listing', 'Active', 'Under Contract']) -> pluck('resource_id');
+    public function scopeGetActiveListingStatuses($include_under_contract) {
+
+        $statuses = ['Pre-Listing', 'Active'];
+        if($include_under_contract == 'yes' ) {
+            $statuses = ['Pre-Listing', 'Active', 'Under Contract'];
+        }
+        $ids = $this -> where('resource_type', 'listing_status') -> whereIn('resource_name', $statuses) -> pluck('resource_id');
         return $ids;
     }
 

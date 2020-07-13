@@ -59,6 +59,15 @@ h2 {
     margin: 2.5rem 0 2rem 0;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
 a:hover {
     text-decoration: none;
 }
@@ -89,6 +98,9 @@ input {
     opacity: 0.25;
 }
 
+.badge:not(.badge-pill) {
+    border-radius: 0px;
+}
 
 .container {
     max-width: 1500px !important;
@@ -98,6 +110,9 @@ input {
 }
 .container-1000 {
     max-width: 1000px !important;
+}
+.container-600 {
+    max-width: 600px !important;
 }
 
 .uppercase {

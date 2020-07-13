@@ -1,4 +1,4 @@
-if (document.URL.match(/transactions\/add\/contract/) || document.URL.match(/transactions\/add\/listing/)) {
+if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
 
     $(document).ready(function () {
 
@@ -333,6 +333,8 @@ if (document.URL.match(/transactions\/add\/contract/) || document.URL.match(/tra
                 }
             });
 
+            let unit_number = $('#address_search_unit').val();
+
 
             $('#enter_manually_button').off('click').on('click', function () {
                 autofill_manual_entry(street_number, street_name, zip);
@@ -355,28 +357,56 @@ if (document.URL.match(/transactions\/add\/contract/) || document.URL.match(/tra
                     $('.address-search-continue-div').hide();
                 }
             });
-            // show results container
+            // show results container or send to referral details page
             $('#address_search_continue').off('click').on('click', function () {
-                show_loader();
-                //$('.address-container').collapse('hide');
-                let unit_number = $('#address_search_unit').val();
-                axios.get('/agents/doc_management/transactions/get_property_info', {
-                    params: {
-                        street_number: street_number,
-                        street_name: street_name,
-                        unit: unit_number,
-                        city: city,
-                        state: state,
-                        zip: zip,
-                        county: county
-                    }
-                })
-                .then(function (response) {
-                    show_property(response, 'search', street_number, street_name, zip);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+
+                let transaction_type = $('#transaction_type').val();
+
+                if(transaction_type == 'referral') {
+
+                    let Agent_ID = $('#Agent_ID').val();
+                    let formData = new FormData();
+                    formData.append('street_number', street_number);
+                    formData.append('street_name', street_name);
+                    formData.append('unit_number', unit_number);
+                    formData.append('city', city);
+                    formData.append('state', state);
+                    formData.append('zip', zip);
+                    formData.append('county', county);
+                    formData.append('Agent_ID', Agent_ID);
+                    axios.post('/agents/doc_management/transactions/add/transaction_add_details_referral', formData, axios_options)
+                    .then(function (response) {
+                        let Referral_ID = response.data.Referral_ID;
+                        window.location = '/agents/doc_management/transactions/add/transaction_required_details_referral/'+Referral_ID;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                } else {
+
+                    show_loader();
+                    //$('.address-container').collapse('hide');
+
+                    axios.get('/agents/doc_management/transactions/get_property_info', {
+                        params: {
+                            street_number: street_number,
+                            street_name: street_name,
+                            unit: unit_number,
+                            city: city,
+                            state: state,
+                            zip: zip,
+                            county: county
+                        }
+                    })
+                    .then(function (response) {
+                        show_property(response, 'search', street_number, street_name, zip);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                }
 
             });
 

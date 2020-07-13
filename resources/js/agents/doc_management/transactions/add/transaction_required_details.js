@@ -54,7 +54,174 @@ if (document.URL.match(/transaction_required_details/)) {
         $('[name$=_entity_name]').removeClass('required');
         $('.bank-trust').change(show_bank_trust);
 
+
+        $('#import_property_address_button').click(function() {
+            $('#ClientStreet').val($(this).data('street')).trigger('change');
+            $('#ClientCity').val($(this).data('city')).trigger('change');
+            $('#ClientState').val($(this).data('state')).trigger('change');
+            $('#ClientZip').val($(this).data('zip')).trigger('change');
+            select_refresh();
+        });
+
+        $('#CommissionAmount, #AgentCommission, #OtherAgentCommission').change(function() {
+            format_money_with_decimals($(this));
+        });
+
+        $('#ReferralPercentage, #CommissionAmount').keyup(total_commission);
+
+        $('#save_details_button').click(save_details);
+
+        let agent_search_request = null;
+
+        function search_bright_agents() {
+
+            let val = $(this).val();
+
+            if (val.length > 3) {
+
+                if (agent_search_request) {
+                    agent_search_request.cancel();
+                }
+                agent_search_request = axios.CancelToken.source();
+
+                axios.get('/agents/doc_management/transactions/search_bright_agents', {
+                    cancelToken: agent_search_request.token,
+                    params: {
+                        val: val
+                    },
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(function (response) {
+                    let data = response.data;
+                    $('.search-results').html('');
+                    $.each(data, function (k, agents) {
+                        if (agents.length > 0) {
+                            $.each(agents, function (k, agent) {
+                                let agent_div = ' \
+                                <div class="search-result list-group-item" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '" data-agent-office-phone="' + agent.OfficePhone + '"> \
+                                    <div class="row"> \
+                                        <div class="col-6 col-md-3"> \
+                                            <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
+                                        </div> \
+                                        <div class="col-6 col-md-3"> \
+                                        <span class="font-weight-bold">'+ agent.OfficeName + '</span><br><span class="small">' + agent.OfficeMlsId + '</span>\
+                                        </div> \
+                                        <div class="col-12 col-md-6"> \
+                                            '+ agent.OfficeAddress1 + '<br>' + agent.OfficeCity + ', ' + agent.OfficeStateOrProvince + ' ' + agent.OfficePostalCode + ' \
+                                        </div> \
+                                    </div> \
+                                </div> \
+                            ';
+                                $('.search-results').show().append(agent_div);
+                            });
+                        } else {
+                            $('.search-results').show().append('<div class="search-result list-group-item text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> No Matching Results</div>');
+                        }
+                    });
+
+                    $('.search-result').off('click').on('click', function () {
+                        add_buyers_agent($(this));
+                    });
+
+                    $(document).mouseup(function (e) {
+                        var container = $('.search-results');
+                        if (!container.is(e.target) && container.has(e.target).length === 0) {
+                            container.hide();
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    if (axios.isCancel(error)) {
+
+                    } else {
+                        //console.log(error);
+                    }
+                });
+
+
+            } else {
+
+                $('.search-results').hide().html('');
+
+            }
+
+        }
+
+        $('.agent-search').on('keyup', search_bright_agents);
+
     });
+
+    function save_details() {
+        let Referral_ID = $('#Referral_ID').val();
+        let Agent_ID = $('#Agent_ID').val();
+        let form = $('#details_form');
+        let validate = validate_form(form);
+        if(validate == 'yes' ){
+            let formData = new FormData(form[0]);
+            axios.post('/agents/doc_management/transactions/add/transaction_save_details_referral', formData, axios_options)
+            .then(function (response) {
+                window.location ='/agents/doc_management/transactions/transaction_details/'+Referral_ID+'/referral';
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+    }
+
+    function total_commission() {
+        let commission = $('#CommissionAmount').val().replace(/[,\$]/g, '');
+        let percent = parseInt($('#ReferralPercentage').val()) / 100;
+        if(commission > 0 && percent > 0) {
+            let referral_commission = percent * commission;
+            let receiving_commission = commission - referral_commission;
+            $('#AgentCommission').val(referral_commission).trigger('change');
+            $('#OtherAgentCommission').val(receiving_commission).trigger('change');
+            format_money_with_decimals($('#AgentCommission'));
+            format_money_with_decimals($('#OtherAgentCommission'));
+        }
+
+    }
+
+    function add_buyers_agent(ele) {
+
+        let type = $('#ReferralType').val();
+
+        let agent_first = ele.data('agent-first');
+        let agent_last = ele.data('agent-last');
+        let agent_company = ele.data('agent-company');
+        let office_street = ele.data('agent-street');
+        let office_city = ele.data('agent-city');
+        let office_state = ele.data('agent-state');
+        let office_zip = ele.data('agent-zip');
+        let office_phone = ele.data('agent-office-phone');
+
+        if(type == 'receiving') {
+            $('#ReferringAgentFirstName').val(agent_first).trigger('change');
+            $('#ReferringAgentLastName').val(agent_last).trigger('change');
+            $('#ReferringAgentOfficeName').val(agent_company).trigger('change');
+            $('#ReferringAgentOfficeStreet').val(office_street).trigger('change');
+            $('#ReferringAgentOfficeCity').val(office_city).trigger('change');
+            $('#ReferringAgentOfficeState').val(office_state).trigger('change');
+            $('#ReferringAgentOfficeZip').val(office_zip).trigger('change');
+            $('#ReferringAgentOfficePhone').val(office_phone).trigger('change');
+        } else {
+            $('#ReceivingAgentFirstName').val(agent_first).trigger('change');
+            $('#ReceivingAgentLastName').val(agent_last).trigger('change');
+            $('#ReceivingAgentOfficeName').val(agent_company).trigger('change');
+            $('#ReceivingAgentOfficeStreet').val(office_street).trigger('change');
+            $('#ReceivingAgentOfficeCity').val(office_city).trigger('change');
+            $('#ReceivingAgentOfficeState').val(office_state).trigger('change');
+            $('#ReceivingAgentOfficeZip').val(office_zip).trigger('change');
+            $('#ReceivingAgentOfficePhone').val(office_phone).trigger('change');
+        }
+        select_refresh();
+
+        $('.search-results').fadeOut('slow');
+        $('#receiving_agent_search_div, #referring_agent_search_div').collapse('hide');
+    }
 
     function show_bank_trust() {
         let member = $(this).data('member');

@@ -131,7 +131,7 @@
         th.select-checkbox:after {
           margin-top: 0;
           text-align: center;
-          font-family: "Font Awesome\ 5 Free", sans-serif;
+          font-family: "Font Awesome\ 5 Pro", sans-serif;
           font-size: 0.9rem;
           font-weight: 600;
           content: "\f00c";
@@ -142,13 +142,13 @@
       }
     }
   }
-  
+
   div.dataTables_wrapper span {
     &.select-info, &.select-item {
       margin-left: .5em;
     }
   }
-  
+
   @media screen and (max-width: 640px) {
     div.dataTables_wrapper span {
       &.select-info, &.select-item {
@@ -157,4 +157,3 @@
       }
     }
   }
-  

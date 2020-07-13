@@ -29,7 +29,7 @@ class ChecklistsController extends Controller
 
     }
 
-    function save_copy_checklists(Request $request) {
+    public function save_copy_checklists(Request $request) {
         $copy_from_location_id = $request -> location_id;
         $checklist_type = $request -> checklist_type;
         $copy_to_checklist_location_ids = explode(',', $request -> checklist_location_ids);
@@ -101,9 +101,18 @@ class ChecklistsController extends Controller
         $resource_items = new ResourceItems();
 
         $checklist = Checklists::whereId($checklist_id) -> first();
+
+        $checklist_types = ['listing', 'both'];
+        if($checklist -> checklist_type == 'contract') {
+            $checklist_types = ['contract', 'both'];
+        } else if($checklist -> checklist_type == 'referral') {
+            $checklist_types = ['referral'];
+        }
+
+
         $checklist_items_model = new ChecklistsItems();
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
-        $checklist_groups = $resource_items -> where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', [$checklist -> checklist_type, 'both']) -> orderBy('resource_order') -> get();
+        $checklist_groups = $resource_items -> where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
 
         return view('/doc_management/checklists/get_add_checklist_items_html', compact('checklist', 'checklist_items', 'form_groups', 'files', 'resource_items', 'checklist_groups', 'checklist_type', 'checklist_items_model', 'checklist_id'));
@@ -111,12 +120,13 @@ class ChecklistsController extends Controller
 
     public function checklists() {
 
+        $resource_items = new ResourceItems();
         $property_types = ResourceItems::where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
         $property_sub_types = ResourceItems::where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
         $locations = ResourceItems::where('resource_type', 'checklist_locations') -> orderBy('resource_order') -> get();
 
 
-        return view('/doc_management/checklists/checklists', compact('property_types', 'property_sub_types', 'locations'));
+        return view('/doc_management/checklists/checklists', compact('resource_items', 'property_types', 'property_sub_types', 'locations'));
 
     }
 
@@ -128,19 +138,13 @@ class ChecklistsController extends Controller
         $checklists_model = new Checklists();
         $checklists = Checklists::where('checklist_location_id', $checklist_location_id) -> orderBy('checklist_order', 'ASC') -> get();
         $checklists_count = count($checklists);
-        /* $checklist_state = '';
-        $checklist_property_type_id = '';
-        if($checklists_count > 0) {
-            $checklists_data = $checklists -> first();
-            $checklist_state = $checklists_data -> checklist_state;
-            $checklist_property_type_id = $checklists_data -> checklist_property_type_id;
-        } */
+
         $checklist_property_type_id = '';
 
         $resource_items = new ResourceItems();
         $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
         $checklist_location = $resource_items -> where('resource_id', $checklist_location_id) -> first();
-        $checklist_state = $checklist_location -> resource_state;
+        $checklist_state = $checklist_location -> resource_state ?? null;
 
         return view('/doc_management/checklists/get_checklists_html', compact('checklists_model', 'property_types', 'checklists_count', 'resource_items', 'checklist_type', 'checklist_location_id', 'checklist_state', 'checklist_property_type_id'));
 
@@ -177,6 +181,16 @@ class ChecklistsController extends Controller
         $reorder_items = new ChecklistsItems();
         $reorder_items -> updateChecklistItemsOrder($checklist_id);
 
+    }
+
+    public function add_checklist_referral(Request $request) {
+
+        $checklist = new Checklists();
+        $checklist -> checklist_location_id = $request -> checklist_location_id;
+        $checklist -> checklist_type = $request -> checklist_type;
+        $checklist -> checklist_state = $request -> checklist_state;
+        $checklist -> checklist_order = 0;
+        $checklist -> save();
     }
 
     public function add_checklist(Request $request) {

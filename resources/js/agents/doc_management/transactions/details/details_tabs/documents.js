@@ -81,11 +81,13 @@ if (document.URL.match(/transaction_details/)) {
             let formData = new FormData();
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
 
             formData.append('document_ids', document_ids);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
             formData.append('type', type);
 
@@ -167,11 +169,13 @@ if (document.URL.match(/transaction_details/)) {
             let formData = new FormData();
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
 
             formData.append('document_ids', document_ids);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
             formData.append('docs_type', docs_type);
             formData.append('type', 'filled');
@@ -239,6 +243,7 @@ if (document.URL.match(/transaction_details/)) {
             let file_type = $(this).data('file-type');
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
 
             let formData = new FormData();
@@ -246,6 +251,7 @@ if (document.URL.match(/transaction_details/)) {
             formData.append('file_type', file_type);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
             axios.post('/agents/doc_management/transactions/duplicate_document', formData, axios_options)
                 .then(function (response) {
@@ -342,6 +348,7 @@ if (document.URL.match(/transaction_details/)) {
 
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
             let Agent_ID = $('#Agent_ID').val();
             let folder_id = $('#folder_id').val();
@@ -369,6 +376,7 @@ if (document.URL.match(/transaction_details/)) {
                 let formData = new FormData();
                 formData.append('Listing_ID', Listing_ID);
                 formData.append('Contract_ID', Contract_ID);
+                formData.append('Referral_ID', Referral_ID);
                 formData.append('transaction_type', transaction_type);
                 formData.append('Agent_ID', Agent_ID);
                 formData.append('folder_id', folder_id);
@@ -620,6 +628,7 @@ if (document.URL.match(/transaction_details/)) {
             let Agent_ID = $('#Agent_ID').val();
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
 
             checklist_items = JSON.stringify(checklist_items);
@@ -628,6 +637,7 @@ if (document.URL.match(/transaction_details/)) {
             formData.append('Agent_ID', Agent_ID);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
             formData.append('checklist_items', checklist_items);
             axios.post('/agents/doc_management/transactions/save_assign_documents_to_checklist', formData, axios_options)
@@ -733,6 +743,7 @@ if (document.URL.match(/transaction_details/)) {
             let Agent_ID = $('#Agent_ID').val();
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
 
             let folder = '';
@@ -752,6 +763,7 @@ if (document.URL.match(/transaction_details/)) {
             formData.append('Agent_ID', Agent_ID);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
             formData.append('folder', folder);
 
@@ -847,12 +859,14 @@ if (document.URL.match(/transaction_details/)) {
                 let folder = $('#new_folder_name').val();
                 let Listing_ID = $('#Listing_ID').val();
                 let Contract_ID = $('#Contract_ID').val();
+                let Referral_ID = $('#Referral_ID').val();
                 let Agent_ID = $('#Agent_ID').val();
                 let transaction_type = $('#transaction_type').val();
                 let formData = new FormData();
                 formData.append('folder', folder);
                 formData.append('Listing_ID', Listing_ID);
                 formData.append('Contract_ID', Contract_ID);
+                formData.append('Referral_ID', Referral_ID);
                 formData.append('Agent_ID', Agent_ID);
                 formData.append('transaction_type', transaction_type);
                 axios.post('/agents/doc_management/transactions/add_folder', formData, axios_options)
@@ -875,11 +889,13 @@ if (document.URL.match(/transaction_details/)) {
         function delete_folder(folder_id) {
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
             let formData = new FormData();
             formData.append('folder_id', folder_id);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
             axios.post('/agents/doc_management/transactions/delete_folder', formData, axios_options)
                 .then(function (response) {
@@ -906,11 +922,13 @@ if (document.URL.match(/transaction_details/)) {
             let formData = new FormData();
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
             let folder_id = $('#move_documents_folder').val();
             formData.append('document_ids', document_ids);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
             formData.append('folder_id', folder_id);
             axios.post('/agents/doc_management/transactions/move_documents_to_folder', formData, axios_options)
@@ -940,10 +958,12 @@ if (document.URL.match(/transaction_details/)) {
             let formData = new FormData();
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
             formData.append('document_ids', document_ids);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
             axios.post('/agents/doc_management/transactions/move_documents_to_trash', formData, axios_options)
                 .then(function (response) {
@@ -973,11 +993,13 @@ if (document.URL.match(/transaction_details/)) {
 
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
 
             formData.append('document_ids', document_ids);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
             axios.post('/agents/doc_management/transactions/move_documents_to_trash', formData, axios_options)
                 .then(function (response) {

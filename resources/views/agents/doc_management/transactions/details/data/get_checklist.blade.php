@@ -5,11 +5,13 @@
 
                 <div class="row">
                     <div class="col-12 col-sm-6">
-                        <div class="h4-responsive text-primary ml-3 my-1 my-sm-3"><i class="fad fa-tasks mr-3"></i> {{ ucwords($transaction_type) }} Checklist</div>
+                        <div class="h4-responsive text-primary ml-3"><i class="fad fa-tasks mr-3"></i> {{ ucwords($transaction_type) }} Checklist</div>
                     </div>
+                    @if($transaction_type != 'referral')
                     <div class="col-12 col-sm-6">
                         <div class="small text-danger text-right">Wrong Checklist? <a href="javascript: void(0)" class="btn btn-sm btn-primary" id="change_checklist_button" data-checklist-id="{{ $transaction_checklist_id }}"><i class="fad fa-repeat-alt mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Change Checklist</span></a></div>
                     </div>
+                    @endif
                 </div>
 
                 <hr class="mx-2">
@@ -55,7 +57,7 @@
                             }
                             @endphp
 
-                            <div class="checklist-item-div p-2 border z-depth-1 mb-2">
+                            <div class="checklist-item-div p-2 border mb-2">
 
                                 <div class="row">
 

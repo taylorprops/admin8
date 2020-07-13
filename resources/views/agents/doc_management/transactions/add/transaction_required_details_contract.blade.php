@@ -3,6 +3,29 @@
 
 @section('content')
 
+@php
+
+$seller_one_first = substr($property_details -> Owner1, strpos($property_details -> Owner1, ' ') + 1);
+$seller_one_last = substr($property_details -> Owner1, 0, strpos($property_details -> Owner1, ' '));
+$seller_two_first = null;
+$seller_two_last = null;
+
+if(stristr($property_details -> Owner1, 'llc')) {
+    $seller_one_first = substr($property_details -> Owner1, 0, strpos($property_details -> Owner1, ' '));
+    $seller_one_last = substr($property_details -> Owner1, strpos($property_details -> Owner1, ' ') + 1);
+}
+
+if($property_details -> Owner2 != '') {
+    $seller_two_first = substr($property_details -> Owner2, strpos($property_details -> Owner2, ' ') + 1);
+    $seller_two_last = substr($property_details -> Owner2, 0, strpos($property_details -> Owner2, ' '));
+    if(stristr($property_details -> Owner1, 'llc')) {
+        $seller_two_first = substr($property_details -> Owner2, 0, strpos($property_details -> Owner2, ' '));
+        $seller_two_last = substr($property_details -> Owner2, strpos($property_details -> Owner2, ' ') + 1);
+    }
+}
+
+@endphp
+
 <script>
     let states = JSON.parse({!!json_encode($states_json)!!});
 </script>
@@ -98,10 +121,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-3">
-                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ substr($property_details -> Owner1, strpos($property_details -> Owner1, ' ') + 1) }}">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ $seller_one_first }}">
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-3">
-                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ substr($property_details -> Owner1, 0, strpos($property_details -> Owner1, ' ')) }}">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ $seller_one_last }}">
                                 </div>
                             </div>
                         </div>
@@ -114,10 +137,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-3">
-                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ substr($property_details -> Owner2, strpos($property_details -> Owner2, ' ') + 1) }}">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ $seller_two_first }}">
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-3">
-                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ substr($property_details -> Owner2, 0, strpos($property_details -> Owner2, ' ')) }}">
+                                    <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ $seller_two_last }}">
                                 </div>
                             </div>
                         </div>

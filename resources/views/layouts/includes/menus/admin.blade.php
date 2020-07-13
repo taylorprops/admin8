@@ -10,6 +10,9 @@
                         <a href="/doc_management/resources/resources" class="waves-effect"> Resources</a>
                     </li>
                     <li>
+                        <a href="/doc_management/create/upload/files" class="waves-effect"> Files</a>
+                    </li>
+                    <li>
                         <a href="/doc_management/checklists" class="waves-effect"> Checklists</a>
                     </li>
                     <li>

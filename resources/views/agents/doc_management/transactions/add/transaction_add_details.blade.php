@@ -173,7 +173,7 @@
                         </li>
                         <li class="step">
                             <div class="h4-responsive step-title waves-effect waves-light text-gray">Verify</div>
-                            <div class=" mt-3">
+                            <div class="step-new-content mt-3">
                                 <div class="">
                                     <div class="d-flex justify-content-center w-100 h-100">
                                         <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>

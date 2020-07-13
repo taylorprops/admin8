@@ -25914,7 +25914,7 @@ ul.stepper li.completed a .grey-skin .circle {
 .picker__box .picker__header .picker__nav--prev:before,
 .picker__box .picker__header .picker__nav--next:before {
   display: block;
-  font-family: "Font Awesome 5 Free", sans-serif;
+  font-family: "Font Awesome 5 Pro", sans-serif;
   font-weight: 900;
 }
 
@@ -26676,7 +26676,7 @@ ul.stepper .step.active:before {
 }
 
 ul.stepper .step.done:before {
-  font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", sans-serif;
+  font-family: "Font Awesome 5 Pro", "Font Awesome 5 Pro", sans-serif;
   font-size: 1rem;
   font-weight: 900;
   content: "\F00C";
@@ -26684,7 +26684,7 @@ ul.stepper .step.done:before {
 }
 
 ul.stepper .step.wrong:before {
-  font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", sans-serif;
+  font-family: "Font Awesome 5 Pro", "Font Awesome 5 Pro", sans-serif;
   font-size: 1.1rem;
   font-weight: 900;
   content: "\F071";
@@ -26828,7 +26828,7 @@ ul.stepper .md-form .validate {
   }
 
   ul.stepper.horizontal .step.done .step-title:before {
-    font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", sans-serif;
+    font-family: "Font Awesome 5 Pro", "Font Awesome 5 Pro", sans-serif;
     font-size: 1rem;
     font-weight: 900;
     content: "\F00C";
@@ -26836,7 +26836,7 @@ ul.stepper .md-form .validate {
   }
 
   ul.stepper.horizontal .step.wrong .step-title:before {
-    font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", sans-serif;
+    font-family: "Font Awesome 5 Pro", "Font Awesome 5 Pro", sans-serif;
     font-size: 1.1rem;
     font-weight: 900;
     content: "\F071";

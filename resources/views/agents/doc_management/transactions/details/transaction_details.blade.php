@@ -13,7 +13,9 @@
         <div class="col-md-12 px-1 px-sm-3 mt-3 details-tabs">
             <ul id="tabs" class="nav nav-tabs details-list-group">
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="details" data-target="#details_tab" data-toggle="tab" class="nav-link active"><i class="fad fa-home-lg-alt mr-2 d-none d-md-inline-block"></i> Details</a></li>
+                @if($transaction_type != 'referral')
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="members" id="open_members_tab" data-target="#members_tab" data-toggle="tab" class="nav-link"><i class="fad fa-user-friends mr-2 d-none d-md-inline-block"></i> Members</a></li>
+                @endif
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="documents" id="open_documents_tab" data-target="#documents_tab" data-toggle="tab" class="nav-link"><i class="fad fa-folder-open mr-2 d-none d-md-inline-block"></i> Documents</a></li>
                 <li class="nav-item"><a href="javascript: void(0)" data-tab="checklist" id="open_checklist_tab" data-target="#checklist_tab" data-toggle="tab" class="nav-link"><i class="fad fa-tasks mr-2 d-none d-md-inline-block"></i> Checklist</a></li>
                 @if($transaction_type == 'listing')
@@ -24,6 +26,8 @@
                 $commission = 'commission';
                 if(auth() -> user() -> group == 'agent') {
                     $commission = 'agent_commission';
+                } else if(auth() -> user() -> group == 'referral') {
+                    $commission = 'referral_commission';
                 }
                 @endphp
                 {{-- show listing link if exists --}}
@@ -63,9 +67,14 @@
                         {!! config('global.vars.loader') !!}
                     </div>
                 </div>
-                @endif
-                @if(auth() -> user() -> group == 'agent')
+                @elseif(auth() -> user() -> group == 'agent')
                 <div id="agent_commission_tab" class="tab-pane fade">
+                    <div class="w-100 my-5 text-center">
+                        {!! config('global.vars.loader') !!}
+                    </div>
+                </div>
+                @elseif(auth() -> user() -> group == 'referral')
+                <div id="referral_commission_tab" class="tab-pane fade">
                     <div class="w-100 my-5 text-center">
                         {!! config('global.vars.loader') !!}
                     </div>
@@ -77,6 +86,7 @@
 
     <input type="hidden" id="Listing_ID" value="{{ $property -> Listing_ID }}">
     <input type="hidden" id="Contract_ID" value="{{ $property -> Contract_ID }}">
+    <input type="hidden" id="Referral_ID" value="{{ $property -> Referral_ID }}">
     <input type="hidden" id="Agent_ID" value="{{ $property -> Agent_ID }}">
     <input type="hidden" id="transaction_type" value="{{ $transaction_type }}">
 

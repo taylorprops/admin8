@@ -31,6 +31,39 @@
         padding: 10px;
     }
 
+
+    // referral
+
+    .receiving, .referring {
+        display: none;
+    }
+    // bright mls agent search
+    #agent_search_div {
+        background: rgba($blue, 0.1);
+    }
+    #agent_search {
+        max-width: 300px;
+    }
+    .search-results-container {
+        position: relative;
+    }
+    .search-results {
+        display: none;
+        position: absolute;
+        top: -10px;
+        left: 0;
+        max-height: 400px;
+        overflow: auto;
+        font-size: .9em;
+        z-index: 5000;
+    }
+    .search-result {
+        cursor: pointer;
+    }
+    .search-result:hover {
+        color: $orange;
+    }
+
     @media (max-width: 1199.98px) {
         .modal-xl {
             max-width: 98% !important;

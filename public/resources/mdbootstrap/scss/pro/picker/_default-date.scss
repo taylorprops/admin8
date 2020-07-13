@@ -91,7 +91,7 @@ div.picker.datepicker .picker__box {
           content: "\f053";
         }
       }
-  
+
       .picker__nav--next {
         right: 0.5rem;
         padding: 0;
@@ -114,7 +114,7 @@ div.picker.datepicker .picker__box {
   .picker__table {
     min-height: 267px;
     padding: .5rem;
-    
+
     .picker__day.picker__day--infocus {
       border-radius: 50%;
       &:hover:not(.picker__day--selected) {
@@ -284,7 +284,7 @@ div.picker.datepicker .picker__box {
 
       &:before {
         display: block;
-        font-family: "Font Awesome 5 Free", sans-serif;
+        font-family: "Font Awesome 5 Pro", sans-serif;
         font-weight: 900;
       }
     }
@@ -556,7 +556,7 @@ div.picker.datepicker .picker__box {
 div.datepicker input {
   cursor: auto;
   ~ i.input-prefix {
-    cursor: pointer; 
+    cursor: pointer;
     pointer-events: all;
   }
 }

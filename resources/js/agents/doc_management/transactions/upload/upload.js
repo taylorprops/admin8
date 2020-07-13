@@ -12,6 +12,7 @@ window.upload_documents = function() {
             return {
                 'Listing_ID': $('#Listing_ID').val(),
                 'Contract_ID': $('#Contract_ID').val(),
+                'Referral_ID': $('#Referral_ID').val(),
                 'transaction_type': $('#transaction_type').val(),
                 'Agent_ID': $('#Agent_ID').val(),
                 'folder': $('#documents_folder').val()

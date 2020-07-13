@@ -267,6 +267,7 @@ if (document.URL.match(/transaction_details/)) {
                     load_tabs('contracts');
                     let Contract_ID = response.data.Contract_ID;
                     $('#modal_info').modal().find('.modal-body').html('<div class="w-100 text-center">Your Contract was successfully added. You will find it in the "Contracts" tab<br><br><a class="btn btn-primary" href="/agents/doc_management/transactions/transaction_details/' + Contract_ID + '/contract">View Contract</a></div>');
+                    $('.header-contract-active').hide();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -278,11 +279,13 @@ if (document.URL.match(/transaction_details/)) {
     window.load_details_header = function () {
         let Listing_ID = $('#Listing_ID').val();
         let Contract_ID = $('#Contract_ID').val();
+        let Referral_ID = $('#Referral_ID').val();
         let transaction_type = $('#transaction_type').val();
         axios.get('/agents/doc_management/transactions/transaction_details_header', {
             params: {
                 Listing_ID: Listing_ID,
                 Contract_ID: Contract_ID,
+                Referral_ID: Referral_ID,
                 transaction_type: transaction_type
             },
             headers: axios_headers_html
@@ -291,12 +294,12 @@ if (document.URL.match(/transaction_details/)) {
                 $('#details_header').html(response.data);
                 $('[data-toggle="popover"]').popover({ placement: 'bottom' });
                 $('#accept_contract_button').click(show_accept_contract);
-                $('#disabled_accept_contract_button').click(function () {
+                /* $('#disabled_accept_contract_button').click(function () {
                     $('#modal_danger').modal().find('.modal-body').html('You cannot accept a contract until the current one is released');
                 });
                 $('#disabled_withdraw_listing_button').click(function () {
                     $('#modal_danger').modal().find('.modal-body').html('You cannot withdraw the listing while it is under contract. Once the contract is released you can withdraw the listing');
-                });
+                }); */
             })
             .catch(function (error) {
                 console.log(error);
@@ -306,6 +309,7 @@ if (document.URL.match(/transaction_details/)) {
     window.load_tabs = function (tab) {
         let Listing_ID = $('#Listing_ID').val();
         let Contract_ID = $('#Contract_ID').val();
+        let Referral_ID = $('#Referral_ID').val();
         let Agent_ID = $('#Agent_ID').val();
         let transaction_type = $('#transaction_type').val();
 
@@ -316,6 +320,7 @@ if (document.URL.match(/transaction_details/)) {
             params: {
                 Listing_ID: Listing_ID,
                 Contract_ID: Contract_ID,
+                Referral_ID: Referral_ID,
                 Agent_ID: Agent_ID,
                 transaction_type: transaction_type
             },
@@ -330,9 +335,9 @@ if (document.URL.match(/transaction_details/)) {
                     $('#StateOrProvince').change(update_county_select);
 
                     // format list price
-                    format_money();
+                    format_money($('.money'));
                     $('.money').keyup(function () {
-                        format_money();
+                        format_money($(this));
                         //$('#list_price_display').text($(this).val());
                     });
 
@@ -516,11 +521,6 @@ if (document.URL.match(/transaction_details/)) {
         });
     }
 
-    window.format_money = function () {
-        $('.money').each(function () {
-            $(this).val('$' + global_format_number($(this).val().replace('/\$/', '')));
-        });
-    }
 
     window.listing_options = function () {
 

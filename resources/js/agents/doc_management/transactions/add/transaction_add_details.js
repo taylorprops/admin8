@@ -114,10 +114,6 @@ if (document.URL.match(/transaction_add_details_/)) {
 
     }
 
-    function format_money(ele) {
 
-        ele.val('$'+global_format_number(ele.val().replace('/\$/', '')));
-
-    }
 
 }

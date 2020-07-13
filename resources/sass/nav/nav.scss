@@ -11,10 +11,17 @@ header {
         border: none;
         border-bottom: 1px solid #fff;
     }
-
-    .side-nav-link {
-        font-size: 1.1rem !important;
+    #main_search_input::placeholder {
+        color: white;
     }
+
+    .side-nav .side-nav-link {
+        height: 3rem;
+        font-size: 1.3rem !important;
+        line-height: 3rem;
+    }
+
+
 
     @media (max-width: 768px) {
         .main-search-div {

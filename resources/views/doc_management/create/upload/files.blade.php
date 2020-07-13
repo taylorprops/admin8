@@ -94,6 +94,7 @@
                                         <option value=""></option>
                                         <option value="listing">Listing</option>
                                         <option value="contract">Contract</option>
+                                        <option value="referral">Referral</option>
                                     </select>
                                 </div>
                             </div>

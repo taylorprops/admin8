@@ -14,15 +14,20 @@
                         <div class="list-group" role="tablist">
 
                             @foreach ($locations as $location)
-                            <a class="list-group-item list-group-item-action @if ($loop -> first) active loaded @endif checklist-location"
-                                id="list_{{ $location -> resource_id }}"
-                                data-toggle="list"
-                                href="#list_div_{{ $location -> resource_id }}"
-                                role="tab"
-                                data-id="{{ $location -> resource_id }}">
-                                @if($location -> resource_name != $location -> resource_state) {{ $location -> resource_state }} | @endif {{ $location -> resource_name }}
-                                <span class="float-right badge bg-blue-med py-1 px-2" id="list_{{ $location -> resource_id }}_file_count"></span>
-                            </a>
+
+                                @php
+                                $referral_location_id = $resource_items -> GetResourceID('Referrals', 'checklist_locations');
+                                @endphp
+
+                                <a class="list-group-item list-group-item-action checklist-location @if ($loop -> first) active loaded @endif @if($referral_location_id == $location -> resource_id) referral-tab @endif"
+                                    id="list_{{ $location -> resource_id }}"
+                                    data-toggle="list"
+                                    href="#list_div_{{ $location -> resource_id }}"
+                                    role="tab"
+                                    data-id="{{ $location -> resource_id }}">
+                                    @if($location -> resource_name != $location -> resource_state) {{ $location -> resource_state }} | @endif {{ $location -> resource_name }}
+                                    <span class="float-right badge bg-blue-med py-1 px-2" id="list_{{ $location -> resource_id }}_file_count"></span>
+                                </a>
 
                             @endforeach
                         </div>
@@ -36,24 +41,31 @@
 
                     @foreach($locations as $location)
 
-                        <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $location -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $location -> resource_id }}">
+                        @php
+                        $referral_location_id = $resource_items -> GetResourceID('Referrals', 'checklist_locations');
+                        @endphp
+
+
+                        <div class="list-div tab-pane fade @if ($loop -> first) show active @endif @if($referral_location_id == $location -> resource_id) referral-tab-data @endif" id="list_div_{{ $location -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $location -> resource_id }}">
 
                             <div class="d-flex justify-content-between">
                                 <div class="h3-responsive text-primary">{{ $location -> resource_name }} @if($location -> resource_name != $location -> resource_state) | {{ $location -> resource_state }} @endif</div>
-                                <div class="d-flex justify-content-end">
-                                    <div>
-                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel checklist-type-option" data-label="Checklist Type">
-                                            <option value="listing">Listing</option>
-                                            <option value="contract">Contract</option>
-                                        </select>
+                                @if($referral_location_id != $location -> resource_id)
+                                    <div class="d-flex justify-content-end">
+                                        <div>
+                                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel checklist-type-option" data-label="Checklist Type">
+                                                <option value="listing">Listing</option>
+                                                <option value="contract">Contract</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <a href="javascript: void(0)" class="btn btn-primary ml-5 mt-3 copy-checklist-button" data-location-id="{{ $location -> resource_id }}" data-toggle="tooltip" title="Copy all checklists from this form group to another"><i class="fad fa-clone mr-2"></i> Copy Checklists</a>
+                                        </div>
+                                        <div>
+                                            <a href="javascript: void(0)" data-location-id="{{ $location -> resource_id }}" data-state="{{ $location -> resource_state }}" data-form-type="add" class="btn btn-success add-checklist-button ml-5 mt-3"><i class="fal fa-plus mr-2"></i> Add Checklist</a>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <a href="javascript: void(0)" class="btn btn-primary ml-5 mt-3 copy-checklist-button" data-location-id="{{ $location -> resource_id }}" data-toggle="tooltip" title="Copy all checklists from this form group to another"><i class="fad fa-clone mr-2"></i> Copy Checklists</a>
-                                    </div>
-                                    <div>
-                                        <a href="javascript: void(0)" data-location-id="{{ $location -> resource_id }}" data-state="{{ $location -> resource_state }}" data-form-type="add" class="btn btn-success add-checklist-button ml-5 mt-3"><i class="fal fa-plus mr-2"></i> Add Checklist</a>
-                                    </div>
-                                </div>
+                                @endif
                             </div>
 
                             <div class="border border-gray">

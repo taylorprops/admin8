@@ -13,6 +13,9 @@
         <li>
             <a href="/agents/doc_management/transactions/add/contract" class="waves-effect side-nav-link"><i class="fad fa-file-signature mr-2"></i> Add Contract</a>
         </li>
+        <li>
+            <a href="/agents/doc_management/transactions/add/referral" class="waves-effect side-nav-link"><i class="fad fa-handshake mr-2"></i> Add Referral</a>
+        </li>
 
     </ul>
 </li>

@@ -29,22 +29,24 @@
 
 
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-6 px-1">
-                <div class="add-docs-div bg-blue-light p-3 mb-1 mb-sm-3 border border-primary rounded-lg text-center">
-                    <i class="fad fa-clone fa-3x text-primary mb-2"></i>
-                    <div class="h5 text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="Add a preset template of all forms available for the checklist"><i class="fad fa-question-circle ml-2"></i></a></div>
-                    <div class="row">
-                        <div class="col-12 col-sm-6">
-                            Checklist Documents<br>
-                            <a href="javascript:void(0);" class="btn btn-primary" id="add_checklist_template_button"><i class="fa fa-plus mr-2"></i> Add Template</a>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            Individual Documents<br>
-                            <a href="javascript:void(0);" class="btn btn-primary" id="add_individual_template_button"><i class="fa fa-plus mr-2"></i> Add Documents</a>
+            @if($transaction_type != 'referral')
+                <div class="col-12 col-md-12 col-lg-6 px-1">
+                    <div class="add-docs-div bg-blue-light p-3 mb-1 mb-sm-3 border border-primary rounded-lg text-center">
+                        <i class="fad fa-clone fa-3x text-primary mb-2"></i>
+                        <div class="h5 text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="Add a preset template of all forms available for the checklist"><i class="fad fa-question-circle ml-2"></i></a></div>
+                        <div class="row">
+                            <div class="col-12 col-sm-6">
+                                Checklist Documents<br>
+                                <a href="javascript:void(0);" class="btn btn-primary" id="add_checklist_template_button"><i class="fa fa-plus mr-2"></i> Add Template</a>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                Individual Documents<br>
+                                <a href="javascript:void(0);" class="btn btn-primary" id="add_individual_template_button"><i class="fa fa-plus mr-2"></i> Add Documents</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
             <div class="col-12 col-sm-6 col-lg-3 px-1">
                 <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
                     <i class="fad fa-file-upload fa-3x text-primary mb-2"></i>
@@ -118,9 +120,14 @@
                 $show_folder = 'show';
             }
         }
+        if($transaction_type == 'referral') {
+            if($folder -> folder_name == 'Referral Documents' && $docs_count > 0) {
+                $show_folder = 'show';
+            }
+        }
 
         $deletable_folder = true;
-        if(preg_match('/(Listing\sDocuments|Contract\sDocuments|Trash)/', $folder -> folder_name)) {
+        if(preg_match('/(Listing\sDocuments|Contract\sDocuments|Referral\sDocuments|Trash)/', $folder -> folder_name)) {
             $deletable_folder = false;
         }
         @endphp
@@ -326,35 +333,54 @@
                                     </div>
 
 
-                                    @foreach($members as $member)
+                                    @if($members)
 
-                                    <div class="row to-addresses">
-                                        <div class="col-2">
-                                            @if($loop -> first)
+                                        @foreach($members as $member)
+
+                                            <div class="row to-addresses">
+                                                <div class="col-2">
+                                                    @if($loop -> first)
+                                                        <input type="hidden" class="email-address-type" value="to">
+                                                        <div class="h-100 d-flex justify-content-end align-items-center">
+                                                            <div>To:</div>
+                                                        </div>
+                                                    @else
+                                                        <select class="custom-form-element form-select form-select-no-cancel form-select-no-search email-address-type">
+                                                            <option value="to">To:</option>
+                                                            <option value="cc">Cc:</option>
+                                                            <option value="bcc">Bcc:</option>
+                                                        </select>
+                                                    @endif
+                                                </div>
+                                                <div class="@if($loop -> first) col-10 @else col-9 @endif">
+                                                    <input type="text" class="custom-form-element form-input email-to-address" value="{{ $member -> first_name.' '.$member -> last_name }} <{{ $member -> email }}>">
+                                                </div>
+                                                @if(!$loop -> first)
+                                                <div class="col-1">
+                                                    <div class="h-100 d-flex justify-content-end align-items-center">
+                                                        <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times"></i></button>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                            </div>
+
+                                        @endforeach
+
+                                    @else
+
+                                        <div class="row to-addresses">
+                                            <div class="col-2">
                                                 <input type="hidden" class="email-address-type" value="to">
                                                 <div class="h-100 d-flex justify-content-end align-items-center">
                                                     <div>To:</div>
                                                 </div>
-                                            @else
-                                                <select class="custom-form-element form-select form-select-no-cancel form-select-no-search email-address-type">
-                                                    <option value="to">To:</option>
-                                                    <option value="cc">Cc:</option>
-                                                    <option value="bcc">Bcc:</option>
-                                                </select>
-                                            @endif
-                                        </div>
-                                        <div class="@if($loop -> first) col-10 @else col-9 @endif">
-                                            <input type="text" class="custom-form-element form-input email-to-address" value="{{ $member -> first_name.' '.$member -> last_name }} <{{ $member -> email }}>">
-                                        </div>
-                                        @if(!$loop -> first)
-                                        <div class="col-1">
-                                            <div class="h-100 d-flex justify-content-end align-items-center">
-                                                <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times"></i></button>
+                                            </div>
+                                            <div class="col-10">
+                                                <input type="text" class="custom-form-element form-input email-to-address" value="">
                                             </div>
                                         </div>
-                                        @endif
-                                    </div>
-                                    @endforeach
+
+                                    @endif
 
                                     <div class="row">
                                         <div class="col-2"></div>
@@ -735,8 +761,17 @@
                             <div class="col-12 col-lg-4 pt-3 mx-auto mb-3">
                                 <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="individual_templates_folder" data-label="Select Folder To Add Forms To">
                                     @foreach($folders as $folder)
+                                        @php
+                                        if($transaction_type == 'listing') {
+                                            $selected_folder = 'Listing Documents';
+                                        } else if($transaction_type == 'contract') {
+                                            $selected_folder = 'Contract Documents';
+                                        } else if($transaction_type == 'referral') {
+                                            $selected_folder = 'Referral Documents';
+                                        }
+                                        @endphp
                                         @if($folder -> folder_name != 'Trash')
-                                        <option value="{{ $folder -> id }}">{{ $folder -> folder_name }}</option>
+                                        <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder -> folder_name }}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -780,7 +815,6 @@
                                                 } else if($transaction_type == 'contract') {
                                                     $selected_folder = 'Contract Documents';
                                                 }
-
                                                 @endphp
                                                 @if($folder -> folder_name != 'Trash')
                                                 <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder -> folder_name }}</option>
@@ -833,9 +867,16 @@
                             <div class="col-12 col-md-5">
                                 <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="documents_folder" data-label="Select Folder">
                                     @foreach($folders as $folder)
-                                    @if($folder -> folder_name != 'Trash')
-                                    <option value="{{ $folder -> id }}">{{ $folder -> folder_name }}</option>
-                                    @endif
+                                        @php
+                                        if($transaction_type == 'listing') {
+                                            $selected_folder = 'Listing Documents';
+                                        } else if($transaction_type == 'contract') {
+                                            $selected_folder = 'Contract Documents';
+                                        }
+                                        @endphp
+                                        @if($folder -> folder_name != 'Trash')
+                                        <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder -> folder_name }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
 

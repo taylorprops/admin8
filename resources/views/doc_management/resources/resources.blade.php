@@ -31,6 +31,7 @@
                                     <div class="col px-1">
                                         <select class="custom-form-element form-select add-resource-state form-select-no-cancel form-select-no-search required" data-label="State">
                                             <option value=""></option>
+                                            <option value="All">All</option>
                                             @foreach($states as $state)
                                             <option value="{{ $state }}">{{ $state }}</option>
                                             @endforeach
@@ -61,7 +62,8 @@
                                             <option value=""></option>
                                             <option value="listing">Listing</option>
                                             <option value="contract">Contract</option>
-                                            <option value="both">Both</option>
+                                            <option value="both">Both Contract and Listing</option>
+                                            <option value="referral">Referral</option>
                                         </select>
                                     </div>
                                     @endif
@@ -141,7 +143,8 @@
                                                     <option value=""></option>
                                                     <option value="listing" @if( $resources_item -> resource_form_group_type == 'listing') selected @endif>Listing</option>
                                                     <option value="contract" @if( $resources_item -> resource_form_group_type == 'contract') selected @endif>Contract</option>
-                                                    <option value="both" @if( $resources_item -> resource_form_group_type == 'both') selected @endif>Both</option>
+                                                    <option value="both" @if( $resources_item -> resource_form_group_type == 'both') selected @endif>Both Contract and Listing</option>
+                                                    <option value="referral" @if( $resources_item -> resource_form_group_type == 'referral') selected @endif>Referral</option>
                                                 </select>
                                             </div>
                                             @endif

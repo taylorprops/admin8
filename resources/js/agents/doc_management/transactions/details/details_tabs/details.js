@@ -12,11 +12,13 @@ if (document.URL.match(/transaction_details/)) {
 
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
             let transaction_type = $('#transaction_type').val();
 
             let formData = new FormData(form[0]);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
+            formData.append('Referral_ID', Referral_ID);
             formData.append('transaction_type', transaction_type);
 
             axios.post('/agents/doc_management/transactions/save_details', formData, axios_options)
@@ -24,7 +26,7 @@ if (document.URL.match(/transaction_details/)) {
                 if(response.data.status == 'ok') {
                     load_tabs('details');
                     load_details_header();
-                    toastr['success']('Listing Details Saved!');
+                    toastr['success']('Transaction Details Saved!');
                 }
             })
             .catch(function (error) {

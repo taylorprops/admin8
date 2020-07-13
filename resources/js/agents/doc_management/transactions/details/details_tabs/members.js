@@ -69,6 +69,7 @@ if (document.URL.match(/transaction_details/)) {
             let formData = new FormData();
 
             formData.append('id', form.find('.member-id').val());
+            formData.append('transaction_type', $('#transaction_type').val());
             formData.append('Listing_ID', $('#Listing_ID').val());
             formData.append('Contract_ID', $('#Contract_ID').val());
             formData.append('Agent_ID', $('#Agent_ID').val());
@@ -129,7 +130,6 @@ if (document.URL.match(/transaction_details/)) {
             load_details_header();
             setTimeout(function() {
                 form_elements();
-                //scrollToAnchor('scroll_to');
             }, 500);
             $('.cancel-add-member-button').off('click').on('click', function() {
                 $('#add_member_group').hide();
@@ -180,10 +180,7 @@ if (document.URL.match(/transaction_details/)) {
             reload_member_tab();
             load_details_header();
             toastr['success']('Member Successfully Deleted');
-            setTimeout(function() {
-                //scrollToAnchor('scroll_to');
-                load_details_header();
-            }, 500);
+
         })
         .catch(function (error) {
             console.log(error);

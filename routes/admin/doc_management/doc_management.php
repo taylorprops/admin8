@@ -63,6 +63,8 @@ Route::middleware('admin') -> group(function () {
     /* checklists */
     /* Add Checklists */
     Route::post('/doc_management/add_checklist', 'DocManagement\Checklists\ChecklistsController@add_checklist');
+    /* Add Referral Checklists */
+    Route::post('/doc_management/add_checklist_referral', 'DocManagement\Checklists\ChecklistsController@add_checklist_referral');
     /* Edit Checklists */
     Route::post('/doc_management/edit_checklist', 'DocManagement\Checklists\ChecklistsController@edit_checklist');
     /* Delete Checklists */

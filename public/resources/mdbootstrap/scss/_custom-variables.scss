@@ -136,3 +136,18 @@ a.text-green:hover {
     border: 1px solid $orange !important;
 }
 
+$badge_blue: #4594d4;
+$badge_green: #33ad33;
+$badge_orange: #d47433;
+.badge.bg-primary {
+    background-image: linear-gradient(122deg, $badge_blue 29.17%, $blue 29.17%, $blue 50%, $badge_blue 50%, $badge_blue 79.17%, $blue 79.17%, $blue 100%) !important;
+    background-size: 14.15px 22.64px !important;
+}
+.badge.bg-success {
+    background-image: linear-gradient(122deg, $badge_green 29.17%, $green 29.17%, $green 50%, $badge_green 50%, $badge_green 79.17%, $green 79.17%, $green 100%) !important;
+    background-size: 14.15px 22.64px !important;
+}
+.badge.bg-orange {
+    background-image: linear-gradient(122deg, $badge_orange 29.17%, $orange 29.17%, $orange 50%, $badge_orange 50%, $badge_orange.17%, $orange 79.17%, $orange 100%) !important;
+    background-size: 14.15px 22.64px !important;
+}

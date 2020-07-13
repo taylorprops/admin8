@@ -1,9 +1,10 @@
 <?php
 
-$active_states = explode(',', env('ACTIVE_STATES'));
 $bad_characters = ['/\#/', '/\</', '/\$/', '/\+/', '/\%/', '/\>/', '/\!/', '/\&/', '/\*/', '/\'/', '/\|/', '/\{/', '/\?/', '/\"/', '/\=/', '/\}/', '/\//', '/\:/', '/\s/', '/\@/', '/\;/', '/\,/', '/\(/', '/\)/', '/\[/', '/\]/', '/\./'];
+
 $street_suffixes = array('ALLEY', 'AVENUE', 'BEND', 'BOULEVARD', 'BRANCH', 'CIRCLE', 'CIR', 'CORNER', 'COURSE', 'COURT', 'COVE', 'CRESCENT', 'CROSSING', 'DRIVE', 'DRIVEWAY', 'EXTENSION', 'GARDENS', 'GARTH', 'GATEWAY', 'GLEN', 'GROVE', 'HARBOR', 'HIGHWAY', 'HILL', 'HOLLOW', 'KNOLLS', 'LANDING', 'LANE', 'LOOP', 'MEWS', 'MILLS', 'NORTHWAY', 'PARKWAY', 'PASSAGE', 'PATH', 'PIKE', 'PLACE', 'RIDGE', 'ROAD', 'ROUTE', 'ROW', 'RUN', 'SQUARE', 'STREET', 'TERRACE', 'TRACE', 'TRAIL', 'TURN', 'VIEW', 'VISTA', 'WALK', 'WAY');
 $street_dir_suffixes = array('E', 'EAST', 'N', 'NE', 'NORTH', 'NORTHEAST', 'NORTHWEST', 'NW', 'S', 'SE', 'SOUTH', 'SOUTHEAST', 'SOUTHWEST', 'SW', 'W', 'WEST');
+
 $loader = '
 <div class="preloader-wrapper active">
     <div class="spinner-layer spinner-blue-only">
@@ -27,18 +28,19 @@ $select_columns_bright_agents = ['ListAgentFirstName,ListAgentLastName,ListAgent
 return [
     'vars' => [
         'bad_characters' => $bad_characters,
-        'active_states' => $active_states,
         'street_suffixes' => $street_suffixes,
         'street_dir_suffixes' => $street_dir_suffixes,
         'select_columns_bright' => $select_columns_bright,
         'select_columns_bright_agents' => $select_columns_bright_agents,
         'loader' => $loader,
+        'active_states' => explode(',', env('ACTIVE_STATES')),
         'google_api_key' => env('GOOGLE_API_KEY'),
         'socrata_api_key' => env('SOCRATA_API_KEY'),
         'company_street' => env('COMPANY_STREET'),
         'company_city' => env('COMPANY_CITY'),
         'company_state' => env('COMPANY_STATE'),
-        'company_zip' => env('COMPANY_ZIP')
+        'company_zip' => env('COMPANY_ZIP'),
+        'property_email' => env('PROPERTY_EMAIL')
     ]
 ];
 

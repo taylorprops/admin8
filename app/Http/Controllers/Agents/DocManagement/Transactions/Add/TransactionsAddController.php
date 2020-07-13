@@ -12,6 +12,7 @@ use App\Models\DocManagement\Transactions\Data\ListingsData;
 use App\Models\DocManagement\Transactions\Data\ListingsRemovedData;
 use App\Models\DocManagement\Transactions\Listings\Listings;
 use App\Models\DocManagement\Transactions\Contracts\Contracts;
+use App\Models\DocManagement\Transactions\Referrals\Referrals;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
@@ -27,15 +28,18 @@ use App\Models\BrightMLS\Offices;
 class TransactionsAddController extends Controller {
 
     public function add_transaction(Request $request) {
-        $transaction_type = 'Contract/Lease';
-        if($request -> type == 'listing') {
-            $transaction_type = 'listing';
+        $transaction_type_header = 'Contract/Lease';
+        $transaction_type = $request -> type;
+        if($transaction_type == 'listing') {
+            $transaction_type_header = 'Listing';
+        } else if($transaction_type == 'referral') {
+            $transaction_type_header = 'Referral Agreement';
         }
         $states = LocationData::ActiveStates();
-        return view('/agents/doc_management/transactions/add/transaction_add', compact('transaction_type', 'states'));
+        return view('/agents/doc_management/transactions/add/transaction_add', compact('transaction_type', 'transaction_type_header', 'states'));
     }
 
-    public function add_transaction_details_existing(Request $request) {
+    public function transaction_add_details_existing(Request $request) {
 
         $transaction_type = strtolower($request -> transaction_type);
         $bright_type = $request -> bright_type;
@@ -157,7 +161,92 @@ class TransactionsAddController extends Controller {
         return view('/agents/doc_management/transactions/add/transaction_add_details', compact('property_details', 'property_types', 'property_sub_types'));
     }
 
-    public function add_transaction_details_new(Request $request) {
+    public function transaction_add_details_referral(Request $request) {
+
+        $property_details = [
+            'FullStreetAddress' => $request -> street_number . ' ' . $request -> street_name . ' ' . $request -> street_dir . ' ' . $request -> unit_number,
+            'StreetNumber' => $request -> street_number,
+            'StreetName' => $request -> street_name,
+            'StreetDirPrefix' => $request -> street_dir,
+            'UnitNumber' => $request -> unit_number,
+            'City' => $request -> city,
+            'StateOrProvince' => $request -> state,
+            'PostalCode' => $request -> zip,
+            'County' => $request -> county,
+            'Agent_ID' => $request -> Agent_ID
+        ];
+
+        $property_details = (object)$property_details;
+
+        $add_referral = new Referrals();
+        foreach($property_details as $key => $val) {
+            $add_referral -> $key = $val;
+        }
+        $add_referral -> save();
+
+        $Referral_ID = $add_referral -> Referral_ID;
+
+        // add email address
+        $address = preg_replace(config('global.vars.bad_characters'), '', $request -> street_number . $request -> street_name . $request -> street_dir . $request -> unit_number);
+        $email = $address.'_R'.$Referral_ID.'@'.config('global.vars.property_email');
+
+        $add_referral -> PropertyEmail = $email;
+        $add_referral -> save();
+
+        return response() -> json(['Referral_ID' => $Referral_ID]);
+
+    }
+
+
+    public function transaction_required_details_referral(Request $request) {
+
+        $Referral_ID = $request -> Referral_ID;
+        $referral = Referrals::find($Referral_ID);
+        $states = LocationData::AllStates();
+
+        return view('/agents/doc_management/transactions/add/transaction_required_details_referral', compact('referral', 'states'));
+
+    }
+
+    public function transaction_save_details_referral(Request $request) {
+
+        $Referral_ID = $request -> Referral_ID;
+        $Agent_ID = $request -> Agent_ID;
+        $data = $request -> all();
+        $referral = Referrals::find($Referral_ID);
+        foreach ($data as $key => $value) {
+            if($key != 'Referral_ID' && $key != 'hidden') {
+                if(preg_match('/\$/', $value)) {
+                    $value = preg_replace('/[\$,]/', '', $value);
+                }
+                $referral -> $key = $value;
+            }
+        }
+        $referral -> save();
+
+        // Add folders
+        $docs_folder = new TransactionDocumentsFolders();
+        $docs_folder -> Referral_ID = $Referral_ID;
+        $docs_folder -> Agent_ID = $Agent_ID;
+        $docs_folder -> folder_name = 'Referral Documents';
+        $docs_folder -> order = 0;
+        $docs_folder -> save();
+
+        $trash_folder = new TransactionDocumentsFolders();
+        $trash_folder -> Referral_ID = $Referral_ID;
+        $trash_folder -> Agent_ID = $Agent_ID;
+        $trash_folder -> folder_name = 'Trash';
+        $trash_folder -> order = 100;
+        $trash_folder -> save();
+
+        // Add checklist
+        TransactionChecklists::CreateTransactionChecklist('', '', '', $Referral_ID, $Agent_ID, '', 'referral', '', '', '', '', '', '', '');
+
+        return true;
+
+    }
+
+    public function transaction_add_details_new(Request $request) {
 
         $property_details = [
             'FullStreetAddress' => $request -> street_number . ' ' . $request -> street_name . ' ' . $request -> street_dir . ' ' . $request -> unit_number,
@@ -189,8 +278,10 @@ class TransactionsAddController extends Controller {
         $transaction_type = strtolower($request -> transaction_type);
 
         $property_details = Contracts::where('Contract_ID', $request -> id) -> first();
+        $transaction_type_header = 'Contract/Lease';
         if($transaction_type == 'listing') {
             $property_details = Listings::where('Listing_ID', $request -> id) -> first();
+            $transaction_type_header = 'Listing';
         }
         $states = LocationData::AllStates();
         $states_json = $states -> toJson();
@@ -198,7 +289,7 @@ class TransactionsAddController extends Controller {
         $contacts = CRMContacts::where('Agent_ID', $property_details -> Agent_ID) -> get();
         $resource_items = new ResourceItems();
 
-        return view('/agents/doc_management/transactions/add/transaction_required_details_'.$transaction_type, compact('property_details', 'states', 'states_json', 'statuses', 'contacts', 'resource_items', 'transaction_type'));
+        return view('/agents/doc_management/transactions/add/transaction_required_details_'.$transaction_type, compact('property_details', 'states', 'states_json', 'statuses', 'contacts', 'resource_items', 'transaction_type', 'transaction_type_header'));
     }
 
     public function save_add_transaction(Request $request) {
@@ -261,6 +352,23 @@ class TransactionsAddController extends Controller {
             $new_transaction -> $key = $val ?? null;
         }
 
+        $new_transaction -> save();
+
+        if($transaction_type == 'listing') {
+            $code = 'L'.$new_transaction -> Listing_ID;
+        } else if($transaction_type == 'contract') {
+            $code = 'C'.$new_transaction -> Contract_ID;
+        } else if($transaction_type == 'referral') {
+            $code = 'R'.$new_transaction -> Referral_ID;
+        }
+
+        $street_address = $property_details -> FullStreetAddress;
+
+        // add email address
+        $address = preg_replace(config('global.vars.bad_characters'), '', $street_address);
+        $email = $address.'_'.$code.'@'.config('global.vars.property_email');
+
+        $new_transaction -> PropertyEmail = $email;
         $new_transaction -> save();
 
         // add default docs folders
@@ -569,7 +677,7 @@ class TransactionsAddController extends Controller {
 
         $checklist_id = '';
 
-        TransactionChecklists::CreateTransactionChecklist($checklist_id, $Listing_ID, $Contract_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
+        TransactionChecklists::CreateTransactionChecklist($checklist_id, $Listing_ID, $Contract_ID, '', $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
 
         if($transaction_type == 'listing') {
             return response() -> json([

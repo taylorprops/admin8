@@ -15,6 +15,16 @@ if (document.URL.match(/checklists/)) {
             select_refresh();
         }
 
+        $('.referral-tab').on('shown.bs.tab', function (e) {
+            $('.referral-tab-data').find('.non-referral-checklist-div').hide();
+            $('.referral-tab-data').find('.referral-checklist-div').show();
+            $('.referral-tab-data').find('.property-type-div-header').text('Referral Checklist');
+        });
+        /* $('.referral-tab').on('hidden.bs.tab', function (e) {
+            $('.referral-tab-data').find('.non-referral-checklist-div').show();
+            $('.referral-tab-data').find('.referral-checklist-div').hide();
+        }); */
+
     });
 
     function load_checklists() {
@@ -30,6 +40,8 @@ if (document.URL.match(/checklists/)) {
         form_elements();
         // show add/edit modal to edit checklist details
         $('.add-checklist-button, .edit-checklist-button').off('click').on('click', show_add_edit_checklist);
+        // add referral checklist
+        $('.add-referral-checklist-button').off('click').on('click', add_referral_checklist);
         // delete checklist
         $('.delete-checklist-button').off('click').on('click', confirm_delete_checklist);
         // add items to checklist
@@ -60,6 +72,29 @@ if (document.URL.match(/checklists/)) {
         });
 
 
+    }
+
+    function add_referral_checklist() {
+        let location_id = $(this).data('location-id');
+        let state = $(this).data('state');
+
+        let formData = new FormData();
+        formData.append('checklist_location_id', location_id);
+        formData.append('checklist_type', 'referral');
+        formData.append('checklist_state', state);
+
+        url = '/doc_management/add_checklist_referral';
+
+        axios.post(url, formData, axios_options)
+            .then(function (response) {
+                get_checklists(location_id, 'referral');
+                setTimeout(function() {
+                    init();
+                }, 500);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     function duplicate_checklist(ele) {
@@ -162,15 +197,28 @@ if (document.URL.match(/checklists/)) {
     }
 
     function checklist_type() {
+
         $('.checklist-items-container').hide();
         $('.checklist-type-option').each(function () {
-            let checklist_type = $(this).val().charAt(0).toUpperCase() + $(this).val().slice(1);
-            $(this).closest('.list-div').find('.property-type-div-header').text(checklist_type + ' Checklists');
-            if ($(this).val() == 'listing') {
-                $(this).closest('.list-div').find('.checklist-items-listing').show();
-            } else {
-                $(this).closest('.list-div').find('.checklist-items-contract').show();
+
+            let list_div = $(this).closest('.list-div');
+
+            list_div.find('.checklist-items-contract').hide();
+            list_div.find('.checklist-items-listing').hide();
+
+            if(!$('.referral-tab').hasClass('active')) {
+
+                let checklist_type = $(this).val().charAt(0).toUpperCase() + $(this).val().slice(1);
+                list_div.find('.property-type-div-header').text(checklist_type + ' Checklists');
+
+                if ($(this).val() == 'listing') {
+                    list_div.find('.checklist-items-listing').show();
+                } else if ($(this).val() == 'contract') {
+                    list_div.find('.checklist-items-contract').show();
+                }
+
             }
+
         });
 
     }
@@ -632,6 +680,14 @@ if (document.URL.match(/checklists/)) {
                 $('.checklist-items-container').hide();
                 $('.checklist-items-' + checklist_type).show();
                 $('#checklist_modal').modal('hide');
+
+                if(checklist_type == 'referral') {
+                    $('.referral-tab-data').find('.non-referral-checklist-div').hide();
+                    $('.referral-tab-data').find('.referral-checklist-div').show();
+                } else {
+                    $('.referral-tab-data').find('.non-referral-checklist-div').show();
+                    $('.referral-tab-data').find('.referral-checklist-div').hide();
+                }
                 // make sure correct checklist type is shown
                 //$('.checklist-type-option').val(checklist_type);
 

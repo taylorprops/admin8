@@ -3,26 +3,26 @@
 /*!
  * Material Design for Bootstrap 4
  *   Version: MDB PRO 4.19.1
- * 
- * 
+ *
+ *
  *   Copyright: Material Design for Bootstrap
  *   https://mdbootstrap.com/
- * 
+ *
  *   Read the license: https://mdbootstrap.com/general/license/
- * 
- * 
+ *
+ *
  *   Documentation: https://mdbootstrap.com/
- * 
+ *
  *   Getting started: https://mdbootstrap.com/docs/jquery/getting-started/download/
- * 
+ *
  *   Tutorials: https://mdbootstrap.com/education/bootstrap/
- * 
+ *
  *   Templates: https://mdbootstrap.com/templates/
- * 
+ *
  *   Support: https://mdbootstrap.com/support/
- * 
+ *
  *   Contact: office@mdbootstrap.com
- * 
+ *
  *   Attribution: Animate CSS, Twitter Bootstrap, Materialize CSS, Normalize CSS, Waves JS, WOW JS, Toastr, Chart.js
  */
 .mdb-color.lighten-5 {
@@ -27989,7 +27989,7 @@ div.picker.datepicker .picker__box div.picker__footer button.picker__picker-butt
 .picker__box .picker__header .picker__nav--prev:before,
 .picker__box .picker__header .picker__nav--next:before {
     display: block;
-    font-family: "Font Awesome 5 Free", sans-serif;
+    font-family: "Font Awesome 5 Pro", sans-serif;
     font-weight: 900
 }
 

@@ -9,16 +9,20 @@
     // all transactions page
     Route::get('/agents/doc_management/transactions', 'Agents\DocManagement\Transactions\TransactionsController@get_transactions');
 
-
-
     // Add new transaction
     Route::get('/agents/doc_management/transactions/add/{type}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@add_transaction');
     // Add listing details if existing
-    Route::get('/agents/doc_management/transactions/add/transaction_add_details_existing/{transaction_type}/{state?}/{tax_id?}/{bright_type?}/{bright_id?}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@add_transaction_details_existing');
+    Route::get('/agents/doc_management/transactions/add/transaction_add_details_existing/{transaction_type}/{state?}/{tax_id?}/{bright_type?}/{bright_id?}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_add_details_existing');
     // Add listing details if new
-    Route::get('/agents/doc_management/transactions/add/transaction_add_details_new/{transaction_type}/{street_number?}/{street_name?}/{city?}/{state?}/{zip?}/{county?}/{street_dir?}/{unit_number?}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@add_transaction_details_new');
+    Route::get('/agents/doc_management/transactions/add/transaction_add_details_new/{transaction_type}/{street_number?}/{street_name?}/{city?}/{state?}/{zip?}/{county?}/{street_dir?}/{unit_number?}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_add_details_new');
+    // Add transaction details if referral
+    Route::post('/agents/doc_management/transactions/add/transaction_add_details_referral', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_add_details_referral');
+     // Save transaction details if referral
+    Route::post('/agents/doc_management/transactions/add/transaction_save_details_referral', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_save_details_referral');
     // Required Details page
     Route::get('/agents/doc_management/transactions/add/transaction_required_details/{id}/{transaction_type}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_required_details');
+    // Required Details page referral
+    Route::get('/agents/doc_management/transactions/add/transaction_required_details_referral/{Referral_ID}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_required_details_referral');
 
 
 

@@ -25,6 +25,7 @@ use App\Models\DocManagement\Create\Upload\UploadImages;
 use App\Models\DocManagement\Transactions\Members\Members;
 use App\Models\DocManagement\Transactions\Listings\Listings;
 use App\Models\DocManagement\Transactions\Contracts\Contracts;
+use App\Models\DocManagement\Transactions\Referrals\Referrals;
 use App\Models\DocManagement\Transactions\EditFiles\UserFields;
 use App\Models\DocManagement\Transactions\Upload\TransactionUpload;
 use App\Models\DocManagement\Transactions\EditFiles\UserFieldsInputs;
@@ -52,17 +53,19 @@ class TransactionsDetailsController extends Controller {
         $id = $request -> id;
 
         if($transaction_type == 'listing') {
-            $property = Listings::where('Listing_ID', $id) -> first();
+            $property = Listings::find($id);
             // if not all required details submitted require them
             if ($property -> ExpirationDate == '' || $property -> ExpirationDate == '0000-00-00') {
                 return redirect('/agents/doc_management/transactions/add/transaction_required_details_listing/'.$id.'/listing');
             }
-        } else {
-            $property = Contracts::where('Contract_ID', $id) -> first();
+        } else if($transaction_type == 'contract') {
+            $property = Contracts::find($id);
             // if not all required details submitted require them
             if ($property -> ContractDate == '' || $property -> ContractDate == '0000-00-00') {
                 return redirect('/agents/doc_management/transactions/add/transaction_required_details_contract/'.$id.'/contract');
             }
+        } else if($transaction_type == 'referral') {
+            $property = Referrals::find($id);
         }
 
         return view('/agents/doc_management/transactions/details/transaction_details', compact('property', 'transaction_type'));
@@ -73,27 +76,41 @@ class TransactionsDetailsController extends Controller {
     public function transaction_details_header(Request $request) {
 
         $transaction_type = strtolower($request -> transaction_type);
-        $Listing_ID = $request -> Listing_ID;
-        $Contract_ID = $request -> Contract_ID;
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
 
-        $property = Listings::where('Listing_ID', $Listing_ID) -> first();
-        if($transaction_type == 'contract') {
-            $property = Contracts::where('Contract_ID', $Contract_ID) -> first();
+        if($transaction_type == 'listing') {
+            $property = Listings::find($Listing_ID);
+        } else if($transaction_type == 'contract') {
+            $property = Contracts::find($Contract_ID);
+        } else if($transaction_type == 'referral') {
+            $property = Referrals::find($Referral_ID);
         }
 
         $resource_items = new ResourceItems();
-        $members = Members::where('Contract_ID', $Contract_ID) -> get();
-        if($transaction_type == 'listing') {
-            $members = Members::where('Listing_ID', $Listing_ID) -> get();
+
+        if($transaction_type != 'referral') {
+
+            $members = Members::where('Contract_ID', $Contract_ID) -> get();
+            if($transaction_type == 'listing') {
+                $members = Members::where('Listing_ID', $Listing_ID) -> get();
+            }
+            $buyers = $members -> where('member_type_id', $resource_items -> BuyerResourceId());
+            $sellers = $members -> where('member_type_id', $resource_items -> SellerResourceId());
+
+            // get active contracts
+            /* $status = ResourceItems::GetResourceID('Active', 'contract_status');
+            $active_contracts_count = Contracts::where('Listing_ID', $Listing_ID) -> where('Status', $status) -> count(); */
+
+        } else {
+            $buyers = null;
+            $sellers = null;
         }
-        $buyers = $members -> where('member_type_id', $resource_items -> BuyerResourceId());
-        $sellers = $members -> where('member_type_id', $resource_items -> SellerResourceId());
 
-        $status = ResourceItems::GetResourceID('Active', 'contract_status');
-        $active_contracts_count = Contracts::where('Listing_ID', $Listing_ID) -> where('Status', $status) -> count();
+        //$statuses = $resource_items -> where('resource_type', 'listing_status') -> orderBy('resource_order') -> get();
 
-        $statuses = $resource_items -> where('resource_type', 'listing_status') -> orderBy('resource_order') -> get();
-        return view('/agents/doc_management/transactions/details/transaction_details_header', compact('transaction_type', 'property', 'buyers', 'sellers', 'resource_items', 'statuses', 'active_contracts_count'));
+        return view('/agents/doc_management/transactions/details/transaction_details_header', compact('transaction_type', 'property', 'buyers', 'sellers', 'resource_items'));
     }
 
     // accept contract
@@ -163,6 +180,12 @@ class TransactionsDetailsController extends Controller {
         $new_contract = Contracts::create($contract_data);
         $Contract_ID = $new_contract -> Contract_ID;
 
+        $code = 'C'.$Contract_ID;
+        // add email address
+        $address = preg_replace(config('global.vars.bad_characters'), '', $contract_data -> FullStreetAddress);
+        $email = $address.'_'.$code.'@'.config('global.vars.property_email');
+
+        $new_transaction -> PropertyEmail = $email;
 
 
         // add Contract_ID to members already in members
@@ -218,7 +241,7 @@ class TransactionsDetailsController extends Controller {
         $checklist_year_built = $listing -> YearBuilt;
 
         // create checklist
-        TransactionChecklists::CreateTransactionChecklist('', $Listing_ID, $Contract_ID, $listing -> Agent_ID, 'seller', 'contract', $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
+        TransactionChecklists::CreateTransactionChecklist('', $Listing_ID, $Contract_ID, '', $listing -> Agent_ID, 'seller', 'contract', $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
 
         // add folders from listing
         $folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> update(['Contract_ID' => $Contract_ID]);
@@ -261,6 +284,7 @@ class TransactionsDetailsController extends Controller {
 
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
         $transaction_type = strtolower($request -> transaction_type);
 
@@ -285,9 +309,16 @@ class TransactionsDetailsController extends Controller {
 
         $checklist = Checklists::where('id', $original_checklist_id) -> first();
 
+        $checklist_types = ['listing', 'both'];
+        if($checklist -> checklist_type == 'contract') {
+            $checklist_types = ['contract', 'both'];
+        } else if($checklist -> checklist_type == 'referral') {
+            $checklist_types = ['referral'];
+        }
+
         $transaction_checklist_items = $transaction_checklist_items_model -> where($field, $id) -> where('checklist_id' , $transaction_checklist_id)  -> orderBy('checklist_item_order') -> get();
 
-        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', [$transaction_type, 'both']) -> orderBy('resource_order') -> get();
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
         $trash_folder = TransactionDocumentsFolders::where($field, $id) -> where('folder_name', 'Trash') -> first();
         $documents_model = new TransactionDocuments();
@@ -377,7 +408,7 @@ class TransactionsDetailsController extends Controller {
             $checklist_type = 'contract';
         }
 
-        TransactionChecklists::CreateTransactionChecklist($checklist_id, $Listing_ID, $Contract_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
+        TransactionChecklists::CreateTransactionChecklist($checklist_id, $Listing_ID, $Contract_ID, '', $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
 
         return true;
     }
@@ -389,6 +420,7 @@ class TransactionsDetailsController extends Controller {
 
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
 
         $members = Members::where('Listing_ID', $Listing_ID) -> get();
@@ -399,7 +431,15 @@ class TransactionsDetailsController extends Controller {
         }
 
         $resource_items = new ResourceItems();
-        $contact_types = $resource_items -> where('resource_type', 'contact_type') -> whereIn('resource_form_group_type', [$transaction_type, 'both']) -> orderBy('resource_order') -> get();
+
+        $checklist_types = ['listing', 'both'];
+        if($transaction_type == 'contract') {
+            $checklist_types = ['contract', 'both'];
+        } else if($transaction_type == 'referral') {
+            $checklist_types = ['referral'];
+        }
+
+        $contact_types = $resource_items -> where('resource_type', 'contact_type') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
         $states = LocationData::AllStates();
         $contacts = CRMContacts::where('Agent_ID', $Agent_ID) -> get();
@@ -410,9 +450,20 @@ class TransactionsDetailsController extends Controller {
 
     public function add_member_html(Request $request) {
         $transaction_type = $request -> transaction_type;
-        $contact_types = ResourceItems::where('resource_type', 'contact_type') -> whereIn('resource_form_group_type', [$transaction_type, 'both']) -> orderBy('resource_order') -> get();
+
+        $checklist_types = ['listing', 'both'];
+        if($transaction_type == 'contract') {
+            $checklist_types = ['contract', 'both'];
+        } else if($transaction_type == 'referral') {
+            $checklist_types = ['referral'];
+        }
+
+        $contact_types = ResourceItems::where('resource_type', 'contact_type') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
+
         $states = LocationData::AllStates();
+
         return view('/agents/doc_management/transactions/details/data/add_member_html', compact('contact_types', 'states'));
+
     }
 
     public function delete_member(Request $request) {
@@ -453,7 +504,7 @@ class TransactionsDetailsController extends Controller {
 
         $member -> save();
 
-        if($request -> Listing_ID > 0) {
+        if($request -> transaction_type == 'listing') {
             $this -> update_transaction_members($request -> Listing_ID, 'listing');
         } else {
             $this -> update_transaction_members($request -> Contract_ID, 'contract');
@@ -470,64 +521,77 @@ class TransactionsDetailsController extends Controller {
 
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $transaction_type = strtolower($request -> transaction_type);
 
-        $id = ($transaction_type == 'contract' ? $Contract_ID : $Listing_ID);
-
         $list_agent = '';
-        $property = Listings::where('Listing_ID', $id) -> first();
+        $property = Listings::find($Listing_ID);
         if($transaction_type == 'contract') {
-            $property = Contracts::where('Contract_ID', $id) -> first();
+            $property = Contracts::find($Contract_ID);
             $list_agent = $property -> ListAgentFirstName.' '.$property -> ListAgentLastName;
             if($property -> Listing_ID > 0) {
-                $listing = Listings::where('Listing_ID', $property -> Listing_ID) -> first();
+                $listing = Listings::find($property -> Listing_ID);
                 $list_agent = $listing -> ListAgentFirstName.' '.$listing -> ListAgentLastName;
             }
+        } else if($transaction_type == 'referral') {
+            $property = Referrals::find($Referral_ID);
         }
+
 
         $agents = Agents::where('active', 'yes') -> orderBy('last_name') -> get();
         $teams = Teams::where('active', 'yes') -> orderBy('team_name') -> get();
         $street_suffixes = config('global.vars.street_suffixes');
         $street_dir_suffixes = config('global.vars.street_dir_suffixes');
-        $states = config('global.vars.active_states');
+        $states_active = config('global.vars.active_states');
+        $states = LocationData::AllStates();
 
         $property_state = $property -> StateOrProvince;
         $counties = LocationData::CountiesByState($property_state);
         $trans_coords = TransactionCoordinators::where('active', 'yes') -> orderBy('last_name') -> get();
 
-        return view('/agents/doc_management/transactions/details/data/get_details', compact('transaction_type', 'property', 'list_agent', 'agents', 'teams', 'street_suffixes', 'street_dir_suffixes', 'states', 'counties', 'trans_coords'));
+        $has_listing = false;
+        if($transaction_type == 'contract' && $property -> Listing_ID > 0) {
+            $has_listing = true;
+        }
+
+        return view('/agents/doc_management/transactions/details/data/get_details', compact('transaction_type', 'property', 'list_agent', 'agents', 'teams', 'street_suffixes', 'street_dir_suffixes', 'states_active', 'states', 'counties', 'trans_coords', 'has_listing'));
     }
 
     public function save_details(Request $request) {
 
-        // TODO: if the agent has both the listing and contract both need to be updated (except for some fields? )
-
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $transaction_type = strtolower($request -> transaction_type);
         $has_listing = false;
 
         if($transaction_type == 'listing') {
             $property = Listings::find($Listing_ID);
-        } else {
+        } else if($transaction_type == 'contract') {
             $property = Contracts::find($Contract_ID);
             if($property -> Listing_ID > 0) {
                 $has_listing = true;
                 $property_listing = Listings::find($property -> Listing_ID);
             }
+        } else if($transaction_type == 'referral') {
+            $property = Referrals::find($Referral_ID);
         }
 
-        // mls needs to be verified. if not MLS_Verified needs to be set to no
-        $property -> MLS_Verified = 'no';
-        if($has_listing) {
-            $property_listing -> MLS_Verified = 'no';
-        }
+        if($transaction_type != 'referral') {
 
-        if (bright_mls_search($request -> ListingId)) {
-            $property -> MLS_Verified = 'yes';
+            // mls needs to be verified. if not MLS_Verified needs to be set to no
+            $property -> MLS_Verified = 'no';
             if($has_listing) {
-                $property_listing -> MLS_Verified = 'yes';
+                $property_listing -> MLS_Verified = 'no';
             }
+
+            if (bright_mls_search($request -> ListingId)) {
+                $property -> MLS_Verified = 'yes';
+                if($has_listing) {
+                    $property_listing -> MLS_Verified = 'yes';
+                }
+            }
+
         }
 
         $data = $request -> all();
@@ -546,7 +610,7 @@ class TransactionsDetailsController extends Controller {
 
         foreach ($data as $col => $val) {
 
-            if ($col != 'Listing_ID' && $col != 'Contract_ID' && $col != 'transaction_type'  && !stristr($col, '_submit')) {
+            if ($col != 'Listing_ID' && $col != 'Contract_ID' && $col != 'Referral_ID' && $col != 'transaction_type'  && !stristr($col, '_submit')) {
 
                 if ($col == 'ListPrice' || $col == 'ContractPrice') {
                     $val = preg_replace('/[\$,]+/', '', $val);
@@ -575,13 +639,14 @@ class TransactionsDetailsController extends Controller {
 
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
         $transaction_type = strtolower($request -> transaction_type);
         $contracts = [];
 
         if($transaction_type == 'listing') {
 
-            $property = Listings::where('Listing_ID', $Listing_ID) -> first();
+            $property = Listings::find($Listing_ID);
             $field = 'Listing_ID';
             $id = $Listing_ID;
             $member_type_id = ResourceItems::SellerResourceId();
@@ -591,20 +656,28 @@ class TransactionsDetailsController extends Controller {
                 $Contract_ID = $contracts[0];
             }
 
-        } else {
+        } else if($transaction_type == 'contract') {
 
-            $property = Contracts::where('Contract_ID', $Contract_ID) -> first();
+            $property = Contracts::find($Contract_ID);
             $field = 'Contract_ID';
             $id = $Contract_ID;
             $member_type_id = ResourceItems::BuyerResourceId();
 
+        } else if($transaction_type == 'referral') {
+            $property = Referrals::find($Referral_ID);
+            $field = 'Referral_ID';
+            $id = $Referral_ID;
         }
 
-        $member_type_id = Members::GetMemberTypeID('Buyer');
-        if($Listing_ID > 0) {
-            $member_type_id = Members::GetMemberTypeID('Seller');
+        $members = null;
+        if($transaction_type != 'referral') {
+            $member_type_id = Members::GetMemberTypeID('Buyer');
+            if($Listing_ID > 0) {
+                $member_type_id = Members::GetMemberTypeID('Seller');
+            }
+            $members = Members::where($field, $id) -> where('member_type_id', $member_type_id) -> get();
         }
-        $members = Members::where($field, $id) -> where('member_type_id', $member_type_id) -> get();
+
         // if our listing and contract include listing folders with contract
         if(($property -> Contract_ID > 0 && $property -> Listing_ID > 0) || count($contracts) > 0) {
 
@@ -626,16 +699,20 @@ class TransactionsDetailsController extends Controller {
 
         }
 
-        // if listing then only where Contract_ID = 0
-        $checklist_items = TransactionChecklistItems::where(function($query) use($id) {
-            $query -> where(function($q) use($id) {
-                $q -> where('Listing_ID', $id) -> where(function($q) {
-                    $q -> where('Contract_ID', '0') -> orWhere('Contract_ID', null);
-                });
+        if($transaction_type == 'referral') {
+            $checklist_items = TransactionChecklistItems::where('Referral_ID', $id) -> get();
+        } else {
+            // if listing then only where Contract_ID = 0
+            $checklist_items = TransactionChecklistItems::where(function($query) use($id) {
+                $query -> where(function($q) use($id) {
+                    $q -> where('Listing_ID', $id) -> where(function($q) {
+                        $q -> where('Contract_ID', '0') -> orWhere('Contract_ID', null);
+                    });
+                })
+                -> orWhere('Contract_ID', $id);
             })
-            -> orWhere('Contract_ID', $id);
-        })
-        -> where('Agent_ID', $Agent_ID) -> orderBy('checklist_item_order') -> get();
+            -> where('Agent_ID', $Agent_ID) -> orderBy('checklist_item_order') -> get();
+        }
 
         $checklist_id = $checklist_items -> first() -> checklist_id;
         $checklist_form_ids = $checklist_items -> pluck('checklist_form_id') -> all();
@@ -672,13 +749,16 @@ class TransactionsDetailsController extends Controller {
         $transaction_type = strtolower($request -> transaction_type);
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
         $folder_name = $request -> folder;
 
         if($transaction_type == 'listing') {
             $order = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID);
-        } else {
+        } else if($transaction_type == 'contract') {
             $order = TransactionDocumentsFolders::where('Contract_ID', $Contract_ID);
+        } else if($transaction_type == 'referral') {
+            $order = TransactionDocumentsFolders::where('Referral_ID', $Referral_ID);
         }
         $order = $order -> where('Agent_ID', $Agent_ID) -> where('folder_name', '!=', 'Trash') -> max('order');
 
@@ -688,6 +768,7 @@ class TransactionsDetailsController extends Controller {
         $folder -> order = $order;
         $folder -> Listing_ID = $Listing_ID ?? 0;
         $folder -> Contract_ID = $Contract_ID ?? 0;
+        $folder -> Referral_ID = $Referral_ID ?? 0;
         $folder -> Agent_ID = $Agent_ID;
         $folder -> save();
     }
@@ -712,6 +793,7 @@ class TransactionsDetailsController extends Controller {
         $Agent_ID = $request -> Agent_ID;
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $transaction_type = strtolower($request -> transaction_type);
         $folder = $request -> folder;
 
@@ -722,11 +804,15 @@ class TransactionsDetailsController extends Controller {
             $file_id = $file['file_id'];
             $add_documents = new TransactionDocuments();
             $add_documents -> Agent_ID = $Agent_ID;
-            if($transaction_type == 'listing') {
-                $add_documents -> Listing_ID = $Listing_ID;
-            } else {
+
+            if($transaction_type == 'contract') {
                 $add_documents -> Contract_ID = $Contract_ID;
+            } else if($transaction_type == 'listing') {
+                $add_documents -> Listing_ID = $Listing_ID;
+            } else if($transaction_type == 'referral') {
+                $add_documents -> Referral_ID = $Referral_ID;
             }
+
             $add_documents -> folder = $folder;
             $add_documents -> order = $file['order'];
             $add_documents -> orig_file_id = $file_id;
@@ -750,6 +836,7 @@ class TransactionsDetailsController extends Controller {
             $upload_copy -> Agent_ID = $Agent_ID;
             $upload_copy -> Listing_ID = $Listing_ID;
             $upload_copy -> Contract_ID = $Contract_ID;
+            $upload_copy -> Referral_ID = $Referral_ID;
             $upload_new = $upload_copy -> toArray();
             $upload_new = TransactionUpload::create($upload_new);
 
@@ -762,9 +849,11 @@ class TransactionsDetailsController extends Controller {
             $base_path = base_path();
             $storage_path = $base_path.'/storage/app/public/';
             if($transaction_type == 'listing') {
-                $path = $Listing_ID;
+                $path = 'listings/'.$Listing_ID;
+            } else if($transaction_type == 'contract') {
+                $path = 'contracts/'.$Contract_ID;
             } else {
-                $path = $Contract_ID;
+                $path = 'referrals/'.$Referral_ID;
             }
 
             $copy_from = $storage_path.'doc_management/uploads/'.$file_id.'/*';
@@ -793,6 +882,7 @@ class TransactionsDetailsController extends Controller {
                 $copy -> Agent_ID = $Agent_ID;
                 $copy -> Listing_ID = $Listing_ID;
                 $copy -> Contract_ID = $Contract_ID;
+                $copy -> Referral_ID = $Referral_ID;
                 $new = $copy -> toArray();
                 TransactionUploadImages::create($new);
             }
@@ -805,6 +895,7 @@ class TransactionsDetailsController extends Controller {
                 $copy -> Agent_ID = $Agent_ID;
                 $copy -> Listing_ID = $Listing_ID;
                 $copy -> Contract_ID = $Contract_ID;
+                $copy -> Referral_ID = $Referral_ID;
                 $new = $copy -> toArray();
                 TransactionUploadPages::create($new);
             }
@@ -819,6 +910,7 @@ class TransactionsDetailsController extends Controller {
                 $copy -> Agent_ID = $Agent_ID;
                 $copy -> Listing_ID = $Listing_ID;
                 $copy -> Contract_ID = $Contract_ID;
+                $copy -> Referral_ID = $Referral_ID;
                 $copy -> file_type = 'system';
                 $copy -> field_inputs = 'yes';
                 $new = $copy -> toArray();
@@ -831,6 +923,7 @@ class TransactionsDetailsController extends Controller {
                 $copy -> Agent_ID = $Agent_ID;
                 $copy -> Listing_ID = $Listing_ID;
                 $copy -> Contract_ID = $Contract_ID;
+                $copy -> Referral_ID = $Referral_ID;
                 $copy -> file_type = 'system';
                 $new = $copy -> toArray();
                 UserFieldsInputs::create($new);
@@ -846,6 +939,7 @@ class TransactionsDetailsController extends Controller {
         $Agent_ID = $request -> Agent_ID;
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $transaction_type = strtolower($request -> transaction_type);
         $folder = $request -> folder;
 
@@ -855,15 +949,14 @@ class TransactionsDetailsController extends Controller {
             $file_name_display = $file -> getClientOriginalName();
             $filename = $file_name_display;
 
-            $date = date('YmdHis');
             $file_name_remove_numbers = preg_replace('/[0-9-_]+\.'.$ext.'/', '.'.$ext, $filename);
             $file_name_no_ext = str_replace('.'.$ext, '', $file_name_remove_numbers);
             $clean_filename = sanitize($file_name_no_ext);
-            $new_filename = $date.'_'.$clean_filename.'.'.$ext;
+            $new_filename = $clean_filename.'.'.$ext;
 
             // convert to pdf if image
             if($ext != 'pdf') {
-                $new_filename = $clean_filename.'_'.$date.'.pdf';
+                $new_filename = date('YmdHis').'_'.$clean_filename.'.pdf';
                 $file_name_display = $file_name_no_ext.'.pdf';
                 $create_images = exec('convert -quality 100 -density 300 -page letter '.$file.' /tmp/'.$new_filename, $output, $return);
                 $file = '/tmp/'.$new_filename;
@@ -876,6 +969,7 @@ class TransactionsDetailsController extends Controller {
             $add_documents -> Agent_ID = $Agent_ID;
             $add_documents -> Listing_ID = $Listing_ID;
             $add_documents -> Contract_ID = $Contract_ID;
+            $add_documents -> Referral_ID = $Referral_ID;
             $add_documents -> folder = $folder;
             $add_documents -> file_name = $new_filename;
             $add_documents -> file_name_display = $file_name_display;
@@ -890,6 +984,7 @@ class TransactionsDetailsController extends Controller {
             $upload -> Agent_ID = $Agent_ID;
             $upload -> Listing_ID = $Listing_ID;
             $upload -> Contract_ID = $Contract_ID;
+            $upload -> Referral_ID = $Referral_ID;
             $upload -> file_name = $new_filename;
             $upload -> file_name_display = $file_name_display;
             $upload -> file_type = 'user';
@@ -902,10 +997,12 @@ class TransactionsDetailsController extends Controller {
 
             $base_path = base_path();
             $storage_path = $base_path.'/storage/app/public';
+
+            $path = 'contracts/'.$Contract_ID;
             if($transaction_type == 'listing') {
-                $path = $Listing_ID;
-            } else {
-                $path = $Contract_ID;
+                $path = 'listings/'.$Listing_ID;
+            } else if($transaction_type == 'referral') {
+                $path = 'referrals/'.$Referral_ID;
             }
 
             $storage_dir = 'doc_management/transactions/'.$path.'/'.$file_id.'_user';
@@ -966,6 +1063,7 @@ class TransactionsDetailsController extends Controller {
                 $upload_images -> Agent_ID = $Agent_ID;
                 $upload_images -> Listing_ID = $Listing_ID;
                 $upload_images -> Contract_ID = $Contract_ID;
+                $upload_images -> Referral_ID = $Referral_ID;
                 $upload_images -> file_name = $images_file_name;
                 $upload_images -> file_location = $images_public_path.'/'.$images_file_name;
                 $upload_images -> pages_total = $pages_total;
@@ -984,6 +1082,7 @@ class TransactionsDetailsController extends Controller {
                 $upload_pages -> Agent_ID = $Agent_ID;
                 $upload_pages -> Listing_ID = $Listing_ID;
                 $upload_pages -> Contract_ID = $Contract_ID;
+                $upload_pages -> Referral_ID = $Referral_ID;
                 $upload_pages -> file_id = $file_id;
                 $upload_pages -> file_name = $pages_file_name;
                 $upload_pages -> file_location = $pages_public_path.'/'.$pages_file_name;
@@ -1010,11 +1109,14 @@ class TransactionsDetailsController extends Controller {
         $transaction_type = strtolower($request -> transaction_type);
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
 
         if($transaction_type == 'listing') {
             $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID);
-        } else {
+        } else if($transaction_type == 'contract') {
             $trash_folder = TransactionDocumentsFolders::where('Contract_ID', $Contract_ID);
+        } else if($transaction_type == 'referral') {
+            $trash_folder = TransactionDocumentsFolders::where('Referral_ID', $Referral_ID);
         }
         $trash_folder = $trash_folder -> where('folder_name', 'Trash') -> first();
 
@@ -1035,12 +1137,21 @@ class TransactionsDetailsController extends Controller {
         $transaction_type = strtolower($request -> transaction_type);
         $checklist_id = $request -> checklist_id;
         $document_ids = $request -> document_ids;
+
         $checklist_items_model = new ChecklistsItems();
         $transaction_checklist_items_modal = new TransactionChecklistItems();
+
         $checklist_items = $transaction_checklist_items_modal -> where('checklist_id', $checklist_id) -> get();
         $transaction_checklist_item_documents = TransactionChecklistItemsDocs::where('checklist_id', $checklist_id) -> get();
         $documents = TransactionDocuments::whereIn('id', $document_ids) -> get();
-        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', [$transaction_type, 'both']) -> orderBy('resource_order') -> get();
+
+        $checklist_types = ['listing', 'both'];
+        if($transaction_type == 'contract') {
+            $checklist_types = ['contract', 'both'];
+        } else if($transaction_type == 'referral') {
+            $checklist_types = ['referral'];
+        }
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
         return view('/agents/doc_management/transactions/details/data/add_document_to_checklist_item_html', compact('checklist_id', 'documents', 'transaction_checklist_item_documents', 'checklist_items_model', 'transaction_checklist_items_modal', 'checklist_items', 'checklist_groups'));
     }
@@ -1052,6 +1163,7 @@ class TransactionsDetailsController extends Controller {
         $Agent_ID = $request -> Agent_ID;
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
 
         foreach($checklist_items as $checklist_item) {
 
@@ -1067,6 +1179,7 @@ class TransactionsDetailsController extends Controller {
                 $add_checklist_item_doc -> Agent_ID = $Agent_ID;
                 $add_checklist_item_doc -> Listing_ID = $Listing_ID;
                 $add_checklist_item_doc -> Contract_ID = $Contract_ID;
+                $add_checklist_item_doc -> Referral_ID = $Referral_ID;
                 $add_checklist_item_doc -> save();
 
                 $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
@@ -1091,7 +1204,14 @@ class TransactionsDetailsController extends Controller {
         File::move($this -> get_path($document -> file_location), $this -> get_path($file_location));
         File::move($this -> get_path($document -> file_location_converted), $this -> get_path($file_location_converted));
 
-        $transaction_upload = TransactionUpload::where('Transaction_Docs_ID', $document_id) -> update(['file_name_display' => $new_name]);
+        $transaction_upload = TransactionUpload::where('Transaction_Docs_ID', $document_id)
+        -> update([
+            'file_name_display' => $new_name,
+            'file_name_display' => $file_name_display,
+            'file_location' => $file_location,
+            'file_name' => $file_name
+            ]);
+
         $transaction_document = TransactionDocuments::where('id', $document_id) -> update(['file_name_display' => $new_name]);
 
         $document -> file_name = $file_name;
@@ -1120,7 +1240,14 @@ class TransactionsDetailsController extends Controller {
         $checklist_items = $transaction_checklist_items_modal -> where('checklist_id', $checklist_id) -> get();
 
         $transaction_checklist_item_documents = TransactionChecklistItemsDocs::where('checklist_id', $checklist_id) -> get();
-        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', [$transaction_type, 'both']) -> orderBy('resource_order') -> get();
+
+        $checklist_types = ['listing', 'both'];
+        if($transaction_type == 'contract') {
+            $checklist_types = ['contract', 'both'];
+        } else if($transaction_type == 'referral') {
+            $checklist_types = ['referral'];
+        }
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
         return view('/agents/doc_management/transactions/details/data/get_split_document_html', compact('document_id', 'file_id', 'file_type', 'file_name', 'document', 'document_images', 'checklist_items', 'checklist_groups', 'transaction_checklist_item_documents', 'checklist_items_model', 'transaction_checklist_items_modal'));
     }
@@ -1137,6 +1264,7 @@ class TransactionsDetailsController extends Controller {
         $transaction_type = strtolower($request -> transaction_type);
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
 
         $folder_id = $request -> folder_id;
@@ -1195,6 +1323,7 @@ class TransactionsDetailsController extends Controller {
         $add_document -> Agent_ID = $Agent_ID;
         $add_document -> Listing_ID = $Listing_ID;
         $add_document -> Contract_ID = $Contract_ID;
+        $add_document -> Referral_ID = $Referral_ID;
         $add_document -> folder = $folder_id;
         $add_document -> file_name = $file_name;
         $add_document -> file_name_display = $file_name_display;
@@ -1208,6 +1337,7 @@ class TransactionsDetailsController extends Controller {
         $upload -> Agent_ID = $Agent_ID;
         $upload -> Listing_ID = $Listing_ID;
         $upload -> Contract_ID = $Contract_ID;
+        $upload -> Referral_ID = $Referral_ID;
         $upload -> file_name = $file_name;
         $upload -> file_name_display = $file_name_display;
         $upload -> pages_total = $pages_total;
@@ -1217,9 +1347,13 @@ class TransactionsDetailsController extends Controller {
         $add_document -> file_id = $new_file_id;
         $add_document -> save();
 
-        $path = $Listing_ID;
+
         if($transaction_type == 'contract') {
-            $path = $Contract_ID;
+            $path = 'contracts/'.$Contract_ID;
+        } else if($transaction_type == 'listing') {
+            $path = 'listings/'.$Listing_ID;
+        } else if($transaction_type == 'referral') {
+            $path = 'referral/'.$Referral_ID;
         }
 
         Storage::disk('public') -> makeDirectory('doc_management/transactions/'.$path.'/'.$new_file_id.'_user/images');
@@ -1239,6 +1373,7 @@ class TransactionsDetailsController extends Controller {
             $upload_images -> Agent_ID = $Agent_ID;
             $upload_images -> Listing_ID = $Listing_ID;
             $upload_images -> Contract_ID = $Contract_ID;
+            $upload_images -> Referral_ID = $Referral_ID;
             $upload_images -> file_name = $file_name;
             $upload_images -> file_location = '/storage/doc_management/transactions/'.$path.'/'.$new_file_id.'_user/images/'.$image_file_name;
             $upload_images -> pages_total = count($document_image_files);
@@ -1291,6 +1426,7 @@ class TransactionsDetailsController extends Controller {
             $upload_pages -> Agent_ID = $Agent_ID;
             $upload_pages -> Listing_ID = $Listing_ID;
             $upload_pages -> Contract_ID = $Contract_ID;
+            $upload_pages -> Referral_ID = $Referral_ID;
             $upload_pages -> file_name = $file_name;
             $upload_pages -> file_location = '/storage/doc_management/transactions/'.$path.'/'.$new_file_id.'_user/pages/'.$page_file_name;
             $upload_pages -> pages_total = count($document_page_files);
@@ -1335,6 +1471,7 @@ class TransactionsDetailsController extends Controller {
             $add_checklist_item_doc -> Agent_ID = $Agent_ID;
             $add_checklist_item_doc -> Listing_ID = $Listing_ID;
             $add_checklist_item_doc -> Contract_ID = $Contract_ID;
+            $add_checklist_item_doc -> Referral_ID = $Referral_ID;
             $add_checklist_item_doc -> save();
 
             $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
@@ -1349,10 +1486,12 @@ class TransactionsDetailsController extends Controller {
         $file_type = $request -> file_type;
         // get document details
         $document = TransactionDocuments::where('id', $document_id) -> first();
+
         $orig_upload_id = $document -> file_id;
-        $transaction_type = strtolower($request -> transaction_type);
+        $transaction_type = $request -> transaction_type;
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $document -> Agent_ID;
 
         // copy to documents
@@ -1369,12 +1508,16 @@ class TransactionsDetailsController extends Controller {
         $upload_copy -> Agent_ID = $Agent_ID;
         $upload_copy -> Listing_ID = $Listing_ID;
         $upload_copy -> Contract_ID = $Contract_ID;
+        $upload_copy -> Referral_ID = $Referral_ID;
         $upload_copy -> save();
         $new_upload_id = $upload_copy -> file_id;
 
-        $path = $Listing_ID;
         if($transaction_type == 'contract') {
-            $path = $Contract_ID;
+            $path = 'contracts/'.$Contract_ID;
+        } else if($transaction_type == 'listing') {
+            $path = 'listings/'.$Listing_ID;
+        } else if($transaction_type == 'referral') {
+            $path = 'referrals/'.$Referral_ID;
         }
 
         $orig_uploads_path = 'doc_management/transactions/'.$path.'/'.$orig_upload_id.'_'.$file_type;
@@ -1383,6 +1526,7 @@ class TransactionsDetailsController extends Controller {
         // copy original file
         File::copyDirectory(Storage::disk('public') -> path($orig_uploads_path), Storage::disk('public') -> path($new_uploads_path));
         // add file_location to upload
+
         $upload_copy -> file_location = '/storage/'.$new_uploads_path.'/'.$upload -> file_name;
         $upload_copy -> save();
 
@@ -1439,6 +1583,8 @@ class TransactionsDetailsController extends Controller {
             $copy -> file_type = $file_type;
             $copy -> Agent_ID = $Agent_ID;
             $copy -> Listing_ID = $Listing_ID;
+            $copy -> Contract_ID = $Contract_ID;
+            $copy -> Referral_ID = $Referral_ID;
             $copy -> save();
         }
 
@@ -1563,14 +1709,17 @@ class TransactionsDetailsController extends Controller {
         $transaction_type = strtolower($request -> transaction_type);
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $folder_id = $request -> folder_id;
         $type = $request -> type;
         $docs_type = $request -> docs_type;
 
         if($transaction_type == 'listing') {
             $property = Listings::where('Listing_ID', $Listing_ID) -> first();
-        } else {
+        } else if($transaction_type == 'contract') {
             $property = Contracts::where('Contract_ID', $Contract_ID) -> first();
+        } else if($transaction_type == 'referral') {
+            $property = Referrals::where('Referral_ID', $Referral_ID) -> first();
         }
         // create filename for merged docs
         $filename = sanitize($property -> FullStreetAddress).'_'.date('YmdHis').'.pdf';
@@ -1721,7 +1870,7 @@ class TransactionsDetailsController extends Controller {
 
         $year_built = $mls_search_details -> YearBuilt;
 
-        TransactionChecklists::CreateTransactionChecklist($checklist_id, $Listing_ID, $Contract_ID, $property_details -> Agent_ID, $represent, $transaction_type, $property_type_id, $property_sub_type_id, $sale_rent, $mls_search_details -> StateOrProvince, $location_id, $hoa_condo, $year_built);
+        TransactionChecklists::CreateTransactionChecklist($checklist_id, $Listing_ID, $Contract_ID, '', $property_details -> Agent_ID, $represent, $transaction_type, $property_type_id, $property_sub_type_id, $sale_rent, $mls_search_details -> StateOrProvince, $location_id, $hoa_condo, $year_built);
 
         $property_details -> ListingId = $request -> ListingId;
 

@@ -51,6 +51,18 @@ $(document).ready(function () {
         handle: '.draggable-handle'
     });
 
+    let c = 0;
+    let format_phone = setInterval(function() {
+        $('.phone').each(function() {
+            global_format_phone(this);
+            $(this).attr('maxlength', 14);
+        });
+        c += 1;
+        if(c == 5) {
+            clearInterval(format_phone);
+        }
+    }, 1000);
+
     $(document).on('keyup change', '.phone', function () {
         global_format_phone(this);
         $(this).attr('maxlength', 14);
@@ -90,19 +102,21 @@ $(document).ready(function () {
         }
 
         // modal-open gets stuck in the body class so have to remove it manually
-        /* let remove_modal_open = setInterval(function() {
+        let remove_modal_open = setInterval(function() {
             if($('.modal.show').length == 0) {
                 $('body').removeClass('modal-open');
                 clearInterval(remove_modal_open);
             } else {
                 $('body').addClass('modal-open');
             }
-        }, 1000); */
+        }, 1000);
 
     });
 
 
 });
+
+
 
 
 window.datepicker_custom = function() {
@@ -291,6 +305,23 @@ window.global_format_number = function (num) {
 
     num = num.toString().replace(/[,\$]/g, '');
     return formatter.format(num);
+}
+
+window.global_format_number_with_decimals = function (num) {
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency', currency: 'USD'
+    });
+
+    num = num.replace(/[,\$]/g, '').toString();
+    return formatter.format(num);
+}
+
+window.format_money = function(ele) {
+    ele.val('$'+global_format_number(ele.val()));
+}
+
+window.format_money_with_decimals = function(ele) {
+    ele.val(global_format_number_with_decimals(ele.val()));
 }
 
 // Date Difference JS

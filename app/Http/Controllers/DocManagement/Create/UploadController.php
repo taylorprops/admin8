@@ -31,7 +31,14 @@ class UploadController extends Controller {
         $checklist_items = new ChecklistsItems();
         $items = ChecklistsItems::where('checklist_id', $checklist_id) -> get();
         $upload = new Upload();
-        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', [$checklist_type, 'both']) -> orderBy('resource_order') -> get();
+
+        $checklist_types = ['listing', 'both'];
+        if($checklist_type == 'contract') {
+            $checklist_types = ['contract', 'both'];
+        } else if($checklist_type == 'referral') {
+            $checklist_types = ['referral'];
+        }
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
         return view('/doc_management/create/upload/get_checklist_items_html', compact('file_id', 'uploaded_file', 'checklist_id', 'checklist_items', 'items', 'upload', 'checklist_type', 'checklist_groups'));
 

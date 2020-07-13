@@ -8,9 +8,14 @@ if($property -> SaleRent == 'rental') {
 }
 
 if($transaction_type == 'listing') {
-    $header_transaction_type = '<i class="fad fa-sign mr-2"></i> '.ucwords($transaction_type);
-} else {
-    $header_transaction_type = '<i class="fad fa-signature mr-2"></i> '.ucwords($transaction_type);
+    $header_transaction_type = '<i class="fad fa-sign mr-2"></i> Listing Agreement';
+    $transaction_type_bg = 'bg-orange';
+} else if($transaction_type == 'contract') {
+    $header_transaction_type = '<i class="fad fa-file-signature mr-2"></i> Sales Contract';
+    $transaction_type_bg = 'bg-success';
+} else if($transaction_type == 'referral') {
+    $header_transaction_type = '<i class="fad fa-handshake mr-2"></i> Referral Agreement';
+    $transaction_type_bg = 'bg-orange';
 }
 @endphp
 <div class="row mt-1 mt-sm-4">
@@ -20,21 +25,23 @@ if($transaction_type == 'listing') {
         <div class="d-flex justify-content-start flex-wrap">
 
             @if($property -> ListPictureURL)
-            <div class="d-none d-sm-block ml-2 mr-3">
-                <div class="property-image-div">
-                    <img src="{{ $property -> ListPictureURL }}" class="img-fluid z-depth-2">
+                <div class="d-none d-sm-block ml-2 mr-3">
+                    <div class="property-image-div">
+                        <img src="{{ $property -> ListPictureURL }}" class="img-fluid z-depth-2">
+                    </div>
                 </div>
-            </div>
             @endif
 
             <div class="ml-2 ml-md-3">
                 <div class="h3-responsive mb-2 text-gray text-uppercase">{!! $property -> FullStreetAddress.' '.$property -> Street.' '.$property -> City.', '.$property -> StateOrProvince.' '.$property -> PostalCode !!}</div>
                 <div class="mb-1 mb-md-3">
-                    <span class="badge bg-orange"><span class="transaction-type text-white">{!! $header_transaction_type !!}</span></span>
-                    <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $sale_rent }}</span></span>
-                    <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertyType) }}</span></span>
-                    @if($sale_rent != 'Rental' && $property -> PropertySubType > '0')
-                    <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertySubType) }}</span></span>
+                    <span class="badge {{ $transaction_type_bg }}"><span class="transaction-type text-white">{!! $header_transaction_type !!}</span></span>
+                    @if($transaction_type != 'referral')
+                        <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $sale_rent }}</span></span>
+                        <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertyType) }}</span></span>
+                        @if($sale_rent != 'Rental' && $property -> PropertySubType > '0')
+                            <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertySubType) }}</span></span>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -46,16 +53,22 @@ if($transaction_type == 'listing') {
 
         @if($transaction_type == 'listing')
 
-            <div class="row">
+        <div class="row">
+            @if(in_array($property -> Status, $resource_items -> GetActiveListingStatuses() -> toArray()))
+                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-right header-contract-active">
+                    <a href="javascript: void(0);" class="btn btn-success mt-2 d-block d-sm-inline-block" id="accept_contract_button"><i class="fa fa-plus mr-2"></i> Accept Contract</a>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-left text-lg-right header-contract-active">
+                    <a href="javascript: void(0);" class="btn btn-danger mt-2 d-block d-sm-inline-block" id="withdraw_listing_button"><i class="fa fa-minus mr-2"></i> Withdraw Listing</a>
+                </div>
+            @else
                 <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-right">
-                    <a href="javascript: void(0);" class="btn btn-success mt-2 d-block d-sm-inline-block" @if($active_contracts_count == 0) id="accept_contract_button" @else id="disabled_accept_contract_button" @endif><i class="fa fa-plus mr-2"></i> Accept Contract</a>
+                    <div class="h2-responsive text-success"><i class="fad fa-check-circle mr-2"></i> Under Contract!</div>
                 </div>
-                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-left text-lg-right">
-                    <a href="javascript: void(0);" class="btn btn-danger mt-2 d-block d-sm-inline-block" @if($active_contracts_count == 0) id="withdraw_listing_button" @else id="disabled_withdraw_listing_button" @endif><i class="fa fa-minus mr-2"></i> Withdraw Listing</a>
-                </div>
-            </div>
+            @endif
+        </div>
 
-        @else
+        @elseif($transaction_type == 'contract')
 
             <div class="row">
                 <div class="col-12 col-sm-6 col-lg-12 text-sm-left text-lg-right">
@@ -78,12 +91,13 @@ if($transaction_type == 'listing') {
 
 </div>
 
+@if($transaction_type != 'referral')
 <div class="row my-2 my-md-4 py-2 border-top border-bottom listing-header-details">
 
     <div class="col-12">
         <div class="d-flex justify-content-start flex-wrap">
 
-            <div class="bg-primary d-flex justify-content-start flex-wrap text-white m-1 p-2 z-depth-1">
+            <div class="bg-primary d-flex justify-content-start flex-wrap text-white m-1 p-2">
                 <div class="text-white d-none d-sm-inline-block mr-2">
                     <i class="fad fa-users fa-2x"></i>
                 </div>
@@ -134,7 +148,7 @@ if($transaction_type == 'listing') {
             </div>
 
             @if($transaction_type == 'contract')
-            <div class="bg-primary d-flex justify-content-start flex-wrap text-white m-1 p-2 z-depth-1">
+            <div class="bg-primary d-flex justify-content-start flex-wrap text-white m-1 p-2">
                 <div class="text-white d-none d-sm-inline-block mr-2">
                     <i class="fad fa-users fa-2x"></i>
                 </div>
@@ -185,7 +199,7 @@ if($transaction_type == 'listing') {
             </div>
             @endif
 
-            <div class="bg-primary d-flex justify-content-start text-white p-2 m-1 z-depth-1">
+            <div class="bg-primary d-flex justify-content-start text-white p-2 m-1">
                 <div class="text-white d-none d-sm-inline-block mr-2">
                     <i class="fad fa-home-alt fa-2x"></i>
                 </div>
@@ -231,3 +245,4 @@ if($transaction_type == 'listing') {
     </div>
 
 </div>
+@endif

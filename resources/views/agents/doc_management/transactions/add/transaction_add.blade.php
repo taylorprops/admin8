@@ -1,8 +1,9 @@
 @extends('layouts.main')
-@section('title', 'Add '.$transaction_type)
+@section('title', 'Add '.$transaction_type_header)
 
 @section('content')
-<input type="hidden" id="transaction_type" value="{{ strtolower(str_replace('/Lease', '', $transaction_type)) }}">
+<input type="hidden" id="transaction_type" value="{{ $transaction_type }}">
+<input type="hidden" id="Agent_ID" value="{{ auth() -> user() -> user_id }}">
 <div class="container page-add-transaction">
     <div class="row">
 
@@ -10,7 +11,7 @@
 
             <div class="row mb-5">
                 <div class="col-12">
-                    <div class="h1-responsive text-primary mt-4 mb-2">Add {{ $transaction_type }}</div>
+                    <div class="h1-responsive text-primary mt-4 mb-2">Add {{ $transaction_type_header }}</div>
                 </div>
             </div>
 
@@ -24,9 +25,11 @@
                                 <div class="col-sm-9 col-lg-10">
                                     <div class="h5 text-gray">
                                         Enter Property Street Address
+                                        @if($transaction_type != 'referral')
                                         <span class="text-orange font-normal">
                                             <a href=".mls-container" class="text-orange font-9" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".mls-container"> <i class="fad fa-arrows-alt-h mx-3"></i> or Use MLS ID Search</a>
                                         </span>
+                                        @endif
                                     </div>
                                     <input type="text" class="w-100" id="address_search_street">
                                 </div>
@@ -42,7 +45,7 @@
                             </div>
                         </div>
                         <div class="address-search-continue-div text-center my-4 hidden">
-                            <a href=".property-container" class="btn btn-success btn-lg" id="address_search_continue" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container">Continue <i class="fad fa-chevron-double-right ml-3"></i></a>
+                            <a class="btn btn-success btn-lg" id="address_search_continue" @if($transaction_type != 'referral') href=".property-container" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container" @else  href="javascript: void(0)" @endif>Continue <i class="fad fa-chevron-double-right ml-3"></i></a>
                         </div>
                         <div class="h5 text-center mt-4">
                             <a href=".address-container" id="enter_manually_button" class="btn btn-sm btn-secondary" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".address-container">Or Enter Manually</a>
@@ -53,7 +56,7 @@
 
                 <!-- address enter container -->
                 <div id="address_enter_container" class="address-container collapse">
-                    <div class="h3-responsive text-center text-orange mb-4">To Begin, Enter The Street Address</div>
+                    <div class="h3-responsive text-center text-orange mb-4">To Begin, Enter The Address Details</div>
                     <form id="enter_address_form">
                         <div class="container">
                             <div class="row">

@@ -17,18 +17,21 @@ class TransactionChecklists extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
 
-    public function ScopeCreateTransactionChecklist($request, $checklist_id, $Listing_ID, $Contract_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built) {
+    public function ScopeCreateTransactionChecklist($request, $checklist_id, $Listing_ID, $Contract_ID, $Referral_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built) {
 
-
-        $where = [
-            ['checklist_represent', $checklist_represent],
-            ['checklist_type', $checklist_type],
-            ['checklist_property_type_id', $checklist_property_type_id],
-            ['checklist_property_sub_type_id', $checklist_property_sub_type_id],
-            ['checklist_sale_rent', $checklist_sale_rent],
-            ['checklist_state', $checklist_state],
-            ['checklist_location_id', $checklist_location_id]
-        ];
+        if($checklist_type == 'referral') {
+            $where = [['checklist_type', 'referral']];
+        } else {
+            $where = [
+                ['checklist_represent', $checklist_represent],
+                ['checklist_type', $checklist_type],
+                ['checklist_property_type_id', $checklist_property_type_id],
+                ['checklist_property_sub_type_id', $checklist_property_sub_type_id],
+                ['checklist_sale_rent', $checklist_sale_rent],
+                ['checklist_state', $checklist_state],
+                ['checklist_location_id', $checklist_location_id]
+            ];
+        }
 
         // get checklist
         $checklist = Checklists::where($where) -> first();
@@ -83,6 +86,7 @@ class TransactionChecklists extends Model
             $add_checklist -> checklist_id = $checklist -> id;
             $add_checklist -> Listing_ID = $Listing_ID;
             $add_checklist -> Contract_ID = $Contract_ID;
+            $add_checklist -> Referral_ID = $Referral_ID;
             $add_checklist -> Agent_ID = $Agent_ID;
             $add_checklist -> hoa_condo = $checklist_hoa_condo;
             $add_checklist -> year_built = $checklist_year_built;
@@ -101,6 +105,7 @@ class TransactionChecklists extends Model
                 $add_checklist_items -> checklist_id = $checklist_id;
                 $add_checklist_items -> Listing_ID = $Listing_ID;
                 $add_checklist_items -> Contract_ID = $Contract_ID;
+                $add_checklist_items -> Referral_ID = $Referral_ID;
                 $add_checklist_items -> Agent_ID = $Agent_ID;
                 $add_checklist_items -> checklist_form_id = $item -> checklist_form_id;
                 $add_checklist_items -> checklist_item_required = $item -> checklist_item_required;
