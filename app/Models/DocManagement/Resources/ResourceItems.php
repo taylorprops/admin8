@@ -49,20 +49,24 @@ class ResourceItems extends Model
 
     } */
     public function scopeSellerResourceId() {
-        $seller_resource_id = ResourceItems::where('resource_name', 'Seller') -> first();
-        return $seller_resource_id -> resource_id;
+        $resource_id = ResourceItems::where('resource_name', 'Seller') -> first();
+        return $resource_id -> resource_id;
     }
     public function scopeBuyerResourceId() {
-        $buyer_resource_id = ResourceItems::where('resource_name', 'Buyer') -> first();
-        return $buyer_resource_id -> resource_id;
+        $resource_id = ResourceItems::where('resource_name', 'Buyer') -> first();
+        return $resource_id -> resource_id;
     }
     public function scopeBuyerAgentResourceId() {
-        $buyer_resource_id = ResourceItems::where('resource_name', 'Buyer Agent') -> first();
-        return $buyer_resource_id -> resource_id;
+        $resource_id = ResourceItems::where('resource_name', 'Buyer Agent') -> first();
+        return $resource_id -> resource_id;
     }
     public function scopeListingAgentResourceId() {
-        $buyer_resource_id = ResourceItems::where('resource_name', 'Listing Agent') -> first();
-        return $buyer_resource_id -> resource_id;
+        $resource_id = ResourceItems::where('resource_name', 'Listing Agent') -> first();
+        return $resource_id -> resource_id;
+    }
+    public function scopeTitleResourceId() {
+        $resource_id = ResourceItems::where('resource_name', 'Title') -> first();
+        return $resource_id -> resource_id;
     }
 
     public function getCountFormGroup($id) {
@@ -101,11 +105,17 @@ class ResourceItems extends Model
         return $tags -> resource_color;
     }
 
-    public function scopeGetActiveListingStatuses($include_under_contract) {
+    public function scopeGetActiveListingStatuses($query, $include_under_contract, $include_expired, $include_withdrawn) {
 
         $statuses = ['Pre-Listing', 'Active'];
-        if($include_under_contract == 'yes' ) {
-            $statuses = ['Pre-Listing', 'Active', 'Under Contract'];
+        if($include_under_contract == 'yes') {
+            $statuses[] = 'Under Contract';
+        }
+        if($include_expired == 'yes') {
+            $statuses[] = 'Expired';
+        }
+        if($include_withdrawn == 'yes') {
+            $statuses[] = 'Withdrawn';
         }
         $ids = $this -> where('resource_type', 'listing_status') -> whereIn('resource_name', $statuses) -> pluck('resource_id');
         return $ids;

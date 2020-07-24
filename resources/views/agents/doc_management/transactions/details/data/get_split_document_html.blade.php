@@ -78,39 +78,43 @@
 
                                         @foreach($checklist_groups as $checklist_group)
 
-                                        <div class="h5 responsive text-gray mt-3">{{ $checklist_group -> resource_name }}</div>
+                                            <div class="h5-responsive text-gray mt-3">{{ $checklist_group -> resource_name }}</div>
 
-                                        @if(count($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)
+                                            @if(count($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)
 
-                                        @foreach($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id) as $checklist_item)
+                                                @foreach($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id) as $checklist_item)
 
-                                        @php
-                                        $checklist_item_name = $checklist_items_model -> GetFormName($checklist_item -> checklist_form_id);
-                                        $status_details = $transaction_checklist_items_modal -> GetStatus($checklist_item -> id);
-                                        $docs_count = $transaction_checklist_item_documents -> where('checklist_item_id', $checklist_item -> id) -> count();
-                                        $status = $status_details -> status;
-                                        $classes = $status_details -> classes;
-                                        $fa = str_replace('mr-2', 'mr-1', $status_details -> fa);
-                                        $helper_text = $status_details -> helper_text;
-                                        @endphp
-                                        <div class="list-group-item py-1 px-0 mb-2 d-flex justify-content-start align-items-center" data-checklist-item-id="{{ $checklist_item -> id }}">
-                                            <div class="mr-1 mr-sm-2">
-                                                <button class="btn btn-sm btn-success add-docs-to-checklist-item-button" data-checklist-item-id="{{ $checklist_item -> id }}" data-checklist-id="{{ $checklist_item -> checklist_id }}" data-file-id="{{ $file_id }}" data-upload-id="{{ $checklist_item -> checklist_form_id }}" disabled><i class="fa fa-plus mr-1 mr-sm-2"></i> Add</button>
-                                            </div>
-                                            <div class="mr-1 mr-sm-2">
-                                                <span class="badge checklist-item-badge {{ $classes }} p-1" title="{{ $helper_text }}"><span class="d-none d-sm-inline-block">{!! $fa !!} </span>{{ $status }}</span>
-                                            </div>
-                                            <div class="mr-2">
-                                                <span class="badge badge-primary p-1" title="Count of documents already submitted for this item">{{ $docs_count }}</span>
-                                            </div>
-                                            <div class="font-weight-bold text-gray">
-                                                {{ $checklist_item_name }}
-                                            </div>
+                                                    @php
+                                                    if($checklist_item -> checklist_form_id > 0) {
+                                                    $checklist_item_name = $checklist_items_model -> GetFormName($checklist_item -> checklist_form_id);
+                                                    } else {
+                                                        $checklist_item_name = $checklist_item -> checklist_item_added_name;
+                                                    }
+                                                    $status_details = $transaction_checklist_items_modal -> GetStatus($checklist_item -> id);
+                                                    $docs_count = $transaction_checklist_item_documents -> where('checklist_item_id', $checklist_item -> id) -> count();
+                                                    $status = $status_details -> status;
+                                                    $classes = $status_details -> classes;
+                                                    $fa = str_replace('mr-2', 'mr-1', $status_details -> fa);
+                                                    $helper_text = $status_details -> helper_text;
+                                                    @endphp
+                                                    <div class="list-group-item py-1 px-0 mb-2 d-flex justify-content-start align-items-center" data-checklist-item-id="{{ $checklist_item -> id }}">
+                                                        <div class="mr-1 mr-sm-2">
+                                                            <button class="btn btn-sm btn-success add-docs-to-checklist-item-button" data-checklist-item-id="{{ $checklist_item -> id }}" data-checklist-id="{{ $checklist_item -> checklist_id }}" data-file-id="{{ $file_id }}" data-upload-id="{{ $checklist_item -> checklist_form_id }}" disabled><i class="fa fa-plus mr-1 mr-sm-2"></i> Add</button>
+                                                        </div>
+                                                        <div class="mr-1 mr-sm-2">
+                                                            <span class="badge checklist-item-badge {{ $classes }} p-1" title="{{ $helper_text }}"><span class="d-none d-sm-inline-block">{!! $fa !!} </span>{{ $status }}</span>
+                                                        </div>
+                                                        <div class="mr-2">
+                                                            <span class="badge badge-primary p-1 docs-count-badge" title="Count of documents already submitted for this item">{{ $docs_count }}</span>
+                                                        </div>
+                                                        <div class="font-weight-bold text-gray document-name">
+                                                            {{ $checklist_item_name }}
+                                                        </div>
 
-                                        </div>
-                                        @endforeach
+                                                    </div>
+                                                @endforeach
 
-                                        @endif
+                                            @endif
 
                                         @endforeach
 

@@ -39,15 +39,15 @@ if (document.URL.match(/edit_files/)) {
         let field_div_count = $('.field-div').length;
         let field_count = 0;
         $('.field-div').each(function () {
-            var group_id = '';
+            let group_id = '';
             group_id = $(this).data('group-id');
             // add grouped class
             if ($('.group_' + group_id).length > 1) {
                 $('.group_' + group_id).removeClass('standard').addClass('group');
             }
             // date field has no form-div so using field-div instead
-            var type = $(this).data('type');
-            var form_div;
+            let type = $(this).data('type');
+            let form_div;
             if (type == 'date' || type == 'radio' || type == 'checkbox') {
                 form_div = $(this);
             } else {
@@ -82,7 +82,7 @@ if (document.URL.match(/edit_files/)) {
 
         $('.field-div').not('.disabled').click(function () {
 
-            var group_id = $(this).data('group-id');
+            let group_id = $(this).data('group-id');
             // checkboxes and radios never get highlighted
             if ($(this).data('type') != 'checkbox' && $(this).data('type') != 'radio') {
 
@@ -130,9 +130,9 @@ if (document.URL.match(/edit_files/)) {
 
 
         $('.save-fillable-fields').click(function () {
-            var type = $(this).data('type');
-            var group_id = $(this).data('group-id');
-            var form_div = $(this).parent('div.modal-footer').prev('div.modal-body').find('.form-div');
+            let type = $(this).data('type');
+            let group_id = $(this).data('group-id');
+            let form_div = $(this).parent('div.modal-footer').prev('div.modal-body').find('.form-div');
             fill_fields(type, group_id, form_div, 'save');
         });
 
@@ -211,12 +211,18 @@ if (document.URL.match(/edit_files/)) {
         $('.user-field-div').remove();
 
         let Listing_ID = $('#Listing_ID').val();
+        let Contract_ID = $('#Contract_ID').val();
+        let Referral_ID = $('#Referral_ID').val();
+        let transaction_type = $('#transaction_type').val();
         let Agent_ID = $('#Agent_ID').val();
         let file_id = $('#file_id').val();
         let file_type = $('#file_type').val();
 
         let formData = new FormData();
         formData.append('Listing_ID', Listing_ID);
+        formData.append('Contract_ID', Contract_ID);
+        formData.append('Referral_ID', Referral_ID);
+        formData.append('transaction_type', transaction_type);
         formData.append('Agent_ID', Agent_ID);
         formData.append('file_id', file_id);
         formData.append('file_type', file_type);
@@ -561,6 +567,9 @@ if (document.URL.match(/edit_files/)) {
 
                 let field_data = {};
                 field_data['Listing_ID'] = $('#Listing_ID').val();
+                field_data['Contract_ID'] = $('#Contract_ID').val();
+                field_data['Referral_ID'] = $('#Referral_ID').val();
+                field_data['transaction_type'] = $('#transaction_type').val();
                 field_data['Agent_ID'] = $('#Agent_ID').val();
 
                 let type = $(this).data('type');
@@ -597,6 +606,9 @@ if (document.URL.match(/edit_files/)) {
 
             let field_data = {};
             field_data['Listing_ID'] = $('#Listing_ID').val();
+            field_data['Contract_ID'] = $('#Contract_ID').val();
+            field_data['Referral_ID'] = $('#Referral_ID').val();
+            field_data['transaction_type'] = $('#transaction_type').val();
             field_data['Agent_ID'] = $('#Agent_ID').val();
             field_data['file_type'] = $('#file_type').val();
             field_data['file_id'] = $('#file_id').val();
@@ -649,7 +661,7 @@ if (document.URL.match(/edit_files/)) {
         $('.field-div').css({ background: 'none' });
 
         // user fields
-        $('.data-div.highlight').css({ background: 'yellow', opacity: '0.5', height: '100%' });
+        $('.data-div.highlight').css({ background: 'yellow', opacity: '0.5', width: '100%', height: '100%' });
         $('.data-div.strikeout').css({ width: '100%', height: '2px', background: 'black', display: 'block', position: 'relative', 'margin-top': '7px' });
 
 
@@ -657,6 +669,9 @@ if (document.URL.match(/edit_files/)) {
         let file_name = $('#file_name').val();
         let file_type = $('#file_type').val();
         let Listing_ID = $('#Listing_ID').val();
+        let Contract_ID = $('#Contract_ID').val();
+        let Referral_ID = $('#Referral_ID').val();
+        let transaction_type = $('#transaction_type').val();
 
         // remove datepicker html, datepicker input, background img, modals, left over input fields
         let elements_remove = '.qs-datepicker-container, .field-datepicker, .file-image-bg, .fillable-field-input, .modal';
@@ -673,7 +688,6 @@ if (document.URL.match(/edit_files/)) {
             page_html = page_html.wrap('<div>').parent().html();
 
             formData.append('page_' + c, page_html);
-            console.log(page_html);
         });
 
         formData.append('page_count', c);
@@ -681,6 +695,9 @@ if (document.URL.match(/edit_files/)) {
         formData.append('file_type', file_type);
         formData.append('file_name', file_name);
         formData.append('Listing_ID', Listing_ID);
+        formData.append('Contract_ID', Contract_ID);
+        formData.append('Referral_ID', Referral_ID);
+        formData.append('transaction_type', transaction_type);
 
         // reset all styles
         setTimeout(function () {
@@ -715,10 +732,16 @@ if (document.URL.match(/edit_files/)) {
         let file_id = $('#file_id').val();
         let file_type = $('#file_type').val();
         let Listing_ID = $('#Listing_ID').val();
+        let Contract_ID = $('#Contract_ID').val();
+        let Referral_ID = $('#Referral_ID').val();
+        let transaction_type = $('#transaction_type').val();
         let formData = new FormData();
         formData.append('file_id', file_id);
         formData.append('file_type', file_type);
         formData.append('Listing_ID', Listing_ID);
+        formData.append('Contract_ID', Contract_ID);
+        formData.append('Referral_ID', Referral_ID);
+        formData.append('transaction_type', transaction_type);
         axios.post('/agents/doc_management/transactions/edit_files/rotate_document', formData, axios_options)
         .then(function (response) {
             setTimeout(function() {
@@ -741,6 +764,9 @@ if (document.URL.match(/edit_files/)) {
             let file_type = $('#file_type').val();
             let common_name = $(this).data('common-name');
             let Listing_ID = $('#Listing_ID').val();
+            let Contract_ID = $('#Contract_ID').val();
+            let Referral_ID = $('#Referral_ID').val();
+            let transaction_type = $('#transaction_type').val();
             let Agent_ID = $('#Agent_ID').val();
             if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
                 if ($(this).is(':checked')) {
@@ -757,6 +783,9 @@ if (document.URL.match(/edit_files/)) {
                 file_type: file_type,
                 common_name: common_name,
                 Listing_ID: Listing_ID,
+                Contract_ID: Contract_ID,
+                Referral_ID: Referral_ID,
+                transaction_type: transaction_type,
                 Agent_ID: Agent_ID
             });
         });
@@ -995,7 +1024,7 @@ if (document.URL.match(/edit_files/)) {
             page_container.append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
 
             // get unique group ids
-            var group_ids = [];
+            let group_ids = [];
 
             $(this).find('.field-div').each(function () {
                 group_ids.push($(this).data('group-id'));

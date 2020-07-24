@@ -2,8 +2,8 @@
 .modal {
     overflow-y: scroll;
 }
-body.modal-open {
-    //padding-right: 12px !important;
+body, body.modal-open {
+    padding-right: 0px !important;
 }
 .disable-scrollbars {
     scrollbar-width: none;

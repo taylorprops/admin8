@@ -38,45 +38,13 @@
                                         </select>
                                     </div>
                                     @endif
-                                    @if($resource -> resource_association != '')
-                                    <div class="col px-1">
-                                        <select class="custom-form-element form-select add-resource-association form-select-no-cancel form-select-no-search required" data-label="Assoc.">
-                                            <option value=""></option>
-                                            <option value="yes">Yes</option>
-                                            <option value="no">No</option>
-                                        </select>
-                                    </div>
-                                    @endif
-                                    @if($resource -> resource_addendums != '')
-                                    <div class="col px-1">
-                                        <select class="custom-form-element form-select add-resource-addendums form-select-no-cancel form-select-no-search required" data-label="Addenda">
-                                            <option value=""></option>
-                                            <option value="yes">Yes</option>
-                                            <option value="no">No</option>
-                                        </select>
-                                    </div>
-                                    @endif
-                                    @if($resource -> resource_form_group_type != '')
-                                    <div class="col px-1">
-                                        <select class="custom-form-element form-select add-resource-form-group-type form-select-no-cancel form-select-no-search required" data-label="Form Type">
-                                            <option value=""></option>
-                                            <option value="listing">Listing</option>
-                                            <option value="contract">Contract</option>
-                                            <option value="both">Both Contract and Listing</option>
-                                            <option value="referral">Referral</option>
-                                        </select>
-                                    </div>
-                                    @endif
+
                                     @if($resource -> resource_color != '')
                                     <div class="col px-1">
                                         <input type="color" class="custom-form-element form-input-color   add-resource-color colorpicker" value="#4C9BDB" data-default-value="#4C9BDB" data-label="Tag Color">
                                     </div>
                                     @endif
-                                    @if($resource -> resource_county_abbr != '')
-                                    <div class="col px-1">
-                                        <input type="text" class="custom-form-element form-input add-resource-county-abbr" value="" data-default-value="" data-label="County Abbr">
-                                    </div>
-                                    @endif
+
                                     <div class="col px-1">
                                         <a href="javascript:void(0)" class="btn btn-success add-resource-save-button mt-3"><i class="fad fa-save mr-2"></i> Save</a>
                                     </div>
@@ -119,45 +87,13 @@
                                                 </select>
                                             </div>
                                             @endif
-                                            @if($resources_item -> resource_association != '')
-                                            <div class="col px-1">
-                                                <select class="custom-form-element form-select edit-resource-association form-select-no-cancel form-select-no-search required" data-label="Assoc." data-default-value="{{ $resources_item -> resource_association }}">
-                                                    <option value=""></option>
-                                                    <option value="yes" @if( $resources_item -> resource_association == 'yes') selected @endif>Yes</option>
-                                                    <option value="no" @if( $resources_item -> resource_association == 'no') selected @endif>No</option>
-                                                </select>
-                                            </div>
-                                            @endif
-                                            @if($resources_item -> resource_addendums != '')
-                                            <div class="col px-1">
-                                                <select class="custom-form-element form-select edit-resource-addendums form-select-no-cancel form-select-no-search required" data-label="Addenda" data-default-value="{{ $resources_item -> resource_addendums }}">
-                                                    <option value=""></option>
-                                                    <option value="yes" @if( $resources_item -> resource_addendums == 'yes') selected @endif>Yes</option>
-                                                    <option value="no" @if( $resources_item -> resource_addendums == 'no') selected @endif>No</option>
-                                                </select>
-                                            </div>
-                                            @endif
-                                            @if($resources_item -> resource_form_group_type != '')
-                                            <div class="col px-1">
-                                                <select class="custom-form-element form-select edit-resource-form-group-type form-select-no-cancel form-select-no-search required" data-label="Form Type" data-default-value="{{ $resources_item -> resource_form_group_type }}">
-                                                    <option value=""></option>
-                                                    <option value="listing" @if( $resources_item -> resource_form_group_type == 'listing') selected @endif>Listing</option>
-                                                    <option value="contract" @if( $resources_item -> resource_form_group_type == 'contract') selected @endif>Contract</option>
-                                                    <option value="both" @if( $resources_item -> resource_form_group_type == 'both') selected @endif>Both Contract and Listing</option>
-                                                    <option value="referral" @if( $resources_item -> resource_form_group_type == 'referral') selected @endif>Referral</option>
-                                                </select>
-                                            </div>
-                                            @endif
+
                                             @if($resources_item -> resource_color != '')
                                             <div class="col-3 px-1">
                                                 <input type="color" class="custom-form-element form-input-color   edit-resource-color colorpicker" value="{{ $resources_item -> resource_color }}" data-default-value="{{ $resources_item -> resource_color }}" data-label="Tag Color">
                                             </div>
                                             @endif
-                                            @if($resources_item -> resource_county_abbr != '')
-                                            <div class="col px-1">
-                                                <input type="text" class="custom-form-element form-input edit-resource-county-abbr" value="{{ $resources_item -> resource_county_abbr }}" data-default-value="{{ $resources_item -> resource_county_abbr }}" data-label="County Abbr">
-                                            </div>
-                                            @endif
+
                                             <div class="col-1 px-1">
                                                 <a href="javascript: void(0)" class="save-edit-resource-button" data-resource-id="{{ $resources_item -> resource_id }}"  data-resource-type="{{ $resources_item -> resource_type }}"><i class="fad fa-check text-success fa-2x mt-4"></i></a>
                                             </div>
@@ -193,7 +129,7 @@
             </div>
             <div class="modal-body">
                 <span class="confirm-delete-deactivate-resource-text"></span>
-                <div class="h5 responsive text-center text-orange font-weight-bold delete-deactivate-resource-file-name mt-3"></div>
+                <div class="h5-responsive text-center text-orange font-weight-bold delete-deactivate-resource-file-name mt-3"></div>
             </div>
             <div class="modal-footer d-flex justify-content-around">
                 <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>

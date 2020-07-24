@@ -30,7 +30,7 @@
 }
 
 body {
-    padding-top: 60px;
+    padding-top: 50px;
     //padding-right: 0px !important;
 }
 
@@ -79,6 +79,10 @@ input {
 
 .nowrap {
     white-space: nowrap;
+}
+
+.fa-bars {
+    cursor: pointer;
 }
 
 .btn:not(.btn-rounded),
@@ -144,6 +148,23 @@ input {
 .font-7 {
     font-size: .7rem;
 }
+
+.container {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0.25;
+        //transform: rotateY(-10deg);
+    }
+
+    to {
+        opacity: 1;
+        //transform: rotateY(0deg);
+    }
+}
+
 
 // custom scroll bars
 .simplebar-content-wrapper {

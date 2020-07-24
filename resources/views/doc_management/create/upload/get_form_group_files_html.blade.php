@@ -7,7 +7,7 @@ $show_title = false;
     <div class="container">
         <div class="row">
             <div class="col-8">
-                <div class="h5 responsive text-secondary" @if($show_title) title="{{ $file -> file_name_display }}" @endif>@if($file -> file_location != '') <i class="fad fa-file-plus mr-2 text-success"></i> @else <i class="fad fa-file-minus mr-2 text-gray"></i> @endif {{ shorten_text($file -> file_name_display, 65) }}</div>
+                <div class="h5-responsive text-secondary" @if($show_title) title="{{ $file -> file_name_display }}" @endif>@if($file -> file_location != '') <i class="fad fa-file-plus mr-2 text-success"></i> @else <i class="fad fa-file-minus mr-2 text-gray"></i> @endif {{ shorten_text($file -> file_name_display, 65) }}</div>
             </div>
             <div class="col-4">
                 <div class="d-flex justify-content-end">

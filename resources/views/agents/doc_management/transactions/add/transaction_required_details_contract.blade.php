@@ -50,7 +50,7 @@ if($property_details -> Owner2 != '') {
 
                         <div class="buyer-div mb-3 z-depth-1">
 
-                            <div class="h5 responsive text-orange buyer-header">Buyer 1</div>
+                            <div class="h5-responsive text-orange buyer-header">Buyer 1</div>
 
                             <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-member="buyer" data-member-id="1"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a>
 
@@ -108,22 +108,22 @@ if($property_details -> Owner2 != '') {
 
 
                 <div class="row">
-                    <div class="col-12 seller-container">
+                    <div class="col-12 col-md-6 seller-container">
 
                         <input type="checkbox" class="custom-form-element form-checkbox bank-trust" data-member="seller" data-label="Seller is a Trust, Company or other Entity">
 
                         <div class="seller-div mb-3 z-depth-1">
-                            <div class="h5 responsive text-orange seller-header">Seller 1</div>
+                            <div class="h5-responsive text-orange seller-header">Seller 1</div>
                             <div class="row bank-trust-row hidden">
-                                <div class="col-12 col-md-6 col-lg-4">
+                                <div class="col-12">
                                     <input type="text" class="custom-form-element form-input required" name="seller_entity_name" data-label="Trust, Company or other Entity Name">
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-6 col-lg-3">
+                                <div class="col-12 col-md-6">
                                     <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ $seller_one_first }}">
                                 </div>
-                                <div class="col-12 col-md-6 col-lg-3">
+                                <div class="col-12 col-md-6">
                                     <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ $seller_one_last }}">
                                 </div>
                             </div>
@@ -132,14 +132,14 @@ if($property_details -> Owner2 != '') {
                         @if($property_details -> Owner2 != '')
                         <div class="seller-div mb-3 z-depth-1">
                             <div class="d-flex justify-content-between">
-                                <div class="h5 responsive text-orange seller-header">Seller 2</div>
+                                <div class="h5-responsive text-orange seller-header">Seller 2</div>
                                 <div><a href="javascript: void(0)" class="member-delete text-danger" data-member="seller"><i class="fal fa-times fa-2x"></i></a></div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-6 col-lg-3">
+                                <div class="col-12 col-md-6">
                                     <input type="text" class="custom-form-element form-input required" name="seller_first_name[]" data-label="First Name" value="{{ $seller_two_first }}">
                                 </div>
-                                <div class="col-12 col-md-6 col-lg-3">
+                                <div class="col-12 col-md-6">
                                     <input type="text" class="custom-form-element form-input required" name="seller_last_name[]" data-label="Last Name" value="{{ $seller_two_last }}">
                                 </div>
                             </div>
@@ -159,14 +159,60 @@ if($property_details -> Owner2 != '') {
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="p-3 z-depth-1">
-                            <div class="h5 responsive text-orange mb-3">Contract Date</div>
+                            <div class="h5-responsive text-orange mb-3">Contract Date</div>
                             <input type="text" class="custom-form-element form-input datepicker required" name="ContractDate" id="ContractDate" data-label="Contract Date" value="{{ ($property_details -> ContractDate != '0000-00-00' ? $property_details -> ContractDate : '') }}">
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="p-3 z-depth-1">
-                            <div class="h5 responsive text-orange mb-3">Settlement Date</div>
+                            <div class="h5-responsive text-orange mb-3">Settlement Date</div>
                             <input type="text" class="custom-form-element form-input datepicker required" name="CloseDate" id="CloseDate" data-label="Settlement Date" value="{{ ($property_details -> CloseDate != '0000-00-00' ? $property_details -> CloseDate : '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h4-responsive step-title waves-effect waves-light text-gray mb-4 mt-5">Title and Earnest</div>
+
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 z-depth-1">
+
+                            <div class="h5-responsive text-orange mb-3">Are the Buyer's using Heritage Title?</div>
+                            <div class="mr-2 using-heritage">
+                                <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="UsingHeritage" id="UsingHeritage" data-label="Using Heritage">
+                                    <option value=""></option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                    <option value="not_sure">Not Sure Yet</option>
+                                </select>
+                            </div>
+
+                            <div class="not-using-heritage">
+                                <input type="text" class="custom-form-element form-input" name="TitleCompany" id="TitleCompany" data-label="Title Company">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="p-3 z-depth-1">
+                            <div class="h5-responsive text-orange mb-3">Earnest Deposit Amount</div>
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only" name="EarnestAmount" id="EarnestAmount" data-label="Amount">
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="p-3 z-depth-1">
+                            <div class="h5-responsive text-orange mb-3">Earnest Held By</div>
+                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel" name="EarnestHeldBy" id="EarnestHeldBy" data-label="Held By">
+                                <option value=""></option>
+                                <option value="us">Taylor/Anne Arundel Properties</option>
+                                <option value="other_company">Other Real Estate Company</option>
+                                <option value="title">Title Company/Attorney</option>
+                                <option value="heritage_title">Heritage Title</option>
+                                <option value="builder">Builder</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -179,6 +225,8 @@ if($property_details -> Owner2 != '') {
                         </div>
                     </div>
                 </div>
+
+
 
                 <input type="hidden" name="Contract_ID" value="{{ $property_details -> Contract_ID }}">
                 <input type="hidden" name="Agent_ID" value="{{ $property_details -> Agent_ID }}">

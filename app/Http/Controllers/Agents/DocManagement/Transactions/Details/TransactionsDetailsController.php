@@ -39,8 +39,10 @@ use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsNotes;
+use App\Models\Admin\Resources\ResourceItemsAdmin;
 use App\Models\BrightMLS\AgentRoster;
 use App\Mail\DocManagement\Emails\Documents;
+use App\Mail\DefaultEmail;
 use Illuminate\Support\Facades\DB;
 
 
@@ -68,7 +70,18 @@ class TransactionsDetailsController extends Controller {
             $property = Referrals::find($id);
         }
 
-        return view('/agents/doc_management/transactions/details/transaction_details', compact('property', 'transaction_type'));
+        // check if earnest and title questions are complete before allowing adding docs to the checklist
+        $questions_confirmed = 'yes';
+        if($transaction_type == 'contract') {
+            if($property -> EarnestAmount == '' || $property -> EarnestHeldBy == '') {
+                $questions_confirmed = 'no';
+            }
+            if($property -> UsingHeritage == '' || ($property -> UsingHeritage == 'no' && $property -> TitleCompany == '')) {
+                $questions_confirmed = 'no';
+            }
+        }
+
+        return view('/agents/doc_management/transactions/details/transaction_details', compact('property', 'transaction_type', 'questions_confirmed'));
 
     }
 
@@ -154,6 +167,10 @@ class TransactionsDetailsController extends Controller {
         $listing -> ContractPrice = preg_replace('/[\$,]+/', '', $request -> contract_price); */
         $listing -> save();
 
+        $using_heritage = $request -> using_heritage;
+        $title_company = $request -> title_company;
+        $earnest_amount = $request -> earnest_amount;
+        $earnest_held_by = $request -> earnest_held_by;
 
         // new contract data
         $contract_data = $listing -> replicate();
@@ -172,6 +189,14 @@ class TransactionsDetailsController extends Controller {
         $contract_data -> ContractDate = $request -> contract_date;
         $contract_data -> CloseDate = $request -> close_date;
         $contract_data -> ContractPrice = preg_replace('/[\$,]+/', '', $request -> contract_price);
+
+        $contract_data -> EarnestAmount = preg_replace('/[\$,]+/', '', $earnest_amount);
+        $contract_data -> EarnestHeldBy = $earnest_held_by;
+        $contract_data -> UsingHeritage = $using_heritage;
+        $contract_data -> TitleCompany = $title_company;
+
+        $FullStreetAddress = $contract_data -> FullStreetAddress;
+
         $contract_data -> Status = ResourceItems::GetResourceID('Active', 'contract_status');
 
         $contract_data = collect($contract_data -> toArray()) -> except(['Contract_ID']);
@@ -180,12 +205,15 @@ class TransactionsDetailsController extends Controller {
         $new_contract = Contracts::create($contract_data);
         $Contract_ID = $new_contract -> Contract_ID;
 
-        $code = 'C'.$Contract_ID;
         // add email address
-        $address = preg_replace(config('global.vars.bad_characters'), '', $contract_data -> FullStreetAddress);
+        $new_transaction = Contracts::find($Contract_ID);
+
+        $code = 'C'.$Contract_ID;
+        $address = preg_replace(config('global.vars.bad_characters'), '', $FullStreetAddress);
         $email = $address.'_'.$code.'@'.config('global.vars.property_email');
 
         $new_transaction -> PropertyEmail = $email;
+        $new_transaction -> save();
 
 
         // add Contract_ID to members already in members
@@ -225,6 +253,23 @@ class TransactionsDetailsController extends Controller {
         $add_buyer_agent_to_members -> Contract_ID = $Contract_ID;
         $add_buyer_agent_to_members -> Agent_ID = $listing -> Agent_ID;
         $add_buyer_agent_to_members -> save();
+
+        // if using heritage add them to members
+        // TODO: notify title if using them
+        if($using_heritage == 'yes') {
+            $add_heritage_to_members = new Members();
+            $add_heritage_to_members -> member_type_id = ResourceItems::TitleResourceId();
+            $add_heritage_to_members -> company = 'Heritage Title';
+            $add_heritage_to_members -> Contract_ID = $Contract_ID;
+            $add_heritage_to_members -> Agent_ID = $listing -> Agent_ID;
+            $add_heritage_to_members -> save();
+        }
+
+
+
+        // TODO: if earnest
+        // if holding earnest
+        // notify
 
         // add checklist
         $checklist_represent = 'buyer';
@@ -286,20 +331,28 @@ class TransactionsDetailsController extends Controller {
         $Contract_ID = $request -> Contract_ID ?? 0;
         $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
-        $transaction_type = strtolower($request -> transaction_type);
+        $transaction_type = $request -> transaction_type;
 
-        $field = 'Listing_ID';
-        $id = $Listing_ID;
-        if($transaction_type == 'contract') {
+        if($transaction_type == 'listing') {
+            $property = Listings::where('Listing_ID', $Listing_ID) -> first();
+            $field = 'Listing_ID';
+            $id = $Listing_ID;
+        } else if($transaction_type == 'contract') {
+            $property = Contracts::where('Contract_ID', $Contract_ID) -> first();
             $field = 'Contract_ID';
             $id = $Contract_ID;
+        } else if($transaction_type == 'referral') {
+            $property = Referrals::where('Referral_ID', $Referral_ID) -> first();
         }
+
 
         $checklist_items_model = new ChecklistsItems();
         $transaction_checklist_items_model = new TransactionChecklistItems();
         $transaction_checklist_item_docs_model = new TransactionChecklistItemsDocs();
         $transaction_checklist_item_notes_model = new TransactionChecklistItemsNotes();
-        $users_model = new User();
+        $users = User::get();
+
+        $agent = $users -> where('user_id', $Agent_ID) -> where('group', 'agent') -> first();
 
         $transaction_checklist = TransactionChecklists::where($field, $id) -> first();
         $transaction_checklist_id = $transaction_checklist -> id;
@@ -320,6 +373,8 @@ class TransactionsDetailsController extends Controller {
 
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
+        $rejected_reasons = ResourceItemsAdmin::where('resource_type', 'rejected_reason') -> orderBy('resource_order') -> get();
+
         $trash_folder = TransactionDocumentsFolders::where($field, $id) -> where('folder_name', 'Trash') -> first();
         $documents_model = new TransactionDocuments();
         $documents_available = $documents_model -> where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
@@ -330,7 +385,73 @@ class TransactionsDetailsController extends Controller {
         $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
         $property_sub_types = $resource_items -> where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
 
-        return view('/agents/doc_management/transactions/details/data/get_checklist', compact('Listing_ID', 'Contract_ID', 'transaction_type', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents_model', 'users_model', 'documents_available', 'documents_checklist', 'folders', 'resource_items', 'property_types', 'property_sub_types', 'checklist', 'transaction_checklist_hoa_condo', 'transaction_checklist_year_built'));
+        $files = new Upload();
+        $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
+
+
+        return view('/agents/doc_management/transactions/details/data/get_checklist', compact('property', 'Listing_ID', 'Contract_ID', 'transaction_type', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id',  'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model','checklist_groups', 'documents_model', 'users', 'documents_available', 'documents_checklist', 'folders', 'resource_items', 'property_types', 'property_sub_types', 'checklist', 'transaction_checklist_hoa_condo', 'transaction_checklist_year_built', 'rejected_reasons', 'files', 'form_groups', 'agent'));
+    }
+
+    public function save_add_checklist_item(Request $request) {
+
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
+        $Agent_ID = $request -> Agent_ID;
+        $checklist_id = $request -> checklist_id;
+        $checklist_form_id = $request -> checklist_form_id;
+        $add_checklist_item_name = $request -> add_checklist_item_name;
+        $add_checklist_item_group_id = $request -> add_checklist_item_group_id;
+
+        // get checklist item order
+        $checklist_item_order = TransactionChecklistItems::where('checklist_id', $checklist_id) -> where('checklist_item_group_id', $add_checklist_item_group_id) -> max('checklist_item_order');
+        $checklist_item_order += 1;
+
+        $new_checklist_item = new TransactionChecklistItems();
+
+        $new_checklist_item -> checklist_id = $checklist_id;
+        $new_checklist_item -> Listing_ID = $Listing_ID;
+        $new_checklist_item -> Contract_ID = $Contract_ID;
+        $new_checklist_item -> Referral_ID = $Referral_ID;
+        $new_checklist_item -> Agent_ID = $Agent_ID;
+        $new_checklist_item -> checklist_form_id = $checklist_form_id;
+        $new_checklist_item -> checklist_item_added_name = $add_checklist_item_name;
+        $new_checklist_item -> checklist_item_required = 'yes';
+        $new_checklist_item -> checklist_item_group_id = $add_checklist_item_group_id;
+        $new_checklist_item -> checklist_item_order = $checklist_item_order;
+
+        $new_checklist_item -> save();
+
+    }
+
+    public function remove_checklist_item(Request $request) {
+
+        // remove from items, item_docs and item_notes. then mark all transaction_docs unassigned
+        $checklist_item_id = $request -> checklist_item_id;
+        $delete_item = TransactionChecklistItems::where('id', $checklist_item_id) -> delete();
+        $delete_item_notes = TransactionChecklistItemsNotes::where('checklist_item_id', $checklist_item_id) -> delete();
+
+        $delete_item_docs = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item_id);
+        $delete_item_doc_ids = $delete_item_docs -> pluck('document_id');
+
+        $unassign = TransactionDocuments::whereIn('id', $delete_item_doc_ids) -> update(['assigned' => 'no', 'checklist_item_id' => null]);
+
+        $delete_item_docs -> delete();
+
+    }
+
+    public function save_required_fields(Request $request) {
+
+        $Contract_ID = $request -> Contract_ID;
+        $property = Contracts::find($Contract_ID);
+        $property -> UsingHeritage = $request -> required_fields_using_heritage;
+        $property -> TitleCompany = $request -> required_fields_title_company;
+        $property -> EarnestAmount = preg_replace('/[\$,]+/', '', $request -> required_fields_earnest_amount);
+        $property -> EarnestHeldBy = $request -> required_fields_earnest_held_by;
+        $property -> save();
+
+        return true;
+
     }
 
     public function add_document_to_checklist_item(Request $request) {
@@ -340,36 +461,55 @@ class TransactionsDetailsController extends Controller {
         $checklist_item_id = $request -> checklist_item_id;
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
-        $transaction_type = strtolower($request -> transaction_type);
+        $transaction_type = $request -> transaction_type;
 
         $add_checklist_item_doc = new TransactionChecklistItemsDocs();
         $add_checklist_item_doc -> document_id = $document_id;
         $add_checklist_item_doc -> checklist_id = $checklist_id;
         $add_checklist_item_doc -> checklist_item_id = $checklist_item_id;
         $add_checklist_item_doc -> Agent_ID = $Agent_ID;
-        $add_checklist_item_doc -> Listing_ID = $Listing_ID;
-        $add_checklist_item_doc -> Contract_ID = $Contract_ID;
+        if($transaction_type == 'listing') {
+            $add_checklist_item_doc -> Listing_ID = $Listing_ID;
+        } else if($transaction_type == 'contract') {
+            $add_checklist_item_doc -> Contract_ID = $Contract_ID;
+        } else if($transaction_type == 'referral') {
+            $add_checklist_item_doc -> Referral_ID = $Referral_ID;
+        }
         $add_checklist_item_doc -> save();
 
         $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
+        $update_checklist_item = TransactionChecklistItems::where('id', $checklist_item_id) -> update(['checklist_item_status' => 'not_reviewed']);
+
     }
 
     public function remove_document_from_checklist_item(Request $request) {
         $document_id = $request -> document_id;
         $checklist_item_doc = TransactionChecklistItemsDocs::where('document_id', $document_id) -> delete();
-        $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'no']);
+        $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'no', 'checklist_item_id' => '0']);
     }
 
     function add_notes_to_checklist_item(Request $request) {
+
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
+        $transaction_type = $request -> transaction_type;
+
         $add_notes = new TransactionChecklistItemsNotes();
         $add_notes -> checklist_id = $request -> checklist_id;
         $add_notes -> checklist_item_id = $request -> checklist_item_id;
         $add_notes -> checklist_item_doc_id = $request -> checklist_item_doc_id ?? null;
-        $add_notes -> Listing_ID = $request -> Listing_ID;
-        $add_notes -> Contract_ID = $request -> Contract_ID;
+        if($transaction_type == 'listing') {
+            $add_notes -> Listing_ID = $Listing_ID;
+        } else if($transaction_type == 'contract') {
+            $add_notes -> Contract_ID = $Contract_ID;
+        } else if($transaction_type == 'referral') {
+            $add_notes -> Referral_ID = $Referral_ID;
+        }
         $add_notes -> Agent_ID = $request -> Agent_ID;
-        $add_notes -> note_user_id = auth() -> user() -> id;
+        $add_notes -> note_user_id = auth() -> user() -> user_id;
         $add_notes -> note_status = 'unread';
         $add_notes -> notes = $request -> notes;
         $add_notes -> save();
@@ -378,7 +518,6 @@ class TransactionsDetailsController extends Controller {
     public function mark_note_read(Request $request) {
         $mark_read = TransactionChecklistItemsNotes::where('id', $request -> note_id) -> update(['note_status' => 'read']);
     }
-
 
     public function change_checklist(Request $request) {
 
@@ -411,6 +550,30 @@ class TransactionsDetailsController extends Controller {
         TransactionChecklists::CreateTransactionChecklist($checklist_id, $Listing_ID, $Contract_ID, '', $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built);
 
         return true;
+    }
+
+    public function get_email_checklist_html(Request $request) {
+
+        $checklist_id = $request -> checklist_id;
+        $transaction_type = $request -> transaction_type;
+
+        $checklist_items_model = new ChecklistsItems();
+        $transaction_checklist_items_model = new TransactionChecklistItems();
+
+        $transaction_checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> orderBy('checklist_item_order') -> get();
+        $transaction_checklist_item_notes = new TransactionChecklistItemsNotes();
+
+        $checklist_types = ['listing', 'both'];
+        if($transaction_type == 'contract') {
+            $checklist_types = ['contract', 'both'];
+        } else if($transaction_type == 'referral') {
+            $checklist_types = ['referral'];
+        }
+
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
+
+        return view('/agents/doc_management/transactions/details/data/get_email_checklist_html', compact('transaction_checklist_items', 'checklist_groups', 'checklist_items_model', 'transaction_checklist_items_model', 'transaction_checklist_item_notes'));
+
     }
 
     // End Checklist Tab
@@ -594,31 +757,32 @@ class TransactionsDetailsController extends Controller {
 
         }
 
-        $data = $request -> all();
+        $FullStreetAddress = $request -> StreetNumber.' '.$request -> StreetName.' '.$request -> StreetSuffix;
 
-        $FullStreetAddress = $data['StreetNumber'].' '.$data['StreetName'].' '.$data['StreetSuffix'];
-
-        if ($data['StreetDirSuffix']) {
-            $FullStreetAddress .= ' '.$data['StreetDirSuffix'];
+        if ($request -> StreetDirSuffix) {
+            $FullStreetAddress .= ' '.$request -> StreetDirSuffix;
         }
 
-        if ($data['UnitNumber']) {
-            $FullStreetAddress .= ' '.$data['UnitNumber'];
+        if ($request -> UnitNumber) {
+            $FullStreetAddress .= ' '.$request -> UnitNumber;
         }
 
-        $data['FullStreetAddress'] = $FullStreetAddress;
+        $request -> FullStreetAddress = $FullStreetAddress;
 
-        foreach ($data as $col => $val) {
+        foreach ($request -> all() as $col => $val) {
 
-            if ($col != 'Listing_ID' && $col != 'Contract_ID' && $col != 'Referral_ID' && $col != 'transaction_type'  && !stristr($col, '_submit')) {
+            $ignore_cols = ['Listing_ID', 'Contract_ID', 'Referral_ID', 'transaction_type'];
+            if (!in_array($col, $ignore_cols)  && !stristr($col, '_submit')) {
 
-                if ($col == 'ListPrice' || $col == 'ContractPrice') {
+                if (preg_match('/\$/', $val)) {
                     $val = preg_replace('/[\$,]+/', '', $val);
                 }
 
                 $property -> $col = $val;
                 if($has_listing) {
-                    $property_listing -> $col = $val;
+                    if(!in_array($col, Contracts::ContractColumnsNotInListings())) {
+                        $property_listing -> $col = $val;
+                    }
                 }
             }
 
@@ -641,7 +805,7 @@ class TransactionsDetailsController extends Controller {
         $Contract_ID = $request -> Contract_ID ?? 0;
         $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
-        $transaction_type = strtolower($request -> transaction_type);
+        $transaction_type = $request -> transaction_type;
         $contracts = [];
 
         if($transaction_type == 'listing') {
@@ -714,9 +878,13 @@ class TransactionsDetailsController extends Controller {
             -> where('Agent_ID', $Agent_ID) -> orderBy('checklist_item_order') -> get();
         }
 
+
         $checklist_id = $checklist_items -> first() -> checklist_id;
-        $checklist_form_ids = $checklist_items -> pluck('checklist_form_id') -> all();
-        $checklist_forms = Upload::whereIn('file_id', $checklist_form_ids) -> get();
+
+        $checklist_form_ids_required = $checklist_items -> where('checklist_item_required', 'yes') -> pluck('checklist_form_id');
+        $checklist_form_ids_if_applicable = $checklist_items -> where('checklist_item_required', 'no') -> pluck('checklist_form_id');
+        $checklist_forms_required = Upload::whereIn('file_id', $checklist_form_ids_required) -> get();
+        $checklist_forms_if_applicable = Upload::whereIn('file_id', $checklist_form_ids_if_applicable) -> get();
 
         $available_files = new Upload();
 
@@ -724,7 +892,9 @@ class TransactionsDetailsController extends Controller {
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> where('resource_association', 'yes') -> orderBy('resource_order') -> get();
         $form_tags = $resource_items -> where('resource_type', 'form_tags') -> orderBy('resource_order') -> get();
 
-        return view('/agents/doc_management/transactions/details/data/get_documents', compact('transaction_type', 'property', 'Agent_ID', 'Listing_ID', 'Contract_ID', 'members', 'checklist_id', 'documents', 'folders', 'checklist_forms', 'available_files', 'resource_items', 'form_groups', 'form_tags'));
+        $property_email = $property -> PropertyEmail;
+
+        return view('/agents/doc_management/transactions/details/data/get_documents', compact('transaction_type', 'property', 'Agent_ID', 'Listing_ID', 'Contract_ID', 'members', 'checklist_id', 'documents', 'folders', 'checklist_forms_required', 'checklist_forms_if_applicable', 'available_files', 'resource_items', 'form_groups', 'form_tags', 'property_email'));
     }
 
     public function reorder_documents(Request $request) {
@@ -779,11 +949,14 @@ class TransactionsDetailsController extends Controller {
         $transaction_type = strtolower($request -> transaction_type);
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
 
         if($transaction_type == 'listing') {
             $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $Listing_ID) -> where('folder_name', 'Trash') -> first();
-        } else {
+        } else if($transaction_type == 'contract') {
             $trash_folder = TransactionDocumentsFolders::where('Contract_ID', $Contract_ID) -> where('folder_name', 'Trash') -> first();
+        } else if($transaction_type == 'referral') {
+            $trash_folder = TransactionDocumentsFolders::where('Referral_ID', $Referral_ID) -> where('folder_name', 'Trash') -> first();
         }
         $move_documents_to_trash = TransactionDocuments::where('folder', $folder_id) -> update(['folder' => $trash_folder -> id]);
         $delete_folder = TransactionDocumentsFolders::where('id', $folder_id) -> delete();
@@ -794,7 +967,7 @@ class TransactionsDetailsController extends Controller {
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
         $Referral_ID = $request -> Referral_ID ?? 0;
-        $transaction_type = strtolower($request -> transaction_type);
+        $transaction_type = $request -> transaction_type;
         $folder = $request -> folder;
 
         $files = json_decode($request['files'], true);
@@ -821,6 +994,7 @@ class TransactionsDetailsController extends Controller {
             $add_documents -> file_name_display = $file['file_name_display'];
             $add_documents -> pages_total = $file['pages_total'];
             $add_documents -> file_location = $file['file_location'];
+            $add_documents -> transaction_type = $transaction_type;
             $add_documents -> save();
 
             $new_document_id = $add_documents -> id;
@@ -856,17 +1030,19 @@ class TransactionsDetailsController extends Controller {
                 $path = 'referrals/'.$Referral_ID;
             }
 
+            $files_path = 'doc_management/transactions/'.$path.'/'.$new_file_id;
+
             $copy_from = $storage_path.'doc_management/uploads/'.$file_id.'/*';
-            $copy_to = $storage_path.'doc_management/transactions/'.$path.'/'.$new_file_id.'_system';
-            Storage::disk('public') -> makeDirectory('doc_management/transactions/'.$path.'/'.$new_file_id.'_system/converted');
-            Storage::disk('public') -> makeDirectory('doc_management/transactions/'.$path.'/'.$new_file_id.'_system/layers');
-            Storage::disk('public') -> makeDirectory('doc_management/transactions/'.$path.'/'.$new_file_id.'_system/combined');
+            $copy_to = $storage_path.$files_path.'_system';
+            Storage::disk('public') -> makeDirectory($files_path.'_system/converted');
+            Storage::disk('public') -> makeDirectory($files_path.'_system/layers');
+            Storage::disk('public') -> makeDirectory($files_path.'_system/combined');
 
             $copy = exec('cp -rp '.$copy_from.' '.$copy_to);
-            $copy_converted = exec('cp '. $storage_path.'doc_management/transactions/'.$path.'/'.$new_file_id.'_system/'.$file['file_name'].' '.$copy_to .'/converted/'.$file['file_name']);
+            $copy_converted = exec('cp '. $storage_path.$files_path.'_system/'.$file['file_name'].' '.$copy_to .'/converted/'.$file['file_name']);
 
-            $add_documents -> file_location = '/storage/doc_management/transactions/'.$path.'/'.$new_file_id.'_system/'.$file['file_name'];
-            $add_documents -> file_location_converted = '/storage/doc_management/transactions/'.$path.'/'.$new_file_id.'_system/converted/'.$file['file_name'];
+            $add_documents -> file_location = '/storage/'.$files_path.'_system/'.$file['file_name'];
+            $add_documents -> file_location_converted = '/storage/'.$files_path.'_system/converted/'.$file['file_name'];
             $add_documents -> save();
 
 
@@ -949,7 +1125,7 @@ class TransactionsDetailsController extends Controller {
             $file_name_display = $file -> getClientOriginalName();
             $filename = $file_name_display;
 
-            $file_name_remove_numbers = preg_replace('/[0-9-_]+\.'.$ext.'/', '.'.$ext, $filename);
+            $file_name_remove_numbers = preg_replace('/[0-9-_\s]+\.'.$ext.'/', '.'.$ext, $filename);
             $file_name_no_ext = str_replace('.'.$ext, '', $file_name_remove_numbers);
             $clean_filename = sanitize($file_name_no_ext);
             $new_filename = $clean_filename.'.'.$ext;
@@ -970,6 +1146,7 @@ class TransactionsDetailsController extends Controller {
             $add_documents -> Listing_ID = $Listing_ID;
             $add_documents -> Contract_ID = $Contract_ID;
             $add_documents -> Referral_ID = $Referral_ID;
+            $add_documents -> transaction_type = $transaction_type;
             $add_documents -> folder = $folder;
             $add_documents -> file_name = $new_filename;
             $add_documents -> file_name_display = $file_name_display;
@@ -1164,6 +1341,7 @@ class TransactionsDetailsController extends Controller {
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
         $Referral_ID = $request -> Referral_ID ?? 0;
+        $transaction_type = $request -> transaction_type;
 
         foreach($checklist_items as $checklist_item) {
 
@@ -1177,12 +1355,17 @@ class TransactionsDetailsController extends Controller {
                 $add_checklist_item_doc -> checklist_id = $checklist_id;
                 $add_checklist_item_doc -> checklist_item_id = $checklist_item_id;
                 $add_checklist_item_doc -> Agent_ID = $Agent_ID;
-                $add_checklist_item_doc -> Listing_ID = $Listing_ID;
-                $add_checklist_item_doc -> Contract_ID = $Contract_ID;
-                $add_checklist_item_doc -> Referral_ID = $Referral_ID;
+                if($transaction_type == 'listing') {
+                    $add_checklist_item_doc -> Listing_ID = $Listing_ID;
+                } else if($transaction_type == 'contract') {
+                    $add_checklist_item_doc -> Contract_ID = $Contract_ID;
+                } else if($transaction_type == 'referral') {
+                    $add_checklist_item_doc -> Referral_ID = $Referral_ID;
+                }
                 $add_checklist_item_doc -> save();
 
                 $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
+                $update_checklist_item = TransactionChecklistItems::where('id', $checklist_item_id) -> update(['checklist_item_status' => 'not_reviewed']);
 
             }
 
@@ -1261,7 +1444,7 @@ class TransactionsDetailsController extends Controller {
 
     public function save_split_document(Request $request) {
 
-        $transaction_type = strtolower($request -> transaction_type);
+        $transaction_type = $request -> transaction_type;
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
         $Referral_ID = $request -> Referral_ID ?? 0;
@@ -1269,7 +1452,7 @@ class TransactionsDetailsController extends Controller {
 
         $folder_id = $request -> folder_id;
         $document_name = $request -> document_name;
-        if(preg_match('/^[0-9]*$/', $document_name)) {
+        if(preg_match('/^[0-9]*$/', $document_name) && $document_name > 0) {
             $document_name = Upload::GetFormName($document_name);
         }
         $document_name = preg_replace('/\.pdf/', '', $document_name);
@@ -1286,6 +1469,7 @@ class TransactionsDetailsController extends Controller {
         $document_image_files = [];
         $document_page_files = [];
         $page_numbers = [];
+
         foreach($document_images as $document_image) {
 
             $doc_file_id = $document_image -> file_id;
@@ -1301,6 +1485,7 @@ class TransactionsDetailsController extends Controller {
 
             array_push($document_page_files, $pages);
             array_push($document_image_files, $images);
+
         }
 
         // if manually saving to documents
@@ -1324,6 +1509,7 @@ class TransactionsDetailsController extends Controller {
         $add_document -> Listing_ID = $Listing_ID;
         $add_document -> Contract_ID = $Contract_ID;
         $add_document -> Referral_ID = $Referral_ID;
+        $add_document -> transaction_type = $transaction_type;
         $add_document -> folder = $folder_id;
         $add_document -> file_name = $file_name;
         $add_document -> file_name_display = $file_name_display;
@@ -1356,8 +1542,10 @@ class TransactionsDetailsController extends Controller {
             $path = 'referral/'.$Referral_ID;
         }
 
-        Storage::disk('public') -> makeDirectory('doc_management/transactions/'.$path.'/'.$new_file_id.'_user/images');
-        Storage::disk('public') -> makeDirectory('doc_management/transactions/'.$path.'/'.$new_file_id.'_user/pages');
+        $files_path = 'doc_management/transactions/'.$path.'/'.$new_file_id.'_user';
+
+        Storage::disk('public') -> makeDirectory($files_path.'/images');
+        Storage::disk('public') -> makeDirectory($files_path.'/pages');
 
         // copy images and pages and create merged file
         // copy images
@@ -1365,7 +1553,7 @@ class TransactionsDetailsController extends Controller {
         foreach($document_image_files as $image_file) {
             $image_file_name = basename($image_file['file_location']);
             $old_file_loc = Storage::disk('public') -> path('doc_management/transactions/'.$path.'/'.$document_image_files[0]['file_id'].'_'.$file_type.'/images/'.$image_file_name);
-            $new_file_loc = Storage::disk('public') -> path('doc_management/transactions/'.$path.'/'.$new_file_id.'_user/images/'.$image_file_name);
+            $new_file_loc = Storage::disk('public') -> path($files_path.'/images/'.$image_file_name);
             exec('cp '.$old_file_loc.' '.$new_file_loc);
 
             $upload_images = new TransactionUploadImages();
@@ -1375,7 +1563,7 @@ class TransactionsDetailsController extends Controller {
             $upload_images -> Contract_ID = $Contract_ID;
             $upload_images -> Referral_ID = $Referral_ID;
             $upload_images -> file_name = $file_name;
-            $upload_images -> file_location = '/storage/doc_management/transactions/'.$path.'/'.$new_file_id.'_user/images/'.$image_file_name;
+            $upload_images -> file_location = '/storage/'.$files_path.'_user/images/'.$image_file_name;
             $upload_images -> pages_total = count($document_image_files);
             $upload_images -> page_number = $page_number;
             $upload_images -> save();
@@ -1418,7 +1606,7 @@ class TransactionsDetailsController extends Controller {
         foreach($document_page_files as $page_file) {
             $page_file_name = basename($page_file['file_location']);
             $old_file_loc = Storage::disk('public') -> path('doc_management/transactions/'.$path.'/'.$document_page_files[0]['file_id'].'_'.$file_type.'/pages/'.$page_file_name);
-            $new_file_loc = Storage::disk('public') -> path('doc_management/transactions/'.$path.'/'.$new_file_id.'_user/pages/'.$page_file_name);
+            $new_file_loc = Storage::disk('public') -> path($files_path.'/pages/'.$page_file_name);
             exec('cp '.$old_file_loc.' '.$new_file_loc);
 
             $upload_pages = new TransactionUploadPages();
@@ -1428,7 +1616,7 @@ class TransactionsDetailsController extends Controller {
             $upload_pages -> Contract_ID = $Contract_ID;
             $upload_pages -> Referral_ID = $Referral_ID;
             $upload_pages -> file_name = $file_name;
-            $upload_pages -> file_location = '/storage/doc_management/transactions/'.$path.'/'.$new_file_id.'_user/pages/'.$page_file_name;
+            $upload_pages -> file_location = '/storage/'.$files_path.'/pages/'.$page_file_name;
             $upload_pages -> pages_total = count($document_page_files);
             $upload_pages -> page_number = $page_number;
             $upload_pages -> save();
@@ -1436,19 +1624,19 @@ class TransactionsDetailsController extends Controller {
         }
 
         //merge pages into main file and move to converted
-        $main_file_location = 'doc_management/transactions/'.$path.'/'.$new_file_id.'_user/'.$file_name;
-        $converted_file_location = 'doc_management/transactions/'.$path.'/'.$new_file_id.'_user/converted/'.$file_name;
+        $main_file_location = $files_path.'/'.$file_name;
+        $converted_file_location = $files_path.'/converted/'.$file_name;
 
         $base_path = base_path();
-        exec('mkdir '.$base_path.'/storage/app/public/doc_management/transactions/'.$path.'/'.$new_file_id.'_user/converted');
+        exec('mkdir '.$base_path.'/storage/app/public/'.$files_path.'/converted');
 
         // merge all pages and add to main directory and converted directory
-        $pages = Storage::disk('public') -> path('doc_management/transactions/'.$path.'/'.$new_file_id.'_user/pages');
+        $pages = Storage::disk('public') -> path($files_path.'/pages');
         exec('pdftk '.$pages.'/*.pdf cat output '.$base_path.'/storage/app/public/'.$main_file_location);
         //exec('cd '.$base_path.'/storage/app/public/ && cp '.$main_file_location.' '.$converted_file_location);
         // get split pages, merge and add to converted
         $old_converted_location = Storage::disk('public') -> path('doc_management/transactions/'.$path.'/'.$file_id.'_'.$file_type.'/converted');
-        $new_converted_location = Storage::disk('public') -> path('doc_management/transactions/'.$path.'/'.$new_file_id.'_user/converted');
+        $new_converted_location = Storage::disk('public') -> path($files_path.'/converted');
 
         exec('pdftk '.$old_converted_location.'/*.pdf cat '.implode(' ', $page_numbers).' output '.$new_converted_location.'/'.$file_name);
 
@@ -1469,12 +1657,17 @@ class TransactionsDetailsController extends Controller {
             $add_checklist_item_doc -> checklist_id = $checklist_id;
             $add_checklist_item_doc -> checklist_item_id = $checklist_item_id;
             $add_checklist_item_doc -> Agent_ID = $Agent_ID;
-            $add_checklist_item_doc -> Listing_ID = $Listing_ID;
-            $add_checklist_item_doc -> Contract_ID = $Contract_ID;
-            $add_checklist_item_doc -> Referral_ID = $Referral_ID;
+            if($transaction_type == 'listing') {
+                $add_checklist_item_doc -> Listing_ID = $Listing_ID;
+            } else if($transaction_type == 'contract') {
+                $add_checklist_item_doc -> Contract_ID = $Contract_ID;
+            } else if($transaction_type == 'referral') {
+                $add_checklist_item_doc -> Referral_ID = $Referral_ID;
+            }
             $add_checklist_item_doc -> save();
 
             $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
+            $update_checklist_item = TransactionChecklistItems::where('id', $checklist_item_id) -> update(['checklist_item_status' => 'not_reviewed']);
 
         }
 
@@ -1590,7 +1783,9 @@ class TransactionsDetailsController extends Controller {
 
     }
 
-    public function email_documents(Request $request) {
+    public function send_email(Request $request) {
+
+        $type = $request -> type;
 
         $email = [];
 
@@ -1617,20 +1812,23 @@ class TransactionsDetailsController extends Controller {
 
         $email['attachments'] = [];
         $attachment_size = 0;
-        foreach(json_decode($request -> attachments) as $attachment) {
-            $file = [];
-            $file['name'] = $attachment -> filename;
-            $file['location'] = $attachment -> file_location;
-            $email['attachments'][] = $file;
 
-            $attachment_size += filesize(Storage::disk('public') -> path($attachment -> file_location));
+        if($request -> attachments) {
+            foreach(json_decode($request -> attachments) as $attachment) {
+                $file = [];
+                $file['name'] = $attachment -> filename;
+                $file['location'] = $attachment -> file_location;
+                $email['attachments'][] = $file;
 
-        }
+                $attachment_size += filesize(Storage::disk('public') -> path($attachment -> file_location));
 
-        $attachment_size = get_mb($attachment_size);
-        if($attachment_size > 20) {
-            $fail = json_encode(['fail' => true, 'attachment_size' => $attachment_size]);
-            return ($fail);
+            }
+
+            $attachment_size = get_mb($attachment_size);
+            if($attachment_size > 20) {
+                $fail = json_encode(['fail' => true, 'attachment_size' => $attachment_size]);
+                return ($fail);
+            }
         }
 
         $email['tos'] = [];
@@ -1657,12 +1855,18 @@ class TransactionsDetailsController extends Controller {
             }
         }
 
-        //return (new Documents($email)) -> render();
+        if($type == 'documents') {
+            $new_mail = new Documents($email);
+        } else {
+            $new_mail = new DefaultEmail($email);
+        }
+
+        //return ($new_mail) -> render();
 
         Mail::to($email['tos'])
             -> cc($email['ccs'])
             -> bcc($email['bccs'])
-            -> send(new Documents($email));
+            -> send($new_mail);
 
     }
 
@@ -1996,5 +2200,65 @@ class TransactionsDetailsController extends Controller {
 
     }
 
+
+    //////////////////////// ADMIN //////////////////////////
+
+    public function set_checklist_item_review_status(Request $request) {
+
+        $Agent_ID = $request -> Agent_ID ?? 0;
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
+        $transaction_type = $request -> transaction_type;
+
+        $checklist_item_id = $request -> checklist_item_id;
+        $action = $request -> action;
+        $note = $request -> note ?? null;
+
+        if($note) {
+            $note = '<div><span class="text-danger"><i class="fad fa-exclamation-circle mr-2"></i> Checklist Item Rejected</span><br>'.$note.'</div>';
+        }
+
+        $checklist_item = TransactionChecklistItems::find($checklist_item_id) -> update(['checklist_item_status' => $action]);
+
+        // update docs status
+        $doc_status = 'viewed';
+        if($action == 'not_reviewed') {
+            $doc_status = 'pending';
+        }
+
+        $docs = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item_id) -> update(['doc_status' => $doc_status]);
+
+        if($action == 'rejected') {
+            // add rejection reason to notes
+            $add_notes = new TransactionChecklistItemsNotes();
+            $add_notes -> Agent_ID = $Agent_ID;
+            if($transaction_type == 'listing') {
+                $add_notes -> Listing_ID = $Listing_ID;
+            } else if($transaction_type == 'contract') {
+                $add_notes -> Contract_ID = $Contract_ID;
+            } else if($transaction_type == 'referral') {
+                $add_notes -> Referral_ID = $Referral_ID;
+            }
+            $add_notes -> checklist_item_id = $checklist_item_id;
+            $add_notes -> notes = $note;
+            $add_notes -> note_user_id = auth() -> user() -> user_id;
+            $add_notes -> save();
+        }
+
+        return response() -> json([
+            'result' => 'success'
+        ]);
+
+    }
+
+    public function mark_required(Request $request) {
+        $checklist_item_id = $request -> checklist_item_id;
+        $required = $request -> required;
+
+        $mark_required = TransactionChecklistItems::find($checklist_item_id) -> update(['checklist_item_required' => $required]);
+
+        return true;
+    }
 
 }

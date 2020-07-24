@@ -50,7 +50,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                                             <div>
                                                 <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i>
                                             </div>
-                                            <div class="h5 responsive text-primary" title="{{ $form_name_orig }}"><a href="{{ $form_link }}" target="_blank">{{ $form_name }}</a></div>
+                                            <div class="h5-responsive text-primary" title="{{ $form_name_orig }}"><a href="{{ $form_link }}" target="_blank">{{ $form_name }}</a></div>
                                         </div>
                                     </div>
                                     <div class="col-3">

@@ -16,6 +16,7 @@ $indigo: #6574cd;
 $purple: #9561e2;
 $pink: #f66d9b;
 $red: #b64341;
+$red-light: #f8d9d9;
 $orange: #df7935;
 $orange-light: #f8e5e3;
 $orange-dark: #943d31;
@@ -118,6 +119,11 @@ a.text-green:hover {
     background-color: rgba($green, .1) !important;
 }
 
+.bg-red-light {
+    background: $red-light !important;
+    background-color: $red-light !important;
+}
+
 
 
 .btn-primary {
@@ -137,8 +143,10 @@ a.text-green:hover {
 }
 
 $badge_blue: #4594d4;
+$badge_blue_light: #e9ecf0;
 $badge_green: #33ad33;
 $badge_orange: #d47433;
+$badge_red: #a33a38;
 .badge.bg-primary {
     background-image: linear-gradient(122deg, $badge_blue 29.17%, $blue 29.17%, $blue 50%, $badge_blue 50%, $badge_blue 79.17%, $blue 79.17%, $blue 100%) !important;
     background-size: 14.15px 22.64px !important;
@@ -149,5 +157,13 @@ $badge_orange: #d47433;
 }
 .badge.bg-orange {
     background-image: linear-gradient(122deg, $badge_orange 29.17%, $orange 29.17%, $orange 50%, $badge_orange 50%, $badge_orange.17%, $orange 79.17%, $orange 100%) !important;
+    background-size: 14.15px 22.64px !important;
+}
+.badge.bg-danger {
+    background-image: linear-gradient(122deg, $badge_red 29.17%, $red 29.17%, $red 50%, $badge_red 50%, $badge_red.17%, $red 79.17%, $red 100%) !important;
+    background-size: 14.15px 22.64px !important;
+}
+.badge.bg-blue-light {
+    background-image: linear-gradient(122deg, $badge_blue_light 29.17%, $blue_light 29.17%, $blue_light 50%, $badge_blue_light 50%, $badge_blue_light.17%, $blue_light 79.17%, $blue_light 100%) !important;
     background-size: 14.15px 22.64px !important;
 }

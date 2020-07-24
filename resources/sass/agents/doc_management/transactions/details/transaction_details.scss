@@ -38,6 +38,12 @@
         box-shadow: none;
     }
 
+
+    .status-badge {
+        padding: 1rem !important;
+        padding-left: 0.2rem !important;
+    }
+
     .details-main-tabs {
         padding: 0rem;
         padding-top: 1rem;
@@ -46,6 +52,12 @@
         margin-top: 0px;
     }
 
+    .not-using-heritage {
+        display: none;
+    }
+    .using-heritage {
+        width: 130px;
+    }
 
     // bright mls agent search
     #agent_search_div {
@@ -166,6 +178,14 @@
         margin-bottom: 0rem;
     }
 
+    .checklist-item-dropdown::after {
+        display: none;
+    }
+
+    .form-name {
+        cursor: pointer;
+    }
+
     .form-in-use {
         opacity: 0.6;
     }
@@ -211,13 +231,14 @@
 
     #bulk_options_div {
         position: sticky;
-        top: 60px;
-        background: rgba(255, 255, 255, .8);
+        top: 50px;
+        background: rgba(255, 255, 255, .9);
         width: 100%;
         padding: 10px;
         border-top: 1px solid $border-color;
         border-bottom: 1px solid $border-color;
-        z-index: 1000;
+        z-index: 5;
+
     }
 
     .status-badge {
@@ -236,6 +257,21 @@
         textarea {
             height: 90px;
         }
+    }
+
+    .rejected-reasons-container {
+        position: relative;
+    }
+    .rejected-reasons-div {
+        height: 400px;
+        overflow: auto;
+    }
+    .rejected-reason {
+        cursor: pointer;
+    }
+
+    .mark-not-required, .mark-required {
+        display: none;
     }
 
     .checklist-attachment {
@@ -257,7 +293,7 @@
         touch-action: none;
         user-select: none;
         cursor: move;
-        padding: .3rem .6rem !important;
+        padding: .3rem .6rem;
         width: 95%;
         margin-left: auto;
         margin-right: auto;
@@ -267,29 +303,30 @@
     } */
 
     .checklist-item-droparea {
-        width: 95%;
+        width: 96%;
         margin-left: auto;
         margin-right: auto;
-        border: 2px dashed $primary;
-        min-height: 20px;
-        height: auto;
+        border: 1px dashed $primary;
+        min-height: 35px;
     }
     .checklist-item-badge {
         width: 100px;
     }
 
-
+    .drop-activated, .source-dropped, .doc-match {
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+        width: 100%;
+    }
 
     .drop-activated {
-        border: 2px dashed $success;
+        border: 1px dashed $success;
 
         .drop-div-title {
             color: $success;
         }
     }
     .source-dropped {
-        width: 96%;
-        margin: 2px auto;
         background: rgba($success, .5);
 
         > .text-gray {
@@ -297,8 +334,16 @@
         }
     }
     .doc-match {
-        background: rgba($orange, .2);
-        min-height: 40px;
+        background: rgba($orange, .7);
+    }
+
+    .template-docs-div .list-group-item {
+        padding: 0.3rem 1.25rem !important;
+    }
+
+    #email_agent_checklist_details {
+        height: 0px;
+        display: none;
     }
 
     .image-container {
@@ -537,5 +582,15 @@
 
     }
 
+
+    @media only screen and (max-width: 850px) and (min-width: 768px) {
+        #bulk_options_div {
+
+            button {
+                margin-left: .1rem;
+                margin-right: .1rem;
+            }
+        }
+    }
 
 }

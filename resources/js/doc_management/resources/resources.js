@@ -4,7 +4,7 @@
     hide add div on blur
 */
 
-if (document.URL.match('/resources')) {
+if (document.URL.match('/resources$')) {
 
     $(document).ready(function () {
 

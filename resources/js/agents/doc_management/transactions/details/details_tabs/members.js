@@ -128,9 +128,7 @@ if (document.URL.match(/transaction_details/)) {
             $('#add_member_div').html(response.data);
             global_tooltip();
             load_details_header();
-            setTimeout(function() {
-                form_elements();
-            }, 500);
+
             $('.cancel-add-member-button').off('click').on('click', function() {
                 $('#add_member_group').hide();
                 $('.list-group-item-member').eq(0).trigger('click');
@@ -139,10 +137,34 @@ if (document.URL.match(/transaction_details/)) {
                 $('#add_member_group').hide();
             });
 
+
+            let add_list_agent = true;
+            let add_buyer_agent = true;
+            if($('.list-group-item-member[data-member-type="Listing Agent"]').length > 0) {
+                add_list_agent = false;
+            }
+            if($('.list-group-item-member[data-member-type="Buyer Agent"]').length > 0) {
+                add_buyer_agent = false;
+            }
+            $('#members_tab_div').find('.member-type-id').find('option').each(function() {
+                if($(this).text() == 'Listing Agent') {
+                    if(add_list_agent) {
+                        $(this).remove();
+                    }
+                } else if($(this).text() == 'Buyer Agent') {
+                    if(add_buyer_agent) {
+                        $(this).remove();
+                    }
+                }
+            });
+
             setTimeout(function() {
                 $('.member-type-id').change(show_hide_fields);
                 $('.bank-trust').click(show_bank_trust);
+                form_elements();
             }, 500);
+
+
 
         })
         .catch(function (error) {
@@ -192,9 +214,9 @@ if (document.URL.match(/transaction_details/)) {
         $('#import_contact_modal').modal();
 
         $('#contacts_table').off('click').on('click', '.add-contact-button', function() {
-            if($(this).data('contact-type-id')) {
+            /* if($(this).data('contact-type-id')) {
                 member_div.find('.member-type-id').val($(this).data('contact-type-id'));
-            }
+            } */
             member_div.find('.member-first-name').val($(this).data('contact-first'));
             member_div.find('.member-last-name').val($(this).data('contact-last'));
             member_div.find('.member-company').val($(this).data('contact-company'));

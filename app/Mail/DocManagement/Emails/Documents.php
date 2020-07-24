@@ -27,6 +27,7 @@ class Documents extends Mailable
     public function __construct($email) {
         $this -> email = $email;
         $this -> from = $email['from'];
+        $this -> subject = $email['subject'];
         $this -> email_attachments = $email['attachments'];
     }
 
@@ -39,9 +40,13 @@ class Documents extends Mailable
 
         $mailer = $this -> from($this -> from['address'], $this -> from['name'])
             -> markdown('emails.doc_management.email_documents');
-        foreach($this -> email_attachments as $attachment) {
-            $mailer -> attachFromStorageDisk('public', $attachment['location'], $attachment['name']);
+
+        if($this -> email_attachments) {
+            foreach($this -> email_attachments as $attachment) {
+                $mailer -> attachFromStorageDisk('public', $attachment['location'], $attachment['name']);
+            }
         }
+
         return $mailer;
     }
 }

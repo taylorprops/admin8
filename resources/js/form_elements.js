@@ -381,7 +381,7 @@ window.form_elements = function () {
         show_dropdown($(this));
 
     });
-    $('.form-select-value-input').on('focus', function (e) {
+    $('.form-select-value-input').off('focus').on('focus', function (e) {
         show_dropdown($(this));
 
     });
@@ -429,9 +429,10 @@ setInterval(function () {
 function show_dropdown(input) {
     // prevent labels from becoming active until after a selection is made
 
-    reset_select();
+    //reset_select();
     let select = input.closest('.form-ele').find('select');
     // show dropdown
+
     setTimeout(function() {
         if(input.next('.form-select-dropdown').css('display') == 'none') {
             input.next('.form-select-dropdown').show();
@@ -440,8 +441,16 @@ function show_dropdown(input) {
                 input.next('.form-select-dropdown').find('.form-select-search-input').focus();
                 input.prev('label').addClass('active');
             }
+
         }
-    }, 100);
+    }, 300);
+    /*  else {
+
+        $('.form-select-dropdown').hide();
+        if(input.val() == '') {
+            input.prev('label').removeClass('active');
+        }
+    } */
 
     $(document).mouseup(function (e) {
         var container = $('.form-select-dropdown');
@@ -699,7 +708,11 @@ window.reset_select = function () {
     $('.form-select-dropdown').fadeOut();
     $('.form-select-search-input').val('').trigger('change');
     $('.form-select-li').removeClass('matched').show();
-    $('.form-select-value-input').trigger('change');
+    $('.form-select-value-input').each(function() {
+        if($(this).val() == '') {
+            $(this).prev('label').removeClass('active');
+        }
+    });
 }
 
 

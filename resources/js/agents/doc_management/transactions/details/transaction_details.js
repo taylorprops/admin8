@@ -181,6 +181,15 @@ if (document.URL.match(/transaction_details/)) {
                 $('#agent_search').focus().trigger('click');
             }, 500);
         });
+
+        $('#accept_contract_using_heritage').change(function() {
+            if($(this).val() == 'yes') {
+                $('.not-using-heritage').hide();
+                $('#accept_contract_title_company').val('').trigger('change');
+            } else {
+                $('.not-using-heritage').show();
+            }
+        });
     }
 
     function add_buyers_agent(ele) {
@@ -213,9 +222,11 @@ if (document.URL.match(/transaction_details/)) {
 
     function save_accept_contract() {
 
-        if ($('#accept_contract_contract_price').val() == '$0') {
-            $('#accept_contract_contract_price').val('');
-        }
+        $('#accept_contract_contract_price, #accept_contract_earnest_amount').each(function() {
+            if ($(this).val() == '$0') {
+                $(this).val('');
+            }
+        });
 
         let form = $('#accept_contract_form');
         let validate = validate_form(form);
@@ -240,6 +251,10 @@ if (document.URL.match(/transaction_details/)) {
             let contract_date = $('#accept_contract_contract_date').val();
             let close_date = $('#accept_contract_close_date').val();
             let contract_price = $('#accept_contract_contract_price').val();
+            let using_heritage = $('#accept_contract_using_heritage').val();
+            let title_company = $('#accept_contract_title_company').val();
+            let earnest_amount = $('#accept_contract_earnest_amount').val();
+            let earnest_held_by = $('#accept_contract_earnest_held_by').val();
             let Listing_ID = $('#Listing_ID').val();
 
             let formData = new FormData();
@@ -260,6 +275,10 @@ if (document.URL.match(/transaction_details/)) {
             formData.append('contract_date', contract_date);
             formData.append('close_date', close_date);
             formData.append('contract_price', contract_price);
+            formData.append('using_heritage', using_heritage);
+            formData.append('title_company', title_company);
+            formData.append('earnest_amount', earnest_amount);
+            formData.append('earnest_held_by', earnest_held_by);
             formData.append('Listing_ID', Listing_ID);
             axios.post('/agents/doc_management/transactions/accept_contract', formData, axios_options)
                 .then(function (response) {
@@ -306,7 +325,7 @@ if (document.URL.match(/transaction_details/)) {
             });
     }
 
-    window.load_tabs = function (tab) {
+    window.load_tabs = function (tab, reorder = true) {
         let Listing_ID = $('#Listing_ID').val();
         let Contract_ID = $('#Contract_ID').val();
         let Referral_ID = $('#Referral_ID').val();
@@ -327,19 +346,13 @@ if (document.URL.match(/transaction_details/)) {
             headers: axios_headers_html
         })
             .then(function (response) {
+
                 $('#' + tab + '_tab').html(response.data);
 
                 if (tab == 'details') {
 
                     // update counties when state is changed
                     $('#StateOrProvince').change(update_county_select);
-
-                    // format list price
-                    format_money($('.money'));
-                    $('.money').keyup(function () {
-                        format_money($(this));
-                        //$('#list_price_display').text($(this).val());
-                    });
 
                     // open checklist tab shortcut from helper
                     $(document).on('click', '#open_checklist_button', function () {
@@ -349,6 +362,19 @@ if (document.URL.match(/transaction_details/)) {
                     $('#search_mls_button').off('click').on('click', search_mls);
 
                     $('.save-details-button').off('click').on('click', save_details);
+
+                    if($('#UsingHeritage').val() == 'no') {
+                        $('.not-using-heritage').show();
+                    }
+
+                    $('#UsingHeritage').change(function() {
+                        if($(this).val() == 'yes') {
+                            $('.not-using-heritage').hide();
+                            $('#TitleCompany').val('').trigger('change');
+                        } else {
+                            $('.not-using-heritage').show();
+                        }
+                    });
 
                 } else if (tab == 'members') {
 
@@ -397,17 +423,65 @@ if (document.URL.match(/transaction_details/)) {
                             $(this).find('.individual-template-form').prop('disabled', true);
                         });
 
-                        reorder_documents('yes');
 
-                    }, 1000);
+                        $('.add-to-checklist-button').off('click').on('click', show_add_to_checklist);
+
+                    }, 200);
+
+                    if(reorder) {
+                        setTimeout(function() {
+                            reorder_documents('yes');
+                        }, 1000);
+                    }
 
                 } else if (tab == 'checklist') {
 
-                    /* setTimeout(function() {
+                    setTimeout(function() {
                         $('.save-notes-button').off().on('click', function() {
                             save_add_notes($(this));
                         });
-                    }, 200); */
+
+                        $('.add-document-button').off('click').on('click', show_add_document);
+
+                        $('.view-docs-button').off('click').on('click', toggle_view_docs_button);
+
+                        $('.view-notes-button').off('click').on('click', toggle_view_notes_button);
+
+                        $('.delete-doc-button').off('click').on('click', show_delete_doc);
+
+                        $('.add-notes-button').off('click').on('click', show_add_notes);
+
+                        $('.mark-read-button').off('click').on('click', mark_note_read);
+
+                        $('#change_checklist_button').off('click').on('click', confirm_change_checklist);
+
+                        $('.accept-checklist-item-button').off('click').on('click', function() {
+                            checklist_item_review_status($(this), 'accepted', null);
+                        });
+                        $('.reject-checklist-item-button').off('click').on('click', function() {
+                            show_checklist_item_review_status($(this), 'rejected');
+                        });
+                        $('.accept-checklist-item-button').off('click').on('click', function() {
+                            checklist_item_review_status($(this), 'accepted', null);
+                        });
+                        $('.undo-accepted, .undo-rejected').off('click').on('click', function() {
+                            checklist_item_review_status($(this), 'not_reviewed', null);
+                        });
+
+                        $('.mark-required').off('click').on('click', function() {
+                            mark_required($(this), $(this).data('checklist-item-id'), $(this).data('required'));
+                        });
+
+                        $('.remove-checklist-item').off('click').on('click', function() {
+                            show_remove_checklist_item($(this), $(this).data('checklist-item-id'));
+                        });
+
+                        $('#add_checklist_item_button').off('click').on('click', show_add_checklist_item);
+
+                        $('#email_checklist_to_agent_button').off('click').on('click', show_email_agent);
+
+                    }, 500);
+
 
                     $('.notes-collapse').on('show.bs.collapse', function () {
                         $('.documents-collapse.show').collapse('hide');
@@ -428,7 +502,29 @@ if (document.URL.match(/transaction_details/)) {
 
                     listing_options();
 
+                    // hide all form-group-div and show the first (MAR)
+                    $('.form-group-div').hide();
+                    $('.form-group-div').eq(0).show();
+                    // search forms
+                    $('#form_search').keyup(form_search);
+                    // select and show form groups
+                    $('.select-form-group').change(function () {
+                        // clear search input
+                        $('#form_search').val('').trigger('change');
+
+                        // if all show everything or just the selected group
+                        if ($(this).val() == 'all') {
+                            $('.form-group-div, .list-group-header, .form-name').show();
+                        } else {
+                            $('.list-group-header, .form-name').show();
+                            $('.form-group-div').hide();
+                            $('[data-form-group-id="' + $(this).val() + '"]').show();
+                        }
+                    });
+
+
                 } else if (tab == 'contracts') {
+
                     $('.contract-div').mouseenter(function () {
                         $(this).addClass('z-depth-3').removeClass('z-depth-1');
                     });
@@ -438,6 +534,49 @@ if (document.URL.match(/transaction_details/)) {
 
                 }
 
+
+                if($('#required_fields_using_heritage').val() == 'no') {
+                    $('.not-using-heritage').show();
+                } else {
+                    $('#required_fields_title_company').prop('required', false).removeClass('required');
+                }
+
+                $('#required_fields_using_heritage').change(function() {
+                    if($(this).val() == 'yes') {
+                        $('.not-using-heritage').hide();
+                        $('#required_fields_title_company').val('').trigger('change');
+                        $('#required_fields_title_company').prop('required', false).removeClass('required');
+                    } else {
+                        $('.not-using-heritage').show();
+                        $('#required_fields_title_company').prop('required', true).addClass('required');
+                    }
+                });
+
+                $('.money, .money-decimal').each(function() {
+                    if($(this).val() == '') {
+                        //$(this).val('0');
+                    }
+                });
+                if($('.money').length > 0) {
+                    format_money($('.money'));
+                    $('.money').keyup(function () {
+                        format_money($(this));
+                    });
+                }
+                if($('.money-decimal').length > 0) {
+                    $('.money-decimal').each(function() {
+                        if($(this).val() != '') {
+                            format_money_with_decimals($(this));
+                        }
+                        $('.money-decimal').change(function () {
+                            if($(this).val() != '') {
+                                format_money_with_decimals($(this));
+                            }
+                        });
+                    });
+                }
+
+
                 // init tooltips and form elements
                 global_tooltip();
 
@@ -445,7 +584,10 @@ if (document.URL.match(/transaction_details/)) {
                     handle: '.draggable-handle'
                 });
 
-                setTimeout(form_elements, 500);
+                setTimeout(function() {
+                    form_elements();
+                    global_loading_off();
+                }, 500);
 
                 $('.modal-backdrop').remove();
 
@@ -453,6 +595,57 @@ if (document.URL.match(/transaction_details/)) {
             .catch(function (error) {
                 console.log(error);
             });
+    }
+
+    window.load_documents_on_tab_click = function() {
+        $('#open_documents_tab').off().on('show.bs.tab', function (e) {
+            load_tabs('documents', false);
+        });
+    }
+
+    window.load_checklist_on_tab_click = function() {
+        $('#open_checklist_tab').off().on('show.bs.tab', function (e) {
+            load_tabs('checklist');
+        });
+    }
+
+    function form_search() {
+        let v = $('#form_search').val();
+        if (v.length == 0) {
+            // hide all containers with header and name inside
+            $('.form-group-div').hide();
+            // make sure all headers and names are visible if searched for
+            $('.list-group-header, .form-name').show();
+            // get value of selected form group to reset list
+            let form_group = $('.select-form-group').val();
+            if (form_group == 'all') {
+                $('.form-group-div, .list-group-header, .form-name').show();
+            } else {
+                $('[data-form-group-id="' + form_group + '"]').show().find('.form-name').show();
+            }
+        } else {
+
+            // show all containers with header and name inside
+            $('.form-group-div').show();
+            // hide all headers
+            $('.list-group-header').hide();
+            // hide all names
+            $('.form-name').hide().each(function () {
+                if ($(this).data('form-name').match(new RegExp(v, 'i'))) {
+                    // show name
+                    $(this).show();
+                    // show header
+                    $(this).closest('.form-group-div').find('.list-group-header').show();
+                }
+            });
+        }
+    }
+
+    window.clear_selected_form = function() {
+
+        $('.form-name').removeClass('bg-green-light selected');
+        $('.form-name-display').removeClass('text-success').addClass('text-primary');
+        $('.checked-div').addClass('d-none');
     }
 
     function sortable_documents() {

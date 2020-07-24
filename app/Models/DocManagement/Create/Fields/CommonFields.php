@@ -9,6 +9,8 @@ use App\Models\DocManagement\Create\Fields\FieldInputs;
 use App\Models\DocManagement\Transactions\EditFiles\UserFieldsInputs;
 use App\Models\DocManagement\Transactions\EditFiles\UserFieldsValues;
 use App\Models\DocManagement\Transactions\Listings\Listings;
+use App\Models\DocManagement\Transactions\Contracts\Contracts;
+use App\Models\DocManagement\Transactions\Referrals\Referrals;
 use App\Models\DocManagement\Transactions\Members\Members;
 
 class CommonFields extends Model
@@ -37,23 +39,33 @@ class CommonFields extends Model
         return $common;
     }
 
-    public function ScopeGetCommonNameValue($query, $common_name, $input_id, $field_type, $Listing_ID = null, $Contract_ID = null, $Agent_ID) {
+    public function ScopeGetCommonNameValue($query, $common_name, $input_id, $field_type, $Listing_ID = null, $Contract_ID = null, $Referral_ID = null, $transaction_type, $Agent_ID) {
+
         if($field_type == 'system') {
 
             $field_input = UserFieldsInputs::where('input_id', $input_id) -> where('field_type', 'common') -> get();
             $common_name_search = $this -> where('field_name', $common_name) -> first();
 
-            $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
             $members_modal = new Members();
-            $members = $members_modal -> where('Listing_ID', $Listing_ID) -> orWhere('Contract_ID', $Contract_ID) -> get();
+
+            if($transaction_type == 'listing') {
+                $property = Listings::find($Listing_ID);
+                $members = $members_modal -> where('Listing_ID', $Listing_ID) -> orWhere('Contract_ID', $Contract_ID) -> get();
+            } else if($transaction_type == 'contract') {
+                $property = Contracts::find($Contract_ID);
+                $members = $members_modal -> where('Listing_ID', $Listing_ID) -> orWhere('Contract_ID', $Contract_ID) -> get();
+            } else if($transaction_type == 'referral') {
+                $property = Referrals::find($Referral_ID);
+                $members = $members_modal -> where('Referral_ID', $Referral_ID) -> get();
+            }
 
             $value = '';
 
             if(!empty($common_name_search) && $common_name_search -> db_column_name != '') {
 
                 $db_column_name = $common_name_search -> db_column_name;
-                if($listing -> $db_column_name != '' ) {
-                    $value = $listing -> $db_column_name;
+                if($property -> $db_column_name != '' ) {
+                    $value = $property -> $db_column_name;
                 }
 
             } else {
@@ -92,25 +104,25 @@ class CommonFields extends Model
                         $member = null;
                     }
                 } else if($common_name == 'List Agent Company') {
-                    $value = $listing -> ListOfficeName;
+                    $value = $property -> ListOfficeName;
                 } else if($common_name == 'Selling Agent Company') {
-                    $value = $listing -> BuyerOfficeName;
+                    $value = $property -> BuyerOfficeName;
                 } else if($common_name == 'Full Address') {
-                    $value = $listing -> FullStreetAddress . ' ' . $listing -> City . ' ' . $listing -> StateOrProvince .' '.$listing -> PostalCode;
+                    $value = $property -> FullStreetAddress . ' ' . $property -> City . ' ' . $property -> StateOrProvince .' '.$property -> PostalCode;
                 } else if($common_name == 'Street Address') {
-                    $value = $listing -> FullStreetAddress;
+                    $value = $property -> FullStreetAddress;
                 } else if($common_name == 'City') {
-                    $value = $listing -> City;
+                    $value = $property -> City;
                 } else if($common_name == 'State') {
-                    $value = $listing -> StateOrProvince;
+                    $value = $property -> StateOrProvince;
                 } else if($common_name == 'Zip Code') {
-                    $value = $listing -> PostalCode;
+                    $value = $property -> PostalCode;
                 } else if($common_name == 'County') {
-                    $value = $listing -> County;
+                    $value = $property -> County;
                 } else if($common_name == 'Listing Agent Name') {
-                    $value = $listing -> ListAgentFirstName . ' ' . $listing -> ListAgentLastName;
+                    $value = $property -> ListAgentFirstName . ' ' . $property -> ListAgentLastName;
                 } else if($common_name == 'Buyers Agent Name') {
-                    $value = $listing -> BuyerAgentFirstName . ' ' . $listing -> BuyerAgentLastName;
+                    $value = $property -> BuyerAgentFirstName . ' ' . $property -> BuyerAgentLastName;
                 }
 
                 if($member) {

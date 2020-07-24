@@ -21,7 +21,7 @@
     {{-- Footer --}}
     @slot('footer')
         @component('mail::footer')
-            © {{ date('Y') }} {{ \Session::get('agent_details') -> company }}. @lang('All rights reserved.')
+            © {{ date('Y') }} {{ auth() -> user() -> group == 'agent' ? \Session::get('agent_details') -> company : 'Taylor Properties' }}. @lang('All rights reserved.')
         @endcomponent
     @endslot
 @endcomponent

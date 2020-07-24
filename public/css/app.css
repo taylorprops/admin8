@@ -1641,6 +1641,11 @@ a.text-green:hover {
   background-color: rgba(48, 167, 48, 0.1) !important;
 }
 
+.bg-red-light {
+  background: #f8d9d9 !important;
+  background-color: #f8d9d9 !important;
+}
+
 .btn-primary {
   background: #4c9bdb !important;
 }
@@ -1669,6 +1674,16 @@ a.text-green:hover {
 
 .badge.bg-orange {
   background-image: linear-gradient(122deg, #d47433 29.17%, #df7935 29.17%, #df7935 50%, #d47433 50%, #d47433 0.17%, #df7935 79.17%, #df7935 100%) !important;
+  background-size: 14.15px 22.64px !important;
+}
+
+.badge.bg-danger {
+  background-image: linear-gradient(122deg, #a33a38 29.17%, #b64341 29.17%, #b64341 50%, #a33a38 50%, #a33a38 0.17%, #b64341 79.17%, #b64341 100%) !important;
+  background-size: 14.15px 22.64px !important;
+}
+
+.badge.bg-blue-light {
+  background-image: linear-gradient(122deg, #e9ecf0 29.17%, #ebf1f7 29.17%, #ebf1f7 50%, #e9ecf0 50%, #e9ecf0 0.17%, #ebf1f7 79.17%, #ebf1f7 100%) !important;
   background-size: 14.15px 22.64px !important;
 }
 
@@ -13083,7 +13098,7 @@ body:after {
 }
 
 body {
-  padding-top: 60px;
+  padding-top: 50px;
 }
 
 .hidden-sn main {
@@ -13131,6 +13146,10 @@ input {
 
 .nowrap {
   white-space: nowrap;
+}
+
+.fa-bars {
+  cursor: pointer;
 }
 
 .btn:not(.btn-rounded),
@@ -13202,6 +13221,31 @@ input {
   font-size: 0.7rem;
 }
 
+.container {
+  -webkit-animation: fadeIn 0.5s;
+          animation: fadeIn 0.5s;
+}
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0.25;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.25;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 .simplebar-content-wrapper {
   overflow-y: scroll !important;
 }
@@ -13252,6 +13296,11 @@ ul {
 
 .modal {
   overflow-y: scroll;
+}
+
+body,
+body.modal-open {
+  padding-right: 0px !important;
 }
 
 .disable-scrollbars {
@@ -14955,6 +15004,14 @@ header .header-logo-link {
   padding: 10px;
 }
 
+.page-required-details .not-using-heritage {
+  display: none;
+}
+
+.page-required-details .using-heritage {
+  width: 130px;
+}
+
 .page-required-details .receiving,
 .page-required-details .referring {
   display: none;
@@ -15041,12 +15098,25 @@ header .header-logo-link {
   box-shadow: none;
 }
 
+.page-transaction-details .status-badge {
+  padding: 1rem !important;
+  padding-left: 0.2rem !important;
+}
+
 .page-transaction-details .details-main-tabs {
   padding: 0rem;
   padding-top: 1rem;
   border: 1px solid #dee2e6 !important;
   border-top: none !important;
   margin-top: 0px;
+}
+
+.page-transaction-details .not-using-heritage {
+  display: none;
+}
+
+.page-transaction-details .using-heritage {
+  width: 130px;
 }
 
 .page-transaction-details #agent_search_div {
@@ -15173,6 +15243,14 @@ header .header-logo-link {
   margin-bottom: 0rem;
 }
 
+.page-transaction-details .checklist-item-dropdown::after {
+  display: none;
+}
+
+.page-transaction-details .form-name {
+  cursor: pointer;
+}
+
 .page-transaction-details .form-in-use {
   opacity: 0.6;
 }
@@ -15219,13 +15297,13 @@ header .header-logo-link {
 .page-transaction-details #bulk_options_div {
   position: -webkit-sticky;
   position: sticky;
-  top: 60px;
-  background: rgba(255, 255, 255, 0.8);
+  top: 50px;
+  background: rgba(255, 255, 255, 0.9);
   width: 100%;
   padding: 10px;
   border-top: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
-  z-index: 1000;
+  z-index: 5;
 }
 
 .page-transaction-details .status-badge {
@@ -15243,6 +15321,24 @@ header .header-logo-link {
 
 .page-transaction-details .add-notes-div textarea {
   height: 90px;
+}
+
+.page-transaction-details .rejected-reasons-container {
+  position: relative;
+}
+
+.page-transaction-details .rejected-reasons-div {
+  height: 400px;
+  overflow: auto;
+}
+
+.page-transaction-details .rejected-reason {
+  cursor: pointer;
+}
+
+.page-transaction-details .mark-not-required,
+.page-transaction-details .mark-required {
+  display: none;
 }
 
 .page-transaction-details .checklist-attachment {
@@ -15271,27 +15367,34 @@ header .header-logo-link {
       -ms-user-select: none;
           user-select: none;
   cursor: move;
-  padding: 0.3rem 0.6rem !important;
+  padding: 0.3rem 0.6rem;
   width: 95%;
   margin-left: auto;
   margin-right: auto;
 }
 
 .page-transaction-details .checklist-item-droparea {
-  width: 95%;
+  width: 96%;
   margin-left: auto;
   margin-right: auto;
-  border: 2px dashed #4c9bdb;
-  min-height: 20px;
-  height: auto;
+  border: 1px dashed #4c9bdb;
+  min-height: 35px;
 }
 
 .page-transaction-details .checklist-item-badge {
   width: 100px;
 }
 
+.page-transaction-details .drop-activated,
+.page-transaction-details .source-dropped,
+.page-transaction-details .doc-match {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  width: 100%;
+}
+
 .page-transaction-details .drop-activated {
-  border: 2px dashed #30a730;
+  border: 1px dashed #30a730;
 }
 
 .page-transaction-details .drop-activated .drop-div-title {
@@ -15299,8 +15402,6 @@ header .header-logo-link {
 }
 
 .page-transaction-details .source-dropped {
-  width: 96%;
-  margin: 2px auto;
   background: rgba(48, 167, 48, 0.5);
 }
 
@@ -15309,8 +15410,16 @@ header .header-logo-link {
 }
 
 .page-transaction-details .doc-match {
-  background: rgba(223, 121, 53, 0.2);
-  min-height: 40px;
+  background: rgba(223, 121, 53, 0.7);
+}
+
+.page-transaction-details .template-docs-div .list-group-item {
+  padding: 0.3rem 1.25rem !important;
+}
+
+.page-transaction-details #email_agent_checklist_details {
+  height: 0px;
+  display: none;
 }
 
 .page-transaction-details .image-container {
@@ -15536,6 +15645,13 @@ header .header-logo-link {
 @media (max-width: 450px) {
   .page-transaction-details .agent-section {
     border: none !important;
+  }
+}
+
+@media only screen and (max-width: 850px) and (min-width: 768px) {
+  .page-transaction-details #bulk_options_div button {
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
   }
 }
 
@@ -15831,5 +15947,27 @@ header .header-logo-link {
 
 .page-fill-fields .navbar-edit-file-options li:hover {
   background: #ebf1f7;
+}
+
+.page-document-review .transactions-container {
+  position: relative;
+}
+
+.page-document-review .transactions-container .properties-container,
+.page-document-review .transactions-container .checklist-items-container {
+  position: absolute;
+  top: -64px;
+  left: 0;
+  height: 100VH;
+  overflow: auto;
+  padding-top: 63px;
+  border-right: 1px solid #ccc;
+  z-index: 1;
+}
+
+.page-document-review .transactions-container .checklist-items-container {
+  border-right: none;
+  background: #fff;
+  z-index: 2;
 }
 

@@ -12,9 +12,9 @@
     // Add new transaction
     Route::get('/agents/doc_management/transactions/add/{type}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@add_transaction');
     // Add listing details if existing
-    Route::get('/agents/doc_management/transactions/add/transaction_add_details_existing/{transaction_type}/{state?}/{tax_id?}/{bright_type?}/{bright_id?}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_add_details_existing');
+    Route::get('/agents/doc_management/transactions/add/transaction_add_details_existing/{Agent_ID}/{transaction_type}/{state?}/{tax_id?}/{bright_type?}/{bright_id?}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_add_details_existing');
     // Add listing details if new
-    Route::get('/agents/doc_management/transactions/add/transaction_add_details_new/{transaction_type}/{street_number?}/{street_name?}/{city?}/{state?}/{zip?}/{county?}/{street_dir?}/{unit_number?}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_add_details_new');
+    Route::get('/agents/doc_management/transactions/add/transaction_add_details_new/{Agent_ID}/{transaction_type}/{street_number?}/{street_name?}/{city?}/{state?}/{zip?}/{county?}/{street_dir?}/{unit_number?}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_add_details_new');
     // Add transaction details if referral
     Route::post('/agents/doc_management/transactions/add/transaction_add_details_referral', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_add_details_referral');
      // Save transaction details if referral
@@ -96,9 +96,14 @@
     // get email documents
     Route::post('/agents/doc_management/transactions/email_get_documents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@email_get_documents');
     // email documents
-    Route::post('/agents/doc_management/transactions/email_documents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@email_documents');
+    Route::post('/agents/doc_management/transactions/send_email', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@send_email');
     // merge documents
     Route::post('/agents/doc_management/transactions/merge_documents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@merge_documents');
+
+    // make sure all required fields are filled out before allowing adding documents to the checklist
+    Route::post('/agents/doc_management/transactions/check_required_contract_fields', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@check_required_contract_fields');
+    // save required fields
+    Route::post('/agents/doc_management/transactions/save_required_fields', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_required_fields');
 
 
 
@@ -112,11 +117,6 @@
 
     Route::get('/agents/doc_management/transactions/get_property_info', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@get_property_info');
     Route::get('/agents/doc_management/transactions/update_county_select', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@update_county_select');
-
-
-
-
-
 
 
 
@@ -138,8 +138,26 @@
     Route::post('/agents/doc_management/transactions/edit_files/get_user_fields', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@get_user_fields');
 
 
+///////////////////////////////// ADMIN ONLY //////////////////////////////////////////////
+/**********  File review /**********/
+
+Route::middleware('admin') -> group(function () {
+
+    // accept reject checklist items
+    Route::post('/agents/doc_management/transactions/set_checklist_item_review_status', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@set_checklist_item_review_status');
+    // mark checklist items required or if applicable
+    Route::post('/agents/doc_management/transactions/mark_required', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@mark_required');
+    // save add checklist item
+    Route::post('/agents/doc_management/transactions/save_add_checklist_item', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_checklist_item');
+    // remove checklist item
+    Route::post('/agents/doc_management/transactions/remove_checklist_item', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@remove_checklist_item');
+    // get email checklist html
+    Route::get('/agents/doc_management/transactions/get_email_checklist_html', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_email_checklist_html');
 
 
+
+
+});
 
 
 

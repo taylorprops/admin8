@@ -10,6 +10,9 @@
                         <a href="/doc_management/resources/resources" class="waves-effect"> Resources</a>
                     </li>
                     <li>
+                        <a href="/admin/resources/resources_admin" class="waves-effect"> Admin Resources</a>
+                    </li>
+                    <li>
                         <a href="/doc_management/create/upload/files" class="waves-effect"> Files</a>
                     </li>
                     <li>
@@ -23,6 +26,12 @@
                     </li>
                     <li>
                         <a href="/agents/doc_management/transactions/add/contract" class="waves-effect">Add Contract</a>
+                    </li>
+                    <li>
+                        <a href="/agents/doc_management/transactions/add/referral" class="waves-effect">Add Referral</a>
+                    </li>
+                    <li>
+                        <a href="/doc_management/document_review" class="waves-effect">Review Documents</a>
                     </li>
                 </ul>
             </div>

@@ -3,13 +3,13 @@
         <div class="col-12 col-md-10 mx-auto">
 
             <div class="row members-list-group">
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-lg-4">
                     <a href="javascript: void(0)" id="add_member_button" class="btn btn-success"><i class="fa fa-plus mr-2"></i> Add Member</a>
                     <div class="list-group my-3 border-top
                     " id="members_tab" role="tablist">
                         <a class="list-group-item list-group-item-action hidden font-weight-bold" id="add_member_group" data-toggle="list" href="#add_member_div" role="tab">New Contact</a>
                         @foreach($members as $member)
-                            <a class="list-group-item list-group-item-action list-group-item-member @if($loop -> first) active @endif" id="member_{{ $member -> id }}_item" data-toggle="list" href="#member_{{ $member -> id }}_div" role="tab">
+                            <a class="list-group-item list-group-item-action list-group-item-member @if($loop -> first) active @endif" id="member_{{ $member -> id }}_item" data-toggle="list" href="#member_{{ $member -> id }}_div" role="tab" data-member-type="{{ $member -> member_type }}">
                                 <div class="row">
                                     <div class="col-5">
                                         <span class="font-weight-bold">{{ $resource_items -> GetResourceName($member -> member_type_id) }}</span>
@@ -22,7 +22,7 @@
                         @endforeach
                     </div>
                 </div>
-                <div class="col-12 col-md-8">
+                <div class="col-12 col-lg-8">
                     <div class="tab-content get-members-tabs pt-2" id="members_tab_div">
 
                         @foreach($members as $member)
@@ -45,7 +45,7 @@
                                             </select>
                                         </div>
 
-                                        <div class="col-12 col-md-6 d-flex align-items-center">
+                                        <div class="col-12 col-md-6 d-flex align-items-center flex-wrap">
                                             @if($disabled == '')
                                             <a href="javascript: void(0)" class="btn btn-sm btn-primary import-contact-button" data-ele="{{ '#member_div_'.$member -> id }}"><i class="fad fa-cloud-download-alt mr-2"></i> Import Contact</a>
                                             <a href="javascript: void(0)" class="btn btn-sm btn-danger delete-member-button" data-member-id="{{ $member -> id }}"><i class="fad fa-trash mr-2"></i> Delete Member</a>

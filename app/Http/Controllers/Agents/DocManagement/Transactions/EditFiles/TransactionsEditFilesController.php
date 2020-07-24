@@ -40,10 +40,19 @@ class TransactionsEditFilesController extends Controller
         $document = TransactionDocuments::whereId($document_id) -> first();
         $file_type = $document -> file_type;
         $file_id = $document -> file_id;
-        $Listing_ID = $document -> Listing_ID;
+        $Listing_ID = $document -> Listing_ID ?? 0;
+        $Contract_ID = $document -> Contract_ID ?? 0;
+        $Referral_ID = $document -> Referral_ID ?? 0;
+        $transaction_type = $document -> transaction_type;
         $Agent_ID = $document -> Agent_ID;
 
-        $listing = Listings::where('Listing_ID', $Listing_ID) -> first();
+        /* if($transaction_type == 'listing') {
+            $property = Listings::find($Listing_ID);
+        } else if($transaction_type == 'contract') {
+            $property = Contracts::find($Contract_ID);
+        } else if($transaction_type == 'referral') {
+            $property = Referrals::find($Referral_ID);
+        } */
         $common_fields = new CommonFields();
 
         $file = TransactionUpload::where('file_id', $file_id) -> first();
@@ -53,7 +62,7 @@ class TransactionsEditFilesController extends Controller
         $fields_user_inputs = UserFieldsInputs::where('file_id', $file_id) -> orderBy('id') -> get();
         $field_values = UserFieldsValues::where('file_id', $file_id) -> get();
 
-        return view('/agents/doc_management/transactions/edit_files/file', compact('listing', 'Listing_ID', 'Agent_ID', 'file', 'images', 'fields_user', 'fields_user_inputs', 'file_id', 'document_id', 'field_values', 'file_type', 'common_fields'));
+        return view('/agents/doc_management/transactions/edit_files/file', compact('Listing_ID', 'Contract_ID', 'Referral_ID', 'transaction_type', 'Agent_ID', 'file', 'images', 'fields_user', 'fields_user_inputs', 'file_id', 'document_id', 'field_values', 'file_type', 'common_fields'));
 
     }
 
@@ -62,27 +71,26 @@ class TransactionsEditFilesController extends Controller
         // delete all field input values for this file
         $file_id = $request[0]['file_id'];
         $file_type = $request[0]['file_type'];
-        $Listing_ID = '0';
-        $Contract_ID = '0';
-
-        if($request[0]['Listing_ID']) {
-            $Listing_ID = $request[0]['Listing_ID'];
-        }
-        if(isset($request[0]['Contract_ID'])) {
-            $Contract_ID = $request[0]['Contract_ID'];
-        }
-
-
+        $Listing_ID = $request[0]['Listing_ID'] ?? 0;
+        $Contract_ID = $request[0]['Contract_ID'] ?? 0;
+        $Referral_ID = $request[0]['Referral_ID'] ?? 0;
+        $transaction_type = $request[0]['transaction_type'];
         $Agent_ID = $request[0]['Agent_ID'];
 
-        $delete_filled_fields = UserFieldsValues::where('Agent_ID', $Agent_ID) -> where('file_id', $file_id)
-            -> where(function ($query) use ($Listing_ID, $Contract_ID) {
-                if($Listing_ID > 0) {
-                    $query -> where('Listing_ID', $Listing_ID);
-                } else if($Contract_ID > 0) {
-                    $query -> where('Contract_ID', $Contract_ID);
-                }
-            })
+        if($transaction_type == 'listing') {
+            $column = 'Listing_ID';
+            $id = $Listing_ID;
+        } else if($transaction_type == 'contract') {
+            $column = 'Contract_ID';
+            $id = $Contract_ID;
+        } else if($transaction_type == 'referral') {
+            $column = 'Referral_ID';
+            $id = $Referral_ID;
+        }
+
+        $delete_filled_fields = UserFieldsValues::where('Agent_ID', $Agent_ID)
+            -> where('file_id', $file_id)
+            -> where($column, $id)
             -> delete();
 
         $fields = json_decode($request -> getContent(), true);
@@ -95,20 +103,16 @@ class TransactionsEditFilesController extends Controller
             $filled_fields -> Agent_ID = $Agent_ID;
             $filled_fields -> Listing_ID = $Listing_ID;
             $filled_fields -> Contract_ID = $Contract_ID;
+            $filled_fields -> Referral_ID = $Referral_ID;
+            $filled_fields -> transaction_type = $transaction_type;
             $filled_fields -> input_id = $field['input_id'];
             $filled_fields -> input_value = $field['input_value'];
             $filled_fields -> save();
 
             if($field['common_name'] != '') {
-                // update all common fields for this listing or contract
+                // update all common fields
                 $common_fields = UserFieldsValues::where('Agent_ID', $Agent_ID)
-                -> where(function ($query) use ($Listing_ID, $Contract_ID) {
-                    if($Listing_ID > 0) {
-                        $query -> where('Listing_ID', $Listing_ID);
-                    } else if($Contract_ID > 0) {
-                        $query -> where('Contract_ID', $Contract_ID);
-                    }
-                })
+                -> where($column, $id)
                 -> where('common_name', $field['common_name']) -> first();
 
                 $common_fields -> input_value = $field['input_value'];
@@ -120,11 +124,22 @@ class TransactionsEditFilesController extends Controller
 
     public function convert_to_pdf(Request $request) {
 
-        $Listing_ID = $request -> Listing_ID;
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
+        $transaction_type = $request -> transaction_type;
         $file_id = $request -> file_id;
         $file_type = $request -> file_type;
 
-        $upload_dir = 'doc_management/transactions/' . $Listing_ID . '/' . $file_id . '_'.$file_type;
+        if($transaction_type == 'listing') {
+            $path = 'listings/'.$Listing_ID;
+        } else if($transaction_type == 'contract') {
+            $path = 'contracts/'.$Contract_ID;
+        } else if($transaction_type == 'referral') {
+            $path = 'referrals/'.$Referral_ID;
+        }
+
+        $upload_dir = 'doc_management/transactions/' . $path . '/' . $file_id . '_'.$file_type;
 
         Storage::disk('public') -> makeDirectory($upload_dir . '/combined/');
         Storage::disk('public') -> makeDirectory($upload_dir . '/layers/');
@@ -194,8 +209,20 @@ class TransactionsEditFilesController extends Controller
     public function rotate_document(Request $request) {
         $file_id = $request -> file_id;
         $file_type = $request -> file_type;
-        $Listing_ID = $request -> Listing_ID;
-        $folder = 'public/doc_management/transactions/' . $Listing_ID . '/' . $file_id.'_'.$file_type.'/';
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
+        $transaction_type = $request -> transaction_type;
+
+        if($transaction_type == 'listing') {
+            $path = 'listings/'.$Listing_ID;
+        } else if($transaction_type == 'contract') {
+            $path = 'contracts/'.$Contract_ID;
+        } else if($transaction_type == 'referral') {
+            $path = 'referrals/'.$Referral_ID;
+        }
+
+        $folder = 'public/doc_management/transactions/' . $path . '/' . $file_id.'_'.$file_type.'/';
         $files = Storage::allFiles($folder);
 
         foreach($files as $file) {
@@ -208,11 +235,26 @@ class TransactionsEditFilesController extends Controller
 
     public function get_user_fields(Request $request) {
 
-        $Listing_ID = $request -> Listing_ID;
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
+        $transaction_type = $request -> transaction_type;
         $Agent_ID = $request -> Agent_ID;
         $file_id = $request -> file_id;
         $file_type = $request -> file_type;
-        $user_fields = UserFields::where('Listing_ID', $Listing_ID) -> where('Agent_ID', $Agent_ID) -> where('file_id', $file_id) -> get();
+
+        if($transaction_type == 'listing') {
+            $field = 'Listing_ID';
+            $id = $Listing_ID;
+        } else if($transaction_type == 'contract') {
+            $field = 'Contract_ID';
+            $id = $Contract_ID;
+        } else if($transaction_type == 'referral') {
+            $field = 'Referral_ID';
+            $id = $Referral_ID;
+        }
+
+        $user_fields = UserFields::where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('file_id', $file_id) -> get();
 
         return response() -> json($user_fields);
 

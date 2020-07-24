@@ -152,6 +152,24 @@ if (document.URL.match(/transaction_required_details/)) {
 
         $('.agent-search').on('keyup', search_bright_agents);
 
+        $('#UsingHeritage').change(function() {
+            if($(this).val() == 'no') {
+                $('.not-using-heritage').show();
+            } else {
+                $('.not-using-heritage').hide();
+                $('#TitleCompany').val('').trigger('change');
+            }
+        });
+
+        $('.money-decimal').each(function() {
+            if($(this).val() != '') {
+                format_money_with_decimals($(this));
+            }
+            $(this).change(function() {
+                format_money_with_decimals($(this));
+            });
+        });
+
     });
 
     function save_details() {
@@ -251,7 +269,7 @@ if (document.URL.match(/transaction_required_details/)) {
             member_div.find('[name^='+member+'_zip]').val($(this).data('contact-zip'));
             member_div.find('[name^='+member+'_crm_contact_id]').val($(this).data('contact-id'));
 
-            $('input').trigger('change');
+            member_div.find('input').trigger('change');
             setTimeout(select_refresh, 500);
             $('#import_contact_modal').modal('hide');
         });
@@ -259,9 +277,25 @@ if (document.URL.match(/transaction_required_details/)) {
 
     function save_transaction_required_details() {
 
-        if($('#MLSListDate').val() > $('#ExpirationDate').val()) {
-            $('#modal_danger').modal().find('.modal-body').html('List Date must be before Expiration Date');
-            return false;
+        if($('#MLSListDate').length > 0) {
+            if($('#MLSListDate').val() > $('#ExpirationDate').val()) {
+                $('#modal_danger').modal().find('.modal-body').html('List Date must be before Expiration Date');
+                $('#MLSListDate').addClass('invalid invalid-input');
+                $('#modal_danger').on('hidden.bs.modal', function() {
+                    $('#MLSListDate').focus().trigger('click');
+                });
+                return false;
+            }
+        }
+        if($('#ContractDate').length > 0) {
+            if($('#ContractDate').val() > $('#CloseDate').val()) {
+                $('#modal_danger').modal().find('.modal-body').html('Contract Date must be before Settlement Date');
+                $('#ContractDate').addClass('invalid invalid-input');
+                $('#modal_danger').on('hidden.bs.modal', function() {
+                    $('#ContractDate').focus().trigger('click');
+                });
+                return false;
+            }
         }
 
         let form = $('#details_form');
@@ -297,7 +331,7 @@ if (document.URL.match(/transaction_required_details/)) {
         if(type == 'listing' || (type == 'contract' && member == 'buyer')) {
             member_div += ' \
             <div class="'+member+'-div mb-3 z-depth-1"> \
-                <div class="h5 responsive text-orange '+member+'-header"></div> \
+                <div class="h5-responsive text-orange '+member+'-header"></div> \
                 <div class="d-flex justify-content-between"> \
                     <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-member="'+member+'" data-member-id="' + member_id + '"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a> \
                     <div><a href="javascript: void(0)" class="member-delete text-danger" data-member="'+member+'"><i class="fal fa-times fa-2x"></i></a></div> \
@@ -307,17 +341,17 @@ if (document.URL.match(/transaction_required_details/)) {
             member_div += ' \
             <div class="'+member+'-div mb-3 z-depth-1"> \
                 <div class="d-flex justify-content-between"> \
-                    <div class="h5 responsive text-orange '+member+'-header"></div> \
+                    <div class="h5-responsive text-orange '+member+'-header"></div> \
                     <div><a href="javascript: void(0)" class="member-delete text-danger" data-member="'+member+'"><i class="fal fa-times fa-2x"></i></a></div> \
                 </div> \
             ';
         }
         member_div += ' \
                 <div class="row"> \
-                    <div class="col-12 col-md-6 col-lg-3"> \
+                    <div class="col-12 col-md-6"> \
                         <input type="text" class="custom-form-element form-input required" name="'+member+'_first_name[]" data-label="First Name"> \
                     </div> \
-                    <div class="col-12 col-md-6 col-lg-3"> \
+                    <div class="col-12 col-md-6"> \
                         <input type="text" class="custom-form-element form-input required" name="'+member+'_last_name[]" data-label="Last Name"> \
                     </div> \
         ';

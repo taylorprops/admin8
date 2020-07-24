@@ -1,0 +1,25 @@
+.page-document-review {
+
+    .transactions-container {
+        position: relative;
+
+        .properties-container, .checklist-items-container  {
+            position: absolute;
+            top: -64px;
+            left: 0;
+            height: 100VH;
+            overflow: auto;
+            padding-top: 63px;
+            border-right: 1px solid #ccc;
+            z-index: 1;
+        }
+
+        .checklist-items-container {
+            border-right: none;
+            background: #fff;
+            z-index: 2;
+        }
+
+    }
+
+}

@@ -22,6 +22,7 @@ require('./dashboard/agent.js');
 require('./doc_management/create/add_fields.js');
 require('./doc_management/create/files.js');
 require('./doc_management/resources/resources.js');
+require('./admin/resources/resources.js');
 require('./doc_management/fill/fill_fields.js');
 require('./doc_management/checklists/checklists.js');
 
@@ -42,6 +43,10 @@ require('./agents/doc_management/transactions/upload/upload.js');
 
 // edit files
 require('./agents/doc_management/transactions/edit_files/edit_files.js');
+
+
+// review documents
+require('./doc_management/review/review.js');
 
 
 

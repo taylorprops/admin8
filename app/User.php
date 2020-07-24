@@ -38,7 +38,7 @@ class User extends Authenticatable
     ];
 
     public function ScopeUserDetails($query, $user_id) {
-        $user = $this -> select('name', 'email', 'user_id', 'group') -> where('id', $user_id) -> first();
-        return compact('user');
+        $user_details = $this -> select('name', 'email', 'user_id', 'group') -> where('user_id', $user_id);
+        return $user_details;
     }
 }

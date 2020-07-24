@@ -30,7 +30,12 @@ class LoginController extends Controller
      */
     public function redirectTo(){
 
-        if(auth() -> user() -> group == 'agent') {
+        if(auth() -> user() -> group == 'admin') {
+
+            \Request::session() -> put('header_logo_src', '/images/logo/logo_tp.png');
+            \Request::session() -> put('email_logo_src', '/images/emails/TP-flat-white.png');
+
+        } else if(auth() -> user() -> group == 'agent') {
 
             $Agent_ID = auth() -> user() -> user_id;
 

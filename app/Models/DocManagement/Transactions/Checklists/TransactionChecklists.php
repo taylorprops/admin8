@@ -111,9 +111,9 @@ class TransactionChecklists extends Model
                 $add_checklist_items -> checklist_item_required = $item -> checklist_item_required;
                 $add_checklist_items -> checklist_item_group_id = $item -> checklist_item_group_id;
                 $add_checklist_items -> checklist_item_order = $item -> checklist_item_order;
-                if($item -> checklist_item_required == 'yes') {
+                /* if($item -> checklist_item_required == 'yes') {
                     $add_checklist_items -> checklist_item_status = 'Required';
-                }
+                } */
 
                 $add_checklist_items -> save();
 

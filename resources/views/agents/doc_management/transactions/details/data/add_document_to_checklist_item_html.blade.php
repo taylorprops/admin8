@@ -1,14 +1,14 @@
 <div class="container p-0 p-sm-1 p-md-2">
     <div class="row">
         <div class="col-12">
-            <div class="h5 responsive text-primary mb-3">Drag Documents to The Checklist Items</div>
+            <div class="h5-responsive text-primary mb-3">Drag Documents to The Checklist Items</div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-12 col-sm-5">
 
-            <div class="h5 responsive text-orange">Documents</div>
+            <div class="h5-responsive text-orange">Documents</div>
 
             <div class="p-2 border">
 
@@ -39,7 +39,7 @@
 
         <div class="col-12 col-sm-7">
 
-            <div class="h5 responsive text-orange mt-3 mt-sm-0">Checklist Items</div>
+            <div class="h5-responsive text-orange mt-3 mt-sm-0">Checklist Items</div>
 
             <div class="p-2 border">
 
@@ -49,14 +49,18 @@
 
                         @foreach($checklist_groups as $checklist_group)
 
-                            <div class="h4-responsive bg-primary text-white mt-1 mb-0 p-2">{{ $checklist_group -> resource_name }}</div>
+                            <div class="h4-responsive text-primary mt-1 mb-0 p-2">{{ $checklist_group -> resource_name }}</div>
 
                             @if(count($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)
 
                                 @foreach($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id) as $checklist_item)
 
                                     @php
-                                    $checklist_item_name = $checklist_items_model -> GetFormName($checklist_item -> checklist_form_id);
+                                    if($checklist_item -> checklist_form_id > 0) {
+                                        $checklist_item_name = $checklist_items_model -> GetFormName($checklist_item -> checklist_form_id);
+                                    } else {
+                                        $checklist_item_name = $checklist_item -> checklist_item_added_name;
+                                    }
                                     $status_details = $transaction_checklist_items_modal -> GetStatus($checklist_item ->  id);
                                     $docs_count = $transaction_checklist_item_documents -> where('checklist_item_id', $checklist_item ->  id) -> count();
                                     $status = $status_details -> status;
@@ -65,7 +69,7 @@
                                     $helper_text = $status_details -> helper_text;
                                     @endphp
 
-                                    <div class="bg-primary-light p-2 m-2">
+                                    <div class="{{-- bg-primary-light --}} p-2 m-2">
 
                                         <div class="font-weight-bold drop-div-title text-gray mb-3 d-flex justify-content-start">
                                             <div>

@@ -108,6 +108,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade draggable" id="add_to_checklists_modal" tabindex="-1" role="dialog" aria-labelledby="add_to_checklists_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
@@ -129,6 +130,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade draggable" id="remove_form_modal" tabindex="-1" role="dialog" aria-labelledby="remove_form_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -152,6 +154,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade draggable" id="replace_form_modal" tabindex="-1" role="dialog" aria-labelledby="replace_form_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -179,6 +182,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade draggable" id="form_manage_modal" tabindex="-1" role="dialog" aria-labelledby="form_manage_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
@@ -194,6 +198,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade draggable" id="edit_file_modal" tabindex="-1" role="dialog" aria-labelledby="edit_file_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -208,7 +213,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-12">
-                                    <span id="edit_form_name" class="h5 responsive text-primary"></span>
+                                    <span id="edit_form_name" class="h5-responsive text-primary"></span>
                                 </div>
                                 <div class="col-12">
                                     <input type="text" class="custom-form-element form-input required" name="edit_file_name_display" id="edit_file_name_display" data-label="Form Name">
@@ -382,6 +387,7 @@
                                 <div class="col-12">
                                     <select name="state" id="state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
                                         <option value=""></option>
+                                        <option value="All">All</option>
                                         @foreach($states as $state)
                                         <option value="{{ $state }}">{{ $state }}</option>
                                         @endforeach

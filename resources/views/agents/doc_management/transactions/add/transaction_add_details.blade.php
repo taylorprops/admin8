@@ -184,6 +184,7 @@
                         </li>
                     </ul>
                     <input type="hidden" name="transaction_type" id="transaction_type" value="{{ strtolower(str_replace('/Lease', '', $transaction_type)) }}">
+                    <input type="hidden" name="Agent_ID" id="Agent_ID" value="{{ $Agent_ID }}">
                 </form>
             </div>
 

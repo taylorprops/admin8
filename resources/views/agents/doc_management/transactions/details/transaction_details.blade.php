@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', 'title here')
+@section('title', $property -> FullStreetAddress.' '.$property -> City.' '.$property -> StateOrProvince.' '.$property -> PostalCode )
 
 @section('content')
 
@@ -89,6 +89,74 @@
     <input type="hidden" id="Referral_ID" value="{{ $property -> Referral_ID }}">
     <input type="hidden" id="Agent_ID" value="{{ $property -> Agent_ID }}">
     <input type="hidden" id="transaction_type" value="{{ $transaction_type }}">
+    <input type="hidden" id="questions_confirmed" value="{{ $questions_confirmed }}">
+
+    <div class="modal fade draggable" id="required_fields_modal" tabindex="-1" role="dialog" aria-labelledby="required_fields_modal_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form id="required_fields_form">
+                    <div class="modal-header bg-primary draggable-handle">
+                        <h4 class="modal-title" id="required_fields_modal_title">Add Required Fields</h4>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <i class="fal fa-times mt-2"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="h5 text-orange mt-2 mb-3">Please enter the following required details before submitting any documents.</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        Are the Buyer's using Heritage Title?
+                                        <br>
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="required_fields_using_heritage" name="required_fields_using_heritage" data-label="Using Heritage">
+                                            <option value=""></option>
+                                            <option value="yes" @if($property -> UsingHeritage == "yes") selected @endif>Yes</option>
+                                            <option value="no" @if($property -> UsingHeritage == "no") selected @endif>No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="not-using-heritage">
+                                            <input type="text" class="custom-form-element form-input required" id="required_fields_title_company" name="required_fields_title_company" value="{{ $property -> TitleCompany }}" data-label="Title Company">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <input type="text" class="custom-form-element form-input money-decimal numbers-only required" id="required_fields_earnest_amount" name="required_fields_earnest_amount" value="{{ $property -> EarnestAmount > 0 ? $property -> EarnestAmount : '' }}" data-label="Earnest Deposit Amount">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="required_fields_earnest_held_by" name="required_fields_earnest_held_by" data-label="Earnest Deposit Held By">
+                                            <option value=""></option>
+                                            <option value="us" @if($property -> TitleCompany == "us") selected @endif>Taylor/Anne Arundel Properties</option>
+                                            <option value="other_company" @if($property -> TitleCompany == "other_company") selected @endif>Other Real Estate Company</option>
+                                            <option value="title" @if($property -> TitleCompany == "title") selected @endif>Title Company/Attorney</option>
+                                            <option value="heritage_title" @if($property -> TitleCompany == "heritage_title") selected @endif>Heritage Title</option>
+                                            <option value="builder" @if($property -> TitleCompany == "builder") selected @endif>Builder</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-around">
+                        <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                        <a class="btn btn-success" id="save_required_fields_button"><i class="fad fa-check mr-2"></i> Save</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade draggable disable-scrollbars" id="accept_contract_modal" tabindex="-1" role="dialog" aria-labelledby="accept_contract_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -116,11 +184,13 @@
                                     <a class="btn btn-primary btn-sm my-3" data-toggle="collapse" href="#agent_search_div" role="button" aria-expanded="false" aria-controls="agent_search_div">
                                         <i class="fad fa-search mr-2"></i> Search Agents in Bright MLS
                                     </a>
-                                    <div class="collapse p-2 mb-4 border" id="agent_search_div">
-                                        <div class="mb-4">Type the Agent's Name, Email or BrightMLS ID</div>
-                                        <input type="text" class="custom-form-element form-input" id="agent_search" data-label="Enter Agent's Name, Email or ID" autocomplete="agentsearch">
-                                        <div class="search-results-container">
-                                            <div class="list-group search-results bg-white p-2 border z-depth-1 w-100"></div>
+                                    <div class="collapse border" id="agent_search_div">
+                                        <div class="p-2 mb-4">
+                                            <div class="mb-4">Type the Agent's Name, Email or BrightMLS ID</div>
+                                            <input type="text" class="custom-form-element form-input" id="agent_search" data-label="Enter Agent's Name, Email or ID" autocomplete="agentsearch">
+                                            <div class="search-results-container">
+                                                <div class="list-group search-results bg-white p-2 border z-depth-1 w-100"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -186,7 +256,53 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="h5 text-orange">Property Details</div>
+                                    <div class="h5 text-orange">Title and Earnest Details</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-start flex-wrap align-items-center">
+                                        <div class="text-primary mr-2">
+                                            Are the Buyer's using Heritage Title?
+                                        </div>
+                                        <div class="mr-2 using-heritage">
+                                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="accept_contract_using_heritage" data-label="Using Heritage">
+                                                <option value=""></option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
+                                            </select>
+                                        </div>
+                                        <div class="not-using-heritage">
+                                            <input type="text" class="custom-form-element form-input" id="accept_contract_title_company" data-label="Title Company">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12 col-sm-6">
+                                    <input type="text" class="custom-form-element form-input money-decimal numbers-only required" id="accept_contract_earnest_amount" data-label="Earnest Deposit Amount">
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="accept_contract_earnest_held_by" data-label="Earnest Deposit Held By">
+                                        <option value=""></option>
+                                        <option value="us">Taylor/Anne Arundel Properties</option>
+                                        <option value="other_company">Other Real Estate Company</option>
+                                        <option value="title">Title Company/Attorney</option>
+                                        <option value="heritage_title">Heritage Title</option>
+                                        <option value="builder">Builder</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <hr>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="h5 text-orange">Contract Details</div>
                                 </div>
                             </div>
                             <div class="row">
@@ -199,7 +315,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12 col-sm-6">
-                                    <input type="text" class="custom-form-element form-input money required" id="accept_contract_contract_price" data-label="Sales Price">
+                                    <input type="text" class="custom-form-element form-input money-decimal numbers-only required" id="accept_contract_contract_price" data-label="Sales Price">
                                 </div>
                             </div>
                         </div>

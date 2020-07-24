@@ -6,61 +6,66 @@
         </div>
         <div class="col-12 col-sm-7">
             <div class="add-buttons-div">
-                <div class="row">
-                    <div class="col-6 mt-2">
-                        <a class="btn btn-success" data-toggle="collapse" href="#add_documents_div" aria-expanded="false" aria-controls="add_documents_div"><i class="fa fa-plus mr-2"></i> Add Documents </a>
+                <div class="d-flex justify-content-start align-items-center">
+                    <div>
+                        <a class="btn btn-sm btn-primary" data-toggle="collapse" href="#add_documents_div" aria-expanded="false" aria-controls="add_documents_div"><i class="fa fa-plus mr-2"></i> Add Documents </a>
                     </div>
-                    <div class="col-6 mt-2">
-                        <a href="javascript: void(0)" class="btn btn-success add-folder-button"><i class="fa fa-plus mr-2"></i> Add Folder</a>
+                    <div>
+                        <a href="javascript: void(0)" class="btn btn-sm btn-primary add-folder-button"><i class="fa fa-plus mr-2"></i> Add Folder</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="collapse mt-0 mb-3" id="add_documents_div">
-        <div class="row">
-            <div class="col-12 pr-4 mb-2">
-                <div class="float-right">
-                    <a data-toggle="collapse" href="#add_documents_div" aria-expanded="false" aria-controls="add_documents_div"><i class="fal fa-times text-danger fa-3x"></i></a>
+    <div class="collapse" id="add_documents_div">
+
+        <div class="mt-0 mb-3">
+
+            <div class="row">
+                <div class="col-12 pr-4 mb-2">
+                    <div class="float-right">
+                        <a data-toggle="collapse" href="#add_documents_div" aria-expanded="false" aria-controls="add_documents_div"><i class="fal fa-times text-danger fa-3x"></i></a>
+                    </div>
                 </div>
             </div>
-        </div>
 
 
-        <div class="row">
-            @if($transaction_type != 'referral')
-                <div class="col-12 col-md-12 col-lg-6 px-1">
-                    <div class="add-docs-div bg-blue-light p-3 mb-1 mb-sm-3 border border-primary rounded-lg text-center">
-                        <i class="fad fa-clone fa-3x text-primary mb-2"></i>
-                        <div class="h5 text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="Add a preset template of all forms available for the checklist"><i class="fad fa-question-circle ml-2"></i></a></div>
-                        <div class="row">
-                            <div class="col-12 col-sm-6">
-                                Checklist Documents<br>
-                                <a href="javascript:void(0);" class="btn btn-primary" id="add_checklist_template_button"><i class="fa fa-plus mr-2"></i> Add Template</a>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                Individual Documents<br>
-                                <a href="javascript:void(0);" class="btn btn-primary" id="add_individual_template_button"><i class="fa fa-plus mr-2"></i> Add Documents</a>
+            <div class="row">
+                @if($transaction_type != 'referral')
+                    <div class="col-12 col-md-12 col-lg-6 px-1">
+                        <div class="add-docs-div bg-blue-light p-3 mb-1 mb-sm-3 border border-primary rounded-lg text-center">
+                            <i class="fad fa-clone fa-3x text-primary mb-2"></i>
+                            <div class="h5 text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="Add a preset template of all forms available for the checklist"><i class="fad fa-question-circle ml-2"></i></a></div>
+                            <div class="row">
+                                <div class="col-12 col-sm-6">
+                                    Checklist Documents<br>
+                                    <a href="javascript:void(0);" class="btn btn-primary" id="add_checklist_template_button"><i class="fa fa-plus mr-2"></i> Add Template</a>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    Individual Documents<br>
+                                    <a href="javascript:void(0);" class="btn btn-primary" id="add_individual_template_button"><i class="fa fa-plus mr-2"></i> Add Documents</a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                @endif
+                <div class="col-12 col-sm-6 col-lg-3 px-1">
+                    <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
+                        <i class="fad fa-file-upload fa-3x text-primary mb-2"></i>
+                        <div class="h5 text-primary mb-3">Upload Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Uploading Documents" data-content="Add a singel form from all forms available"><i class="fad fa-question-circle ml-2"></i></a></div>
+                        <a href="javascript:void(0);" class="btn btn-primary mt-1 mt-md-4" id="upload_documents_button"><i class="fa fa-plus mr-2"></i> Upload Documents</a>
+                    </div>
                 </div>
-            @endif
-            <div class="col-12 col-sm-6 col-lg-3 px-1">
-                <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
-                    <i class="fad fa-file-upload fa-3x text-primary mb-2"></i>
-                    <div class="h5 text-primary mb-3">Upload Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Uploading Documents" data-content="Add a singel form from all forms available"><i class="fad fa-question-circle ml-2"></i></a></div>
-                    <a href="javascript:void(0);" class="btn btn-primary mt-1 mt-md-4" id="upload_documents_button"><i class="fa fa-plus mr-2"></i> Upload Documents</a>
+                <div class="col-12 col-sm-6 col-lg-3 px-1">
+                    <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
+                        <i class="fad fa-envelope-square fa-3x text-primary mb-2"></i>
+                        <div class="h5 text-primary mb-3">Email Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Emailing Documents" data-content="body{{-- TODO: needs description --}}"><i class="fad fa-question-circle ml-2"></i></a></div>
+                        <a href="mailto:{{ $property_email }}" class="d-block mt-1 mt-md-5">{{ $property_email }}</a>
+                    </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-lg-3 px-1">
-                <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
-                    <i class="fad fa-envelope-square fa-3x text-primary mb-2"></i>
-                    <div class="h5 text-primary mb-3">Email Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Emailing Documents" data-content="body{{-- TODO: needs description --}}"><i class="fad fa-question-circle ml-2"></i></a></div>
-                    <a href="mailto:" class="d-block mt-1 mt-md-5">email@email.com</a>
-                </div>
-            </div>
+
         </div>
 
     </div>
@@ -68,14 +73,14 @@
 
     <div class="collapse" id="bulk_options_div">
         <div class="h5 text-orange d-none d-md-block">Bulk Options</div>
-        <div class="d-flex justify-content-between justify-content-sm-start">
+        <div class="d-flex justify-content-between justify-content-xl-start">
 
-            <button type="button" class="btn btn-sm btn-primary rounded-pill add-to-checklist-button" title="Assign To Checklist" data-toggle="tooltip" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-tasks mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Assign To Checklist</span></button>
+            <button type="button" class="btn btn-sm btn-primary rounded-pill add-to-checklist-button" title="Assign To Checklist" data-toggle="tooltip" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-tasks mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Assign To Checklist</span></button>
 
-            <button type="button" class="btn btn-sm btn-primary rounded-pill" id="sign_documents_button" title="Get Signed" data-toggle="tooltip"><i class="fad fa-signature mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Get Signed</span></button>
+            <button type="button" class="btn btn-sm btn-primary rounded-pill" id="sign_documents_button" title="Get Signed" data-toggle="tooltip"><i class="fad fa-signature mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Get Signed</span></button>
 
             <div class="dropright" title="Print Documents">
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-envelope mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Email</span></button>
+                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-envelope mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Email</span></button>
                 <div class="dropdown-menu">
                     <a class="text-primary dropdown-item docs-email-button" data-docs-type="merged" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> As One Document</a>
                     <a class="text-primary dropdown-item docs-email-button" data-docs-type="single" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> As Individual Documents</a>
@@ -83,7 +88,7 @@
             </div>
 
             <div class="dropright" title="Print Documents">
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-print mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Print</span></button>
+                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-print mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Print</span></button>
                 <div class="dropdown-menu">
                     <a class="text-primary dropdown-item docs-print-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
                     <a class="text-primary dropdown-item docs-print-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
@@ -91,16 +96,16 @@
             </div>
 
             <div class="dropright" title="Download Documents">
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-download mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Download</span></button>
+                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-download mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Download</span></button>
                 <div class="dropdown-menu">
                     <a class="text-primary dropdown-item docs-download-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
                     <a class="text-primary dropdown-item docs-download-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
                 </div>
             </div>
 
-            <button type="button" class="btn btn-sm btn-primary rounded-pill" id="move_documents_button" title="Move Documents" data-toggle="tooltip"><i class="fad fa-exchange mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Move</span></button>
+            <button type="button" class="btn btn-sm btn-primary rounded-pill" id="move_documents_button" title="Move Documents" data-toggle="tooltip"><i class="fad fa-exchange mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Move</span></button>
 
-            <button type="button" class="btn btn-sm btn-danger rounded-pill" id="delete_documents_button" title="Move Documents To Trash" data-toggle="tooltip"><i class="fad fa-trash mr-0 mr-sm-2"></i><span class="d-none d-sm-inline-block"> Trash</span></button>
+            <button type="button" class="btn btn-sm btn-danger rounded-pill" id="delete_documents_button" title="Move Documents To Trash" data-toggle="tooltip"><i class="fad fa-trash mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Trash</span></button>
         </div>
     </div>
 
@@ -114,13 +119,11 @@
             if($folder -> folder_name == 'Listing Documents' && $docs_count > 0) {
                 $show_folder = 'show';
             }
-        }
-        if($transaction_type == 'contract') {
+        } else if($transaction_type == 'contract') {
             if($folder -> folder_name == 'Contract Documents' && $docs_count > 0) {
                 $show_folder = 'show';
             }
-        }
-        if($transaction_type == 'referral') {
+        } else if($transaction_type == 'referral') {
             if($folder -> folder_name == 'Referral Documents' && $docs_count > 0) {
                 $show_folder = 'show';
             }
@@ -317,78 +320,74 @@
 
                         <div class="col-12">
 
-                            <div class="card">
+                            <div class="p-2">
 
-                                <div class="card-body">
-
-                                    <div class="row">
-                                        <div class="col-2">
-                                            <div class="h-100 d-flex justify-content-end align-items-center">
-                                                <div>From:</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-10">
-                                            <input type="text" class="custom-form-element form-input" id="email_from" value="{{ \Auth::user() -> name }} <{{ \Auth::user() -> email }}>">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div class="h-100 d-flex justify-content-end align-items-center">
+                                            <div>From:</div>
                                         </div>
                                     </div>
+                                    <div class="col-10">
+                                        <input type="text" class="custom-form-element form-input" id="email_from" value="{{ \Auth::user() -> name }} <{{ \Auth::user() -> email }}>">
+                                    </div>
+                                </div>
 
 
-                                    @if($members)
+                                @if($members)
 
-                                        @foreach($members as $member)
-
-                                            <div class="row to-addresses">
-                                                <div class="col-2">
-                                                    @if($loop -> first)
-                                                        <input type="hidden" class="email-address-type" value="to">
-                                                        <div class="h-100 d-flex justify-content-end align-items-center">
-                                                            <div>To:</div>
-                                                        </div>
-                                                    @else
-                                                        <select class="custom-form-element form-select form-select-no-cancel form-select-no-search email-address-type">
-                                                            <option value="to">To:</option>
-                                                            <option value="cc">Cc:</option>
-                                                            <option value="bcc">Bcc:</option>
-                                                        </select>
-                                                    @endif
-                                                </div>
-                                                <div class="@if($loop -> first) col-10 @else col-9 @endif">
-                                                    <input type="text" class="custom-form-element form-input email-to-address" value="{{ $member -> first_name.' '.$member -> last_name }} <{{ $member -> email }}>">
-                                                </div>
-                                                @if(!$loop -> first)
-                                                <div class="col-1">
-                                                    <div class="h-100 d-flex justify-content-end align-items-center">
-                                                        <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times"></i></button>
-                                                    </div>
-                                                </div>
-                                                @endif
-                                            </div>
-
-                                        @endforeach
-
-                                    @else
+                                    @foreach($members as $member)
 
                                         <div class="row to-addresses">
                                             <div class="col-2">
-                                                <input type="hidden" class="email-address-type" value="to">
+                                                @if($loop -> first)
+                                                    <input type="hidden" class="email-address-type" value="to">
+                                                    <div class="h-100 d-flex justify-content-end align-items-center">
+                                                        <div>To:</div>
+                                                    </div>
+                                                @else
+                                                    <select class="custom-form-element form-select form-select-no-cancel form-select-no-search email-address-type">
+                                                        <option value="to">To:</option>
+                                                        <option value="cc">Cc:</option>
+                                                        <option value="bcc">Bcc:</option>
+                                                    </select>
+                                                @endif
+                                            </div>
+                                            <div class="@if($loop -> first) col-10 @else col-9 @endif">
+                                                <input type="text" class="custom-form-element form-input email-to-address" value="{{ $member -> first_name.' '.$member -> last_name }} <{{ $member -> email }}>">
+                                            </div>
+                                            @if(!$loop -> first)
+                                            <div class="col-1">
                                                 <div class="h-100 d-flex justify-content-end align-items-center">
-                                                    <div>To:</div>
+                                                    <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times"></i></button>
                                                 </div>
                                             </div>
-                                            <div class="col-10">
-                                                <input type="text" class="custom-form-element form-input email-to-address" value="">
-                                            </div>
+                                            @endif
                                         </div>
 
-                                    @endif
+                                    @endforeach
 
-                                    <div class="row">
-                                        <div class="col-2"></div>
+                                @else
+
+                                    <div class="row to-addresses">
+                                        <div class="col-2">
+                                            <input type="hidden" class="email-address-type" value="to">
+                                            <div class="h-100 d-flex justify-content-end align-items-center">
+                                                <div>To:</div>
+                                            </div>
+                                        </div>
                                         <div class="col-10">
-                                            <a class="add-address-button"><i class="fal fa-plus mr-1 text-success"></i> Add Recipient</a>
+                                            <input type="text" class="custom-form-element form-input email-to-address" value="">
                                         </div>
                                     </div>
 
+                                @endif
+
+                                <div class="row">
+                                    <div class="col-2"></div>
+                                    <div class="col-10">
+                                        <a class="add-address-button"><i class="fal fa-plus mr-1 text-success"></i> Add Recipient</a>
+                                    </div>
                                 </div>
 
                             </div>
@@ -398,48 +397,44 @@
                     </div>
 
                 </div>
-
+                <hr>
                 <div class="container mt-2">
 
                     <div class="row">
 
                         <div class="col-12">
 
-                            <div class="card">
+                            <div class="p-2">
 
-                                <div class="card-body">
-
-                                    <div class="row">
-                                        <div class="col-2">
-                                            <div class="h-100 d-flex justify-content-end align-items-center">
-                                                <div>Subject:</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-10">
-                                            <input type="text" class="custom-form-element form-input" id="email_subject" value="Documents - {{ $property -> FullStreetAddress }} {{ $property -> City }}, {{ $property -> StateOrProvince }} {{ $property -> PostalCode }}">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div class="h-100 d-flex justify-content-end align-items-center">
+                                            <div>Subject:</div>
                                         </div>
                                     </div>
-                                    <div class="row mt-2">
-                                        <div class="col-2">
-                                            <div class="h-100 d-flex justify-content-end align-items-center">
-                                                <div>Attachments:</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-10">
-                                            <div class="w-100 border p-2" id="email_attachments"></div>
+                                    <div class="col-10">
+                                        <input type="text" class="custom-form-element form-input" id="email_subject" value="Documents - {{ $property -> FullStreetAddress }} {{ $property -> City }}, {{ $property -> StateOrProvince }} {{ $property -> PostalCode }}">
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-2">
+                                        <div class="h-100 d-flex justify-content-end align-items-center">
+                                            <div>Attachments:</div>
                                         </div>
                                     </div>
-                                    <div class="row mt-2">
-                                        <div class="col-2">
-                                            <div class="h-100 d-flex justify-content-end align-items-center">
-                                                <div>Message:</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-10">
-                                            <textarea class="custom-form-input form-textarea" id="email_message" rows="4">&#13;&#10; &#13;&#10; Thank you,&#13;&#10; {{ \Auth::user() -> name }}</textarea>
+                                    <div class="col-10">
+                                        <div class="w-100 border p-2" id="email_attachments"></div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-2">
+                                        <div class="h-100 d-flex justify-content-end align-items-center">
+                                            <div>Message:</div>
                                         </div>
                                     </div>
-
+                                    <div class="col-10">
+                                        <textarea class="custom-form-input form-textarea" id="email_message" rows="4">&#13;&#10; &#13;&#10; Thank you,&#13;&#10; {{ \Auth::user() -> name }}</textarea>
+                                    </div>
                                 </div>
 
                             </div>
@@ -824,19 +819,44 @@
                                     </div>
                                 </div>
 
-                                <ul class="list-group mt-2">
-                                    @foreach($checklist_forms as $checklist_form)
-                                    <li class="list-group-item">
-                                        <div class="d-flex justify-content-start">
-                                            <div>
-                                                <input type="checkbox" class="custom-form-element form-checkbox checklist-template-form" data-file-id="{{ $checklist_form -> file_id }}" data-file-name="{{ $checklist_form -> file_name }}" data-file-name-display="{{ $checklist_form -> file_name_display }}" data-pages-total="{{ $checklist_form -> pages_total }}" data-file-location="{{ $checklist_form -> file_location }}" checked>
+                                <ul class="list-group mt-2 template-docs-div">
+
+                                    <div class="h5-responsive text-orange">Required Documents</div>
+
+                                    @foreach($checklist_forms_required as $checklist_form_required)
+                                        @php
+                                        // get required
+                                        @endphp
+                                        <li class="list-group-item">
+                                            <div class="d-flex justify-content-start align-items-center">
+                                                <div>
+                                                    <input type="checkbox" class="custom-form-element form-checkbox checklist-template-form" data-file-id="{{ $checklist_form_required -> file_id }}" data-file-name="{{ $checklist_form_required -> file_name }}" data-file-name-display="{{ $checklist_form_required -> file_name_display }}" data-pages-total="{{ $checklist_form_required -> pages_total }}" data-file-location="{{ $checklist_form_required -> file_location }}" checked>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <a href="{{ $checklist_form_required -> file_location }}" target="_blank">{{ $checklist_form_required -> file_name_display }}</a>
+                                                </div>
                                             </div>
-                                            <div class="ml-3">
-                                                <a href="{{ $checklist_form -> file_location }}" target="_blank">{{ $checklist_form -> file_name_display }}</a>
-                                            </div>
-                                        </div>
-                                    </li>
+                                        </li>
                                     @endforeach
+
+                                    <div class="h5-responsive text-orange">If Applicable Documents</div>
+
+                                    @foreach($checklist_forms_if_applicable as $checklist_form_if_applicable)
+                                        @php
+                                        // get if applicable
+                                        @endphp
+                                        <li class="list-group-item">
+                                            <div class="d-flex justify-content-start align-items-center">
+                                                <div>
+                                                    <input type="checkbox" class="custom-form-element form-checkbox checklist-template-form" data-file-id="{{ $checklist_form_if_applicable -> file_id }}" data-file-name="{{ $checklist_form_if_applicable -> file_name }}" data-file-name-display="{{ $checklist_form_if_applicable -> file_name_display }}" data-pages-total="{{ $checklist_form_if_applicable -> pages_total }}" data-file-location="{{ $checklist_form_if_applicable -> file_location }}">
+                                                </div>
+                                                <div class="ml-3">
+                                                    <a href="{{ $checklist_form_if_applicable -> file_location }}" target="_blank">{{ $checklist_form_if_applicable -> file_name_display }}</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    @endforeach
+
                                 </ul>
                             </div>
                         </div>

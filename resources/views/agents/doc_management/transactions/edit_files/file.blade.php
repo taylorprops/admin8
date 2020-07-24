@@ -16,7 +16,7 @@
                         <a class="text-white bg-green fill-form-option" href="javascript: void(0)" id="save_field_input_values_button"><i class="fad fa-save fa-lg"></i><br>Save</a>
                     </div>
 
-                    <div class="form-options-div border-right">
+                    {{-- <div class="form-options-div border-right">
                         <div class="dropdown">
                             <a class="dropdown-toggle text-primary-dark fill-form-option" id="print_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-download fa-lg"></i><br>Download</a>
                             <div class="dropdown-menu dropdown-primary" aria-labelledby="print_dropdown">
@@ -40,7 +40,7 @@
 
                     <div class="form-options-div border-right">
                         <a class="text-primary-dark fill-form-option" href="javascript: void(0)"><i class="fad fa-envelope fa-lg"></i><br>Email</a>
-                    </div>
+                    </div> --}}
 
                     @if($file_type == 'user')
                     <div class="form-options-div border-right">
@@ -94,7 +94,7 @@
 
             <div class="col-2 p-0 edit-file-sidebar">
                 <div class="file-view">
-                    <div class="h5 responsive text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>
+                    <div class="h5-responsive text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>
                     <div class="field-list-container"></div>
                 </div>
             </div>
@@ -109,20 +109,20 @@
 
                             <?php $c = $image -> page_number; ?>
 
-                                <div class="h5 responsive bg-primary p-2 text-center mb-0" id="page_{{ $c }}">
+                                <div class="h5-responsive bg-primary p-2 text-center mb-0" id="page_{{ $c }}">
                                     <span class="badge">Page <?php echo $c.' of '.$total_pages; ?></span>
                                 </div>
-                                <div class="file-view-page-container border border-primary w-100 animated @if($loop -> first) active @endif" data-id="{{ $c }}">
+                                <div class="file-view-page-container border border-primary w-100 @if($loop -> first) active @endif" data-id="{{ $c }}">
                                     <div class="field-container w-100 h-100">
                                         <img class="file-image-bg w-100 h-100" src="{{ $image -> file_location }}">
                                         @foreach($fields_user as $field_user)
                                             @if($field_user -> page == $c)
-                                                @include('/agents/doc_management/transactions/edit_files/field_user_html', [$field_user, $c, $field_values, $Listing_ID, $Agent_ID, $common_fields, $fields_user_inputs])
+                                                @include('/agents/doc_management/transactions/edit_files/field_html', [$field_user, $c, $field_values, $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type, $Agent_ID, $common_fields, $fields_user_inputs])
                                             @endif
                                         @endforeach
                                     </div>
                                 </div>
-                                <div class="h5 responsive text-white bg-primary p-2 text-center">
+                                <div class="h5-responsive text-white bg-primary p-2 text-center">
                                     <span class="badge">End Page {{ $c }}</span>
                                 </div>
 
@@ -137,7 +137,7 @@
 
             <div class="col-2 p-0 edit-file-sidebar">
                 <div class="file-view animated fadeIn" id="thumb_viewer">
-                    <div class="h5 responsive text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
+                    <div class="h5-responsive text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
                     @foreach($images as $image)
                         @php $c = $image -> page_number; @endphp
                         <div class="file-view-thumb-container animated w-50 mb-2 mx-auto @if($c == 1) active @endif" id="thumb_{{ $c }}" data-id="{{ $c }}">
@@ -162,6 +162,9 @@
 <input type="hidden" id="file_type" value="{{ $file_type }}">
 <input type="hidden" id="file_name" value="{{ $file -> file_name_display }}">
 <input type="hidden" id="Listing_ID" value="{{ $Listing_ID }}">
+<input type="hidden" id="Contract_ID" value="{{ $Contract_ID }}">
+<input type="hidden" id="Referral_ID" value="{{ $Referral_ID }}">
+<input type="hidden" id="transaction_type" value="{{ $transaction_type }}">
 <input type="hidden" id="Agent_ID" value="{{ $Agent_ID }}">
 <input type="hidden" id="active_page" value="1">
 @endsection

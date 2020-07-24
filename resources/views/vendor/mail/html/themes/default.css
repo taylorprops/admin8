@@ -42,27 +42,36 @@ a img {
 /* Typography */
 
 h1 {
-    color: #3d4852;
-    font-size: 19px;
+    color: #3490dc;
+    font-size: 25px;
     font-weight: bold;
     margin-top: 0;
     text-align: left;
 }
 
 h2 {
-    color: #3d4852;
-    font-size: 16px;
+    color: #3490dc;
+    font-size: 20px;
     font-weight: bold;
     margin-top: 0;
     text-align: left;
 }
 
 h3 {
-    color: #3d4852;
-    font-size: 14px;
+    color: #df7935;
+    font-size: 19px;
     font-weight: bold;
     margin-top: 0;
     text-align: left;
+}
+
+h4 {
+    color: #3490dc;
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: left;
+    border-bottom: 1px solid #3490dc;
 }
 
 p {
@@ -84,7 +93,7 @@ img {
 /* Layout */
 
 .wrapper {
-    background-color: #1972bb;
+    background-color: #4c9bdb;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -191,7 +200,7 @@ img {
     color: #74787e;
     font-size: 15px;
     line-height: 18px;
-    padding: 10px 0;
+    padding: 7px 0;
     margin: 0;
 }
 
@@ -246,6 +255,36 @@ img {
     border-bottom: 10px solid #e3342f;
     border-left: 18px solid #e3342f;
 }
+
+
+.badge-primary {
+    background-color: #4594d4;
+    padding: 8px;
+}
+.badge-success {
+    background-color: #33ad33;
+    padding: 8px;
+}
+.badge-orange {
+    background-color: #d47433;
+    padding: 8px;
+}
+.badge-danger {
+    background-color: #a33a38;
+    padding: 8px;
+}
+.badge-blue-light {
+    background-color: #e9ecf0;
+    padding: 8px;
+}
+
+.text-white {
+    color: #fff;
+}
+.text-primary {
+    color: #4594d4;
+}
+
 
 /* Panels */
 

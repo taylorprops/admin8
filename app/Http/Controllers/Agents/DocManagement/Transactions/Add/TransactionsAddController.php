@@ -28,6 +28,7 @@ use App\Models\BrightMLS\Offices;
 class TransactionsAddController extends Controller {
 
     public function add_transaction(Request $request) {
+
         $transaction_type_header = 'Contract/Lease';
         $transaction_type = $request -> type;
         if($transaction_type == 'listing') {
@@ -35,8 +36,12 @@ class TransactionsAddController extends Controller {
         } else if($transaction_type == 'referral') {
             $transaction_type_header = 'Referral Agreement';
         }
+
         $states = LocationData::ActiveStates();
-        return view('/agents/doc_management/transactions/add/transaction_add', compact('transaction_type', 'transaction_type_header', 'states'));
+
+        $agents = Agents::where('active', 'yes') -> orderBy('last_name') -> get();
+
+        return view('/agents/doc_management/transactions/add/transaction_add', compact('transaction_type', 'transaction_type_header', 'states', 'agents'));
     }
 
     public function transaction_add_details_existing(Request $request) {
@@ -45,9 +50,24 @@ class TransactionsAddController extends Controller {
         $bright_type = $request -> bright_type;
         $bright_id = $request -> bright_id;
         $state = $request -> state;
+        $Agent_ID = $request -> Agent_ID;
         $tax_id = '';
         $mls_verified = 'no';
         $bright_db_search = '';
+
+        $agent = Agents::find($Agent_ID);
+
+        $agent_bright_mls_id = $agent -> bright_mls_id_md_dc_tp;
+            $office_bright_mls_id = 'TAYL1';
+            $office_name = 'Taylor Properties';
+            if ($state == 'MD' && $agent -> company == 'Anne Arundel Properties') {
+                $agent_bright_mls_id = $agent -> bright_mls_id_md_aap;
+                $office_bright_mls_id = 'AAP1';
+                $office_name = 'Anne Arundel Properties';
+            } else if ($state == 'VA') {
+                $agent_bright_mls_id = $agent -> bright_mls_id_va_tp;
+                $office_bright_mls_id = 'TAYL13';
+            }
 
         // only pulling tax records from MD
         if ($state == 'MD') {
@@ -63,13 +83,31 @@ class TransactionsAddController extends Controller {
 
             $bright_db_search = ListingsData::select($select_columns_db) -> where('ListingId', $bright_id) -> first() -> toArray();
 
+            if($transaction_type == 'listing') {
+                $bright_db_search['ListAgentEmail'] = $agent -> email;
+                $bright_db_search['ListAgentFirstName'] = $agent -> first_name;
+                $bright_db_search['ListAgentLastName'] = $agent -> last_name;
+                $bright_db_search['ListAgentMlsId'] = $agent_bright_mls_id;
+                $bright_db_search['ListAgentPreferredPhone'] = $agent -> cell_phone;
+                $bright_db_search['ListOfficeMlsId'] = $office_bright_mls_id;
+                $bright_db_search['ListOfficeName'] = $office_name;
+            } else if($transaction_type == 'contract') {
+                $bright_db_search['BuyerAgentEmail'] = $agent -> email;
+                $bright_db_search['BuyerAgentFirstName'] = $agent -> first_name;
+                $bright_db_search['BuyerAgentLastName'] = $agent -> last_name;
+                $bright_db_search['BuyerAgentMlsId'] = $agent_bright_mls_id;
+                $bright_db_search['BuyerAgentPreferredPhone'] = $agent -> cell_phone;
+                $bright_db_search['BuyerOfficeMlsId'] = $office_bright_mls_id;
+                $bright_db_search['BuyerOfficeName'] = $office_name;
+            }
+
             $mls_verified = 'yes';
 
         } elseif ($bright_type == 'db_closed') {
 
             $bright_db_search = ListingsRemovedData::select($select_columns_db_closed) -> where('ListingId', $bright_id) -> first() -> toArray();
 
-        } elseif ($bright_type == 'bright') {
+        } else if ($bright_type == 'bright') {
 
             $rets = new \PHRETS\Session(Config::get('rets.rets.rets_config'));
             $connect = $rets -> Login();
@@ -95,25 +133,49 @@ class TransactionsAddController extends Controller {
                 $bright_db_search['CloseDate'] = '';
                 $bright_db_search['ListingId'] = '';
                 $bright_db_search['ListPrice'] = '';
-                $bright_db_search['ListOfficeName'] = '';
                 $bright_db_search['PropertyType'] = '';
                 $bright_db_search['PropertySubType'] = '';
                 $bright_db_search['MLSListDate'] = '';
-                $bright_db_search['ListAgentFirstName'] = '';
-                $bright_db_search['ListAgentLastName'] = '';
                 $bright_db_search['PublicRemarks'] = '';
                 $bright_db_search['NewConstructionYN'] = '';
-                $bright_db_search['ListOfficeMlsId'] = '';
-                $bright_db_search['ListAgentPreferredPhone'] = '';
-                $bright_db_search['ListAgentMlsId'] = '';
-                $bright_db_search['ListAgentEmail'] = '';
-                $bright_db_search['BuyerAgentEmail'] = '';
-                $bright_db_search['BuyerAgentFirstName'] = '';
-                $bright_db_search['BuyerAgentLastName'] = '';
-                $bright_db_search['BuyerAgentMlsId'] = '';
-                $bright_db_search['BuyerAgentPreferredPhone'] = '';
-                $bright_db_search['BuyerOfficeMlsId'] = '';
-                $bright_db_search['BuyerOfficeName'] = '';
+
+                if($transaction_type == 'listing') {
+
+                    $bright_db_search['ListAgentEmail'] = $agent -> email;
+                    $bright_db_search['ListAgentFirstName'] = $agent -> first_name;
+                    $bright_db_search['ListAgentLastName'] = $agent -> last_name;
+                    $bright_db_search['ListAgentMlsId'] = $agent_bright_mls_id;
+                    $bright_db_search['ListAgentPreferredPhone'] = $agent -> cell_phone;
+                    $bright_db_search['ListOfficeMlsId'] = $office_bright_mls_id;
+                    $bright_db_search['ListOfficeName'] = $office_name;
+
+                    $bright_db_search['BuyerAgentEmail'] = '';
+                    $bright_db_search['BuyerAgentFirstName'] = '';
+                    $bright_db_search['BuyerAgentLastName'] = '';
+                    $bright_db_search['BuyerAgentMlsId'] = '';
+                    $bright_db_search['BuyerAgentPreferredPhone'] = '';
+                    $bright_db_search['BuyerOfficeMlsId'] = '';
+                    $bright_db_search['BuyerOfficeName'] = '';
+
+                } else if($transaction_type == 'contract') {
+
+                    $bright_db_search['ListAgentEmail'] = '';
+                    $bright_db_search['ListAgentFirstName'] = '';
+                    $bright_db_search['ListAgentLastName'] = '';
+                    $bright_db_search['ListAgentMlsId'] = '';
+                    $bright_db_search['ListAgentPreferredPhone'] = '';
+                    $bright_db_search['ListOfficeMlsId'] = '';
+                    $bright_db_search['ListOfficeName'] = '';
+
+                    $bright_db_search['BuyerAgentEmail'] = $agent -> email;
+                    $bright_db_search['BuyerAgentFirstName'] = $agent -> first_name;
+                    $bright_db_search['BuyerAgentLastName'] = $agent -> last_name;
+                    $bright_db_search['BuyerAgentMlsId'] = $agent_bright_mls_id;
+                    $bright_db_search['BuyerAgentPreferredPhone'] = $agent -> cell_phone;
+                    $bright_db_search['BuyerOfficeMlsId'] = $office_bright_mls_id;
+                    $bright_db_search['BuyerOfficeName'] = $office_name;
+
+                }
             }
 
             $rets -> disconnect();
@@ -158,7 +220,7 @@ class TransactionsAddController extends Controller {
 
         $request -> session() -> put('property_details', $property_details);
 
-        return view('/agents/doc_management/transactions/add/transaction_add_details', compact('property_details', 'property_types', 'property_sub_types'));
+        return view('/agents/doc_management/transactions/add/transaction_add_details', compact('Agent_ID', 'property_details', 'property_types', 'property_sub_types'));
     }
 
     public function transaction_add_details_referral(Request $request) {
@@ -248,6 +310,8 @@ class TransactionsAddController extends Controller {
 
     public function transaction_add_details_new(Request $request) {
 
+        $Agent_ID = $request -> Agent_ID;
+
         $property_details = [
             'FullStreetAddress' => $request -> street_number . ' ' . $request -> street_name . ' ' . $request -> street_dir . ' ' . $request -> unit_number,
             'StreetNumber' => $request -> street_number,
@@ -270,7 +334,7 @@ class TransactionsAddController extends Controller {
 
         $request -> session() -> put('property_details', $property_details);
 
-        return view('/agents/doc_management/transactions/add/transaction_add_details', compact('property_details', 'property_types', 'property_sub_types'));
+        return view('/agents/doc_management/transactions/add/transaction_add_details', compact('Agent_ID', 'property_details', 'property_types', 'property_sub_types'));
     }
 
     public function transaction_required_details(Request $request) {
@@ -475,6 +539,18 @@ class TransactionsAddController extends Controller {
             $buyers_agent -> disabled = true;
             $buyers_agent -> save();
 
+            // if using heritage add them to members
+            // TODO: notify title if using them
+            if($request -> UsingHeritage == 'yes') {
+                $add_heritage_to_members = new Members();
+                $add_heritage_to_members -> member_type_id = ResourceItems::TitleResourceId();
+                $add_heritage_to_members -> company = 'Heritage Title';
+                $add_heritage_to_members -> Contract_ID = $Contract_ID;
+                $add_heritage_to_members -> Agent_ID = $Agent_ID;
+                $add_heritage_to_members -> save();
+            }
+
+
         } else {
             // add listing agent to members if just a listing
             $listing_agent = new Members();
@@ -659,6 +735,10 @@ class TransactionsAddController extends Controller {
             $property -> ContractDate = $request -> ContractDate;
             $property -> CloseDate = $request -> CloseDate;
             $property -> Status = ResourceItems::GetResourceID('Active', 'contract_status');
+            $property -> UsingHeritage = $request -> UsingHeritage;
+            $property -> TitleCompany = $request -> TitleCompany;
+            $property -> EarnestAmount = $request -> EarnestAmount;
+            $property -> EarnestHeldBy = $request -> EarnestHeldBy;
             $property -> save();
 
             $checklist_property_type_id = $property -> PropertyType;
@@ -668,6 +748,10 @@ class TransactionsAddController extends Controller {
             $checklist_location_id = $property -> Location_ID;
             $checklist_hoa_condo = $property -> HoaCondoFees;
             $checklist_year_built = $property -> YearBuilt;
+
+            // TODO: if earnest
+            // if holding earnest
+            // notify
 
         }
 

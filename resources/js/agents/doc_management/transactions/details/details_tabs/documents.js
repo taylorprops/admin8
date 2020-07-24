@@ -39,7 +39,7 @@ if (document.URL.match(/transaction_details/)) {
             confirm_delete_folder($(this).data('folder-id'));
         });
 
-        $(document).on('click', '.add-to-checklist-button', show_add_to_checklist);
+
 
         $(document).on('click', '.doc-rename-button', show_rename_document);
 
@@ -113,7 +113,7 @@ if (document.URL.match(/transaction_details/)) {
 
         function email_documents() {
 
-            $('#send_email_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Send Email');
+            $('#send_email_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Sending Email');
             let from = $('#email_from').val();
             let to_addresses = [];
             $('.to-addresses').each(function() {
@@ -135,12 +135,13 @@ if (document.URL.match(/transaction_details/)) {
             });
 
             let formData = new FormData();
+            formData.append('type', 'documents');
             formData.append('from', from);
             formData.append('to_addresses', JSON.stringify(to_addresses));
             formData.append('subject', subject);
             formData.append('message', message);
             formData.append('attachments', JSON.stringify(attachments));
-            axios.post('/agents/doc_management/transactions/email_documents', formData, axios_options)
+            axios.post('/agents/doc_management/transactions/send_email', formData, axios_options)
             .then(function (response) {
                 if(response.data.fail) {
                     $('#modal_danger').modal().find('.modal-body').html('The attachments you are sending are too large. They must total less than 20MB and they are currently '+response.data.attachment_size+'MB');
@@ -363,8 +364,11 @@ if (document.URL.match(/transaction_details/)) {
                 validate = validate_form(form);
                 document_name = $('#document_name').val();
             }
-            if (validate == 'yes') {
+            if(document_name == '0') {
+                document_name = ele.closest('.list-group-item').find('.document-name').text()
+            }
 
+            if (validate == 'yes') {
 
                 let image_ids = [];
                 let file_type = '';
@@ -394,13 +398,13 @@ if (document.URL.match(/transaction_details/)) {
                         $('.selected-images-slider').html('');
                         $('#split_document_modal').on('hide.bs.modal', function () {
                             load_tabs('documents');
-                            load_tabs('checklist');
+                            load_checklist_on_tab_click();
                         });
                         // change status and count of checklist items
                         ele.parent().next().html('<span class="badge checklist-item-badge bg-blue-light text-primary p-1" title="We have received your document for this item. It is in the review process"><span class="d-none d-sm-inline-block"><i class="fal fa-stopwatch fa-lg mr-1"></i> </span>Pending</span>');
-                        let count = ele.parent().next().next().find('.badge').text();
+                        let count = ele.closest('.list-group-item').find('.docs-count-badge').text();
                         count = parseInt(count);
-                        ele.parent().next().next().find('.badge').text(count + 1);
+                        ele.closest('.list-group-item').find('.docs-count-badge').text(count + 1);
 
                     })
                     .catch(function (error) {
@@ -428,24 +432,64 @@ if (document.URL.match(/transaction_details/)) {
             axios.post('/agents/doc_management/transactions/save_rename_document', formData, axios_options)
                 .then(function (response) {
                     toastr['success']('Document Successfully Renamed')
-                    load_tabs('documents');
-                    load_tabs('checklist');
+                    load_tabs('documents', false);
+                    load_checklist_on_tab_click();
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
         }
 
-        function show_add_to_checklist() {
+        window.show_add_to_checklist = function() {
 
-            let checklist_id = $(this).data('checklist-id');
+            let button = $(this);
+
+            if($('#questions_confirmed').val() == 'yes') {
+
+                add_to_checklist(button);
+
+            } else {
+
+                $('#required_fields_modal').modal();
+
+                $('#save_required_fields_button').off('click').on('click', function() {
+
+                    let form = $('#required_fields_form');
+                    let validate = validate_form(form);
+
+                    if(validate == 'yes') {
+                        let Contract_ID = $('#Contract_ID').val();
+                        let formData = new FormData(form[0]);
+                        formData.append('Contract_ID', Contract_ID);
+                        axios.post('/agents/doc_management/transactions/save_required_fields', formData, axios_options)
+                        .then(function (response) {
+
+                            $('#required_fields_modal').modal('hide');
+                            add_to_checklist(button);
+                            $('#questions_confirmed').val('yes');
+
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                    }
+
+                });
+
+            }
+
+        }
+
+        function add_to_checklist(button) {
+            let checklist_id = button.data('checklist-id');
             let document_ids;
             let assigned = 'no';
             // single button add
-            if ($(this).data('document-id')) {
+            if (button.data('document-id')) {
 
-                document_ids = [$(this).data('document-id')];
-                if ($(this).hasClass('assigned')) {
+                document_ids = [button.data('document-id')];
+                if (button.hasClass('assigned')) {
                     assigned = 'yes';
                 }
 
@@ -470,6 +514,7 @@ if (document.URL.match(/transaction_details/)) {
             if (assigned == 'yes') {
                 // notify user
                 $('#modal_info').modal().find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><div class="mr-4"><i class="fal fa-exclamation-triangle fa-2x text-danger"></i></div><div class="text-gray text-center">Some documents you selected have already be assigned and will not be included</div></div>');
+                $('#modal_info').find('.modal-footer').find('.btn').text('Continue');
 
                 $('#modal_info').on('hidden.bs.modal', function () {
                     $('#add_to_checklist_modal').modal();
@@ -482,7 +527,6 @@ if (document.URL.match(/transaction_details/)) {
                 add_to_checklist_html(checklist_id, document_ids);
 
             }
-
         }
 
         function add_to_checklist_html(checklist_id, document_ids) {
@@ -643,8 +687,8 @@ if (document.URL.match(/transaction_details/)) {
             axios.post('/agents/doc_management/transactions/save_assign_documents_to_checklist', formData, axios_options)
                 .then(function (response) {
                     toastr['success']('Documents Successfully Added')
-                    load_tabs('documents');
-                    load_tabs('checklist');
+                    load_tabs('documents', false);
+                    load_checklist_on_tab_click();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -793,7 +837,7 @@ if (document.URL.match(/transaction_details/)) {
                     .then(function (response) {
                         toastr['success']('Documents Successfully Added')
                         load_tabs('documents');
-                        load_tabs('checklist');
+                        load_checklist_on_tab_click();
                         let sortables = $('.document-div[data-folder-id="' + folder + '"]');
                         reorder_documents(sortables);
                     })
@@ -871,7 +915,7 @@ if (document.URL.match(/transaction_details/)) {
                 formData.append('transaction_type', transaction_type);
                 axios.post('/agents/doc_management/transactions/add_folder', formData, axios_options)
                     .then(function (response) {
-                        load_tabs('documents');
+                        load_tabs('documents', false);
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -899,8 +943,8 @@ if (document.URL.match(/transaction_details/)) {
             formData.append('transaction_type', transaction_type);
             axios.post('/agents/doc_management/transactions/delete_folder', formData, axios_options)
                 .then(function (response) {
-                    load_tabs('documents');
-                    load_tabs('checklist');
+                    load_tabs('documents', false);
+                    load_checklist_on_tab_click();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -934,7 +978,7 @@ if (document.URL.match(/transaction_details/)) {
             axios.post('/agents/doc_management/transactions/move_documents_to_folder', formData, axios_options)
                 .then(function (response) {
                     load_tabs('documents');
-                    load_tabs('checklist');
+                    load_checklist_on_tab_click();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -968,8 +1012,8 @@ if (document.URL.match(/transaction_details/)) {
             axios.post('/agents/doc_management/transactions/move_documents_to_trash', formData, axios_options)
                 .then(function (response) {
                     //button.closest('.document-div').appendTo($('.folder-div').last().find('[id^=documents_folder_]'));
-                    load_tabs('documents');
-                    load_tabs('checklist');
+                    load_tabs('documents', false);
+                    load_checklist_on_tab_click();
                     toastr['success']('Document Moved To Trash');
                 })
                 .catch(function (error) {
@@ -1003,8 +1047,8 @@ if (document.URL.match(/transaction_details/)) {
             formData.append('transaction_type', transaction_type);
             axios.post('/agents/doc_management/transactions/move_documents_to_trash', formData, axios_options)
                 .then(function (response) {
-                    load_tabs('documents');
-                    load_tabs('checklist');
+                    load_tabs('documents', false);
+                    load_checklist_on_tab_click();
                     toastr['success']('Documents Moved To Trash');
                 })
                 .catch(function (error) {

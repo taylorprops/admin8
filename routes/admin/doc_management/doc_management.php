@@ -12,6 +12,8 @@ Route::middleware('admin') -> group(function () {
     Route::get('/doc_management/create/add_fields/{file_id}', 'DocManagement\Fill\FieldsController@add_fields');
     /* Resources | Add/remove associations, tags, etc. */
     Route::get('/doc_management/resources/resources', 'DocManagement\Resources\ResourcesController@resources');
+    // Admin resources
+    Route::get('/admin/resources/resources_admin', 'Admin\Resources\ResourceItemsAdminController@resources_admin');
     /* Checklists  */
     Route::get('/doc_management/checklists/{checklist_id?}/{checklist_location_id?}/{checklist_type?}', 'DocManagement\Checklists\ChecklistsController@checklists');
 
@@ -53,6 +55,16 @@ Route::middleware('admin') -> group(function () {
     Route::post('/doc_management/resources/delete_deactivate', 'DocManagement\Resources\ResourcesController@delete_deactivate');
     /* Reorder Resources */
     Route::post('/doc_management/resources/reorder', 'DocManagement\Resources\ResourcesController@resources_reorder');
+
+    // ADMIN RESOURCES //
+    /* Add Resource  */
+    Route::post('/admin/resources/add', 'Admin\Resources\ResourceItemsAdminController@resources_add');
+    /* Save edit Resources | Add/remove associations, tags, etc. */
+    Route::post('/admin/resources/edit', 'Admin\Resources\ResourceItemsAdminController@resources_edit');
+    /* Delete Resources  */
+    Route::post('/admin/resources/delete_deactivate', 'Admin\Resources\ResourceItemsAdminController@delete_deactivate');
+    /* Reorder Resources */
+    Route::post('/admin/resources/reorder', 'Admin\Resources\ResourceItemsAdminController@resources_reorder');
 
     // Fields //
     Route::post('/doc_management/save_add_fields', 'DocManagement\Fill\FieldsController@save_add_fields');
@@ -105,6 +117,12 @@ Route::middleware('admin') -> group(function () {
 
 
     Route::get('/doc_management/common_fields', 'DocManagement\Fill\FieldsController@get_common_fields');
+
+
+
+    /********* Document Review ************/
+    // doc review page
+    Route::get('/doc_management/document_review', 'DocManagement\Review\DocumentReviewController@document_review');
 
 });
 

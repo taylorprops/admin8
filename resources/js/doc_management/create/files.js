@@ -731,6 +731,10 @@ if (document.URL.match(/create\/upload\/files/)) {
         setTimeout(function () {
             $('.file-path').bind('change', function () {
                 let form_name = $('.file-path').val().replace(/\.pdf/, '');
+                form_name = form_name.replace(/^[0-9\.\s]+/, '');
+                form_name = form_name.replace(/^\([a-zA-Z\s]+\)/, '');
+                form_name = form_name.replace(/^[-\s]{1}/, '');
+                form_name = form_name.replace(/[0-9\.\s_]+$/, '');
                 $('#file_name_display, #helper_text').val(form_name).trigger('change');
             });
             $('#form_group_id').change(function () {

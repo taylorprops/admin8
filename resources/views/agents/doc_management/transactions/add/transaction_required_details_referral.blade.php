@@ -77,11 +77,13 @@
                                 <a class="btn btn-primary btn-sm my-3" data-toggle="collapse" href="#receiving_agent_search_div" role="button" aria-expanded="false" aria-controls="receiving_agent_search_div">
                                     <i class="fad fa-search mr-2"></i> Search Agents in Bright MLS
                                 </a>
-                                <div class="collapse p-2 mb-4 border" id="receiving_agent_search_div">
-                                    <div class="mb-4">Type the Agent's Name, Email or BrightMLS ID</div>
-                                    <input type="text" class="custom-form-element form-input agent-search" data-label="Enter Agent's Name, Email or ID" autocomplete="agentsearch">
-                                    <div class="search-results-container">
-                                        <div class="list-group search-results bg-white p-2 border z-depth-1 w-100"></div>
+                                <div class="collapse border" id="receiving_agent_search_div">
+                                    <div class="p-2 mb-4">
+                                        <div class="mb-4">Type the Agent's Name, Email or BrightMLS ID</div>
+                                        <input type="text" class="custom-form-element form-input agent-search" data-label="Enter Agent's Name, Email or ID" autocomplete="agentsearch">
+                                        <div class="search-results-container">
+                                            <div class="list-group search-results bg-white p-2 border z-depth-1 w-100"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

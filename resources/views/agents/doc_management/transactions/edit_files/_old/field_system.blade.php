@@ -74,7 +74,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
         $value = get_value($field_values, $input_id);
 
         if(!$value) {
-            $value = $common_fields -> GetCommonNameValue($common_name, $field_system -> field_id, 'system', $Listing_ID, '', $Agent_ID);
+            $value = $common_fields -> GetCommonNameValue($common_name, $field_system -> field_id, 'system', $Listing_ID, '', '', '', '', $Agent_ID);
         }
         if($value != '') {
             $value = date('n/j/Y', strtotime($value));
@@ -121,7 +121,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                             $input_id = $field_system -> field_id;
                             $value = get_value($field_values, $input_id);
                             if(!$value) {
-                                $value = $common_fields -> GetCommonNameValue($common_name, $field_system -> field_id, 'system', $Listing_ID, '', $Agent_ID);
+                                $value = $common_fields -> GetCommonNameValue($common_name, $field_system -> field_id, 'system', $Listing_ID, '', '', '', '', $Agent_ID);
                             }
                             $textline_class = $field_system -> textline_type ?? null;
                             @endphp
@@ -148,7 +148,7 @@ if($field_type == 'radio' || $field_type == 'checkbox') {
                                         $common_name_input = $system_input -> input_name;
 
                                         if(!$value) {
-                                            $value = $common_fields -> GetCommonNameValue($common_name_input, $system_input -> input_id, 'system', $Listing_ID, '', $Agent_ID);
+                                            $value = $common_fields -> GetCommonNameValue($common_name_input, $system_input -> input_id, 'system', $Listing_ID, '', '', '', '', $Agent_ID);
                                         }
 
                                         $address_type = address_type($common_name_input);

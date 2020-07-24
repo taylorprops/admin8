@@ -32,10 +32,16 @@ $in_checklist = $checklist_items -> ifFormInChecklist($checklist_id, $file_id);
                 $text_color = 'text-primary';
                 $mr = 'mr-3';
             }
+
+            if($checklist_item -> checklist_form_id > 0) {
+                $checklist_item_name = $upload -> GetFormName($checklist_item -> checklist_form_id);
+            } else {
+                $checklist_item_name = $checklist_item -> checklist_item_added_name;
+            }
             @endphp
             <li class="list-group-item order-checklist-item p-1 d-flex justify-content-start {{ $classes }}">
                 <i class="fad {{ $fa }} {{ $text_color }} {{ $handle }} {{ $mr }} my-auto ml-3"></i>
-                <span class="{{ $handle }} my-auto">{{ $upload -> getFormName($checklist_item -> checklist_form_id) }}</span>
+                <span class="{{ $handle }} my-auto">{{ $checklist_item_name }}</span>
             </li>
         @endforeach
 

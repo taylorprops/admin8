@@ -2,8 +2,14 @@
 @section('title', 'Add '.$transaction_type_header)
 
 @section('content')
+@php
+$Agent_ID = null;
+if(auth() -> user() -> group == 'agent') {
+    $Agent_ID = auth() -> user() -> user_id;
+}
+@endphp
 <input type="hidden" id="transaction_type" value="{{ $transaction_type }}">
-<input type="hidden" id="Agent_ID" value="{{ auth() -> user() -> user_id }}">
+<input type="hidden" id="Agent_ID" value="{{ $Agent_ID }}">
 <div class="container page-add-transaction">
     <div class="row">
 
@@ -107,7 +113,7 @@
                             </div>
                         </div>
                         <div class="address-enter-continue-div text-center my-4">
-                            <button id="address_enter_continue" class="btn btn-success btn-lg" type="button" data-toggle="collapse" data-target=".property-container" aria-expanded="false" aria-controls="address_search_container address_enter_container" disabled>
+                            <button id="address_enter_continue" class="btn btn-success btn-lg" type="button" @if($transaction_type != 'referral') data-toggle="collapse" data-target=".property-container" aria-expanded="false" aria-controls="address_search_container address_enter_container" @endif disabled>
                                 Continue <i class="fad fa-chevron-double-right ml-3"></i>
                             </button>
                         </div>
@@ -248,6 +254,36 @@
 
     </div>
 
+</div>
+
+<div class="modal fade draggable" id="add_agent_id_modal" tabindex="-1" role="dialog" aria-labelledby="add_agent_id_modal_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary draggable-handle">
+                <h4 class="modal-title" id="add_agent_id_modal_title">Select Agent</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <i class="fal fa-times mt-2"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="p-2">
+                            <select class="custom-form-element form-select form-select-no-cancel" id="add_agent_id" data-label="Select Agent">
+                                <option value=""></option>
+                                @foreach($agents as $agent)
+                                    <option value="{{ $agent -> id }}">{{ $agent -> last_name.', '.$agent -> first_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+                <a class="btn btn-success" id="save_add_agent_id_button"><i class="fad fa-check mr-2"></i> Save</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade draggable" id="multiple_results_modal" tabindex="-1" role="dialog" aria-labelledby="multiple_results_title" aria-hidden="true">

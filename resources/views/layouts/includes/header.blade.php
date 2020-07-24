@@ -50,7 +50,7 @@
                         <a class="nav-link"><i class="far fa-comments"></i> <span class="clearfix d-none d-sm-inline-block">Support</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"><i class="fas fa-user"></i> <span class="clearfix d-none d-sm-inline-block">Account</span></a>
+                        <a class="nav-link"><i class="fas fa-user"></i> <span class="clearfix d-none d-sm-inline-block">{{ ucwords(auth() -> user() -> group).' - '.auth() -> user() -> name }}</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout"><span class="clearfix d-none d-sm-inline-block">Logout</span></a>

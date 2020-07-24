@@ -27,7 +27,7 @@
 
                         <div class="seller-div mb-3 z-depth-1">
 
-                            <div class="h5 responsive text-orange seller-header">Seller 1</div>
+                            <div class="h5-responsive text-orange seller-header">Seller 1</div>
 
                             <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-member="seller" data-member-id="1"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a>
 
@@ -86,13 +86,13 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="p-3 z-depth-1">
-                            <div class="h5 responsive text-orange mb-3">List Date</div>
+                            <div class="h5-responsive text-orange mb-3">List Date</div>
                             <input type="text" class="custom-form-element form-input datepicker required" name="MLSListDate" id="MLSListDate" data-label="List Date" value="{{ ($property_details -> MLSListDate != '0000-00-00' ? $property_details -> MLSListDate : '') }}">
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="p-3 z-depth-1">
-                            <div class="h5 responsive text-orange mb-3">Expiration Date</div>
+                            <div class="h5-responsive text-orange mb-3">Expiration Date</div>
                             <input type="text" class="custom-form-element form-input datepicker required" name="ExpirationDate" id="ExpirationDate" data-label="Expiration Date" value="{{ $property_details -> ExpirationDate }}">
                         </div>
                     </div>

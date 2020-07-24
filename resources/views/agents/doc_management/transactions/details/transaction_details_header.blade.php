@@ -54,7 +54,7 @@ if($transaction_type == 'listing') {
         @if($transaction_type == 'listing')
 
         <div class="row">
-            @if(in_array($property -> Status, $resource_items -> GetActiveListingStatuses() -> toArray()))
+            @if(in_array($property -> Status, $resource_items -> GetActiveListingStatuses('no', 'yes', 'yes') -> toArray()))
                 <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-right header-contract-active">
                     <a href="javascript: void(0);" class="btn btn-success mt-2 d-block d-sm-inline-block" id="accept_contract_button"><i class="fa fa-plus mr-2"></i> Accept Contract</a>
                 </div>
@@ -95,7 +95,7 @@ if($transaction_type == 'listing') {
 <div class="row my-2 my-md-4 py-2 border-top border-bottom listing-header-details">
 
     <div class="col-12">
-        <div class="d-flex justify-content-start flex-wrap">
+        <div class="d-block d-sm-flex justify-content-start flex-wrap">
 
             <div class="bg-primary d-flex justify-content-start flex-wrap text-white m-1 p-2">
                 <div class="text-white d-none d-sm-inline-block mr-2">
