@@ -68,6 +68,13 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
+.relative {
+    position: relative;
+}
+.absolute {
+    position: absolute;
+}
+
 a:hover {
     text-decoration: none;
 }

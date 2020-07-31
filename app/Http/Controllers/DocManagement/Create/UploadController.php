@@ -348,7 +348,7 @@ class UploadController extends Controller {
             $filename = $file_name_orig;
 
             $ext = $file -> getClientOriginalExtension();
-            $file_name_remove_numbers = preg_replace('/[0-9-_]+\.'.$ext.'/', '.'.$ext, $filename);
+            $file_name_remove_numbers = preg_replace('/[0-9-_\s]+\.'.$ext.'/', '.'.$ext, $filename);
             $file_name_no_ext = str_replace('.'.$ext, '', $file_name_remove_numbers);
             $clean_filename = sanitize($file_name_no_ext);
             $new_filename = $clean_filename.'.'.$ext;

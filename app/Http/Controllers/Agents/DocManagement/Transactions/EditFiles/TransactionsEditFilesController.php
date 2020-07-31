@@ -22,6 +22,7 @@ use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
 use App\Models\DocManagement\Transactions\Upload\TransactionUpload;
 use App\Models\DocManagement\Transactions\Upload\TransactionUploadImages;
 use App\Models\DocManagement\Transactions\Upload\TransactionUploadPages;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
 
 use App\Models\DocManagement\Transactions\Listings\Listings;
 
@@ -203,6 +204,12 @@ class TransactionsEditFilesController extends Controller
 
         // merge all from combined and add final to converted - named $filename
         exec('pdftk '.$full_path_dir.'/combined/*pdf cat output '.$full_path_dir.'/converted/'.$filename);
+
+        $checklist_item_docs_model = new TransactionChecklistItemsDocs();
+        $image_filename = str_replace('.pdf', '.jpg', $filename);
+        $source = $full_path_dir.'/converted/'.$filename;
+        $destination = $full_path_dir.'/converted_images';
+        $checklist_item_docs_model -> convert_doc_to_images($source, $destination, $image_filename, $file_id);
 
     }
 

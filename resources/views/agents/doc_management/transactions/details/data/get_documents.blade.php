@@ -823,9 +823,11 @@
 
                                     <div class="h5-responsive text-orange">Required Documents</div>
 
-                                    @foreach($checklist_forms_required as $checklist_form_required)
+                                    @foreach($checklist_items_required as $checklist_item_required)
+
                                         @php
-                                        // get required
+                                        // get if required
+                                        $checklist_form_required = $available_files -> where('file_id', $checklist_item_required -> checklist_form_id) -> first();
                                         @endphp
                                         <li class="list-group-item">
                                             <div class="d-flex justify-content-start align-items-center">
@@ -841,9 +843,10 @@
 
                                     <div class="h5-responsive text-orange">If Applicable Documents</div>
 
-                                    @foreach($checklist_forms_if_applicable as $checklist_form_if_applicable)
+                                    @foreach($checklist_items_if_applicable as $checklist_item_if_applicable)
                                         @php
                                         // get if applicable
+                                        $checklist_form_if_applicable = $available_files -> where('file_id', $checklist_item_if_applicable -> checklist_form_id) -> first();
                                         @endphp
                                         <li class="list-group-item">
                                             <div class="d-flex justify-content-start align-items-center">

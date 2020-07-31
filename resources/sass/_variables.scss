@@ -147,6 +147,7 @@ $badge_blue_light: #e9ecf0;
 $badge_green: #33ad33;
 $badge_orange: #d47433;
 $badge_red: #a33a38;
+$badge_default: #6a839e;
 .badge.bg-primary {
     background-image: linear-gradient(122deg, $badge_blue 29.17%, $blue 29.17%, $blue 50%, $badge_blue 50%, $badge_blue 79.17%, $blue 79.17%, $blue 100%) !important;
     background-size: 14.15px 22.64px !important;
@@ -165,5 +166,9 @@ $badge_red: #a33a38;
 }
 .badge.bg-blue-light {
     background-image: linear-gradient(122deg, $badge_blue_light 29.17%, $blue_light 29.17%, $blue_light 50%, $badge_blue_light 50%, $badge_blue_light.17%, $blue_light 79.17%, $blue_light 100%) !important;
+    background-size: 14.15px 22.64px !important;
+}
+.badge.bg-default {
+    background-image: linear-gradient(122deg, $badge_default 29.17%, $default 29.17%, $default 50%, $badge_default 50%, $badge_default.17%, $default 79.17%, $default 100%) !important;
     background-size: 14.15px 22.64px !important;
 }

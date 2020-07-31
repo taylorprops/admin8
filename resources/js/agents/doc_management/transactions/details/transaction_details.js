@@ -107,71 +107,6 @@ if (document.URL.match(/transaction_details/)) {
     });
 
 
-    /* function search_bright_agents() {
-
-        let val = $(this).val();
-
-        if (val.length > 3) {
-
-            axios.get('/agents/doc_management/transactions/search_bright_agents', {
-                params: {
-                    val: val
-                },
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(function (response) {
-                    let data = response.data;
-                    $('.search-results').html('');
-                    $.each(data, function (k, agents) {
-                        if (agents.length > 0) {
-                            $.each(agents, function (k, agent) {
-                                let agent_div = ' \
-                                <div class="search-result list-group-item" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
-                                    <div class="row"> \
-                                        <div class="col-6 col-md-3"> \
-                                            <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
-                                        </div> \
-                                        <div class="col-6 col-md-3"> \
-                                        <span class="font-weight-bold">'+ agent.OfficeName + '</span><br><span class="small">' + agent.OfficeMlsId + '</span>\
-                                        </div> \
-                                        <div class="col-12 col-md-6"> \
-                                            '+ agent.OfficeAddress1 + '<br>' + agent.OfficeCity + ', ' + agent.OfficeStateOrProvince + ' ' + agent.OfficePostalCode + ' \
-                                        </div> \
-                                    </div> \
-                                </div> \
-                            ';
-                                $('.search-results').show().append(agent_div);
-                            });
-                        } else {
-                            $('.search-results').show().append('<div class="search-result list-group-item text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> No Matching Results</div>');
-                        }
-                    });
-
-                    $('.search-result').off('click').on('click', function () {
-                        add_buyers_agent($(this));
-                    });
-
-                    $(document).mouseup(function (e) {
-                        var container = $('.search-results');
-                        if (!container.is(e.target) && container.has(e.target).length === 0) {
-                            container.hide();
-                        }
-                    });
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
-        } else {
-
-            $('.search-results').hide().html('');
-
-        }
-
-    } */
 
     function show_accept_contract() {
         $('#accept_contract_modal').modal();
@@ -461,9 +396,7 @@ if (document.URL.match(/transaction_details/)) {
                         $('.reject-checklist-item-button').off('click').on('click', function() {
                             show_checklist_item_review_status($(this), 'rejected');
                         });
-                        $('.accept-checklist-item-button').off('click').on('click', function() {
-                            checklist_item_review_status($(this), 'accepted', null);
-                        });
+
                         $('.undo-accepted, .undo-rejected').off('click').on('click', function() {
                             checklist_item_review_status($(this), 'not_reviewed', null);
                         });
@@ -476,7 +409,7 @@ if (document.URL.match(/transaction_details/)) {
                             show_remove_checklist_item($(this), $(this).data('checklist-item-id'));
                         });
 
-                        $('#add_checklist_item_button').off('click').on('click', show_add_checklist_item);
+                        $('.add-checklist-item-button').off('click').on('click', show_add_checklist_item);
 
                         $('#email_checklist_to_agent_button').off('click').on('click', show_email_agent);
 
@@ -609,44 +542,6 @@ if (document.URL.match(/transaction_details/)) {
         });
     }
 
-    function form_search() {
-        let v = $('#form_search').val();
-        if (v.length == 0) {
-            // hide all containers with header and name inside
-            $('.form-group-div').hide();
-            // make sure all headers and names are visible if searched for
-            $('.list-group-header, .form-name').show();
-            // get value of selected form group to reset list
-            let form_group = $('.select-form-group').val();
-            if (form_group == 'all') {
-                $('.form-group-div, .list-group-header, .form-name').show();
-            } else {
-                $('[data-form-group-id="' + form_group + '"]').show().find('.form-name').show();
-            }
-        } else {
-
-            // show all containers with header and name inside
-            $('.form-group-div').show();
-            // hide all headers
-            $('.list-group-header').hide();
-            // hide all names
-            $('.form-name').hide().each(function () {
-                if ($(this).data('form-name').match(new RegExp(v, 'i'))) {
-                    // show name
-                    $(this).show();
-                    // show header
-                    $(this).closest('.form-group-div').find('.list-group-header').show();
-                }
-            });
-        }
-    }
-
-    window.clear_selected_form = function() {
-
-        $('.form-name').removeClass('bg-green-light selected');
-        $('.form-name-display').removeClass('text-success').addClass('text-primary');
-        $('.checked-div').addClass('d-none');
-    }
 
     function sortable_documents() {
         $('.sortable-documents').sortable({

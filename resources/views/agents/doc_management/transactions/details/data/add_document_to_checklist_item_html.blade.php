@@ -49,7 +49,7 @@
 
                         @foreach($checklist_groups as $checklist_group)
 
-                            <div class="h4-responsive text-primary mt-1 mb-0 p-2">{{ $checklist_group -> resource_name }}</div>
+                            <div class="h5-responsive text-primary mt-1 mb-0">{{ $checklist_group -> resource_name }} ~~~~~~~~~~~~~~~~~~</div>
 
                             @if(count($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)
 
@@ -64,18 +64,18 @@
                                     $status_details = $transaction_checklist_items_modal -> GetStatus($checklist_item ->  id);
                                     $docs_count = $transaction_checklist_item_documents -> where('checklist_item_id', $checklist_item ->  id) -> count();
                                     $status = $status_details -> status;
-                                    $classes = $status_details -> classes;
+                                    $agent_classes = $status_details -> agent_classes;
                                     $fa = str_replace('mr-2', 'mr-1', $status_details -> fa);
                                     $helper_text = $status_details -> helper_text;
                                     @endphp
 
-                                    <div class="{{-- bg-primary-light --}} p-2 m-2">
+                                    <div class="{{-- bg-primary-light --}} m-1">
 
-                                        <div class="font-weight-bold drop-div-title text-gray mb-3 d-flex justify-content-start">
-                                            <div>
-                                                <span class="badge checklist-item-badge {{ $classes }} p-1 mr-2" title="{{ $helper_text }}">{!! $fa !!} {{ $status }}</span>
+                                        <div class="font-weight-bold drop-div-title text-gray mb-1 d-flex justify-content-start">
+                                            <div class="d-none">
+                                                <span class="badge checklist-item-badge {{ $agent_classes }} p-1 mr-2" title="{{ $helper_text }}">{!! $fa !!} {{ $status }}</span>
                                             </div>
-                                            <div>
+                                            <div class="d-none">
                                                 <span class="badge badge-primary p-1 mr-2" title="Count of documents already submitted for this item">{{ $docs_count }}</span>
                                             </div>
                                             <div>

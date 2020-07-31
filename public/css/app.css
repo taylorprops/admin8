@@ -1687,6 +1687,11 @@ a.text-green:hover {
   background-size: 14.15px 22.64px !important;
 }
 
+.badge.bg-default {
+  background-image: linear-gradient(122deg, #6a839e 29.17%, #647c96 29.17%, #647c96 50%, #6a839e 50%, #6a839e 0.17%, #647c96 79.17%, #647c96 100%) !important;
+  background-size: 14.15px 22.64px !important;
+}
+
 /*!
  * Bootstrap v4.5.0 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
@@ -13135,6 +13140,14 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
 a:hover {
   text-decoration: none;
 }
@@ -13340,6 +13353,11 @@ body.modal-open {
 
 .modal-dialog {
   margin: 1rem auto !important;
+}
+
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+  background-color: #d6eefc;
 }
 
 @media (min-width: 1200px) {
@@ -15257,6 +15275,7 @@ header .header-logo-link {
 
 .page-transaction-details .form-groups-container {
   height: 420px;
+  overflow: auto;
 }
 
 .page-transaction-details #form_search_div {
@@ -15956,18 +15975,120 @@ header .header-logo-link {
 .page-document-review .transactions-container .properties-container,
 .page-document-review .transactions-container .checklist-items-container {
   position: absolute;
-  top: -64px;
+  top: -60px;
   left: 0;
-  height: 100VH;
-  overflow: auto;
-  padding-top: 63px;
-  border-right: 1px solid #ccc;
+  height: 99VH;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 70px;
   z-index: 1;
 }
 
+.page-document-review .transactions-container .property-list-header {
+  cursor: default;
+}
+
+.page-document-review .transactions-container .property-item .badge,
+.page-document-review .transactions-container .unread-messages-badge {
+  font-size: 100%;
+  z-index: 1;
+}
+
+.page-document-review .transactions-container .unread-messages-badge:after {
+  content: " ";
+  position: absolute;
+  width: 0;
+  height: 0;
+  right: 8px;
+  top: 22px;
+  bottom: auto;
+  border: 4px solid;
+  border-color: orange transparent transparent orange;
+  z-index: 0;
+}
+
 .page-document-review .transactions-container .checklist-items-container {
-  border-right: none;
+  display: none;
   background: #fff;
   z-index: 2;
+}
+
+.page-document-review .transactions-container .checklist-items-container .sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: -5px;
+  z-index: 100;
+}
+
+.page-document-review .transactions-container .checklist-items-container .checklist-item-dropdown::after {
+  display: none;
+}
+
+.page-document-review .transactions-container .checklist-items-container .checklist-item-link {
+  cursor: pointer;
+}
+
+.page-document-review .transactions-container .checklist-items-container .checklist-item-link .status-badge {
+  width: 65px;
+}
+
+.page-document-review .transactions-container .checklist-items-container .checklist-item-link.required {
+  opacity: 0.5;
+}
+
+.page-document-review .transactions-container .checklist-items-container .list-group-item.active {
+  background-color: rgba(76, 155, 219, 0.8);
+  border-color: rgba(76, 155, 219, 0.8);
+}
+
+.page-document-review .documents-container .documents-div {
+  height: 93VH;
+  overflow: hidden;
+}
+
+.page-document-review .documents-container .review-image-container {
+  height: 93VH;
+  overflow-y: auto;
+}
+
+.page-document-review .documents-container .review-image-container .review-image-div {
+  width: 85%;
+}
+
+.page-document-review .documents-container .document-review-image {
+  max-width: 100%;
+  margin: auto;
+}
+
+.page-document-review .documents-container .document-options-div {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  background: #fff;
+  border-top: 1px solid #dee2e6;
+  z-index: 10;
+}
+
+.page-document-review .documents-container .range-field input[type=range] + .thumb {
+  background-color: #4c9bdb !important;
+}
+
+.form-groups-container {
+  height: 420px;
+  overflow: auto;
+}
+
+.rejected-reasons-container {
+  position: relative;
+}
+
+.rejected-reasons-div {
+  height: 400px;
+  overflow: auto;
+}
+
+.rejected-reason {
+  cursor: pointer;
 }
 

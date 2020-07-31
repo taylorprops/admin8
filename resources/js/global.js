@@ -70,10 +70,9 @@ $(document).ready(function () {
 
     setInterval(function() {
         datepicker_custom();
+        global_tooltip();
     }, 1000);
 
-
-    global_tooltip();
 
 
 

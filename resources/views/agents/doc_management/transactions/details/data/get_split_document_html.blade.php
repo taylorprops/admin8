@@ -93,7 +93,7 @@
                                                     $status_details = $transaction_checklist_items_modal -> GetStatus($checklist_item -> id);
                                                     $docs_count = $transaction_checklist_item_documents -> where('checklist_item_id', $checklist_item -> id) -> count();
                                                     $status = $status_details -> status;
-                                                    $classes = $status_details -> classes;
+                                                    $agent_classes = $status_details -> agent_classes;
                                                     $fa = str_replace('mr-2', 'mr-1', $status_details -> fa);
                                                     $helper_text = $status_details -> helper_text;
                                                     @endphp
@@ -102,7 +102,7 @@
                                                             <button class="btn btn-sm btn-success add-docs-to-checklist-item-button" data-checklist-item-id="{{ $checklist_item -> id }}" data-checklist-id="{{ $checklist_item -> checklist_id }}" data-file-id="{{ $file_id }}" data-upload-id="{{ $checklist_item -> checklist_form_id }}" disabled><i class="fa fa-plus mr-1 mr-sm-2"></i> Add</button>
                                                         </div>
                                                         <div class="mr-1 mr-sm-2">
-                                                            <span class="badge checklist-item-badge {{ $classes }} p-1" title="{{ $helper_text }}"><span class="d-none d-sm-inline-block">{!! $fa !!} </span>{{ $status }}</span>
+                                                            <span class="badge checklist-item-badge {{ $agent_classes }} p-1" title="{{ $helper_text }}"><span class="d-none d-sm-inline-block">{!! $fa !!} </span>{{ $status }}</span>
                                                         </div>
                                                         <div class="mr-2">
                                                             <span class="badge badge-primary p-1 docs-count-badge" title="Count of documents already submitted for this item">{{ $docs_count }}</span>

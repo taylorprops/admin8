@@ -37,8 +37,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function ScopeUserDetails($query, $user_id) {
+    /* public function ScopeUserDetails($query, $user_id) {
         $user_details = $this -> select('name', 'email', 'user_id', 'group') -> where('user_id', $user_id);
         return $user_details;
-    }
+    } */
 }

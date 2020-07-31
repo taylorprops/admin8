@@ -72,15 +72,15 @@ if (document.URL.match(/transaction_details/)) {
 
     }
 
-    window.show_remove_checklist_item = function(ele, checklist_item_id) {
+    /* window.show_remove_checklist_item = function(ele, checklist_item_id) {
 
         $('#confirm_remove_checklist_item_modal').modal();
         $('#confirm_remove_checklist_item_button').off('click').on('click', function() {
             remove_checklist_item(ele, checklist_item_id);
         });
-    }
+    } */
 
-    window.remove_checklist_item = function(ele, checklist_item_id) {
+    /* window.remove_checklist_item = function(ele, checklist_item_id) {
 
         let formData = new FormData();
         formData.append('checklist_item_id', checklist_item_id);
@@ -93,98 +93,34 @@ if (document.URL.match(/transaction_details/)) {
         .catch(function (error) {
             console.log(error);
         });
-    }
+    } */
 
-    window.show_add_checklist_item = function() {
-
-        $('#add_checklist_item_modal').modal();
-
-        $('.form-name').off('click').on('click', function(e) {
-
-            if(!$(e.target).hasClass('form-link')) {
-
-                clear_selected_form();
-
-                $(this).addClass('selected');
-                $('#add_checklist_item_name').val('').trigger('change');
-                $(this).addClass('bg-green-light selected').find('.checked-div').removeClass('d-none').next('.form-name-display').removeClass('text-primary').addClass('text-success');
-
-            }
-
-        });
-
-        $('#add_checklist_item_name').keyup(function() {
-            if($(this).val() != '') {
-                clear_selected_form();
-            }
-        });
-
-        $('#save_add_checklist_item_button').click(save_add_checklist_item);
-
-    }
-
-    window.save_add_checklist_item = function() {
-
-        let Agent_ID = $('#Agent_ID').val();
-        let Listing_ID = $('#Listing_ID').val();
-        let Contract_ID = $('#Contract_ID').val();
-        let Referral_ID = $('#Referral_ID').val();
-        let checklist_id = $('#add_checklist_item_checklist_id').val();
-        let checklist_form_id = $('.form-name.selected').data('form-id') || null;
-        let add_checklist_item_name = $('#add_checklist_item_name').val();
-        let add_checklist_item_group_id = $('#add_checklist_item_group_id').val();
-
-        let form = $('#add_checklist_item_form');
-        let validation = validate_form(form);
-
-        if(validation == 'yes') {
-
-            let formData = new FormData(form[0]);
-            formData.append('Agent_ID', Agent_ID);
-            formData.append('Listing_ID', Listing_ID);
-            formData.append('Contract_ID', Contract_ID);
-            formData.append('Referral_ID', Referral_ID);
-            formData.append('checklist_id', checklist_id);
-            formData.append('checklist_form_id', checklist_form_id);
-            formData.append('add_checklist_item_name', add_checklist_item_name);
-            formData.append('add_checklist_item_group_id', add_checklist_item_group_id);
-
-            axios.post('/agents/doc_management/transactions/save_add_checklist_item', formData, axios_options)
-            .then(function (response) {
-                load_tabs('checklist');
-                toastr['success']('Checklist Item Successfully Added')
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-        }
-    }
-
-    window.mark_required = function (ele, checklist_item_id, required) {
+    /* window.mark_required = function (ele, checklist_item_id, required) {
 
         let formData = new FormData();
         formData.append('checklist_item_id', checklist_item_id);
         formData.append('required', required);
         axios.post('/agents/doc_management/transactions/mark_required', formData, axios_options)
         .then(function (response) {
-            let checklist_items_div = ele.closest('.checklist-item-div').find('.status-badge');
-            $('.mark-required').removeClass('d-block');
-            if(checklist_items_div.text().match(/Applicable/)) {
-                checklist_items_div.removeClass('bg-default-light').addClass('bg-orange').html('<i class="fal fa-exclamation-circle fa-lg mr-2"></i> Required').attr('title', '');
-                $('.mark-required.no').removeClass('d-none').addClass('d-block');
-            } else if(checklist_items_div.text().match(/Required/)) {
-                checklist_items_div.removeClass('bg-orange').addClass('bg-default-light').html('<i class="fal fa-minus-circle fa-lg mr-2"></i> If Applicable').attr('title', '');
-                $('.mark-required.yes').removeClass('d-none').addClass('d-block');
+
+            let status_badge = ele.closest('.checklist-item-div').find('.status-badge');
+            $('.mark-required').removeClass('d-block').removeClass('d-none');
+
+            if(status_badge.text().match(/Applicable/)) {
+                status_badge.removeClass('bg-default-light').addClass('bg-orange').html('<i class="fal fa-exclamation-circle fa-lg mr-2"></i> Required').attr('title', '');
+                $('.mark-required.no').addClass('d-block').next('a').addClass('d-none');
+            } else if(status_badge.text().match(/Required/)) {
+                status_badge.removeClass('bg-orange').addClass('bg-default-light').html('<i class="fal fa-minus-circle fa-lg mr-2"></i> If Applicable').attr('title', '');
+                $('.mark-required.yes').addClass('d-block').prev('a').addClass('d-none');
             }
 
         })
         .catch(function (error) {
             console.log(error);
         });
-    }
+    } */
 
-    window.show_checklist_item_review_status = function(ele, action) {
+    /* window.show_checklist_item_review_status = function(ele, action) {
         // show reject model with list of reasons
         $('#reject_document_modal').modal();
         setTimeout(function() {
@@ -222,9 +158,9 @@ if (document.URL.match(/transaction_details/)) {
                 $('.rejected-selected').addClass('d-none');
             }
         });
-    }
+    } */
 
-    window.checklist_item_review_status = function(ele, action, note) {
+    /* window.checklist_item_review_status = function(ele, action, note) {
 
         let checklist_item_id = ele.data('checklist-item-id');
         let review_options = ele.closest('.review-options');
@@ -266,9 +202,9 @@ if (document.URL.match(/transaction_details/)) {
 
         set_checklist_item_review_status(checklist_item_id, action, note);
 
-    }
+    } */
 
-    window.set_checklist_item_review_status = function(checklist_item_id, action, note) {
+    /* window.set_checklist_item_review_status = function(checklist_item_id, action, note) {
 
         let Agent_ID = $('#Agent_ID').val();
         let Listing_ID = $('#Listing_ID').val();
@@ -297,7 +233,7 @@ if (document.URL.match(/transaction_details/)) {
         .catch(function (error) {
             console.log(error);
         });
-    }
+    } */
 
     window.confirm_change_checklist = function() {
 
@@ -370,7 +306,7 @@ if (document.URL.match(/transaction_details/)) {
         axios.post('/agents/doc_management/transactions/mark_note_read', formData, axios_options)
         .then(function (response) {
             note_div.removeClass('border-orange').addClass('border-bottom');
-            button.parent().html('<span class="text-success small"><i class="fa fa-check"></i> Comment Read</span>');
+            button.parent().html('<span class="text-success small"><i class="fa fa-check"></i> Read</span>');
             /* load_tabs('checklist');
             setTimeout(function() {
                 $('#'+notes_collapse).collapse('show');

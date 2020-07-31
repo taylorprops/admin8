@@ -643,7 +643,7 @@ if (document.URL.match(/transaction_details/)) {
                 if ($(this).find('.add-to-checklist-document-div').length == 0) {
                     $(this).removeClass('drop-activated');
                 }
-                $(this).find('.drop-div-title').prependTo($(this));
+                //$(this).find('.drop-div-title').prependTo($(this));
 
             });
         }
@@ -833,6 +833,9 @@ if (document.URL.match(/transaction_details/)) {
 
             let validate = validate_form(form);
             if (validate == 'yes') {
+
+                global_loading_on('', '<div class="h5-responsive text-white">Importing Documents...</div>');
+
                 axios.post('/agents/doc_management/transactions/save_add_template_documents', formData, axios_options)
                     .then(function (response) {
                         toastr['success']('Documents Successfully Added')
@@ -840,6 +843,7 @@ if (document.URL.match(/transaction_details/)) {
                         load_checklist_on_tab_click();
                         let sortables = $('.document-div[data-folder-id="' + folder + '"]');
                         reorder_documents(sortables);
+                        global_loading_off();
                     })
                     .catch(function (error) {
                         console.log(error);

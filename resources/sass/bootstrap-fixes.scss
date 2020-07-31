@@ -18,6 +18,7 @@ body, body.modal-open {
     }
 }
 
+
 .modal-content {
     border: 1px solid #fff;
     //border-radius: 0px;
@@ -44,6 +45,11 @@ body, body.modal-open {
 
 .modal-dialog {
     margin: 1rem auto !important;
+}
+
+
+.list-group-item-action:hover, .list-group-item-action:focus {
+    background-color: rgb(214, 238, 252);
 }
 
 
