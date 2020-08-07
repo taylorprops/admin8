@@ -13,4 +13,5 @@ class Listings extends Model
     protected $primaryKey = 'Listing_ID';
     public $timestamps = false;
     protected $guarded = [];
+
 }

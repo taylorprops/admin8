@@ -1592,6 +1592,10 @@ a.text-green:hover {
   color: #1b631b;
 }
 
+.text-red {
+  color: red;
+}
+
 .bg-default {
   background: #647c96 !important;
   background-color: #647c96 !important;
@@ -1600,6 +1604,11 @@ a.text-green:hover {
 .bg-default-light {
   background: rgba(100, 124, 150, 0.4) !important;
   background-color: rgba(100, 124, 150, 0.4) !important;
+}
+
+.bg-default-lighter {
+  background: rgba(100, 124, 150, 0.1) !important;
+  background-color: rgba(100, 124, 150, 0.1) !important;
 }
 
 .bg-primary-light {
@@ -13808,6 +13817,7 @@ table.dataTable thead .sorting_desc_disabled:before {
   border: 1px solid #ccc;
   color: #686767;
   font-size: 1rem;
+  border-radius: 5px;
 }
 
 .form-ele .caret {
@@ -13832,7 +13842,7 @@ table.dataTable thead .sorting_desc_disabled:before {
   font-size: 0.9rem;
   color: #b9b5b5;
   white-space: nowrap;
-  transition: all 0.3s;
+  transition: all 0.1s;
   cursor: pointer;
 }
 
@@ -15985,27 +15995,23 @@ header .header-logo-link {
   z-index: 1;
 }
 
+.page-document-review .transactions-container .fa-stack {
+  height: 1em;
+  line-height: 1em;
+  width: 1.5em;
+}
+
+.page-document-review .transactions-container .notes-count {
+  font-size: 1rem;
+  bottom: 2px;
+}
+
 .page-document-review .transactions-container .property-list-header {
   cursor: default;
 }
 
-.page-document-review .transactions-container .property-item .badge,
-.page-document-review .transactions-container .unread-messages-badge {
+.page-document-review .transactions-container .property-item .badge {
   font-size: 100%;
-  z-index: 1;
-}
-
-.page-document-review .transactions-container .unread-messages-badge:after {
-  content: " ";
-  position: absolute;
-  width: 0;
-  height: 0;
-  right: 8px;
-  top: 22px;
-  bottom: auto;
-  border: 4px solid;
-  border-color: orange transparent transparent orange;
-  z-index: 0;
 }
 
 .page-document-review .transactions-container .checklist-items-container {
@@ -16017,7 +16023,7 @@ header .header-logo-link {
 .page-document-review .transactions-container .checklist-items-container .sticky {
   position: -webkit-sticky;
   position: sticky;
-  top: -5px;
+  top: -12px;
   z-index: 100;
 }
 
@@ -16025,15 +16031,11 @@ header .header-logo-link {
   display: none;
 }
 
-.page-document-review .transactions-container .checklist-items-container .checklist-item-link {
-  cursor: pointer;
+.page-document-review .transactions-container .checklist-items-container .checklist-item-div .status-badge {
+  width: 75px;
 }
 
-.page-document-review .transactions-container .checklist-items-container .checklist-item-link .status-badge {
-  width: 65px;
-}
-
-.page-document-review .transactions-container .checklist-items-container .checklist-item-link.required {
+.page-document-review .transactions-container .checklist-items-container .checklist-item-unused {
   opacity: 0.5;
 }
 
@@ -16042,14 +16044,26 @@ header .header-logo-link {
   border-color: rgba(76, 155, 219, 0.8);
 }
 
+.page-document-review .transactions-container .checklist-items-container .notes-div {
+  max-height: 300px;
+  overflow: auto;
+}
+
 .page-document-review .documents-container .documents-div {
   height: 93VH;
   overflow: hidden;
 }
 
-.page-document-review .documents-container .review-image-container {
+.page-document-review .documents-container .review-container {
+  position: relative;
   height: 93VH;
+}
+
+.page-document-review .documents-container .review-image-container {
+  height: 86VH;
   overflow-y: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 25px;
 }
 
 .page-document-review .documents-container .review-image-container .review-image-div {
@@ -16067,11 +16081,53 @@ header .header-logo-link {
   left: 0px;
   background: #fff;
   border-top: 1px solid #dee2e6;
-  z-index: 10;
+  z-index: 1;
+}
+
+.page-document-review .documents-container .range-field input[type=range] {
+  width: 100px !important;
 }
 
 .page-document-review .documents-container .range-field input[type=range] + .thumb {
   background-color: #4c9bdb !important;
+}
+
+.page-document-review .documents-container .zoom-out,
+.page-document-review .documents-container .zoom-in {
+  cursor: pointer;
+}
+
+.page-document-review .details-container .details-content {
+  height: 76VH;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.page-document-review .details-container .transaction-details .badge {
+  font-size: 1rem;
+  padding: 0.5rem;
+  box-shadow: none;
+}
+
+.page-document-review .details-container table.table th,
+.page-document-review .details-container table.table td {
+  padding-top: 0.6rem;
+  padding-bottom: 0.5rem;
+}
+
+.page-document-review .details-container .property-details-table td:first-of-type {
+  width: 35%;
+}
+
+.page-document-review .details-container .divider {
+  height: 3px;
+  background: #4c9bdb;
+  padding: 0px !important;
+}
+
+#email_agent_checklist_details {
+  height: 0px;
+  display: none;
 }
 
 .form-groups-container {

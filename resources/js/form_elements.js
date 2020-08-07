@@ -83,7 +83,7 @@ window.form_elements = function () {
 
                     // hide any open select dropdowns
                     element.bind('click', function () {
-                        $('.form-select-dropdown').fadeOut();
+                        $('.form-select-dropdown').hide();
                         $('.form-select-search-input').val('').trigger('change');
                     });
 
@@ -142,7 +142,7 @@ window.form_elements = function () {
 
                 } else if (form_type == 'form-select') {
 
-                    element.wrap('<div class="form-ele"></div>');
+                    element.wrap('<div class="form-ele select"></div>');
                     // get wrapper to append to
                     let wrapper = element.parent();
 
@@ -166,11 +166,17 @@ window.form_elements = function () {
                         <label class="' + form_type + '-label" for="select_value_' + select_input_id + '">' + label + '</label> \
                         <input type="text" class="form-select-value-input caret '+ disabled + '" id="select_value_' + select_input_id + '" readonly ' + disabled + '> \
                         <div class="form-select-dropdown shadow-sm"> \
+                    ';
+                    if(!element.hasClass('form-select-no-search')) {
+                        select_html += ' \
                             <div class="form-select-search-div"> \
-                                <div class="w-100 d-flex justify-content-center"> \
+                                <div class="w-100 text-center"> \
                                     <input type="text" class="form-select-search-input" placeholder="Search"> \
                                 </div> \
                             </div> \
+                        ';
+                    }
+                    select_html += ' \
                             <div class="form-select-options-div"> \
                                 <ul class="form-select-ul"></ul> \
                             </div> \
@@ -241,7 +247,7 @@ window.form_elements = function () {
                     if (multiple) {
                         wrapper.find('.form-select-dropdown').append('<div class="w-100 form-select-save-div"><div class="d-flex d-flex justify-content-center p-0"><a href="javascript: void(0)" class="form-select-multiple-save btn btn-success btn-sm">Close</a></div></div>');
                         $('.form-select-multiple-save').click(function () {
-                            $('.form-select-dropdown').fadeOut();
+                            $('.form-select-dropdown').hide();
                             $('.form-select-search-input').val('').trigger('change');
                         });
 
@@ -376,14 +382,14 @@ window.form_elements = function () {
     // show dropdown on focus
 
     // original
-    $('.form-ele').not('.form-check').on('click', '.form-select-value-input', function (e) {
-        e.stopPropagation();
-        show_dropdown($(this));
-
+    $('.form-ele.select').off('click').on('click', function (e) {
+        // e.stopPropagation();
+        // e.preventDefault();
+        $(this).find('.form-select-value-input').focus();
+        //show_dropdown($(this).find('.form-select-value-input'));
     });
-    $('.form-select-value-input').off('focus').on('focus', function (e) {
+    $('.form-select-value-input').on('focus', function (e) {
         show_dropdown($(this));
-
     });
 
 
@@ -427,43 +433,38 @@ setInterval(function () {
 }, 500);
 
 function show_dropdown(input) {
-    // prevent labels from becoming active until after a selection is made
 
-    //reset_select();
-    let select = input.closest('.form-ele').find('select');
-    // show dropdown
+    $('.form-select-dropdown').hide();
+    let wrapper = input.closest('.form-ele');
+    let select = wrapper.find('select');
 
-    setTimeout(function() {
-        if(input.next('.form-select-dropdown').css('display') == 'none') {
-            input.next('.form-select-dropdown').show();
-            // focus on search input is searchable
-            if (!select.hasClass('form-select-no-search')) {
-                input.next('.form-select-dropdown').find('.form-select-search-input').focus();
-                input.prev('label').addClass('active');
+    if(wrapper.find('select').prop('disabled') == false) {
+        // show dropdown
+        setTimeout(function() {
+            if(input.next('.form-select-dropdown').css('display') == 'none') {
+                input.next('.form-select-dropdown').show();
+                // focus on search input is searchable
+                if (!select.hasClass('form-select-no-search')) {
+                    input.next('.form-select-dropdown').find('.form-select-search-input').focus();
+                    input.prev('label').addClass('active');
+                }
+
+                return false;
             }
 
-        }
-    }, 300);
-    /*  else {
+        }, 10);
+    }
 
-        $('.form-select-dropdown').hide();
-        if(input.val() == '') {
-            input.prev('label').removeClass('active');
-        }
-    } */
 
-    $(document).mouseup(function (e) {
-        var container = $('.form-select-dropdown');
-        if (!container.is(e.target) && container.has(e.target).length === 0) {
-            container.hide();
-        }
-        $('.form-select-value-input').each(function() {
-            if($(this).val() == '') {
-                $(this).prev('label').removeClass('active');
-            }
-        });
-    });
 }
+
+$(document).mouseup(function (e) {
+    let container = $('.form-select-dropdown');
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+        container.hide();
+    }
+    reset_labels();
+});
 
 function dropdown_search(wrapper, input, element, multiple) {
     let search_input = wrapper.find('.form-select-search-input');
@@ -486,38 +487,52 @@ function dropdown_search(wrapper, input, element, multiple) {
                     $('.form-select-li').show().removeClass('matched form-select-matched-option');
                 }
             });
+
         } else {
-            // if tab pressed
-            e.preventDefault();
+        // if tab pressed
+            $('.form-select-dropdown').hide();
+            reset_labels();
 
-            if (!multiple) {
+            if(wrapper.find('.form-select-matched-option').length > 0) {
 
-                input.val(wrapper.find('.form-select-matched-option').text()).trigger('change');
-                reset_select();
-                element.find('option').attr('selected', false);
-                element.find('option').eq($('.form-select-matched-option').data('index')).attr('selected', true);
-                element.trigger('change');
-                // remove active from all li and add to selected
-                wrapper.find('.form-select-li').removeClass('active');
-                $('.form-select-matched-option').addClass('active');
+                e.preventDefault();
 
-            } else {
+                if (!multiple) {
 
-                $('.form-select-matched-option input').prop('checked', true);
-                element.find('option').eq($('.form-select-matched-option').data('index')).attr('selected', true);
-                $('.form-select-matched-option').addClass('active');
-                set_multiple_select_value(wrapper, input);
-                $('.form-select-dropdown').fadeOut();
-                $('.form-select-search-input').val('').trigger('change');
+                    input.val(wrapper.find('.form-select-matched-option').text()).trigger('change');
+                    reset_select();
+                    element.find('option').attr('selected', false);
+                    element.find('option').eq($('.form-select-matched-option').data('index')).attr('selected', true);
+                    element.trigger('change');
+                    // remove active from all li and add to selected
+                    wrapper.find('.form-select-li').removeClass('active');
+                    $('.form-select-matched-option').addClass('active');
 
-            }
+                } else {
 
-            if (!element.hasClass('form-select-no-cancel')) {
-                input.siblings('.form-select-value-cancel').show();
-                wrapper.find('.form-select-value-input').removeClass('caret');
+                    $('.form-select-matched-option input').prop('checked', true);
+                    element.find('option').eq($('.form-select-matched-option').data('index')).attr('selected', true);
+                    $('.form-select-matched-option').addClass('active');
+                    set_multiple_select_value(wrapper, input);
+                    $('.form-select-search-input').val('').trigger('change');
+
+                }
+
+                if (!element.hasClass('form-select-no-cancel')) {
+                    input.siblings('.form-select-value-cancel').show();
+                    wrapper.find('.form-select-value-input').removeClass('caret');
+                }
             }
         }
 
+    });
+}
+
+function reset_labels() {
+    $('.form-select-value-input').each(function() {
+        if($(this).val() == '') {
+            $(this).prev('label').removeClass('active');
+        }
     });
 }
 
@@ -705,7 +720,7 @@ function set_multiple_select_value(wrapper, input) {
 }
 
 window.reset_select = function () {
-    $('.form-select-dropdown').fadeOut();
+    $('.form-select-dropdown').hide();
     $('.form-select-search-input').val('').trigger('change');
     $('.form-select-li').removeClass('matched').show();
     $('.form-select-value-input').each(function() {

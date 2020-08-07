@@ -510,17 +510,21 @@ class TransactionsAddController extends Controller {
             $listing_agent -> email = $property -> ListAgentEmail;
             $listing_agent -> company = $property -> ListOfficeName;
 
-            $list_office_mls_id = $property -> ListOfficeMlsId;
-            $list_office_details = Offices::where('OfficeMlsId', $list_office_mls_id) -> first();
+            $list_office_mls_id = $property -> ListOfficeMlsId ?? null;
+            if($list_office_mls_id) {
 
-            $listing_agent -> bright_mls_id = $property -> ListAgentMlsId;
-            $listing_agent -> address_office_street = $list_office_details -> OfficeAddress1;
-            $listing_agent -> address_office_city = $list_office_details -> OfficeCity;
-            $listing_agent -> address_office_state = $list_office_details -> OfficeStateOrProvince;
-            $listing_agent -> address_office_zip = $list_office_details -> OfficePostalCode;
-            $listing_agent -> Contract_ID = $Contract_ID;
-            $listing_agent -> member_type_id = ResourceItems::ListingAgentResourceId();
-            $listing_agent -> save();
+                $list_office_details = Offices::where('OfficeMlsId', $list_office_mls_id) -> first();
+
+                $listing_agent -> bright_mls_id = $property -> ListAgentMlsId;
+                $listing_agent -> address_office_street = $list_office_details -> OfficeAddress1;
+                $listing_agent -> address_office_city = $list_office_details -> OfficeCity;
+                $listing_agent -> address_office_state = $list_office_details -> OfficeStateOrProvince;
+                $listing_agent -> address_office_zip = $list_office_details -> OfficePostalCode;
+                $listing_agent -> Contract_ID = $Contract_ID;
+                $listing_agent -> member_type_id = ResourceItems::ListingAgentResourceId();
+                $listing_agent -> save();
+
+            }
 
             $buyers_agent = new Members();
             $buyers_agent -> first_name = $agent -> first_name;

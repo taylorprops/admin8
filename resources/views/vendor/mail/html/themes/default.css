@@ -175,7 +175,7 @@ img {
 }
 
 .footer p {
-    color: #aeaeae;
+    color: #fff;
     font-size: 12px;
     text-align: center;
 }
@@ -260,22 +260,27 @@ img {
 .badge-primary {
     background-color: #4594d4;
     padding: 8px;
+    text-align: center;
 }
 .badge-success {
     background-color: #33ad33;
     padding: 8px;
+    text-align: center;
 }
 .badge-orange {
     background-color: #d47433;
     padding: 8px;
+    text-align: center;
 }
 .badge-danger {
     background-color: #a33a38;
     padding: 8px;
+    text-align: center;
 }
 .badge-blue-light {
     background-color: #e9ecf0;
     padding: 8px;
+    text-align: center;
 }
 
 .text-white {

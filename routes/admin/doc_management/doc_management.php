@@ -129,6 +129,8 @@ Route::middleware('admin') -> group(function () {
     Route::get('/doc_management/get_documents', 'DocManagement\Review\DocumentReviewController@get_documents');
     // get details
     Route::get('/doc_management/get_details', 'DocManagement\Review\DocumentReviewController@get_details');
+    // get notes
+    Route::get('/doc_management/get_notes', 'DocManagement\Review\DocumentReviewController@get_notes');
 
 });
 

@@ -145,7 +145,7 @@ window.datepicker_custom = function() {
 // session timeout
 window.inactivityTime = function () {
     var time;
-    window.onload = resetTimer;
+    //window.onload = resetTimer;
     // DOM Events
     document.onmousemove = resetTimer;
     document.onkeypress = resetTimer;
@@ -235,8 +235,8 @@ window.global_loading_off = function() {
 }
 
 window.global_tooltip = function() {
-    $('[data-toggle="tooltip"]').tooltip();
-    $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip({ html: true });
+    $('[data-toggle="popover"]').popover({ html: true });
 }
 
 

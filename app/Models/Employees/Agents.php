@@ -11,7 +11,7 @@ class Agents extends Model
     protected $guarded = [];
 
     public function scopeAgentDetails($query, $id) {
-        $agent_details = $query -> whereId($id) -> first();
+        $agent_details = $query -> find($id);
         return $agent_details;
     }
 }

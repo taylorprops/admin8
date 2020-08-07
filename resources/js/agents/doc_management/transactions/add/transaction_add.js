@@ -388,7 +388,6 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
 
             $('#enter_manually_button').off('click').on('click', function () {
                 autofill_manual_entry(street_number, street_name, zip);
-
             });
 
             // show continue button once address selected

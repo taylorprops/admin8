@@ -66,11 +66,11 @@ class DocumentReviewController extends Controller
         $checklist_item_docs = new TransactionChecklistItemsDocs();
         $checklist_item_notes = new TransactionChecklistItemsNotes();
 
-        $listing_checklist_item_notes_ids = $checklist_item_notes -> where('note_status', 'unread') -> where('Listing_ID', '>', '0') -> whereNotIn('Listing_ID', $listing_checklist_items -> pluck('Listing_ID')) -> pluck('Listing_ID');
+        $listing_checklist_item_notes_ids = $checklist_item_notes -> where('note_status', 'unread') -> where('Listing_ID', '>', '0') -> where('Agent_ID', '>', '0') -> whereNotIn('Listing_ID', $listing_checklist_items -> pluck('Listing_ID')) -> pluck('Listing_ID');
 
-        $contract_checklist_item_notes_ids = $checklist_item_notes -> where('note_status', 'unread') -> where('Contract_ID', '>', '0') -> whereNotIn('Contract_ID', $contract_checklist_items -> pluck('Contract_ID')) -> pluck('Contract_ID');
+        $contract_checklist_item_notes_ids = $checklist_item_notes -> where('note_status', 'unread') -> where('Contract_ID', '>', '0') -> where('Agent_ID', '>', '0') -> whereNotIn('Contract_ID', $contract_checklist_items -> pluck('Contract_ID')) -> pluck('Contract_ID');
 
-        $referral_checklist_item_notes_ids = $checklist_item_notes -> where('note_status', 'unread') -> where('Referral_ID', '>', '0') -> whereNotIn('Referral_ID', $referral_checklist_items -> pluck('Referral_ID')) -> pluck('Referral_ID');
+        $referral_checklist_item_notes_ids = $checklist_item_notes -> where('note_status', 'unread') -> where('Referral_ID', '>', '0') -> where('Agent_ID', '>', '0') -> whereNotIn('Referral_ID', $referral_checklist_items -> pluck('Referral_ID')) -> pluck('Referral_ID');
 
         $listings_with_notes = Listings::whereIn('Listing_ID', $listing_checklist_item_notes_ids) -> get();
         $contracts_with_notes = Contracts::whereIn('Contract_ID', $contract_checklist_item_notes_ids) -> get();
@@ -105,23 +105,12 @@ class DocumentReviewController extends Controller
         $transaction_checklist = TransactionChecklists::where($field, $id) -> first();
         $transaction_checklist_id = $transaction_checklist -> id;
 
-        $checklist_items = TransactionChecklistItems::where(function($query) use ($transaction_type, $id) {
-            if($transaction_type == 'listing') {
-                $query -> where('Listing_ID', $id);
-            } elseif($transaction_type == 'contract') {
-                $query -> where('Contract_ID', $id);
-            } else if($transaction_type == 'referral') {
-                $query -> where('Referral_ID', $id);
-            }
-        }) -> orderBy('checklist_item_order') -> get();
+        $transaction_checklist_items_model = new TransactionChecklistItems();
+        $checklist_items = $transaction_checklist_items_model -> where('checklist_id', $transaction_checklist_id) -> orderBy('checklist_item_order') -> get();
 
         $files = new Upload();
-        $transaction_checklist_items = new TransactionChecklistItems();
 
-        $transaction_checklist_item_notes = TransactionChecklistItemsNotes::where($field, $id) -> get();
-        $users = User::get();
-
-        $agent = $users -> where('user_id', $property -> Agent_ID) -> where('group', 'agent') -> first();
+        $transaction_checklist_item_notes = new TransactionChecklistItemsNotes();
 
         $resource_items = new ResourceItems();
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
@@ -129,8 +118,10 @@ class DocumentReviewController extends Controller
         // used in checklist review modals
         $rejected_reasons = ResourceItemsAdmin::where('resource_type', 'rejected_reason') -> orderBy('resource_order') -> get();
 
+        $agent = Agents::find($property -> Agent_ID);
 
-        return view('/doc_management/review/get_checklist_html', compact('property', 'transaction_type', 'checklist_groups', 'checklist_items', 'transaction_checklist_id', 'files', 'transaction_checklist_items', 'transaction_checklist_item_notes', 'users', 'agent', 'form_groups', 'resource_items', 'rejected_reasons'));
+
+        return view('/doc_management/review/get_checklist_html', compact('property', 'transaction_type', 'transaction_checklist_id', 'checklist_groups', 'checklist_items', 'transaction_checklist_id', 'files', 'transaction_checklist_items_model', 'transaction_checklist_item_notes', 'form_groups', 'resource_items', 'rejected_reasons', 'agent'));
 
     }
 
@@ -153,26 +144,70 @@ class DocumentReviewController extends Controller
 
     public function get_details(Request $request) {
 
-        $type = $request -> type;
+        $transaction_type = $request -> type;
         $id = $request -> id;
 
-        if($type == 'listing') {
+        if($transaction_type == 'listing') {
             $property = Listings::find($id);
-        } else if($type == 'contract') {
+        } else if($transaction_type == 'contract') {
             $property = Contracts::find($id);
-        } else if($type == 'referral') {
+        } else if($transaction_type == 'referral') {
             $property = Referrals::find($id);
         }
 
-        $address = ucwords(strtolower($property -> FullStreetAddress)).'<br>'.ucwords(strtolower($property -> City)).', '.$property -> StateOrProvince.', '.$property -> PostalCode;
+        $address = ucwords(strtolower($property -> FullStreetAddress)).'<br>'.ucwords(strtolower($property -> City)).', '.$property -> StateOrProvince.' '.$property -> PostalCode;
 
-        $members = new Members();
 
-        return view('/doc_management/review/get_details_html', compact('members', 'property', 'address'));
+        if($transaction_type == 'listing') {
+            $members = Members::where('Listing_ID', $id) -> get();
+        } else {
+            $members = Members::where('Contract_ID', $id) -> get();
+        }
+
+        $resource_items = new ResourceItems();
+
+        $sale_rent = 'For Sale';
+        if($property -> SaleRent == 'rental') {
+            $sale_rent = 'Rental';
+        } else if($property -> SaleRent == 'both' && $transaction_type == 'listing') {
+            $sale_rent = 'For Sale And Rent';
+        }
+
+        $earnest_held_by = 'Taylor/Anne Arundel Properties';
+        if($property -> EarnestHeldBy == 'other_company') {
+            $earnest_held_by = $property -> Listing_ID > 0 ? $property -> BuyerOfficeName : $property -> ListOfficeName;
+        } else if($property -> EarnestHeldBy == 'heritage_title') {
+            $earnest_held_by =  'Heritage Title';
+        } else if($property -> EarnestHeldBy == 'title') {
+            $earnest_held_by =  $property -> TitleCompany;
+        } else if($property -> EarnestHeldBy == 'builder') {
+            $earnest_held_by = 'Builder';
+        }
+
+        $title_company = $property -> TitleCompany;
+        if($property -> UsingHeritage == 'yes') {
+            $title_company = 'Heritage Title';
+        }
+
+        $agent_details = Agents::find($property -> Agent_ID);
+        $co_agent_details = Agents::find($property -> CoAgent_ID);
+
+        return view('/doc_management/review/get_details_html', compact('transaction_type', 'id', 'members', 'property', 'address', 'sale_rent', 'resource_items', 'agent_details', 'co_agent_details', 'earnest_held_by', 'title_company'));
 
     }
 
+    public function get_notes(Request $request) {
 
+        $checklist_item_id = $request -> checklist_item_id;
+        $Agent_ID = $request -> Agent_ID;
 
+        $transaction_checklist_item_notes = TransactionChecklistItemsNotes::where('checklist_item_id', $checklist_item_id) -> orderBy('created_at', 'DESC') -> get();
+
+        $users = User::get();
+
+        $agent = $users -> where('user_id', $Agent_ID) -> where('group', 'agent') -> first();
+
+        return view('/doc_management/review/get_notes_html', compact('checklist_item_id', 'transaction_checklist_item_notes', 'users', 'agent'));
+    }
 
 }

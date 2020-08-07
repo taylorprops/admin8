@@ -4,73 +4,11 @@ if (document.URL.match(/transaction_details/)) {
 
     $(document).ready(function() {
 
+
+
     });
 
-    window.show_email_agent = function() {
 
-        $('#email_agent_modal').modal();
-
-        axios.get('/agents/doc_management/transactions/get_email_checklist_html', {
-            params: {
-                checklist_id: $('#transaction_checklist_id').val()
-            },
-            headers: {
-                'Accept-Version': 1,
-                'Accept': 'text/html',
-                'Content-Type': 'text/html'
-            }
-        })
-        .then(function (response) {
-            $('#email_agent_checklist_details').html(response.data);
-            $('#send_email_agent_button').off('click').on('click', send_email_agent)
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-
-    }
-
-    window.send_email_agent = function() {
-
-        $('#send_email_agent_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Sending Email');
-
-        let from = $('#email_agent_from').val();
-        let to = $('#email_agent_to').val();
-        let cc = $('#email_agent_cc').val();
-
-        let to_addresses = [];
-        to_addresses.push({
-            type: 'to',
-            address: to
-        });
-        if(cc != '') {
-            to_addresses.push({
-                type: 'cc',
-                address: cc
-            });
-        }
-        let subject = $('#email_agent_subject').val();
-        let message = nl2br($('#email_agent_message').val());
-        message += $('#email_agent_checklist_details').html();
-
-        let formData = new FormData();
-        formData.append('type', 'checklist');
-        formData.append('from', from);
-        formData.append('to_addresses', JSON.stringify(to_addresses));
-        formData.append('subject', subject);
-        formData.append('message', message);
-
-        axios.post('/agents/doc_management/transactions/send_email', formData, axios_options)
-        .then(function (response) {
-            $('#send_email_agent_button').html('<i class="fad fa-share mr-2"></i> Send Email');
-            $('#email_agent_modal').modal('hide');
-            toastr['success']('Agent Successfully Emailed');
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-
-    }
 
     /* window.show_remove_checklist_item = function(ele, checklist_item_id) {
 
@@ -294,69 +232,6 @@ if (document.URL.match(/transaction_details/)) {
 
     }
 
-    window.mark_note_read = function() {
-
-        let button = $(this);
-        let note_id = button.data('note-id');
-        //let notes_collapse = button.data('notes-collapse');
-        let note_div = button.closest('.note-div');
-
-        let formData = new FormData();
-        formData.append('note_id', note_id);
-        axios.post('/agents/doc_management/transactions/mark_note_read', formData, axios_options)
-        .then(function (response) {
-            note_div.removeClass('border-orange').addClass('border-bottom');
-            button.parent().html('<span class="text-success small"><i class="fa fa-check"></i> Read</span>');
-            /* load_tabs('checklist');
-            setTimeout(function() {
-                $('#'+notes_collapse).collapse('show');
-            }, 500); */
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-    }
-
-    window.show_add_notes = function() {
-        let add_notes_div = $('#'+$(this).data('add-notes-div'));
-        add_notes_div.find('textarea').focus().trigger('click');
-    }
-
-    window.save_add_notes = function(ele) {
-
-        let textarea = $('#'+ele.data('textarea'));
-        let notes_collapse = textarea.data('notes-collapse');
-        let notes = textarea.val();
-        if(notes == '') {
-            $('#modal_danger').modal().find('.modal-body').html('You must enter comments before saving');
-            return false;
-        }
-        let checklist_id = textarea.data('checklist-id');
-        let checklist_item_id = textarea.data('checklist-item-id');
-
-
-        let formData = new FormData();
-        formData.append('notes', notes);
-        formData.append('checklist_id', checklist_id);
-        formData.append('checklist_item_id', checklist_item_id);
-        formData.append('Listing_ID', $('#Listing_ID').val());
-        formData.append('Contract_ID', $('#Contract_ID').val());
-        formData.append('Referral_ID', $('#Referral_ID').val());
-        formData.append('transaction_type', $('#transaction_type').val());
-        formData.append('Agent_ID', $('#Agent_ID').val());
-        axios.post('/agents/doc_management/transactions/add_notes_to_checklist_item', formData, axios_options)
-        .then(function (response) {
-            toastr['success']('Comments Successfully Added');
-            load_tabs('checklist');
-            /* setTimeout(function() {
-                $('#'+notes_collapse).collapse('show');
-            }, 500); */
-
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-    }
 
     window.show_delete_doc = function() {
         let button = $(this);

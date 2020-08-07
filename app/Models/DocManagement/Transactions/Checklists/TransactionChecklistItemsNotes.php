@@ -13,12 +13,9 @@ class TransactionChecklistItemsNotes extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
 
-    public function ScopeGetNotes($query, $checklist_item_id, $document_id) {
+    public function ScopeGetNotes($query, $checklist_item_id) {
 
         $notes = $this -> where('checklist_item_id', $checklist_item_id);
-        if($document_id > 0) {
-            $notes = $notes -> where('checklist_item_doc_id', $document_id);
-        }
         $notes = $notes -> orderBy('created_at', 'DESC') -> get();
 
         return $notes;

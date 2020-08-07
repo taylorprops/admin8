@@ -2,11 +2,11 @@
 
     <div class="col-12">
 
-        <div class="list-group">
+        <div class="list-group" id="checklist_listgroup">
 
             @foreach($checklist_groups as $checklist_group)
 
-                <div class="list-group-item d-flex justify-content-start align-items-center border-left-0">
+                <div class="list-group-item d-flex justify-content-start align-items-center border-left-0 border-right-0 bg-blue-light @if($loop -> first) mt-3 @else mt-4 @endif">
                     <div>
                         <div class="h5-responsive text-orange">{{ $checklist_group -> resource_name }}</div>
                     </div>
@@ -18,13 +18,16 @@
                 @foreach($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id) as $checklist_item)
 
                     @php
+
+                    $checklist_id = $checklist_item -> checklist_id;
+
                     if($checklist_item -> checklist_form_id > 0) {
                         $checklist_item_name = $files -> GetFormName($checklist_item -> checklist_form_id);
                     } else {
                         $checklist_item_name = $checklist_item -> checklist_item_added_name;
                     }
 
-                    $status_details = $transaction_checklist_items -> GetStatus($checklist_item -> id);
+                    $status_details = $transaction_checklist_items_model -> GetStatus($checklist_item -> id);
                     $status = $status_details -> status;
                     $admin_classes = $status_details -> admin_classes;
                     $fa = $status_details -> fa;
@@ -34,15 +37,31 @@
 
                     $checklist_item_id = $checklist_item -> id;
 
-                    $notes = $transaction_checklist_item_notes -> where('checklist_item_id', $checklist_item -> id);
+                    $notes = $transaction_checklist_item_notes -> where('checklist_item_id', $checklist_item_id) -> get();
+                    $notes_unread_count = $notes -> where('note_status', 'unread') -> where('Agent_ID', '>', '0') -> count();
                     if(count($notes) == 0) {
                         $notes = null;
                     }
+                    $notes_tooltip = null;
+                    $notes_unread = '';
+                    if($notes) {
+                        if($notes_unread_count > 0) {
+                            $notes_tooltip = $notes_unread_count.' Unread Comment'.($notes_unread_count != 1 ? 's' : '');
+                            $notes_unread = 'notes-unread';
+                        } else {
+                            $notes_tooltip = count($notes).' Total Comment'.(count($notes) != 1 ? 's' : '');
+                        }
+                    }
+
+                    $unused_status_class = null;
+                    if($status == 'Required' || $status == 'If Applicable') {
+                        $unused_status_class = 'checklist-item-unused';
+                    }
                     @endphp
 
-                    <div class="list-group-item p-1 checklist-item-link @if($status == 'Pending') pending @elseif($status == 'Required') required @endif" data-checklist-item-id="{{ $checklist_item_id }}" data-checklist-item-name="{{ $checklist_item_name }}">
+                    <div class="list-group-item px-1 pt-3 pb-2 checklist-item-div {{ $notes_unread }} @if($status == 'Pending') pending @elseif($status == 'Required') required @endif" id="checklist_item_{{ $checklist_item_id }}">
 
-                        <div class="d-flex justify-content-between align-items-center checklist-item-div">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
 
                             <div class="d-flex justify-content-between align-items-center">
 
@@ -63,20 +82,52 @@
                                 </div>
 
                                 <div class="mx-2">
-                                    <a href="javascript:void(0)" class="checklist-item-name text-gray" data-checklist-item-id="{{ $checklist_item_id }}" data-checklist-item-name="{{ $checklist_item_name }}">{{ $checklist_item_name }}</a>
+                                    <a href="javascript:void(0)" class="d-block checklist-item-name text-gray {{ $unused_status_class }}" data-checklist-item-id="{{ $checklist_item_id }}" data-checklist-item-name="{{ $checklist_item_name }}">{{ $checklist_item_name }}</a>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="mr-2 relative">
-                                    @if($notes)
-                                    <span class="badge badge-pill bg-orange text-white unread-messages-badge" data-toggle="tooltip" title="{{ count($notes) }} Unread Messages">{{ count($notes) }}</span>
-                                    @endif
+                            <div class="d-flex justify-content-end align-items-center">
+                                <div class="mr-2" data-toggle="tooltip" data-html="true" title="{!! $notes_tooltip !!}">
+                                    <a class="notes-toggle" data-toggle="collapse" href="#notes_{{ $checklist_item_id }}" role="button" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}">
+                                        <span class="fa-stack fa-2x">
+                                            <i class="fa fa-comment fa-stack-1x @if($notes_unread_count > 0) text-orange @else @if($notes) text-primary @else text-blue-light @endif @endif"></i>
+                                            @if($notes_unread_count > 0) <span class="fa-stack-1x notes-count text-white">{{ $notes_unread_count }}</span> @endif
+                                        </span>
+                                    </a>
                                 </div>
-                                <div class="status-badge badge {{ $admin_classes }} p-2">
+                                <div class="status-badge badge {{ $admin_classes }} {{ $unused_status_class }} p-2">
                                     {!! $status !!}
                                 </div>
                             </div>
                         </div>
+
+                        <div id="notes_{{ $checklist_item_id }}" class="collapse checklist-item-notes-div bg-white mb-2" data-parent="#checklist_listgroup">
+                            <div class="mt-3 p-2 bg-white text-gray">
+                                <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
+                                    <div class="font-weight-bold text-primary">Comments</div>
+                                    <a data-toggle="collapse" href="#notes_{{ $checklist_item_id }}" role="button" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}">
+                                        <i class="fad fa-times-circle text-danger fa-lg"></i>
+                                    </a>
+                                </div>
+
+                                <div class="notes-div my-2" data-checklist-item-id="{{ $checklist_item_id }}">
+                                    <div class="text-gray">No Comments</div>
+                                </div>
+
+                            </div>
+                            <div class="container">
+                                <div class="row d-flex align-items-center bg-blue-light">
+                                    <div class="col-10">
+                                        <input type="text" class="custom-form-element form-input notes-input-{{ $checklist_item_id }}" data-label="Add Comment">
+                                    </div>
+                                    <div class="col-2 pl-0 mt-1">
+                                        <a href="javascript: void(0)" class="btn btn-success btn-block save-notes-button" data-checklist-id="{{ $checklist_id }}" data-checklist-item-id="{{ $checklist_item_id }}"><i class="fa fa-save"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="documents-list bg-white p-2"></div>
 
                     </div>
 
@@ -96,6 +147,7 @@
 <input type="hidden" id="Referral_ID" value="{{ $property -> Referral_ID }}">
 <input type="hidden" id="Agent_ID" value="{{ $property -> Agent_ID }}">
 <input type="hidden" id="transaction_type" value="{{ $transaction_type }}">
+<input type="hidden" id="transaction_checklist_id" value="{{ $transaction_checklist_id }}">
 <input type="hidden" id="property_id">
 <input type="hidden" id="property_type">
 

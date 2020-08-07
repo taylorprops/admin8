@@ -4,19 +4,19 @@
 @section('content')
 <div class="container-fluid page-document-review">
 
-    <div class="row">
+    <div class="row no-gutters">
 
-        <div class="col-3 pl-1 pr-0 mr-0">
+        <div class="col-3">
 
-            <div class="transactions-container ml-2">
+            <div class="transactions-container border-right h-100">
 
-                <div class="properties-container w-100 pr-3">
+                <div class="properties-container w-100">
 
                     <div class="list-group" id="properties_list_group">
 
                         @if(count($listings_with_notes) > 0 || count($contracts_with_notes) > 0 || count($referrals_with_notes) > 0)
 
-                            <a href="javascript: void(0)" class="list-group-item property-list-header border-left-0">
+                            <a href="javascript: void(0)" class="list-group-item property-list-header border-top-0 border-left-0 border-right-0">
                                 <div class="h4-responsive text-orange my-0 ml-2"><i class="fad fa-comments mr-2"></i> New Comments</div>
                             </a>
 
@@ -24,10 +24,10 @@
 
                                 @php
                                 $address = ucwords(strtolower($listing_with_notes -> FullStreetAddress.' '.$listing_with_notes -> City)).', '.$listing_with_notes -> StateOrProvince.', '.$listing_with_notes -> PostalCode;
-                                $comments_to_review_count = $checklist_item_notes -> where('Listing_ID', $listing_with_notes -> Listing_ID) -> count();
+                                $comments_to_review_count = $checklist_item_notes -> where('Listing_ID', $listing_with_notes -> Listing_ID) -> where('note_status', 'unread') -> where('Agent_ID', '>', '0') -> count();
                                 @endphp
 
-                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item" data-id="{{ $listing_with_notes -> Listing_ID }}" data-type="listing">
+                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item border-right-0" data-id="{{ $listing_with_notes -> Listing_ID }}" data-type="listing">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             {{ $address }}
@@ -44,10 +44,10 @@
 
                                 @php
                                 $address = ucwords(strtolower($contract_with_notes -> FullStreetAddress.' '.$contract_with_notes -> City)).', '.$contract_with_notes -> StateOrProvince.', '.$contract_with_notes -> PostalCode;
-                                $comments_to_review_count = $checklist_item_notes -> where('Contract_ID', $contract_with_notes -> Contract_ID) -> count();
+                                $comments_to_review_count = $checklist_item_notes -> where('Contract_ID', $contract_with_notes -> Contract_ID) -> where('note_status', 'unread') -> where('Agent_ID', '>', '0') -> count();
                                 @endphp
 
-                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item" data-id="{{ $contract_with_notes -> Contract_ID }}" data-type="contract">
+                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item border-right-0" data-id="{{ $contract_with_notes -> Contract_ID }}" data-type="contract">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             {{ $address }}
@@ -64,10 +64,10 @@
 
                                 @php
                                 $address = ucwords(strtolower($referral_with_notes -> FullStreetAddress.' '.$referral_with_notes -> City)).', '.$referral_with_notes -> StateOrProvince.', '.$referral_with_notes -> PostalCode;
-                                $comments_to_review_count = $checklist_item_notes -> where('Referral_ID', $referral_with_notes -> Referral_ID) -> count();
+                                $comments_to_review_count = $checklist_item_notes -> where('Referral_ID', $referral_with_notes -> Referral_ID) -> where('note_status', 'unread') -> where('Agent_ID', '>', '0') -> count();
                                 @endphp
 
-                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item" data-id="{{ $referral_with_notes -> Referral_ID }}" data-type="referral">
+                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item border-right-0" data-id="{{ $referral_with_notes -> Referral_ID }}" data-type="referral">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             {{ $address }}
@@ -84,7 +84,7 @@
 
                         @if(count($listings) > 0)
 
-                            <a href="javascript: void(0)" class="list-group-item property-list-header border-left-0">
+                            <a href="javascript: void(0)" class="list-group-item property-list-header border-top-0 border-left-0 border-right-0">
                                 <div class="h4-responsive text-orange my-0 ml-2"><i class="fad fa-sign mr-2"></i> Listings</div>
                             </a>
 
@@ -96,7 +96,7 @@
                                 $docs_to_review_count = count($docs_to_review);
                                 @endphp
 
-                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item" data-id="{{ $listing -> Listing_ID }}" data-type="listing">
+                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item border-right-0" data-id="{{ $listing -> Listing_ID }}" data-type="listing">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             {{ $address }}
@@ -113,7 +113,7 @@
 
                         @if(count($contracts) > 0)
 
-                            <a href="javascript: void(0)" class="list-group-item property-list-header border-left-0">
+                            <a href="javascript: void(0)" class="list-group-item property-list-header border-top-0 border-left-0 border-right-0">
                                 <div class="h4-responsive text-orange my-0 ml-2"><i class="fad fa-file-contract mr-2"></i> Contracts</div>
                             </a>
 
@@ -125,7 +125,7 @@
                                 $docs_to_review_count = count($docs_to_review);
                                 @endphp
 
-                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item" data-id="{{ $contract -> Contract_ID }}" data-type="contract">
+                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item border-right-0" data-id="{{ $contract -> Contract_ID }}" data-type="contract">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             {{ $address }}
@@ -142,7 +142,7 @@
 
                         @if(count($referrals) > 0)
 
-                            <a href="javascript: void(0)" class="list-group-item property-list-header border-left-0">
+                            <a href="javascript: void(0)" class="list-group-item property-list-header border-top-0 border-left-0 border-right-0">
                                 <div class="h4-responsive text-orange my-0 ml-2"><i class="fad fa-handshake mr-2"></i> Referrals</div>
                             </a>
 
@@ -154,7 +154,7 @@
                                 $docs_to_review_count = count($docs_to_review);
                                 @endphp
 
-                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item" data-id="{{ $referral -> Referral_ID }}" data-type="referral">
+                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item border-right-0" data-id="{{ $referral -> Referral_ID }}" data-type="referral">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             {{ $address }}
@@ -174,12 +174,12 @@
 
                 </div>
 
-                <div class="checklist-items-container w-100 pr-3">
+                <div class="checklist-items-container w-100 pr-2">
 
                     <div class="sticky bg-white py-2">
                         <div class="d-flex justify-content-between align-items-center">
                             <a href="javascript: void(0);" id="close_checklist_button" class="btn btn-sm btn-primary"><i class="fal fa-chevron-double-left mr-2"></i> Back</a>
-                            <a href="javascript: void(0);" id="next_button" class="btn btn-sm btn-primary"><i class="fal fa-chevron-double-right mr-2"></i> Next</a>
+                            <a href="javascript: void(0);" class="btn btn-sm btn-primary next-button">Next <i class="fal fa-chevron-double-right ml-2"></i></a>
                         </div>
                     </div>
 
@@ -195,9 +195,9 @@
 
         </div>
 
-        <div class="col-6 px-0">
+        <div class="col-6">
 
-            <div class="documents-container border-left border-right">
+            <div class="documents-container">
 
                 <div class="documents-div">
                     <div class="h1-responsive text-primary w-100 text-center mt-5 pt-5"><i class="fa fa-arrow-left mr-2"></i> To Begin Select A Property</div>
@@ -209,12 +209,10 @@
 
         <div class="col-3">
 
-            <div class="row">
-                <div class="col-12">
+            <div class="details-container border-left h-100">
 
-                    <div class="details-div pl-2"> </div>
+                <div class="details-div"> </div>
 
-                </div>
             </div>
 
         </div>

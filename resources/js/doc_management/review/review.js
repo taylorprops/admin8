@@ -17,17 +17,17 @@ if(document.URL.match(/document_review/)) {
 
         $('#close_checklist_button').off('click').on('click', close_checklist);
 
-        $('#next_button').off('click').on('click', function() {
+        $('.next-button').off('click').on('click', function() {
             next_property();
         });
     });
 
     function set_property_item_active(ele) {
-        $('.property-item').removeClass('active');
-        ele.addClass('active');
+        $('.property-item').removeClass('active').addClass('list-group-item-action');
+        ele.addClass('active').removeClass('list-group-item-action');
     }
 
-    function next_property() {
+    window.next_property = function() {
         let ele = $('.property-item.active');
         let index = ele.index();
         cancel = false;
@@ -47,9 +47,9 @@ if(document.URL.match(/document_review/)) {
 
     function show_hide_next() {
         if($('.list-group-item.property-item.active').index() == $('.list-group-item.property-item').last().index()) {
-            $('#next_button').hide();
+            $('.next-button').hide();
         } else {
-            $('#next_button').show();
+            $('.next-button').show();
         }
     }
 
@@ -73,19 +73,55 @@ if(document.URL.match(/document_review/)) {
             $('.checklist-items-div').html(response.data);
             $('.checklist-items-container').removeClass('fadeOut').show();
 
-            $('.checklist-item-link').off('click').on('click', function(e) {
-                if(!$(e.target).hasClass('fa') && !$(e.target).hasClass('document-link') && !$(e.target).hasClass('active') && !$(e.target).hasClass('text-white')) {
-                    $('.checklist-item-link').removeClass('active').find('.checklist-item-name').removeClass('text-white');
-                    $(this).addClass('active').find('.checklist-item-name').addClass('text-white');
-                    get_documents($(this).data('checklist-item-id'), $(this).data('checklist-item-name'));
+            $('.checklist-item-name').off('click').on('click', function(e) {
+
+                if($(this).hasClass('active')) {
+                    return false;
                 }
+
+                let checklist_item_div = $(this).closest('.checklist-item-div');
+                $('.checklist-item-div').removeClass('active').find('.checklist-item-name').removeClass('active text-white');
+                checklist_item_div.addClass('active').find('.checklist-item-name').addClass('active text-white');
+                get_documents($(this).data('checklist-item-id'), $(this).data('checklist-item-name'));
+
             });
 
-            if($('.checklist-item-link.pending').length > 0) {
-                $('.checklist-item-link.pending').eq(0).trigger('click');
+            $('.notes-div').each(function() {
+                get_notes($(this).data('checklist-item-id'));
+            });
+
+            let item_div = '';
+            let show_notes = false;
+            if($('.checklist-item-div.pending').length > 0 || $('.checklist-item-div.notes-unread').length > 0) {
+                let pending_index = '';
+                let notes_index = '';
+                if($('.checklist-item-div.pending').length > 0) {
+                    pending_index = $('.checklist-item-div.pending').eq(0).index();
+                }
+                if($('.checklist-item-div.notes-unread').length > 0) {
+                    notes_index = $('.checklist-item-div.notes-unread').eq(0).index();
+                }
+                if(pending_index < notes_index || notes_index == '') {
+                    item_div = $('.checklist-item-div.pending');
+                } else {
+                    item_div = $('.checklist-item-div.notes-unread');
+                    show_notes = true;
+                }
             } else {
-                $('.checklist-item-link').eq(0).trigger('click');
+                item_div = $('.checklist-item-div');
             }
+            item_div.eq(0).find('.checklist-item-name').trigger('click');
+            setTimeout(function() {
+                if(show_notes) {
+                    item_div.eq(0).find('.checklist-item-notes-div').collapse('show');
+                }
+            }, 1000);
+
+            scroll_checklist_item(item_div);
+
+            $('.notes-toggle').off('click').on('click', function() {
+                $(this).closest('.checklist-item-div').find('.checklist-item-name').trigger('click');
+            });
 
             $('.modal').each(function() {
                 $(this).appendTo('body');
@@ -101,14 +137,13 @@ if(document.URL.match(/document_review/)) {
 
             $('.add-checklist-item-button').off('click').on('click', show_add_checklist_item);
 
-
-
-            // $('#email_checklist_to_agent_button').off('click').on('click', show_email_agent);
-
+            $('.save-notes-button').off().on('click', save_add_notes);
 
 
             $('#property_id').val(id);
             $('#property_type').val(type);
+
+            form_elements();
 
             setTimeout(function() {
                 global_loading_off();
@@ -119,6 +154,14 @@ if(document.URL.match(/document_review/)) {
             console.log(error);
         });
 
+    }
+
+    function scroll_checklist_item(item_div) {
+        let item_id = item_div.prop('id');
+        $('.checklist-items-container').scrollTop(0);
+        $('.checklist-items-container').animate({
+            scrollTop: $('#'+item_id).offset().top - 150
+        },'fast');
     }
 
     function get_documents(checklist_item_id, checklist_item_name) {
@@ -138,14 +181,25 @@ if(document.URL.match(/document_review/)) {
 
             $('.checklist-item-docs-div').remove();
             $('.documents-div').html(response.data).show();
+
+            // hide all notes before opening a new item
+            $('.checklist-item-notes-div').collapse('hide');
+            // clear docs sections
+            $('.documents-list').hide();
+            $('.list-group-item.checklist-item-div').find('.documents-list').html('');
             // add documents to checklist item and open it
-            $('.checklist-item-docs-div').appendTo('.list-group-item.checklist-item-link.active')
-                .find('.document-link').off('click').on('click', function() {
-                    let id = $(this).data('document-id');
-                    $('.review-image-container').animate({
-                        scrollTop: $('#document_' + id).offset().top - 70
-                    },'fast');
-                });
+            if($('.checklist-item-docs-div').length > 0) {
+                $('.list-group-item.checklist-item-div.active').find('.documents-list').show()
+                    .append('<div class="font-weight-bold text-primary border-bottom">Documents</div>')
+                    .append($('.checklist-item-docs-div'))
+                    .find('.document-link').on('click', function() {
+                        let id = $(this).data('document-id');
+                        $('.review-image-container').scrollTop(0);
+                        $('.review-image-container').animate({
+                            scrollTop: $('#document_' + id).offset().top - 70
+                        },'fast');
+                    });
+            }
 
             $('.accept-checklist-item-button, .reject-checklist-item-button, .undo-accepted, .undo-rejected').data('checklist-item-id', checklist_item_id);
 
@@ -160,7 +214,40 @@ if(document.URL.match(/document_review/)) {
                 checklist_item_review_status($(this), 'not_reviewed', null);
             });
 
+            $('.next-button').off('click').on('click', function() {
+                next_property();
+            });
+
+            $('.email-agent-button').off('click').on('click', show_email_agent);
+
             $('#zoom').on('input change', zoom);
+
+            $('.zoom-out').click(function() {
+                $('#zoom').val(parseInt($('#zoom').val()) - 5).trigger('change');
+                $('#thumb span').text($('#zoom').val());
+            });
+            $('.zoom-in').click(function() {
+                $('#zoom').val(parseInt($('#zoom').val()) + 5).trigger('change');
+                $('#thumb span').text($('#zoom').val());
+            });
+
+            $('#scroll_up').off('click').on('click', function () {
+                document.querySelector('.review-image-container').scrollBy({
+                    top: -500, // could be negative value
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            });
+            $('#scroll_down').off('click').on('click', function (evt) {
+                document.querySelector('.review-image-container').scrollBy({
+                    top: 500, // could be negative value
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            show_hide_next();
+
 
         })
         .catch(function (error) {
@@ -168,7 +255,6 @@ if(document.URL.match(/document_review/)) {
         });
 
     }
-
 
     function get_details(id, type) {
 
@@ -192,6 +278,8 @@ if(document.URL.match(/document_review/)) {
 
     }
 
+
+
     function close_checklist() {
         $('.checklist-items-container').addClass('animated fadeOut').hide();
         $('.documents-div').children().addClass('animated bounceOutDown');
@@ -202,11 +290,6 @@ if(document.URL.match(/document_review/)) {
     function zoom() {
         let z = $(this).val();
         $('.review-image-div').css({ width: z+'%' });
-        if(z > 100) {
-            $('.document-options-div').css({ bottom: '12px' });
-        } else {
-            $('.document-options-div').css({ bottom: '0px' });
-        }
     }
 
 }

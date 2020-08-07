@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Auth;
 use App\Models\Employees\Agents;
+use App\Models\Employees\InHouse;
 
 class LoginController extends Controller
 {
@@ -35,12 +36,18 @@ class LoginController extends Controller
             \Request::session() -> put('header_logo_src', '/images/logo/logo_tp.png');
             \Request::session() -> put('email_logo_src', '/images/emails/TP-flat-white.png');
 
-        } else if(auth() -> user() -> group == 'agent') {
-
-            $Agent_ID = auth() -> user() -> user_id;
+            $user_id = auth() -> user() -> user_id;
 
             // get agent details and add to session
-            $agent_details = Agents::whereId($Agent_ID) -> first();
+            $admin_details = InHouse::whereId($user_id) -> first();
+            \Request::session() -> put('admin_details', $admin_details);
+
+        } else if(auth() -> user() -> group == 'agent') {
+
+            $user_id = auth() -> user() -> user_id;
+
+            // get agent details and add to session
+            $agent_details = Agents::whereId($user_id) -> first();
             \Request::session() -> put('agent_details', $agent_details);
 
             // set logo for header logo and EMAILS by company and add to session

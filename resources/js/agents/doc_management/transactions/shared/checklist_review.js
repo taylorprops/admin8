@@ -8,72 +8,218 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         page_type = 'review';
     }
 
+
+    window.show_email_agent = function() {
+
+        $('#email_agent_modal').modal();
+
+        axios.get('/agents/doc_management/transactions/get_email_checklist_html', {
+            params: {
+                checklist_id: $('#transaction_checklist_id').val(),
+                transaction_type: $('#transaction_type').val()
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+            $('#email_agent_checklist_details').html(response.data);
+            $('#send_email_agent_button').off('click').on('click', send_email_agent)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+    window.send_email_agent = function() {
+
+        $('#send_email_agent_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Sending Email');
+
+        let from = $('#email_agent_from').val();
+        let to = $('#email_agent_to').val();
+        let cc = $('#email_agent_cc').val();
+
+        let to_addresses = [];
+        to_addresses.push({
+            type: 'to',
+            address: to
+        });
+        if(cc != '') {
+            to_addresses.push({
+                type: 'cc',
+                address: cc
+            });
+        }
+        let subject = $('#email_agent_subject').val();
+        let message = nl2br($('#email_agent_message').val());
+        message += $('#email_agent_checklist_details').html();
+
+        let formData = new FormData();
+        formData.append('type', 'checklist');
+        formData.append('from', from);
+        formData.append('to_addresses', JSON.stringify(to_addresses));
+        formData.append('subject', subject);
+        formData.append('message', message);
+
+        axios.post('/agents/doc_management/transactions/send_email', formData, axios_options)
+        .then(function (response) {
+            $('#send_email_agent_button').html('<i class="fad fa-share mr-2"></i> Send Email');
+            $('#email_agent_modal').modal('hide');
+            toastr['success']('Agent Successfully Emailed');
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+    window.save_add_notes = function () {
+
+        let checklist_id = $(this).data('checklist-id');
+        let checklist_item_id = $(this).data('checklist-item-id');
+        let notes = $('.notes-input-' + checklist_item_id).val();
+
+        if (notes == '') {
+            $('#modal_danger').modal().find('.modal-body').html('You must enter comments before saving');
+            return false;
+        }
+
+
+        let formData = new FormData();
+        formData.append('notes', notes);
+        formData.append('checklist_id', checklist_id);
+        formData.append('checklist_item_id', checklist_item_id);
+        formData.append('Listing_ID', $('#Listing_ID').val());
+        formData.append('Contract_ID', $('#Contract_ID').val());
+        formData.append('Referral_ID', $('#Referral_ID').val());
+        formData.append('transaction_type', $('#transaction_type').val());
+        formData.append('Agent_ID', $('#Agent_ID').val());
+        axios.post('/agents/doc_management/transactions/add_notes_to_checklist_item', formData, axios_options)
+            .then(function (response) {
+                toastr['success']('Comments Successfully Added');
+                get_notes(checklist_item_id);
+                $('.notes-input-' + checklist_item_id).val('');
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    window.get_notes = function (checklist_item_id) {
+        let Agent_ID = $('#Agent_ID').val();
+        axios.get('/doc_management/get_notes', {
+            params: {
+                checklist_item_id: checklist_item_id,
+                Agent_ID: Agent_ID
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+            .then(function (response) {
+                if (response.data != '') {
+                    $('#notes_' + checklist_item_id).find('.notes-div').html(response.data);
+                    $('.mark-read-button').off('click').on('click', mark_note_read);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    window.mark_note_read = function () {
+
+        let button = $(this);
+        let note_id = button.data('note-id');
+        //let notes_collapse = button.data('notes-collapse');
+        let note_div = button.closest('.note-div');
+
+        let formData = new FormData();
+        formData.append('note_id', note_id);
+        axios.post('/agents/doc_management/transactions/mark_note_read', formData, axios_options)
+            .then(function (response) {
+                button.parent().html('<span class="text-success small"><i class="fa fa-check"></i> Read</span>');
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
     window.mark_required = function (ele, checklist_item_id, required) {
 
         let formData = new FormData();
         formData.append('checklist_item_id', checklist_item_id);
         formData.append('required', required);
         axios.post('/agents/doc_management/transactions/mark_required', formData, axios_options)
-        .then(function (response) {
+            .then(function (response) {
 
-            let parent = '';
-            let required_icon = '';
-            let default_icon = '';
+                let parent = '';
+                let required_icon = '';
+                let default_icon = '';
 
-            if(page_type == 'checklist') {
+                if (page_type == 'checklist') {
+                    required_icon = '<i class="fal fa-exclamation-circle fa-lg mr-2"></i> ';
+                    default_icon = '<i class="fal fa-minus-circle fa-lg mr-2"></i> ';
+                }
                 parent = ele.closest('.checklist-item-div');
-                required_icon = '<i class="fal fa-exclamation-circle fa-lg mr-2"></i> ';
-                default_icon = '<i class="fal fa-minus-circle fa-lg mr-2"></i> ';
-            } else if(page_type == 'review') {
-                parent = ele.closest('.list-group-item');
-            }
 
-            let status_badge = parent.find('.status-badge');
+                let status_badge = parent.find('.status-badge');
 
-            parent.find('.mark-required').removeClass('d-block').removeClass('d-none');
+                parent.find('.mark-required').removeClass('d-block').removeClass('d-none');
+                if(required == 'yes') {
+                    parent.find('.checklist-item-unused').removeClass('checklist-item-unused');
+                } else {
+                    parent.find('.checklist-item-name, .status-badge').addClass('checklist-item-unused');
+                }
 
-            if(status_badge.text().match(/Applicable/)) {
-                status_badge.removeClass('bg-default-light').addClass('bg-orange').html(required_icon+'Required').attr('title', '');
-                parent.find('.mark-required.no').addClass('d-block').next('a').addClass('d-none');
-            } else if(status_badge.text().match(/Required/)) {
-                status_badge.removeClass('bg-orange').addClass('bg-default-light').html(default_icon+'If Applicable').attr('title', '');
-                parent.find('.mark-required.yes').addClass('d-block').prev('a').addClass('d-none');
-            }
+                if (status_badge.text().match(/Applicable/)) {
+                    status_badge.removeClass('bg-default-light').addClass('bg-orange').html(required_icon + 'Required').attr('title', '');
+                    parent.find('.mark-required.no').addClass('d-block').next('a').addClass('d-none');
+                } else if (status_badge.text().match(/Required/)) {
+                    status_badge.removeClass('bg-orange').addClass('bg-default-light').html(default_icon + 'If Applicable').attr('title', '');
+                    parent.find('.mark-required.yes').addClass('d-block').prev('a').addClass('d-none');
+                }
 
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
-    window.show_remove_checklist_item = function(ele, checklist_item_id) {
+    window.show_remove_checklist_item = function (ele, checklist_item_id) {
 
         $('#confirm_remove_checklist_item_modal').modal();
-        $('#confirm_remove_checklist_item_button').off('click').on('click', function() {
+        $('#confirm_remove_checklist_item_button').off('click').on('click', function () {
             remove_checklist_item(ele, checklist_item_id);
         });
     }
 
-    window.remove_checklist_item = function(ele, checklist_item_id) {
+    window.remove_checklist_item = function (ele, checklist_item_id) {
 
         let formData = new FormData();
         formData.append('checklist_item_id', checklist_item_id);
         axios.post('/agents/doc_management/transactions/remove_checklist_item', formData, axios_options)
-        .then(function (response) {
-            if(page_type == 'checklist') {
-                load_tabs('checklist');
-                load_documents_on_tab_click();
-            } else if(page_type == 'review') {
-                ele.closest('.list-group-item').fadeOut();
-            }
-            $('#confirm_remove_checklist_item_modal').modal('hide');
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+            .then(function (response) {
+                if (page_type == 'checklist') {
+                    load_tabs('checklist');
+                    load_documents_on_tab_click();
+                } else if (page_type == 'review') {
+                    ele.closest('.list-group-item').fadeOut();
+                }
+                $('#confirm_remove_checklist_item_modal').modal('hide');
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
-    window.show_add_checklist_item = function() {
+    window.show_add_checklist_item = function () {
 
         let group_id = $(this).data('group-id');
         $('#add_checklist_item_group_id').find('option[value="' + group_id + '"]').prop('selected', true);
@@ -100,15 +246,15 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
             }
         });
 
-        if(page_type == 'review') {
+        if (page_type == 'review') {
             $('#add_checklist_item_modal').appendTo('body');
         }
         $('#add_checklist_item_modal').modal();
         form_elements();
 
-        $('.form-name').off('click').on('click', function(e) {
+        $('.form-name').off('click').on('click', function (e) {
 
-            if(!$(e.target).hasClass('form-link')) {
+            if (!$(e.target).hasClass('form-link')) {
 
                 clear_selected_form();
 
@@ -120,19 +266,19 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
 
         });
 
-        $('#add_checklist_item_name').keyup(function() {
-            if($(this).val() != '') {
+        $('#add_checklist_item_name').keyup(function () {
+            if ($(this).val() != '') {
                 clear_selected_form();
             }
         });
 
-        $('#save_add_checklist_item_button').click(function() {
+        $('#save_add_checklist_item_button').click(function () {
             save_add_checklist_item(group_id);
         });
 
     }
 
-    window.save_add_checklist_item = function(group_id) {
+    window.save_add_checklist_item = function (group_id) {
 
         let Agent_ID = $('#Agent_ID').val();
         let Listing_ID = $('#Listing_ID').val() || null;
@@ -146,7 +292,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         let form = $('#add_checklist_item_form');
         let validation = validate_form(form);
 
-        if(validation == 'yes') {
+        if (validation == 'yes') {
 
             let formData = new FormData(form[0]);
             formData.append('Agent_ID', Agent_ID);
@@ -159,34 +305,34 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
             formData.append('add_checklist_item_group_id', add_checklist_item_group_id);
 
             axios.post('/agents/doc_management/transactions/save_add_checklist_item', formData, axios_options)
-            .then(function (response) {
-                toastr['success']('Checklist Item Successfully Added');
-                $('.modal-backdrop').remove();
-                if(page_type == 'checklist') {
-                    load_tabs('checklist');
-                } else {
-                    $('#add_checklist_item_modal').remove();
-                    let id = $('#property_id').val();
-                    let type = $('#property_type').val();
-                    get_checklist(id, type);
-                }
+                .then(function (response) {
+                    toastr['success']('Checklist Item Successfully Added');
+                    $('.modal-backdrop').remove();
+                    if (page_type == 'checklist') {
+                        load_tabs('checklist');
+                    } else {
+                        $('#add_checklist_item_modal').remove();
+                        let id = $('#property_id').val();
+                        let type = $('#property_type').val();
+                        get_checklist(id, type);
+                    }
 
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
 
         }
     }
 
-    window.clear_selected_form = function() {
+    window.clear_selected_form = function () {
 
         $('.form-name').removeClass('bg-green-light selected');
         $('.form-name-display').removeClass('text-success').addClass('text-primary');
         $('.checked-div').addClass('d-none');
     }
 
-    window.form_search = function() {
+    window.form_search = function () {
         let v = $('#form_search').val();
         if (v.length == 0) {
             // hide all containers with header and name inside
@@ -218,20 +364,20 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         }
     }
 
-    window.show_checklist_item_review_status = function(ele, action) {
+    window.show_checklist_item_review_status = function (ele, action) {
 
         form_elements();
         // show reject model with list of reasons
         $('#reject_document_modal').modal();
-        setTimeout(function() {
+        setTimeout(function () {
             $('#rejected_reason').focus();
         }, 500);
-        $('#rejected_reason').keyup(function() {
-            if($(this).val().length > 0) {
+        $('#rejected_reason').keyup(function () {
+            if ($(this).val().length > 0) {
                 $('.rejected-reason').hide();
                 let search = new RegExp($(this).val(), 'i')
-                $('.rejected-reason').each(function() {
-                    if($(this).text().match(search)) {
+                $('.rejected-reason').each(function () {
+                    if ($(this).text().match(search)) {
                         $(this).show();
                     }
                 });
@@ -240,18 +386,18 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
             }
         });
 
-        $('.rejected-reason').off('click').on('click', function() {
+        $('.rejected-reason').off('click').on('click', function () {
             $('#rejected_reason').val($(this).data('reason'));
             $('.rejected-selected').addClass('d-none');
             $(this).find('.rejected-selected').removeClass('d-none');
         });
 
-        $('#save_reject_document_button').off('click').on('click', function() {
+        $('#save_reject_document_button').off('click').on('click', function () {
 
             let form = $('#rejected_reason_form');
             let validate = validate_form(form);
-            if(validate == 'yes') {
-                if(page_type == 'checklist') {
+            if (validate == 'yes') {
+                if (page_type == 'checklist') {
                     global_loading_on('', '<div class="h3-responsive text-white">Updating Checklist Item and Adding To Comments</div>');
                 }
                 let note = $('#rejected_reason').val();
@@ -263,20 +409,20 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         });
     }
 
-    window.checklist_item_review_status = function(ele, action, note) {
+    window.checklist_item_review_status = function (ele, action, note) {
 
         let checklist_item_id = ele.data('checklist-item-id');
         let review_options = null;
         let delete_docs_button = null;
 
         let parent_div = '';
-        if(page_type == 'checklist') {
+        if (page_type == 'checklist') {
             parent_div = ele.closest('.checklist-item-div');
             delete_docs_button = ele.closest('.checklist-item-div').find('.delete-doc-button');
         } else {
-            //parent_div = $('.checklist-item-link[data-checklist-item-id="'+checklist_item_id+'"]');
-            parent_div = $('.checklist-item-link.active');
+            parent_div = $('.checklist-item-div.active');
         }
+
 
         review_options = ele.closest('.review-options');
         review_options.find('.item-not-reviewed, .item-rejected, .item-accepted').removeClass('d-flex').addClass('d-none');
@@ -288,9 +434,9 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         let classes = '';
         let html = '';
 
-        if(action == 'accepted') {
+        if (action == 'accepted') {
 
-            if(page_type == 'checklist') {
+            if (page_type == 'checklist') {
                 html = '<i class="fal fa-check-circle fa-lg mr-2"></i> Complete';
                 delete_docs_button.prop('disabled', true);
             } else {
@@ -303,22 +449,27 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
 
             classes = 'bg-success text-white';
 
-        } else if(action == 'rejected') {
+        } else if (action == 'rejected') {
 
-            if(page_type == 'review') {
+            if (page_type == 'review') {
 
                 review_options.removeClass('bg-light').addClass('bg-red-light').find('.item-rejected').removeClass('d-none').addClass('d-flex');
                 classes = 'bg-default text-white';
                 html = 'Rejected';
                 next_item(parent_div);
 
+                setTimeout(function() {
+                    get_notes(checklist_item_id);
+                    $('#checklist_item_'+checklist_item_id).find('.fa-comment.fa-stack-1x').removeClass('text-blue-light').addClass('text-primary');
+                }, 1000);
+
             }
 
             parent_div.removeClass('pending');
 
-        } else if(action == 'not_reviewed') {
+        } else if (action == 'not_reviewed') {
 
-            if(page_type == 'checklist') {
+            if (page_type == 'checklist') {
                 html = '<i class="fal fa-minus-circle fa-lg mr-2"></i> Pending';
                 delete_docs_button.prop('disabled', false);
             } else {
@@ -326,7 +477,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
             }
             // if agent or admin
             classes = 'bg-blue-light text-primary';
-            if($('.accept-checklist-item-button').length > 0) {
+            if ($('.accept-checklist-item-button').length > 0) {
                 classes = 'bg-danger text-white';
             }
 
@@ -357,17 +508,20 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
     function next_item(parent_div) {
         let index = parent_div.index();
         cancel = false;
-        $('.pending').each(function() {
-            if(cancel == false) {
-                if($(this).index() > index) {
-                    $(this).trigger('click');
+        $('.checklist-item-div.pending').each(function () {
+            if (cancel == false) {
+                if ($(this).index() > index) {
+                    $(this).find('.checklist-item-name').trigger('click');
+                    let id = $(this).prop('id');
+                    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
                     cancel = true;
                 }
             }
         });
+
     }
 
-    window.set_checklist_item_review_status = function(checklist_item_id, action, note) {
+    window.set_checklist_item_review_status = function (checklist_item_id, action, note) {
 
         let Agent_ID = $('#Agent_ID').val();
         let Listing_ID = $('#Listing_ID').val();
@@ -385,23 +539,23 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         formData.append('action', action);
         formData.append('note', note);
         axios.post('/agents/doc_management/transactions/set_checklist_item_review_status', formData, axios_options)
-        .then(function (response) {
+            .then(function (response) {
 
-            if(page_type == 'checklist') {
-                $('.collapse').collapse('hide');
-                if(action == 'rejected') {
-                    load_tabs('checklist');
+                if (page_type == 'checklist') {
+                    $('.collapse').collapse('hide');
+                    if (action == 'rejected') {
+                        load_tabs('checklist');
+                    }
+                    load_documents_on_tab_click();
+                    global_loading_off();
+                } else {
+
                 }
-                load_documents_on_tab_click();
-                global_loading_off();
-            } else {
 
-            }
-
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
 }

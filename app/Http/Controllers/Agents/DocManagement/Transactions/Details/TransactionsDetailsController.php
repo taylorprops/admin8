@@ -355,7 +355,7 @@ class TransactionsDetailsController extends Controller {
         $transaction_checklist_item_notes_model = new TransactionChecklistItemsNotes();
         $users = User::get();
 
-        $agent = $users -> where('user_id', $Agent_ID) -> where('group', 'agent') -> first();
+        $agent = Agents::find($Agent_ID);
 
         $transaction_checklist = TransactionChecklists::where($field, $id) -> first();
         $transaction_checklist_id = $transaction_checklist -> id;
@@ -372,7 +372,7 @@ class TransactionsDetailsController extends Controller {
             $checklist_types = ['referral'];
         }
 
-        $transaction_checklist_items = $transaction_checklist_items_model -> where($field, $id) -> where('checklist_id' , $transaction_checklist_id) -> orderBy('checklist_item_order') -> get();
+        $transaction_checklist_items = $transaction_checklist_items_model -> where('checklist_id' , $transaction_checklist_id) -> orderBy('checklist_item_order') -> get();
 
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
@@ -513,7 +513,11 @@ class TransactionsDetailsController extends Controller {
         } else if($transaction_type == 'referral') {
             $add_notes -> Referral_ID = $Referral_ID;
         }
-        $add_notes -> Agent_ID = $request -> Agent_ID;
+        $Agent_ID = 0;
+        if(auth() -> user() -> group == 'agent') {
+            $Agent_ID = $request -> Agent_ID;
+        }
+        $add_notes -> Agent_ID = $Agent_ID;
         $add_notes -> note_user_id = auth() -> user() -> id;
         $add_notes -> note_status = 'unread';
         $add_notes -> notes = $request -> notes;
@@ -566,6 +570,7 @@ class TransactionsDetailsController extends Controller {
         $transaction_checklist_items_model = new TransactionChecklistItems();
 
         $transaction_checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> orderBy('checklist_item_order') -> get();
+
         $transaction_checklist_item_notes = new TransactionChecklistItemsNotes();
 
         $checklist_types = ['listing', 'both'];
@@ -868,23 +873,10 @@ class TransactionsDetailsController extends Controller {
 
         }
 
-        if($transaction_type == 'referral') {
-            $checklist_items = TransactionChecklistItems::where('Referral_ID', $id) -> get();
-        } else {
-            // if listing then only where Contract_ID = 0
-            $checklist_items = TransactionChecklistItems::where(function($query) use($id) {
-                $query -> where(function($q) use($id) {
-                    $q -> where('Listing_ID', $id) -> where(function($q) {
-                        $q -> where('Contract_ID', '0') -> orWhere('Contract_ID', null);
-                    });
-                })
-                -> orWhere('Contract_ID', $id);
-            })
-            -> where('Agent_ID', $Agent_ID) -> get();
-        }
+        $transaction_checklist = TransactionChecklists::where($field, $id) -> first();
+        $checklist_id = $transaction_checklist -> id;
 
-
-        $checklist_id = $checklist_items -> first() -> checklist_id;
+        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
 
         $checklist_items_required = $checklist_items -> where('checklist_item_required', 'yes') -> sortBy('checklist_item_order');
         $checklist_items_if_applicable = $checklist_items -> where('checklist_item_required', 'no') -> sortBy('checklist_item_order');
@@ -2277,6 +2269,10 @@ class TransactionsDetailsController extends Controller {
         if($action == 'rejected') {
             // add rejection reason to notes
             $add_notes = new TransactionChecklistItemsNotes();
+            $Agent_ID = 0;
+            if(auth() -> user() -> group == 'agent') {
+                $Agent_ID = $request -> Agent_ID;
+            }
             $add_notes -> Agent_ID = $Agent_ID;
             if($transaction_type == 'listing') {
                 $add_notes -> Listing_ID = $Listing_ID;

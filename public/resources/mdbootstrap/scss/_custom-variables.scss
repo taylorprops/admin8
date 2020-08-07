@@ -76,6 +76,9 @@ a.text-orange:hover {
 a.text-green:hover {
     color: $green-dark;
 }
+.text-red {
+    color: red;
+}
 
 
 .bg-default {
@@ -85,6 +88,10 @@ a.text-green:hover {
 .bg-default-light {
     background: rgba($default, .4) !important;
     background-color: rgba($default, .4) !important;
+}
+.bg-default-lighter {
+    background: rgba($default, .1) !important;
+    background-color: rgba($default, .1) !important;
 }
 .bg-primary-light {
     background: rgba($primary-color, .1) !important;

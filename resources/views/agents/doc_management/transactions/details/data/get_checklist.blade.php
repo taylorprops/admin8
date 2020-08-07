@@ -18,7 +18,7 @@
                     @if(auth() -> user() -> group == 'admin')
                     <div class="col-12">
                         <div class="d-flex justify-content-start">
-                            <button type="button" class="btn btn-sm btn-primary" id="email_checklist_to_agent_button"><i class="fal fa-envelope mr-2"></i> Email Agent</button>
+                            <button type="button" class="btn btn-sm btn-primary email-agent-button"><i class="fal fa-envelope mr-2"></i> Email Agent</button>
                         </div>
                     </div>
                     @endif
@@ -60,16 +60,23 @@
                             }
 
                             // get docs and notes for checklist item
-                            $transaction_checklist_item_id = $checklist_item -> id;
-                            $transaction_documents = $transaction_checklist_item_docs_model -> GetDocs($transaction_checklist_item_id);
+                            $checklist_item_id = $checklist_item -> id;
+                            $transaction_documents = $transaction_checklist_item_docs_model -> GetDocs($checklist_item_id);
                             $transaction_documents_count = count($transaction_documents);
 
-                            $transaction_notes = $transaction_checklist_item_notes_model -> GetNotes($transaction_checklist_item_id, '');
-                            $transaction_notes_count = count($transaction_notes);
-                            $notes_count_unread = $transaction_notes -> where('note_status', 'unread') -> where('note_user_id', '!=', auth() -> user() -> id) -> count();
+                            $notes = $transaction_checklist_item_notes_model -> GetNotes($checklist_item_id);
+                            $notes_count = count($notes);
+
+                            $notes_count_unread = $notes -> where('note_status', 'unread');
+                            if(auth() -> user() -> group == 'agent') {
+                                $notes_count_unread = $notes_count_unread -> where('note_user_id', '!=', auth() -> user() -> user_id) -> count();
+                            } else if(auth() -> user() -> group == 'admin') {
+                                $notes_count_unread = $notes_count_unread -> where('Agent_ID', '>', '0') -> count();
+                            }
+
 
                             // get status
-                            $status_details = $transaction_checklist_items_model -> GetStatus($transaction_checklist_item_id);
+                            $status_details = $transaction_checklist_items_model -> GetStatus($checklist_item_id);
                             $status = $status_details -> status;
                             $badge_classes = $status_details -> agent_classes;
                             if(auth() -> user() -> group == 'admin') {
@@ -108,11 +115,11 @@
 
                                                         <div class="dropdown-menu dropdown-primary">
 
-                                                            <a class="dropdown-item mark-required no @if(!$show_mark_not_required) d-none @else d-block @endif" href="javascript: void(0)" data-checklist-item-id="{{ $transaction_checklist_item_id }}" data-required="no">Make If Applicable</a>
+                                                            <a class="dropdown-item mark-required no @if(!$show_mark_not_required) d-none @else d-block @endif" href="javascript: void(0)" data-checklist-item-id="{{ $checklist_item_id }}" data-required="no">Make If Applicable</a>
 
-                                                            <a class="dropdown-item mark-required yes @if(!$show_mark_required) d-none @else d-block @endif" href="javascript: void(0)" data-checklist-item-id="{{ $transaction_checklist_item_id }}" data-required="yes">Make Required</a>
+                                                            <a class="dropdown-item mark-required yes @if(!$show_mark_required) d-none @else d-block @endif" href="javascript: void(0)" data-checklist-item-id="{{ $checklist_item_id }}" data-required="yes">Make Required</a>
 
-                                                            <a class="dropdown-item remove-checklist-item" href="javascript: void(0)" data-checklist-item-id="{{ $transaction_checklist_item_id }}">Remove</a>
+                                                            <a class="dropdown-item remove-checklist-item" href="javascript: void(0)" data-checklist-item-id="{{ $checklist_item_id }}">Remove</a>
 
                                                         </div>
 
@@ -141,11 +148,11 @@
                                                 <div class="d-flex justify-content-start align-items-center mr-3 mb-1 p-1 bg-light">
                                                     <div class="font-weight-bold text-primary mr-2 checklist-attachment">Docs</div>
                                                     <div>
-                                                        <button type="button" class="btn btn-sm btn-success add-document-button" data-checklist-id="{{ $transaction_checklist_id }}" data-checklist-item-id="{{ $transaction_checklist_item_id }}" data-target="documents_div_{{ $transaction_checklist_item_id }}"><i class="fa fa-plus"></i></button>
+                                                        <button type="button" class="btn btn-sm btn-success add-document-button" data-checklist-id="{{ $transaction_checklist_id }}" data-checklist-item-id="{{ $checklist_item_id }}" data-target="documents_div_{{ $checklist_item_id }}"><i class="fa fa-plus"></i></button>
                                                     </div>
 
                                                     <div>
-                                                        <button type="button" class="btn btn-sm btn-primary view-docs-button" data-toggle="collapse" data-target="#documents_div_{{ $transaction_checklist_item_id }}" aria-expanded="false" aria-controls="documents_div_{{ $transaction_checklist_item_id }}" @if($transaction_documents_count == 0) disabled @endif>View <span class="badge badge-pill bg-white text-danger font-weight-bold py-1 px-2 ml-2 doc-count">{{ $transaction_documents_count }}</span></button>
+                                                        <button type="button" class="btn btn-sm btn-primary view-docs-button" data-toggle="collapse" data-target="#documents_div_{{ $checklist_item_id }}" aria-expanded="false" aria-controls="documents_div_{{ $checklist_item_id }}" @if($transaction_documents_count == 0) disabled @endif>View <span class="badge badge-pill bg-white text-danger font-weight-bold py-1 px-2 ml-2 doc-count">{{ $transaction_documents_count }}</span></button>
                                                     </div>
 
                                                 </div>
@@ -159,11 +166,11 @@
                                                     <div class="font-weight-bold text-primary mr-2 checklist-attachment">Comments</div>
 
                                                     <div>
-                                                        <button type="button" class="btn btn-sm btn-success add-notes-button" data-add-notes-div="add_notes_div_{{ $transaction_checklist_item_id }}" data-toggle="collapse" data-target="#notes_div_{{ $transaction_checklist_item_id }}" aria-expanded="false" aria-controls="notes_div_{{ $transaction_checklist_item_id }}"><i class="fa fa-plus"></i></button>
+                                                        <button type="button" class="btn btn-sm btn-success add-notes-button" data-add-notes-div="add_notes_{{ $checklist_item_id }}" data-toggle="collapse" data-target="#notes_{{ $checklist_item_id }}" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}"><i class="fa fa-plus"></i></button>
                                                     </div>
 
                                                     <div>
-                                                        <button type="button" class="btn btn-sm @if($notes_count_unread > 0) btn-secondary @else btn-primary @endif view-notes-button" data-toggle="collapse" data-target="#notes_div_{{ $transaction_checklist_item_id }}" aria-expanded="false" aria-controls="notes_div_{{ $transaction_checklist_item_id }}" @if($transaction_notes_count == 0) disabled @endif>@if($notes_count_unread > 0) New! @else View @endif<span class="badge badge-pill bg-white text-danger font-weight-bold py-1 px-2 ml-2">{{ $transaction_notes_count }}</span></button>
+                                                        <button type="button" class="btn btn-sm @if($notes_count_unread > 0) btn-secondary @else btn-primary @endif view-notes-button" data-toggle="collapse" data-target="#notes_{{ $checklist_item_id }}" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}" @if($notes_count == 0) disabled @endif>@if($notes_count_unread > 0) New! @else View @endif<span class="badge badge-pill bg-white text-danger font-weight-bold py-1 px-2 ml-2">{{ $notes_count }}</span></button>
                                                     </div>
 
                                                 </div>
@@ -186,8 +193,8 @@
                                                     <div class="review-options h-100 {{ $bg_color }}">
 
                                                         <div class="@if($item_review_status == 'not_reviewed') d-flex @else d-none @endif justify-content-around align-items-center mb-1 item-not-reviewed w-100 h-100 p-1">
-                                                            <button type="button" class="btn btn-sm btn-success accept-checklist-item-button" data-checklist-item-id="{{ $transaction_checklist_item_id }}" @if($transaction_documents_count == 0) disabled @endif><i class="fa fa-check mr-2"></i> Accept</button>
-                                                            <button type="button" class="btn btn-sm btn-danger reject-checklist-item-button" data-checklist-item-id="{{ $transaction_checklist_item_id }}" @if($checklist_item -> checklist_item_required == 'yes') data-required="yes" @endif @if($transaction_documents_count == 0) disabled @endif><i class="fa fa-minus-circle mr-2"></i> Reject</button>
+                                                            <button type="button" class="btn btn-sm btn-success accept-checklist-item-button" data-checklist-item-id="{{ $checklist_item_id }}" @if($transaction_documents_count == 0) disabled @endif><i class="fa fa-check mr-2"></i> Accept</button>
+                                                            <button type="button" class="btn btn-sm btn-danger reject-checklist-item-button" data-checklist-item-id="{{ $checklist_item_id }}" @if($checklist_item -> checklist_item_required == 'yes') data-required="yes" @endif @if($transaction_documents_count == 0) disabled @endif><i class="fa fa-minus-circle mr-2"></i> Reject</button>
                                                         </div>
 
                                                         <div class="@if($item_review_status == 'accepted') d-flex @else d-none @endif justify-content-around align-items-center mb-xl-1 item-accepted w-100 h-100 p-1">
@@ -195,7 +202,7 @@
                                                                 <i class="fad fa-check-circle mr-2"></i> Accepted
                                                             </div>
                                                             <div class="small ml-5">
-                                                                <a href="javascript: void(0)" class="undo-accepted" data-checklist-item-id="{{ $transaction_checklist_item_id }}" @if($checklist_item -> checklist_item_required == 'yes') data-required="yes" @endif ><i class="fad fa-undo mr-1"></i> Undo</a>
+                                                                <a href="javascript: void(0)" class="undo-accepted" data-checklist-item-id="{{ $checklist_item_id }}" @if($checklist_item -> checklist_item_required == 'yes') data-required="yes" @endif ><i class="fad fa-undo mr-1"></i> Undo</a>
                                                             </div>
                                                         </div>
 
@@ -204,7 +211,7 @@
                                                                 <i class="fad fa-times-circle mr-2"></i> Rejected
                                                             </div>
                                                             <div class="small ml-3">
-                                                                <a href="javascript: void(0)" class="undo-rejected" data-checklist-item-id="{{ $transaction_checklist_item_id }}" @if($checklist_item -> checklist_item_required == 'yes') data-required="yes" @endif ><i class="fad fa-undo mr-1"></i> Undo</a>
+                                                                <a href="javascript: void(0)" class="undo-rejected" data-checklist-item-id="{{ $checklist_item_id }}" @if($checklist_item -> checklist_item_required == 'yes') data-required="yes" @endif ><i class="fad fa-undo mr-1"></i> Undo</a>
                                                             </div>
                                                         </div>
 
@@ -225,14 +232,14 @@
 
                                         <div class="row">
                                             <div class="col-12 col-lg-8 px-0 px-sm-2 mx-auto">
-                                                <div class="collapse documents-collapse mx-4 mx-auto bg-white" id="documents_div_{{ $transaction_checklist_item_id }}">
+                                                <div class="collapse documents-collapse mx-4 mx-auto bg-white" id="documents_div_{{ $checklist_item_id }}">
 
                                                     <div class="p-3 mt-2 mb-4">
 
                                                         <div class="row">
                                                             <div class="col-12 mb-3">
                                                                 <div class="h5 text-primary float-left">Submitted Documents</div>
-                                                                <a class="text-danger float-right" data-toggle="collapse" href="#documents_div_{{ $transaction_checklist_item_id }}" aria-expanded="false" aria-controls="documents_div_{{ $transaction_checklist_item_id }}">
+                                                                <a class="text-danger float-right" data-toggle="collapse" href="#documents_div_{{ $checklist_item_id }}" aria-expanded="false" aria-controls="documents_div_{{ $checklist_item_id }}">
                                                                     <i class="fad fa-times-circle fa-2x"></i>
                                                                 </a>
                                                             </div>
@@ -243,9 +250,9 @@
                                                             $document_id = $transaction_document -> document_id;
                                                             $doc_info = $documents_model -> GetDocInfo($document_id);
 
-                                                            $transaction_doc_notes = $transaction_checklist_item_notes_model -> GetNotes($transaction_checklist_item_id, $document_id);
+                                                            /* $transaction_doc_notes = $transaction_checklist_item_notes_model -> GetNotes($checklist_item_id, $document_id);
                                                             $transaction_doc_notes_count = count($transaction_doc_notes);
-                                                            $transaction_doc_notes_count_unread = $transaction_doc_notes -> where('note_status', 'unread') -> where('note_user_id', '!=', auth() -> user() -> id) -> count();
+                                                            $transaction_doc_notes_count_unread = $transaction_doc_notes -> where('note_status', 'unread') -> where('note_user_id', '!=', auth() -> user() -> id) -> count(); */
                                                             @endphp
 
                                                             <div class="d-flex justify-content-between align-items-center border-bottom document-row mb-2">
@@ -261,7 +268,7 @@
 
                                                                 </div>
                                                                 <div>
-                                                                    <button type="button" class="btn btn-sm btn-danger float-right delete-doc-button" data-document-id="{{ $document_id }}" data-target="#documents_div_{{ $transaction_checklist_item_id }}" @if($item_review_status == 'accepted' && $transaction_document -> doc_status == 'viewed') disabled @endif>
+                                                                    <button type="button" class="btn btn-sm btn-danger float-right delete-doc-button" data-document-id="{{ $document_id }}" data-target="#documents_div_{{ $checklist_item_id }}" @if($item_review_status == 'accepted' && $transaction_document -> doc_status == 'viewed') disabled @endif>
                                                                         <i class="fa fa-times text-white"></i>
                                                                     </button>
                                                                 </div>
@@ -278,7 +285,7 @@
                                         <div class="row">
                                             <div class="col-12 col-lg-8 px-0 px-sm-2 mx-auto">
 
-                                                <div class="collapse notes-collapse mx-4 mx-auto bg-white" id="notes_div_{{ $transaction_checklist_item_id }}">
+                                                <div class="collapse notes-collapse mx-4 mx-auto bg-white" id="notes_{{ $checklist_item_id }}">
 
                                                     <div class="p-3  mt-2 mb-4">
 
@@ -288,80 +295,29 @@
                                                                 <div class="d-flex justify-content-between">
                                                                     <div class="h5 text-primary float-left">Comments</div>
                                                                     <div class="mb-2">
-                                                                        <a class="text-danger" data-toggle="collapse" href="#notes_div_{{ $transaction_checklist_item_id }}" aria-expanded="false" aria-controls="notes_div_{{ $transaction_checklist_item_id }}"><i class="fad fa-times-circle fa-2x"></i></a>
+                                                                        <a class="text-danger" data-toggle="collapse" href="#notes_{{ $checklist_item_id }}" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}"><i class="fad fa-times-circle fa-2x"></i></a>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <hr>
+
                                                         <div class="row">
-                                                            <div class="col-12 col-md-3">
-                                                                <div class="add-notes-div" id="add_notes_div_{{ $transaction_checklist_item_id }}">
+                                                            <div class="col-12 col-md-6 mx-auto">
 
-                                                                    <div>
-                                                                        <textarea class="custom-form-element form-textarea" id="add_notes_textarea_{{ $transaction_checklist_item_id }}" data-notes-collapse="notes_div_{{ $transaction_checklist_item_id }}" data-checklist-id="{{ $transaction_checklist_id }}" data-checklist-item-id="{{ $transaction_checklist_item_id }}" data-label="Add Comments"></textarea>
+                                                                <div class="notes-div" data-checklist-item-id="{{ $checklist_item_id }}">
+                                                                    <div class="text-gray">No Comments</div>
+                                                                </div>
+
+                                                                <div class="row d-flex align-items-center bg-blue-light">
+                                                                    <div class="col-10">
+                                                                        <input type="text" class="custom-form-element form-input notes-input-{{ $checklist_item_id }}" data-label="Add Comment">
                                                                     </div>
-                                                                    <div class="text-center">
-                                                                        <button class="btn btn-success save-notes-button" data-textarea="add_notes_textarea_{{ $transaction_checklist_item_id }}">Save</button>
+                                                                    <div class="col-2 pl-0 mt-1">
+                                                                        <a href="javascript: void(0)" class="btn btn-success btn-block save-notes-button" data-checklist-id="{{ $transaction_checklist_id }}" data-checklist-item-id="{{ $checklist_item_id }}"><i class="fa fa-save"></i></a>
                                                                     </div>
                                                                 </div>
-                                                            </div>
 
-                                                            <div class="col-12 col-md-9">
-                                                                <div>
-
-                                                                    <div class="notes-container px-2">
-
-                                                                        @foreach($transaction_notes as $transaction_note)
-                                                                        @php
-                                                                        $user = $users -> where('id', $transaction_note -> note_user_id) -> first();
-                                                                        $username = $user -> name;
-
-                                                                        $unread = null;
-                                                                        if($transaction_note -> note_status == 'unread' && $transaction_note -> note_user_id != auth() -> user() -> id) {
-                                                                            $unread = 'unread';
-                                                                        }
-
-                                                                        @endphp
-                                                                        <div class="p-2 pb-0 mt-2 note-div @if($unread) border-orange @else border-bottom @endif bg-white">
-
-                                                                            <div class="row">
-                                                                                <div class="col-6 col-lg-3">
-                                                                                    <div class="text-gray font-italic">{{ $username }}</div>
-                                                                                    <div class="text-gray small mt-1">{{ date('n/j/Y g:i:sA', strtotime($transaction_note -> created_at)) }}</div>
-                                                                                </div>
-                                                                                <div class="col-12 col-lg-7">
-                                                                                    <div class="d-flex align-items-center h-100">{!! $transaction_note -> notes !!}</div>
-                                                                                </div>
-                                                                                <div class="col-12 col-lg-2">
-                                                                                    <div class="d-flex justify-content-end align-items-center h-100">
-                                                                                        @if($transaction_note -> note_status == 'unread')
-
-                                                                                            @if($transaction_note -> note_user_id != auth() -> user() -> id)
-
-                                                                                                <button class="btn btn-success btn-sm mark-read-button mb-0" data-note-id="{{ $transaction_note -> id }}" data-notes-collapse="notes_div_{{ $transaction_checklist_item_id }}"><i class="fa fa-check mr-2"></i> Mark Read</button>
-
-                                                                                            @else
-
-                                                                                                <span class="text-gray small">Not Read</span>
-
-                                                                                            @endif
-
-                                                                                        @else
-
-                                                                                            <span class="text-success small"><i class="fa fa-check"></i> Read</span>
-
-                                                                                        @endif
-                                                                                    </div>
-                                                                                </div>
-
-                                                                            </div>
-
-                                                                        </div>
-                                                                        @endforeach
-
-                                                                    </div>
-                                                                </div>
                                                             </div>
 
                                                         </div>
@@ -392,91 +348,7 @@
 
 <input type="hidden" id="transaction_checklist_id" value="{{ $transaction_checklist_id }}">
 
-<div class="modal fade draggable" id="email_agent_modal" tabindex="-1" role="dialog" aria-labelledby="email_agent_modal_title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
-                <h4 class="modal-title" id="email_agent_modal_title">Email Agent</h4>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <i class="fal fa-times mt-2"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="email_agent_form">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-2">
-                                    <div class="h-100 d-flex justify-content-end align-items-center">
-                                        <div>From:</div>
-                                    </div>
-                                </div>
-                                <div class="col-10 pl-0">
-                                    <input type="text" class="custom-form-element form-input" id="email_agent_from" value="{{ \Auth::user() -> name }} <{{ \Auth::user() -> email }}>">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-2">
-                                    <div class="h-100 d-flex justify-content-end align-items-center">
-                                        <div>To:</div>
-                                    </div>
-                                </div>
-                                <div class="col-10 pl-0">
-                                    <input type="text" class="custom-form-element form-input" id="email_agent_to" value="{{ $agent -> name }} <{{ $agent -> email }}>">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-2">
-                                    <div class="h-100 d-flex justify-content-end align-items-center">
-                                        <div>CC:</div>
-                                    </div>
-                                </div>
-                                <div class="col-10 pl-0">
-                                    <input type="text" class="custom-form-element form-input" id="email_agent_cc">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <hr>
-
-                    <div class="row">
-                        <div class="col-2">
-                            <div class="h-100 d-flex justify-content-end align-items-center">
-                                <div>Subject:</div>
-                            </div>
-                        </div>
-                        <div class="col-10 pl-0">
-                            <input type="text" class="custom-form-element form-input" id="email_agent_subject" value="{{ $property -> FullStreetAddress }} {{ $property -> City }}, {{ $property -> StateOrProvince }} {{ $property -> PostalCode }}">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-2">
-                            <div class="h-100 d-flex justify-content-end align-items-center">
-                                <div>Message:</div>
-                            </div>
-                        </div>
-                        <div class="col-10 pl-0">
-                            <textarea class="custom-form-input form-textarea" id="email_agent_message" rows="4">&#13;&#10; &#13;&#10; Thank you,&#13;&#10; {{ \Auth::user() -> name }}</textarea>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div id="email_agent_checklist_details"></div>
-                        </div>
-                    </div>
-
-                </form>
-            </div>
-            <div class="modal-footer d-flex justify-content-around">
-                <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success" id="send_email_agent_button"><i class="fad fa-share mr-2"></i> Send Message</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 @include('/agents/doc_management/transactions/details/shared/checklist_review_modals')
 

@@ -3,7 +3,8 @@
     .transactions-container {
         position: relative;
 
-        .properties-container, .checklist-items-container  {
+        .properties-container,
+        .checklist-items-container {
             position: absolute;
             top: -60px;
             left: 0;
@@ -15,25 +16,23 @@
             z-index: 1;
         }
 
+        .fa-stack {
+            height: 1em;
+            line-height: 1em;
+            width: 1.5em;
+        }
+
+        .notes-count {
+            font-size: 1rem;
+            bottom: 2px;
+        }
+
         .property-list-header {
             cursor: default;
         }
 
-        .property-item .badge, .unread-messages-badge {
+        .property-item .badge {
             font-size: 100%;
-            z-index: 1;
-        }
-        .unread-messages-badge:after{
-            content: ' ';
-            position: absolute;
-            width: 0;
-            height: 0;
-            right: 8px;
-            top: 22px;
-            bottom: auto;
-            border: 4px solid;
-            border-color: orange transparent transparent orange ;
-            z-index: 0;
         }
 
         .checklist-items-container {
@@ -43,7 +42,7 @@
 
             .sticky {
                 position: sticky;
-                top: -5px;
+                top: -12px;
                 z-index: 100;
             }
 
@@ -51,16 +50,15 @@
                 display: none;
             }
 
-            .checklist-item-link {
-                cursor: pointer;
+            .checklist-item-div {
 
                 .status-badge {
-                    width: 65px;
+                    width: 75px;
                 }
 
             }
 
-            .checklist-item-link.required {
+            .checklist-item-unused {
                 opacity: 0.5;
             }
 
@@ -68,6 +66,13 @@
                 background-color: rgba($primary, 0.8);
                 border-color: rgba($primary, 0.8);
             }
+
+            .notes-div {
+                max-height: 300px;
+                overflow: auto;
+            }
+
+
         }
 
     }
@@ -79,21 +84,29 @@
             overflow: hidden;
         }
 
-        .review-image-container {
+        .review-container {
+            position: relative;
             height: 93VH;
+        }
+
+        .review-image-container {
+            height: 86VH;
             overflow-y: auto;
+            scroll-behavior: smooth;
+            padding-bottom: 25px;
 
             .review-image-div {
                 width: 85%;
             }
 
+
         }
 
         .document-review-image {
-                max-width: 100%;
-                margin: auto;
-                //transform: rotateZ(90deg);
-            }
+            max-width: 100%;
+            margin: auto;
+            //transform: rotateZ(90deg);
+        }
 
         .document-options-div {
             position: absolute;
@@ -101,16 +114,63 @@
             left: 0px;
             background: #fff;
             border-top: 1px solid $border-color;
-            z-index: 10;
+            z-index: 1;
         }
 
-        .range-field input[type="range"] + .thumb {
+        .range-field input[type="range"] {
+            width: 100px !important;
+        }
+
+        .range-field input[type="range"]+.thumb {
             background-color: $primary !important;
         }
 
+        .zoom-out, .zoom-in {
+            cursor: pointer;
+        }
+
+
     }
 
+
+    .details-container {
+
+        .details-content {
+            height: 76VH;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .transaction-details .badge {
+            font-size: 1rem;
+            padding: 0.5rem;
+            box-shadow: none;
+        }
+
+        table.table th, table.table td {
+            padding-top: .6rem;
+            padding-bottom: .5rem;
+        }
+
+        .property-details-table td:first-of-type {
+            width: 35%;
+        }
+
+        .divider {
+            height: 3px;
+            background: $primary;
+            padding: 0px !important
+        }
+    }
+
+
 }
+
+#email_agent_checklist_details {
+    height: 0px;
+    display: none;
+}
+
 
 .form-groups-container {
     height: 420px;
@@ -120,10 +180,12 @@
 .rejected-reasons-container {
     position: relative;
 }
+
 .rejected-reasons-div {
     height: 400px;
     overflow: auto;
 }
+
 .rejected-reason {
     cursor: pointer;
 }

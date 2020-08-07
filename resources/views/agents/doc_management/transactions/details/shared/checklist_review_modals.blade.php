@@ -1,3 +1,89 @@
+<div class="modal fade draggable" id="email_agent_modal" tabindex="-1" role="dialog" aria-labelledby="email_agent_modal_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary draggable-handle">
+                <h4 class="modal-title" id="email_agent_modal_title">Email Agent</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <i class="fal fa-times mt-2"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="email_agent_form">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="h-100 d-flex justify-content-end align-items-center">
+                                        <div>From:</div>
+                                    </div>
+                                </div>
+                                <div class="col-10 pl-0">
+                                    <input type="text" class="custom-form-element form-input" id="email_agent_from" value="{{ \Auth::user() -> name }} <{{ \Auth::user() -> email }}>">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="h-100 d-flex justify-content-end align-items-center">
+                                        <div>To:</div>
+                                    </div>
+                                </div>
+                                <div class="col-10 pl-0">
+                                    <input type="text" class="custom-form-element form-input" id="email_agent_to" value="{{ $agent -> first_name.' '.$agent -> last_name }} <{{ $agent -> email }}>">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="h-100 d-flex justify-content-end align-items-center">
+                                        <div>CC:</div>
+                                    </div>
+                                </div>
+                                <div class="col-10 pl-0">
+                                    <input type="text" class="custom-form-element form-input" id="email_agent_cc">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="h-100 d-flex justify-content-end align-items-center">
+                                <div>Subject:</div>
+                            </div>
+                        </div>
+                        <div class="col-10 pl-0">
+                            <input type="text" class="custom-form-element form-input" id="email_agent_subject" value="{{ $property -> FullStreetAddress }} {{ $property -> City }}, {{ $property -> StateOrProvince }} {{ $property -> PostalCode }}">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="h-100 d-flex justify-content-end align-items-center">
+                                <div>Message:</div>
+                            </div>
+                        </div>
+                        <div class="col-10 pl-0">
+                            <textarea class="custom-form-input form-textarea" id="email_agent_message" rows="4">&#13;&#10; &#13;&#10; Thank you,&#13;&#10; {{ \Auth::user() -> name }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="email_agent_checklist_details"></div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+                <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
+                <a class="btn btn-success" id="send_email_agent_button"><i class="fad fa-share mr-2"></i> Send Message</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade draggable" id="confirm_remove_checklist_item_modal" tabindex="-1" role="dialog" aria-labelledby="remove_checklist_item_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">

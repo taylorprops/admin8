@@ -372,9 +372,7 @@ if (document.URL.match(/transaction_details/)) {
                 } else if (tab == 'checklist') {
 
                     setTimeout(function() {
-                        $('.save-notes-button').off().on('click', function() {
-                            save_add_notes($(this));
-                        });
+                        $('.save-notes-button').off().on('click', save_add_notes);
 
                         $('.add-document-button').off('click').on('click', show_add_document);
 
@@ -383,8 +381,6 @@ if (document.URL.match(/transaction_details/)) {
                         $('.view-notes-button').off('click').on('click', toggle_view_notes_button);
 
                         $('.delete-doc-button').off('click').on('click', show_delete_doc);
-
-                        $('.add-notes-button').off('click').on('click', show_add_notes);
 
                         $('.mark-read-button').off('click').on('click', mark_note_read);
 
@@ -411,7 +407,11 @@ if (document.URL.match(/transaction_details/)) {
 
                         $('.add-checklist-item-button').off('click').on('click', show_add_checklist_item);
 
-                        $('#email_checklist_to_agent_button').off('click').on('click', show_email_agent);
+                        $('.email-agent-button').off('click').on('click', show_email_agent);
+
+                        $('.notes-div').each(function() {
+                            get_notes($(this).data('checklist-item-id'));
+                        });
 
                     }, 500);
 

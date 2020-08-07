@@ -15,19 +15,22 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if(auth() -> user()) {
+        return $next($request);
+        //dd($request);
+       /*  if(auth() -> user()) {
             $group = auth() -> user() -> group;
             if($group == 'admin'){
                 return $next($request);
             }
             if($group == 'agent') {
-                $redirect_url = 'dashboard';
+                // XXX
+                $redirect_url = '/dashboard_agent';
             }
             return redirect($redirect_url) -> with('error','You do not have access');
         }
 
         return redirect('/') -> with('error','Session Has Expired');
-        //echo '<script>top.location.href="/";</script>';
+        //echo '<script>top.location.href="/";</script>'; */
 
     }
 }
