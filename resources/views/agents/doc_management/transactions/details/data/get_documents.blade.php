@@ -687,9 +687,9 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-6 mt-1 mt-lg-0">
-                                        <select class="custom-form-element form-select form-select-no-search" id="form_tag_search" multiple data-label="Search Form Tags">
-                                            @foreach($form_tags as $form_tag)
-                                            <option value="{{ $form_tag -> resource_id }}">{{ $form_tag -> resource_name }}</option>
+                                        <select class="custom-form-element form-select form-select-no-search" id="form_categories_search" multiple data-label="Search Form Tags">
+                                            @foreach($form_categories as $form_category)
+                                            <option value="{{ $form_category -> resource_id }}">{{ $form_category -> resource_name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -717,14 +717,14 @@
                                         @foreach($forms_available as $form)
 
                                             @php
-                                            $form_tags = explode(',', $form -> sale_type);
+                                            $form_categories = explode(',', $form -> form_categories);
                                             $form_status_class = '';
                                             /* if(in_array($form -> file_id, $forms_in_use)) {
                                                 //$form_status_class = 'form-in-use';
                                             } */
                                             @endphp
 
-                                            <li class="list-group-item form-name p-1 {{ $form_status_class }}" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-tags="@foreach($form_tags as $tag){{ $tag }} @endforeach">
+                                            <li class="list-group-item form-name p-1 {{ $form_status_class }}" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-tags="@foreach($form_categories as $tag){{ $tag }} @endforeach">
                                                 <div class="d-flex justify-content-between">
                                                     <div class="d-flex justify-content-start align-items-center">
                                                         <div class="mr-3 mt-1">
@@ -735,8 +735,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="mr-3 d-none d-lg-block">
-                                                        @foreach($form_tags as $tag)
-                                                        <span class="badge badge-pill form-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
+                                                        @foreach($form_categories as $tag)
+                                                        <span class="badge badge-pill form-pill text-white ml-1" style="background-color: {{ $resource_items -> GetCategoryColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
                                                         @endforeach
                                                     </div>
                                                 </div>

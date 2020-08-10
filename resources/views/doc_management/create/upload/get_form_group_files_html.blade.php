@@ -11,9 +11,9 @@ $show_title = false;
             </div>
             <div class="col-4">
                 <div class="d-flex justify-content-end">
-                    @php $tags = explode(',', $file -> sale_type); @endphp
-                    @foreach($tags as $tag)
-                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
+                    @php $categories = explode(',', $file -> form_categories); @endphp
+                    @foreach($categories as $category)
+                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> GetCategoryColor($category) }}">{{ $resource_items -> getResourceName($category) }}</span>
                     @endforeach
                 </div>
             </div>

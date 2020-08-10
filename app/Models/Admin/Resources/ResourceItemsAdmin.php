@@ -29,7 +29,7 @@ class ResourceItemsAdmin extends Model
         return false;
     }
 
-    public function scopeGetTagColor($query, $id) {
+    public function scopeGetCategoryColor($query, $id) {
         $tags = $query -> where('resource_id', $id) -> first();
         return $tags -> resource_color;
     }

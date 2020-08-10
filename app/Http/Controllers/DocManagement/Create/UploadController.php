@@ -265,7 +265,8 @@ class UploadController extends Controller {
         $state = $request -> no_form_state;
         $helper_text = $request -> no_form_helper_text;
         $form_group_id = $request -> no_form_form_group_id;
-        $sale_type = implode(',', $request -> no_form_sale_type);
+        $form_categories = implode(',', $request -> no_form_form_categories);
+        $form_tags = $request -> no_form_form_tags;
 
         $upload = new Upload();
         $upload -> file_name_orig= $file_name_display;
@@ -273,7 +274,8 @@ class UploadController extends Controller {
         $upload -> state = $state;
         $upload -> pages_total = 0;
         $upload -> helper_text = $helper_text;
-        $upload -> sale_type = $sale_type;
+        $upload -> form_categories = $form_categories;
+        $upload -> form_tags = $form_tags;
         $upload -> form_group_id = $form_group_id;
         $upload -> save();
     }
@@ -327,13 +329,15 @@ class UploadController extends Controller {
         $state = $request -> edit_state;
         $helper_text = $request -> edit_helper_text;
         $form_group_id = $request -> edit_form_group_id;
-        $sale_type = implode(',', $request -> edit_sale_type);
+        $form_categories = implode(',', $request -> edit_form_categories);
+        $form_tags = $request -> form_tags;
 
         $upload = Upload::where('file_id', $file_id) -> first();
         $upload -> file_name_display = $file_name_display;
         $upload -> state = $state;
         $upload -> helper_text = $helper_text;
-        $upload -> sale_type = $sale_type;
+        $upload -> form_categories = $form_categories;
+        $upload -> form_tags = $form_tags;
         $upload -> form_group_id = $form_group_id;
         $upload -> save();
     }
@@ -355,7 +359,8 @@ class UploadController extends Controller {
 
             $state = $request['state'];
             $helper_text = $request['helper_text'];
-            $sale_type = implode(',', $request['sale_type']);
+            $form_categories = implode(',', $request['form_categories']);
+            $form_tags = $request['form_tags'];
             $form_group_id = $request['form_group_id'];
             $file_name_display = $request['file_name_display'];
 
@@ -369,7 +374,8 @@ class UploadController extends Controller {
             $upload -> pages_total = $pages_total;
             $upload -> state = $state;
             $upload -> helper_text = $helper_text;
-            $upload -> sale_type = $sale_type;
+            $upload -> form_categories = $form_categories;
+            $upload -> form_tags = $form_tags;
             $upload -> form_group_id = $form_group_id;
             $upload -> pages_total = $pages_total;
             $upload -> save();
@@ -383,6 +389,12 @@ class UploadController extends Controller {
                 $fail = json_encode(['fail' => 'File Not Uploaded']);
                 return ($fail);
             }
+
+            $file_in = Storage::disk('public') -> path($storage_dir.'/'.$new_filename);
+            $file_out = Storage::disk('public') -> path($storage_dir.'/temp_'.$new_filename);
+            exec('pdftk '.$file_in.' output '.$file_out.' flatten');
+            exec('rm '.$file_in.' && mv '.$file_out.' '.$file_in);
+
             $storage_full_path = $storage_path.'/doc_management/uploads/'.$file_id;
             chmod($storage_full_path.'/'.$new_filename, 0775);
 

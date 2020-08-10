@@ -31,8 +31,8 @@
 
     .required-div {
         position: absolute;
-        top: -2px;
-        right: 3px;
+        top: 0px;
+        right: 5px;
         font-size: .6rem;
         color: $danger;
     }
@@ -52,7 +52,7 @@
         border: 1px solid #ccc;
         color: #686767;
         font-size: 1rem;
-        border-radius: 5px;
+        border-radius: 3px;
     }
 
     .caret {
@@ -101,8 +101,8 @@
 
     .form-select-wrapper {
         position: relative;
-        margin-top: .9rem;
-        margin-bottom: .6rem;
+        /* margin-top: .9rem;
+        margin-bottom: .6rem; */
     }
     .form-select-value-cancel {
         display: none;

@@ -68,124 +68,94 @@
 
             <div class="h3-responsive text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.', '.$property_details -> PostalCode }}</div>
 
-            <div class="steps-container mx-auto">
-                <form id="details_form" action="" method="">
-                    <div class="h4-responsive text-primary mt-3 text-center">Please Enter and Verify the following details</div>
-                    <ul class="stepper linear mt-2 pt-1">
-                        <li class="step active">
-                            <div class="h4-responsive step-title waves-effect waves-light text-gray">Transaction Type <span class="step-value float-right text-orange"></span></div>
-                            <div class="step-new-content mt-3">
+            <div class="container-1000 mx-auto mt-3 mt-md-5">
+
+                <div class="row">
+
+                    <div class="col-12">
+
+                        <div class="h4-responsive text-primary mb-5 mt-3 mt-md-5 text-center">Please Enter and Verify the following details</div>
+
+                            <form id="details_form">
+
                                 <div class="row">
-                                    <div class="col-12">
-                                        <input type="radio" class="custom-form-element form-radio required" name="listing_type" value="sale" data-label="Sale" @if($forsale == 'yes') checked @endif>
-                                        <input type="radio" class="custom-form-element form-radio required" name="listing_type" value="rental" data-label="Rental" @if($forsale == 'no') checked @endif>
-                                        @if($transaction_type == 'listing')
-                                        <input type="radio" class="custom-form-element form-radio required" name="listing_type" value="both" data-label="Both <span class='font-8 text-orange ml-2'>(Add both listing agreements to same transaction)</span>">
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="step-actions">
-                                    <button class="waves-effect waves-light btn btn-success next-step">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="step">
-                            <div class="h4-responsive step-title waves-effect waves-light text-gray">Property Type <span class="step-value float-right text-orange"></span></div>
-                            <div class="step-new-content mt-3">
-                                <div class="row">
-                                    <div class="col-12">
-                                        @foreach($property_types as $property_type)
-                                        <input type="radio" class="custom-form-element form-radio required" name="property_type" value="{{ $property_type -> resource_name }}" data-label="{{ $property_type -> resource_name }}" @if($property_type -> resource_name == $property_type_val) checked @endif>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <div class="step-actions">
-                                    <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                                    <button class="waves-effect waves-light btn btn-success next-step">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="step property-sub-type">
-                            <div class="h4-responsive step-title waves-effect waves-light text-gray">Sale Type <span class="step-value float-right text-orange"></span></div>
-                            <div class="step-new-content mt-3">
-                                <div class="row">
-                                    <div class="col-12">
-                                        @foreach($property_sub_types as $property_sub_type)
-                                            @if($property_sub_type -> resource_name != 'For Sale By Owner')
-                                                <input type="radio" class="custom-form-element form-radio required" name="property_sub_type" value="{{ $property_sub_type -> resource_name }}" data-label="{{ $property_sub_type -> resource_name }}" @if($property_sub_type -> resource_name == $sale_type) checked @endif>
+
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="listing_type" id="listing_type" data-label="Transaction Type">
+                                            <option value=""></option>
+                                            <option value="sale" @if($forsale == 'yes') selected @endif>Sale</option>
+                                            <option value="rent" @if($forsale == 'no') selected @endif>Rental</option>
+                                            @if($transaction_type == 'listing')
+                                                <option value="both">Both</option>
                                             @endif
-                                        @endforeach
+
+                                        </select>
                                     </div>
-                                </div>
-                                <div class="step-actions">
-                                    <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                                    <button class="waves-effect waves-light btn btn-success next-step">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="step year-built disclosures">
-                            <div class="h4-responsive step-title waves-effect waves-light text-gray">Year Built <span class="step-value float-right text-orange"></span></div>
-                            <div class="step-new-content mt-3">
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        <input type="number" maxlength="4" min="1700" max="{{ date('Y') + 1 }}" class="custom-form-element form-input numbers-only required" name="year_built" id="year_built" value="{{ $YearBuilt }}" data-label="Year Built">
+
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="property_type" id="property_type" data-label="Property Type">
+                                            <option value=""></option>
+                                            @foreach($property_types as $property_type)
+                                                <option value="{{ $property_type -> resource_name }}" @if($property_type -> resource_name == $property_type_val) selected @endif>{{ $property_type -> resource_name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
+
+                                    <div class="col-12 col-md-6 col-lg-4 property-sub-type">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="property_sub_type" id="property_sub_type" data-label="Sale Type">
+                                            <option value=""></option>
+                                            @foreach($property_sub_types as $property_sub_type)
+                                                @if($transaction_type == 'contract' || ($transaction_type == 'listing' && $property_sub_type -> resource_name != 'For Sale By Owner'))
+                                                    <option value="{{ $property_sub_type -> resource_name }}" @if($property_sub_type -> resource_name == $sale_type) selected @endif>{{ $property_sub_type -> resource_name }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+
                                 </div>
-                                <div class="step-actions">
-                                    <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                                    <button class="waves-effect waves-light btn btn-success next-step">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="step">
-                            <div class="h4-responsive step-title waves-effect waves-light text-gray">@if($transaction_type == 'listing') List Price @else Contract Price @endif<span class="step-value float-right text-orange"></span></div>
-                            <div class="step-new-content mt-3">
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
+
+                                <div class="row mt-4">
+
+                                    <div class="col-12 col-md-6 col-lg-4 year-built disclosures">
+                                        <input type="number" maxlength="4" min="1600" max="{{ date('Y') + 1 }}" class="custom-form-element form-input numbers-only required" name="year_built" id="year_built" value="{{ $YearBuilt }}" data-label="Year Built">
+                                    </div>
+
+                                    <div class="col-12 col-md-6 col-lg-4">
                                         @if($transaction_type == 'listing')
                                             <input type="text" class="custom-form-element form-input numbers-only required" name="list_price" id="list_price" value="{{ $property_details -> ListPrice ?? null }}" data-label="List Price">
                                         @else
-                                        <input type="text" class="custom-form-element form-input numbers-only required" name="contract_price" id="contract_price" value="{{ $property_details -> ContractPrice ?? null }}" data-label="Contract Price">
+                                            <input type="text" class="custom-form-element form-input numbers-only required" name="contract_price" id="contract_price" value="{{ $property_details -> ContractPrice ?? null }}" data-label="Contract Price">
                                         @endif
                                     </div>
+
+                                    <div class="col-12 col-md-6 col-lg-4 hoa disclosures">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="hoa_condo" id="hoa_condo" data-label="HOA/Condo Fees">
+                                            <option value="hoa" @if($hoa_condo == 'hoa') selected @endif>HOA Fees</option>
+                                            <option value="condo" @if($hoa_condo == 'condo') selected @endif>Condo Fees</option>
+                                            <option value="none" @if($hoa_condo == 'none') selected @endif>None</option>
+
+                                        </select>
+                                    </div>
+
                                 </div>
-                                <div class="step-actions">
-                                    <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                                    <button class="waves-effect waves-light btn btn-success next-step">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="step hoa disclosures">
-                            <div class="h4-responsive step-title waves-effect waves-light text-gray">HOA/Condo Fees <span class="step-value float-right text-orange"></span></div>
-                            <div class="step-new-content mt-3">
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        <input type="radio" class="custom-form-element form-radio required" name="hoa_condo" value="hoa" data-label="HOA Fees" @if($hoa_condo == 'hoa') checked @endif>
-                                        <input type="radio" class="custom-form-element form-radio required" name="hoa_condo" value="condo" data-label="Condo Fees" @if($hoa_condo == 'condo') checked @endif>
-                                        <input type="radio" class="custom-form-element form-radio required" name="hoa_condo" value="none" data-label="None" @if($hoa_condo == 'none') checked @endif>
+
+                                <div class="row mt-5">
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-center w-100">
+                                            <button id="submit_details_form_button" class="waves-effect waves-light btn btn-lg btn-success">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="step-actions">
-                                    <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                                    <button class="waves-effect waves-light btn btn-success next-step">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="step">
-                            <div class="h4-responsive step-title waves-effect waves-light text-gray">Verify</div>
-                            <div class="step-new-content mt-3">
-                                <div class="">
-                                    <div class="d-flex justify-content-center w-100 h-100">
-                                        <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                                        <button id="submit_details_form_button" class="waves-effect waves-light btn btn-lg btn-success">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <input type="hidden" name="transaction_type" id="transaction_type" value="{{ strtolower(str_replace('/Lease', '', $transaction_type)) }}">
-                    <input type="hidden" name="Agent_ID" id="Agent_ID" value="{{ $Agent_ID }}">
-                </form>
+
+                                <input type="hidden" name="transaction_type" id="transaction_type" value="{{ strtolower(str_replace('/Lease', '', $transaction_type)) }}">
+                                <input type="hidden" name="Agent_ID" id="Agent_ID" value="{{ $Agent_ID }}">
+
+                            </form>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>

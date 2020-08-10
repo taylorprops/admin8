@@ -60,7 +60,7 @@
                             <button type="button" class="btn btn-danger reject-checklist-item-button" @if($checklist_item -> checklist_item_required == 'yes') data-required="yes" @endif><i class="fa fa-minus-circle mr-2"></i> Reject</button>
                         </div>
 
-                        <div class="@if($item_review_status == 'accepted') d-flex @else d-none @endif justify-content-around align-items-center mb-xl-1 item-accepted w-100 h-100 p-1">
+                        <div class="@if($item_review_status == 'accepted') d-flex @else d-none @endif justify-content-around align-items-center mb-xl-1 item-accepted w-100 h-100 p-1 pl-4">
                             <div class="text-success">
                                 <i class="fad fa-check-circle mr-2"></i> Accepted
                             </div>
@@ -69,7 +69,7 @@
                             </div>
                         </div>
 
-                        <div class="@if($item_review_status == 'rejected') d-flex @else d-none @endif justify-content-around align-items-center mb-xl-1 item-rejected w-100 h-100 p-1">
+                        <div class="@if($item_review_status == 'rejected') d-flex @else d-none @endif justify-content-around align-items-center mb-xl-1 item-rejected w-100 h-100 p-1 pl-4">
                             <div class="text-danger">
                                 <i class="fad fa-times-circle mr-2"></i> Rejected
                             </div>

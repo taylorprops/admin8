@@ -221,19 +221,27 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="edit_sale_type[]" id="edit_sale_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
+                                    <select name="edit_form_categories[]" id="edit_form_categories" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Select Form Categories" multiple>
                                         <option value=""></option>
-                                        @foreach($resources as $resource)
-                                            @if($resource -> resource_type == 'form_tags')
+                                        @foreach($resources -> where('resource_type', 'form_categories') as $resource)
                                             <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
-                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="edit_form_group_id" id="edit_form_group_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Select From Group">
+                                    <select name="edit_form_tags" id="edit_form_tags" class="custom-form-element form-select form-select-no-cancel form-select-no-search form-select-no-search" data-label="Select Form Tags">
+                                        <option value=""></option>
+                                        @foreach($resources -> where('resource_type', 'form_tags') as $resource)
+                                            <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select name="edit_form_group_id" id="edit_form_group_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Select From Group">
                                         <option value=""></option>
                                         @foreach($form_groups as $form_group)
                                             <option value="{{ $form_group -> resource_id }}" data-state="{{ $form_group -> resource_state }}">{{ $form_group -> resource_name }}</option>
@@ -243,7 +251,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="edit_state" id="edit_state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
+                                    <select name="edit_state" id="edit_state" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Select State">
                                         <option value=""></option>
                                         <option value="All">All</option>
                                         @foreach($states as $state)
@@ -287,20 +295,27 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="no_form_sale_type[]" id="no_form_sale_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Types" multiple>
+                                    <select name="no_form_form_categories[]" id="no_form_form_categories" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Select Form Categories" multiple>
                                         <option value=""></option>
-                                        <option value="" id="select_all_form_sale_types">All</option>
-                                        @foreach($resources as $resource)
-                                            @if($resource -> resource_type == 'form_tags')
+                                        @foreach($resources -> where('resource_type', 'form_categories') as $resource)
                                             <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
-                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="no_form_form_group_id" id="no_form_form_group_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Group">
+                                    <select name="no_form_form_tags" id="no_form_form_tags" class="custom-form-element form-select form-select-no-cancel form-select-no-search form-select-no-search" data-label="Select Form Tags">
+                                        <option value=""></option>
+                                        @foreach($resources -> where('resource_type', 'form_tags') as $resource)
+                                            <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select name="no_form_form_group_id" id="no_form_form_group_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Select Form Group">
                                         <option value=""></option>
                                         @foreach($resources as $resource)
                                             @if($resource -> resource_type == 'form_groups')
@@ -312,7 +327,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="no_form_state" id="no_form_state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
+                                    <select name="no_form_state" id="no_form_state" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Select State">
                                         <option value=""></option>
                                         <option value="All">All</option>
                                         @foreach($states as $state)
@@ -361,19 +376,27 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="sale_type[]" id="sale_type" class="custom-form-element form-select form-select-no-search form-select-no-cancel required" data-label="Select Form Types" multiple>
+                                    <select name="form_categories[]" id="form_categories" class="custom-form-element form-select form-select-no-search form-select-no-cancel form-select-no-search required" data-label="Select Form Categories" multiple>
                                         <option value=""></option>
-                                        @foreach($resources as $resource)
-                                            @if($resource -> resource_type == 'form_tags')
+                                        @foreach($resources -> where('resource_type', 'form_categories') as $resource)
                                             <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
-                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="form_group_id" id="form_group_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Select Form Group">
+                                    <select name="form_tags" id="form_tags" class="custom-form-element form-select form-select-no-cancel form-select-no-search form-select-no-search" data-label="Select Form Tags">
+                                        <option value=""></option>
+                                        @foreach($resources -> where('resource_type', 'form_tags') as $resource)
+                                            <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select name="form_group_id" id="form_group_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Select Form Group">
                                         <option value=""></option>
                                         @foreach($resources as $resource)
                                             @if($resource -> resource_type == 'form_groups')
@@ -385,7 +408,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="state" id="state" class="custom-form-element form-select form-select-no-cancel required" data-label="Select State">
+                                    <select name="state" id="state" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Select State">
                                         <option value=""></option>
                                         <option value="All">All</option>
                                         @foreach($states as $state)

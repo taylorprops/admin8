@@ -222,8 +222,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
     window.show_add_checklist_item = function () {
 
         let group_id = $(this).data('group-id');
-        $('#add_checklist_item_group_id').find('option[value="' + group_id + '"]').prop('selected', true);
-        select_refresh();
+        $('#add_checklist_item_group_id').val(group_id);
 
         // hide all form-group-div and show the first (MAR)
         $('.form-group-div').hide();

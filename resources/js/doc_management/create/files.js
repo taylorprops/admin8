@@ -601,7 +601,8 @@ if (document.URL.match(/create\/upload\/files/)) {
                 let form_group_id = response.data.form_group_id;
                 let state = response.data.state;
                 let helper_text = response.data.helper_text;
-                let sale_type = response.data.sale_type;
+                let form_categories = response.data.form_categories;
+                let form_tags = response.data.form_tags;
                 let form = $('#edit_file_form');
                 //form.find('select').val('').trigger('change');
                 $('#edit_form_name').text(file_name_orig);
@@ -609,12 +610,13 @@ if (document.URL.match(/create\/upload\/files/)) {
                 $('#edit_form_group_id').val(form_group_id);
                 $('#edit_state').val(state);
                 $('#edit_helper_text').val(helper_text).trigger('change');
-                sale_type = sale_type.split(',');
+                $('#edit_form_tags').val(form_tags).trigger('change');
+                form_categories = form_categories.split(',');
 
-                $.each(sale_type, function (i, e) {
-                    $('#edit_sale_type').find('option[value="' + e + '"]').prop('selected', true);
+                $.each(form_categories, function (i, e) {
+                    $('#edit_form_categories').find('option[value="' + e + '"]').prop('selected', true);
                 });
-                $('#edit_sale_type').trigger('change');
+                $('#edit_form_categories').trigger('change');
 
                 $('#edit_file_id').val(upload_id);
                 setTimeout(function () {
@@ -640,9 +642,8 @@ if (document.URL.match(/create\/upload\/files/)) {
         let form_group_id = ele.data('form-group-id');
         $('#no_form_form_group_id').val(form_group_id);
         $('#no_form_state').val(state);
-        $('#no_form_sale_type').val('');
-
-        $('#select_all_form_sale_types').click(select_all_form_sale_types);
+        $('#no_form_form_categories').val('');
+        $('#no_form_form_tags').val('');
 
         $('#save_add_item_no_form_button').off('click').on('click', save_non_form_item);
 
@@ -723,8 +724,9 @@ if (document.URL.match(/create\/upload\/files/)) {
         let form_group_id = ele.data('form-group-id');
         $('#form_group_id').val(form_group_id);
         $('#state').val(state);
-        //console.log($('#sale_type').val());
-        $('#sale_type').val('');
+        //console.log($('#form_categories').val());
+        $('#form_categories').val('');
+        $('#form_tags').val('');
 
         select_refresh();
 
@@ -761,7 +763,7 @@ if (document.URL.match(/create\/upload\/files/)) {
             axios.post('/doc_management/upload_file', formData, axios_options)
                 .then(function (response) {
                     $('#add_upload_modal').modal('hide');
-                    $('#file_name_display, #file_upload, #sale_type').val('').trigger('change');
+                    $('#file_name_display, #file_upload, #form_categories, #form_tags').val('').trigger('change');
                     select_refresh();
                     get_forms(form_group_id, state, order);
                     $('#upload_file_button').prop('disabled', false).html('<i class="fad fa-upload mr-2"></i> Upload Form');

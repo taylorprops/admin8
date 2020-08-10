@@ -126,9 +126,9 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                                 <div title="{{ $form -> file_name_display }}">
                                     {{ shorten_text($form -> file_name_display, 65) }}
                                     <br>
-                                    @php $tags = explode(',', $form -> sale_type); @endphp
-                                    @foreach($tags as $tag)
-                                        <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
+                                    @php $categories = explode(',', $form -> form_categories); @endphp
+                                    @foreach($categories as $category)
+                                        <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> GetCategoryColor($category) }}">{{ $resource_items -> getResourceName($category) }}</span>
                                     @endforeach
                                 </div>
                             </div>

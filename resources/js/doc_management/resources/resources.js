@@ -78,15 +78,16 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
     <li class="list-group-item" data-resource-id="' + resource_id + '" data-resource-type="' + resource_type + '"> \
         <div class="resource-div-details"> \
     ';
+    resource_html += ' \
+            <i class="fas fa-sort mr-2 mt-1 list-item-handle float-left"></i> \
+            <span class="edit-resource-title list-item-handle float-left"> \
+    ';
     if (resource_color != '') {
         resource_html += ' \
             <div class="resource-color-square mr-2 float-left" style="background-color: ' + resource_color + '"></div> \
         ';
     }
-    resource_html += ' \
-            <i class="fas fa-sort mr-2 mt-1 list-item-handle float-left"></i> \
-            <span class="edit-resource-title list-item-handle float-left"> \
-    ';
+
     let resource_name_display = resource_name;
     if (resource_state != '') {
         resource_name_display = resource_state + ' | ' + resource_name;
@@ -96,7 +97,7 @@ function added_item_html(resource_id, resource_type, resource_name, resource_sta
     }
     resource_html += ' \
             ' + resource_name_display + '</span > \
-            <a href="javascript: void(0)" class="delete-deactivate-resource-button text-danger float-right ml-3" data-resource-id="' + resource_id + '" data-resource-name="' + resource_name + '" data-action="delete"><i class="fad fa-trash-alt fa-lg"></i></a> \
+            <a href="javascript: void(0)" class="delete-deactivate-resource-button text-danger float-right ml-3" data-resource-id="' + resource_id + '" data-resource-name="' + resource_name + '" data-action="delete"><i class="fad fa-ban fa-lg"></i></a> \
             <a href="javascript: void(0)" class="edit-resource-button text-primary float-right" data-resource-type="' + resource_type + '"><i class="fad fa-edit fa-lg"></i></a> \
         </div> \
         <div class="resource-div-edit container-fluid"> \

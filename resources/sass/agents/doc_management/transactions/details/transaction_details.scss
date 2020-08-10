@@ -275,10 +275,13 @@
         display: none;
     }
 
-    .checklist-attachment {
+    .checklist-item-options {
+        width: 210px;
+    }
+    /* .checklist-attachment {
         width: 70px;
         text-align: right;
-    }
+    } */
 
     #add_to_checklist_items_wrapper, #add_to_checklist_documents_wrapper {
         max-height: 65VH;

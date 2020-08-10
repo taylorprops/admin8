@@ -32,15 +32,15 @@ class ResourceItems extends Model
         $checklist_location_ids = Checklists::select('checklist_location_id') -> get() -> pluck('checklist_location_id') -> toArray();
         $checklist_item_group_ids = ChecklistsItems::select('checklist_item_group_id') -> get() -> pluck('checklist_item_group_id') -> toArray();
         $form_group_ids = Upload::select('form_group_id') -> get() -> pluck('form_group_id') -> toArray();
-        $sale_type_list = Upload::select('sale_type') -> get() -> pluck('sale_type') -> toArray();
-        $sale_type_ids = [];
-        foreach($sale_type_list as $sale_type) {
-            $sale_type_array = explode(',', $sale_type);
-            foreach($sale_type_array as $sale_type_item) {
-                $sale_type_ids[] = $sale_type_item;
+        $form_categories_list = Upload::select('form_categories') -> get() -> pluck('form_categories') -> toArray();
+        $form_categories_ids = [];
+        foreach($form_categories_list as $form_categories) {
+            $form_categories_array = explode(',', $form_categories);
+            foreach($form_categories_array as $form_categories_item) {
+                $form_categories_ids[] = $form_categories_item;
             }
         }
-        $all_ids = array_merge($checklist_property_type_ids, $checklist_property_sub_type_ids, $checklist_location_ids, $checklist_item_group_ids, $form_group_ids, $sale_type_ids);
+        $all_ids = array_merge($checklist_property_type_ids, $checklist_property_sub_type_ids, $checklist_location_ids, $checklist_item_group_ids, $form_group_ids, $form_categories_ids);
         $resource_ids_in_use = array_unique($all_ids);
         if(in_array($resource_id, $resource_ids_in_use)) {
             return true;
@@ -100,7 +100,7 @@ class ResourceItems extends Model
         return false;
     }
 
-    public function scopeGetTagColor($query, $id) {
+    public function scopeGetCategoryColor($query, $id) {
         $tags = $query -> where('resource_id', $id) -> first();
         return $tags -> resource_color;
     }

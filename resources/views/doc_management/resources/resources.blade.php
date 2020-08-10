@@ -39,6 +39,17 @@
                                     </div>
                                     @endif
 
+                                    @if($resource -> resource_form_group_type != '')
+                                    <div class="col px-1">
+                                        <select class="custom-form-element form-select add-resource-form-group-type form-select-no-cancel form-select-no-search required" data-label="Form Type">
+                                            <option value=""></option>
+                                            <option value="listing">Listing</option>
+                                            <option value="contract">Contract</option>
+                                            <option value="both">Both</option>
+                                        </select>
+                                    </div>
+                                    @endif
+
                                     @if($resource -> resource_color != '')
                                     <div class="col px-1">
                                         <input type="color" class="custom-form-element form-input-color   add-resource-color colorpicker" value="#4C9BDB" data-default-value="#4C9BDB" data-label="Tag Color">
@@ -84,6 +95,17 @@
                                                     @foreach($states as $state)
                                                     <option value="{{ $state }}" @if( $resources_item -> resource_state == $state) selected @endif>{{ $state }}</option>
                                                     @endforeach
+                                                </select>
+                                            </div>
+                                            @endif
+
+                                            @if($resources_item -> resource_form_group_type != '')
+                                            <div class="col px-1">
+                                                <select class="custom-form-element form-select edit-resource-form-group-type form-select-no-cancel form-select-no-search required" data-label="Form Type" data-default-value="{{ $resources_item -> resource_form_group_type }}">
+                                                    <option value=""></option>
+                                                    <option value="listing" @if( $resources_item -> resource_form_group_type == 'listing') selected @endif>Listing</option>
+                                                    <option value="contract" @if( $resources_item -> resource_form_group_type == 'contract') selected @endif>Contract</option>
+                                                    <option value="both" @if( $resources_item -> resource_form_group_type == 'both') selected @endif>Both</option>
                                                 </select>
                                             </div>
                                             @endif

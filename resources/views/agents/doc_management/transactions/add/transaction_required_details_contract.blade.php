@@ -220,8 +220,7 @@ if($property_details -> Owner2 != '') {
                 <div class="row mt-4">
                     <div class="col-12">
                         <div class="d-flex justify-content-center w-100 h-100">
-                            <button class="waves-effect waves-light btn btn-secondary previous-step"><i class="fad fa-chevron-double-left mr-2"></i> BACK</button>
-                            <button id="continue" class="waves-effect waves-light btn btn-lg btn-success">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
+                            <button id="save_required_details" class="waves-effect waves-light btn btn-lg btn-success">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
                         </div>
                     </div>
                 </div>

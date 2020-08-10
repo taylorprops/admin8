@@ -34,7 +34,7 @@ if (document.URL.match(/transaction_required_details/)) {
             }
         });
 
-        $('#continue').click(function(e) {
+        $('#save_required_details').click(function(e) {
             e.preventDefault();
             save_transaction_required_details();
         });

@@ -701,7 +701,7 @@ if (document.URL.match(/transaction_details/)) {
         }
 
         function tag_search() {
-            let selected_tags = $('#form_tag_search').find('option:checked');
+            let selected_tags = $('#form_categories_search').find('option:checked');
             if (selected_tags.length > 0) {
 
                 let form_group = $('.select-form-group').val();
@@ -856,7 +856,7 @@ if (document.URL.match(/transaction_details/)) {
             // search forms
             $('#form_search').keyup(form_search);
             // search by tag
-            $('#form_tag_search').change(tag_search);
+            $('#form_categories_search').change(tag_search);
             // select and show form groups
             $('.select-form-group').change(function () {
                 select_form_group();
@@ -866,7 +866,7 @@ if (document.URL.match(/transaction_details/)) {
         window.select_form_group = function () {
             // clear search input
             $('#form_search').val('').trigger('change');
-            $('#form_tag_search').val('').trigger('change');
+            $('#form_categories_search').val('').trigger('change');
             select_refresh();
             // if all show everything or just the selected group
             if ($('.select-form-group').val() == 'all') {

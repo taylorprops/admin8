@@ -16,7 +16,7 @@
 
             <hr>
 
-            <div class="d-flex justify-content-around align-items-center transaction-details p-2">
+            <div class="d-flex justify-content-around align-items-center transaction-details p-2 pb-3">
                 @if($transaction_type != 'referral')
                     <div>
                         @if($transaction_type == 'listing')

@@ -83,7 +83,7 @@ window.form_elements = function () {
 
                     // hide any open select dropdowns
                     element.bind('click', function () {
-                        $('.form-select-dropdown').hide();
+                        $('.form-select-dropdown').removeClass('active').hide();
                         $('.form-select-search-input').val('').trigger('change');
                     });
 
@@ -247,7 +247,9 @@ window.form_elements = function () {
                     if (multiple) {
                         wrapper.find('.form-select-dropdown').append('<div class="w-100 form-select-save-div"><div class="d-flex d-flex justify-content-center p-0"><a href="javascript: void(0)" class="form-select-multiple-save btn btn-success btn-sm">Close</a></div></div>');
                         $('.form-select-multiple-save').click(function () {
-                            $('.form-select-dropdown').hide();
+                            setTimeout(function() {
+                                $('.form-select-dropdown').removeClass('active').hide();
+                            }, 100);
                             $('.form-select-search-input').val('').trigger('change');
                         });
 
@@ -334,7 +336,9 @@ window.form_elements = function () {
                             dropdown.find('.form-select-li').removeClass('active');
                             li.addClass('active');
                             // hide select options and add
-                            $('.form-select-dropdown').fadeOut();
+                            setTimeout(function() {
+                                $('.form-select-dropdown').removeClass('active').hide();
+                            }, 100);
                             // update select element
                             element.val(value);
                             element.trigger('change');
@@ -380,88 +384,46 @@ window.form_elements = function () {
 
 
     // show dropdown on focus
-
-    // original
-    $('.form-ele.select').off('click').on('click', function (e) {
-        // e.stopPropagation();
-        // e.preventDefault();
+    $('.form-select-wrapper').off('focus').on('focus', function (e) {
+        e.stopImmediatePropagation();
         $(this).find('.form-select-value-input').focus();
-        //show_dropdown($(this).find('.form-select-value-input'));
     });
-    $('.form-select-value-input').on('focus', function (e) {
-        show_dropdown($(this));
+    $('.form-select-value-input').off('focus').on('focus', function (e) {
+        show_dropdown($(this), e);
     });
-
-
-    /* $('.form-select-value-input').off('focus').on('focus', function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        show_dropdown($(this));
-
-    }); */
-
-    /* $('.form-ele').not('.form-check').on('focus', '.form-select-value-input', function (e) {
-        e.stopPropagation();
-        if(e.type === 'focusin') {
-            show_dropdown($(this));
-        }
-    }); */
 
 }
 
 
+function show_dropdown(input, e) {
 
-
-/* setTimeout(function() {
-    let mut = new MutationObserver(function (mutations) {
-        console.log(mutations);
-        mutations.forEach(function(mutation) {
-            console.log(mutation);
-        });
-    });
-    mut.observe(document.getElementsByClassName('custom-form-element'), {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-}, 1000); */
-
-setInterval(function () {
-    $('.form-ele').removeClass('hidden');
-    $('.custom-form-element.hidden').each(function () {
-        $(this).closest('.form-ele').addClass('hidden');
-    });
-}, 500);
-
-function show_dropdown(input) {
-
-    $('.form-select-dropdown').hide();
+    /* if(e.type == 'focus') {
+        $('.form-select-dropdown').hide();
+    } */
     let wrapper = input.closest('.form-ele');
     let select = wrapper.find('select');
 
     if(wrapper.find('select').prop('disabled') == false) {
         // show dropdown
-        setTimeout(function() {
-            if(input.next('.form-select-dropdown').css('display') == 'none') {
-                input.next('.form-select-dropdown').show();
-                // focus on search input is searchable
-                if (!select.hasClass('form-select-no-search')) {
-                    input.next('.form-select-dropdown').find('.form-select-search-input').focus();
-                    input.prev('label').addClass('active');
-                }
-
-                return false;
+        if(input.next('.form-select-dropdown').hasClass('active')) {
+            input.next('.form-select-dropdown').removeClass('active').hide();
+        } else {
+            input.next('.form-select-dropdown').addClass('active').show();
+            // focus on search input is searchable
+            if (!select.hasClass('form-select-no-search')) {
+                input.next('.form-select-dropdown').find('.form-select-search-input').focus();
+                input.prev('label').addClass('active');
             }
-
-        }, 10);
+        }
     }
 
 
 }
 
 $(document).mouseup(function (e) {
-    let container = $('.form-select-dropdown');
+    let container = $('.form-select-wrapper');
     if (!container.is(e.target) && container.has(e.target).length === 0) {
-        container.hide();
+        container.find('.form-select-dropdown').removeClass('active').hide();
     }
     reset_labels();
 });
@@ -490,7 +452,7 @@ function dropdown_search(wrapper, input, element, multiple) {
 
         } else {
         // if tab pressed
-            $('.form-select-dropdown').hide();
+            $('.form-select-dropdown').removeClass('active').hide();
             reset_labels();
 
             if(wrapper.find('.form-select-matched-option').length > 0) {
@@ -535,6 +497,13 @@ function reset_labels() {
         }
     });
 }
+
+setInterval(function () {
+    $('.form-ele').removeClass('hidden');
+    $('.custom-form-element.hidden').each(function () {
+        $(this).closest('.form-ele').addClass('hidden');
+    });
+}, 500);
 
 window.validate_form = function (form) {
 
@@ -720,7 +689,7 @@ function set_multiple_select_value(wrapper, input) {
 }
 
 window.reset_select = function () {
-    $('.form-select-dropdown').hide();
+    $('.form-select-dropdown').removeClass('active').hide();
     $('.form-select-search-input').val('').trigger('change');
     $('.form-select-li').removeClass('matched').show();
     $('.form-select-value-input').each(function() {

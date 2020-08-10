@@ -9,6 +9,8 @@ use App\Models\DocManagement\Transactions\Listings\Listings;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
+use App\Models\DocManagement\Resources\ResourceItems;
+use App\Models\DocManagement\Create\Upload\Upload;
 
 class TransactionChecklists extends Model
 {
@@ -19,9 +21,14 @@ class TransactionChecklists extends Model
 
     public function ScopeCreateTransactionChecklist($request, $checklist_id, $Listing_ID, $Contract_ID, $Referral_ID, $Agent_ID, $checklist_represent, $checklist_type, $checklist_property_type_id, $checklist_property_sub_type_id, $checklist_sale_rent, $checklist_state, $checklist_location_id, $checklist_hoa_condo, $checklist_year_built) {
 
+        $for_sale_and_rent = false;
         if($checklist_type == 'referral') {
             $where = [['checklist_type', 'referral']];
         } else {
+            if($checklist_sale_rent == 'both') {
+                $checklist_sale_rent = 'sale';
+                $for_sale_and_rent = true;
+            }
             $where = [
                 ['checklist_represent', $checklist_represent],
                 ['checklist_type', $checklist_type],
@@ -120,5 +127,65 @@ class TransactionChecklists extends Model
             }
 
         }
+
+        // update required items if lead, hoa, etc
+        $form_tags = ResourceItems::where('resource_type', 'form_tags') -> get();
+
+        if($checklist_type == 'listing') {
+            $property = Listings::find($Listing_ID);
+        } else if($checklist_type == 'contract') {
+            $property = Contracts::find($Contract_ID);
+        } else if($checklist_type == 'referral') {
+            $property = Referrals::find($Referral_ID);
+        }
+
+        $if_applicable = [];
+        foreach($form_tags as $form_tag) {
+            $if_applicable[$form_tag -> resource_name]['id'] = $form_tag -> resource_id;
+            $if_applicable[$form_tag -> resource_name]['required'] = false;
+        }
+
+        if($checklist_state == 'MD' || $checklist_state == 'DC') {
+            if($checklist_year_built < 1978) {
+                $if_applicable['lead_paint']['required'] = true;
+            }
+            if($checklist_hoa_condo == 'hoa') {
+                $if_applicable['hoa']['required'] = true;
+            } else if($checklist_hoa_condo == 'condo') {
+                $if_applicable['condo']['required'] = true;
+            }
+        }
+
+        if($property -> EarnestHeldBy == 'title') {
+            $if_applicable['title_holding_earnest']['required'] = true;
+        }
+
+        if($for_sale_and_rent) {
+            $if_applicable['rental_listing_agreement']['required'] = true;
+        }
+
+        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
+
+        $checklist_items -> map(function($checklist_item) use ($if_applicable, $form_tags) {
+
+            $upload = Upload::where('file_id', $checklist_item -> checklist_form_id) -> first();
+            $form_tag_id = $upload -> form_tags;
+
+            foreach($form_tags as $form_tag) {
+                // see if required form tag matches checklist item form_tag
+                if($if_applicable[$form_tag -> resource_name]['id'] == $form_tag_id) {
+                    if($if_applicable[$form_tag -> resource_name]['required']) {
+                        $checklist_item -> checklist_item_required = 'yes';
+                        $checklist_item -> save();
+                    } else {
+                        $checklist_item -> delete();
+                    }
+                }
+            }
+
+        });
+
+
+
     }
 }

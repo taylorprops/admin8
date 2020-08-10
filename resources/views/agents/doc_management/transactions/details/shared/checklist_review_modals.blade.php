@@ -131,21 +131,11 @@
             <div class="modal-body">
                 <form id="add_checklist_item_form">
 
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="add_checklist_item_group_id" data-label="Select Form Group">
-                                @foreach($checklist_groups as $checklist_group)
-                                    <option value="{{ $checklist_group -> resource_id }}">{{ $checklist_group -> resource_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
                     <div class="row mt-3">
 
                         <div class="col-12 col-md-6">
 
-                            <div class="text-gray">Enter Name</div>
+                            <div class="h5-responsive text-orange">Create Checklist Item</div>
                             <input type="text" class="custom-form-element form-input" id="add_checklist_item_name" data-label="Enter Item Name">
 
                         </div>
@@ -156,67 +146,74 @@
 
                         <div class="col-12">
 
-                            <div class="text-gray">Or Select Standard Form</div>
+                            <div class="h5-responsive text-orange mb-3">Or Select Standard Form</div>
 
-                            <div class="row">
-                                <div class="col-12 col-md-6">
-                                    <input type="text" class="custom-form-element form-input" id="form_search" data-label="Search">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <select class="custom-form-element form-select form-select-no-cancel form-select-no-search select-form-group mt-3" data-label="Select Form Group">
-                                        <option value="all">All</option>
-                                        @foreach($form_groups as $form_group)
-                                        <option value="{{ $form_group -> resource_id }}" @if($loop -> first) selected @endif>{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                            <div class="card z-depth-0">
+                                <div class="card-body">
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-groups-container mt-3">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <input type="text" class="custom-form-element form-input" id="form_search" data-label="Search">
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <select class="custom-form-element form-select form-select-no-cancel form-select-no-search select-form-group mt-3" data-label="Select Form Group">
+                                                <option value="all">All</option>
+                                                @foreach($form_groups as $form_group)
+                                                <option value="{{ $form_group -> resource_id }}" @if($loop -> first) selected @endif>{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
 
-                                        @foreach($form_groups as $form_group)
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-groups-container mt-3">
 
-                                            <ul class="list-group form-group-div mb-3" data-form-group-id="{{ $form_group -> resource_id }}">
-                                                <li class="list-group-header text-orange">
-                                                    {{ $form_group -> resource_state }}
-                                                    @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif
-                                                </li>
+                                                @foreach($form_groups as $form_group)
 
-                                                @php
-                                                $forms = $files -> formGroupFiles($form_group -> resource_id, null, null, '');
-                                                $forms = $forms['forms_available'];
-                                                @endphp
+                                                    <ul class="list-group form-group-div mb-3" data-form-group-id="{{ $form_group -> resource_id }}">
+                                                        <li class="list-group-header text-orange">
+                                                            {{ $form_group -> resource_state }}
+                                                            @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif
+                                                        </li>
 
-                                                @foreach($forms as $form)
+                                                        @php
+                                                        $forms = $files -> formGroupFiles($form_group -> resource_id, null, null, '');
+                                                        $forms = $forms['forms_available'];
+                                                        @endphp
 
-                                                    <li class="list-group-item list-group-item-action form-name" data-form-id="{{ $form -> file_id }}" data-form-name="{{ $form -> file_name_display }}">
-                                                        <div class="d-flex justify-content-between">
+                                                        @foreach($forms as $form)
 
-                                                            <div title="{{ $form -> file_name_display }}">
-                                                                <a href="{{ $form -> file_location }}" class="btn btn-sm btn-primary mr-2 form-link" target="_blank">View</a>
-                                                                <a href="javascript: void(0)" class="btn btn-sm btn-primary mr-2">Select</a>
-                                                                <span class="d-none checked-div mr-3"><i class="fa fa-check-circle text-success"></i></span>
-                                                                <span class="text-primary form-name-display">{{ $form -> file_name_display }}</span>
-                                                            </div>
-                                                            <div>
-                                                                @php $tags = explode(',', $form -> sale_type); @endphp
-                                                                @foreach($tags as $tag)
-                                                                    <span class="badge badge-pill text-white ml-1 form-pill" style="background-color: {{ $resource_items -> getTagColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    </li>
+                                                            <li class="list-group-item list-group-item-action form-name" data-form-id="{{ $form -> file_id }}" data-form-name="{{ $form -> file_name_display }}">
+                                                                <div class="d-flex justify-content-between">
+
+                                                                    <div title="{{ $form -> file_name_display }}">
+                                                                        <a href="{{ $form -> file_location }}" class="btn btn-sm btn-primary mr-2 form-link" target="_blank">View</a>
+                                                                        <a href="javascript: void(0)" class="btn btn-sm btn-primary mr-2">Select</a>
+                                                                        <span class="d-none checked-div mr-3"><i class="fa fa-check-circle text-success"></i></span>
+                                                                        <span class="text-primary form-name-display">{{ $form -> file_name_display }}</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        @php $categories = explode(',', $form -> form_categories); @endphp
+                                                                        @foreach($categories as $category)
+                                                                            <span class="badge badge-pill text-white ml-1 form-pill" style="background-color: {{ $resource_items -> GetCategoryColor($category) }}">{{ $resource_items -> getResourceName($category) }}</span>
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+
+                                                        @endforeach
+
+                                                    </ul>
 
                                                 @endforeach
 
-                                            </ul>
-
-                                        @endforeach
-
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
+
                             </div>
 
                         </div>
@@ -224,6 +221,7 @@
                     </div>
 
                     <input type="hidden" id="add_checklist_item_checklist_id" value="{{ $transaction_checklist_id }}">
+                    <input type="hidden" id="add_checklist_item_group_id">
                 </form>
             </div>
             <div class="modal-footer d-flex justify-content-around">

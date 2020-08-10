@@ -359,7 +359,7 @@ class TransactionsAddController extends Controller {
     public function save_add_transaction(Request $request) {
 
         $property_details = (object)session('property_details');
-        $transaction_type = strtolower($property_details -> transaction_type);
+        $transaction_type = $request -> transaction_type;
         unset($property_details -> transaction_type);
         $resource_items = new ResourceItems();
 
@@ -549,6 +549,11 @@ class TransactionsAddController extends Controller {
                 $add_heritage_to_members = new Members();
                 $add_heritage_to_members -> member_type_id = ResourceItems::TitleResourceId();
                 $add_heritage_to_members -> company = 'Heritage Title';
+                $add_heritage_to_members -> cell_phone = '(866) 913-4095';
+                $add_heritage_to_members -> address_office_street = '175 Admiral Cochrane Dr., Suite 111';
+                $add_heritage_to_members -> address_office_city = 'Annapolis';
+                $add_heritage_to_members -> address_office_state = 'MD';
+                $add_heritage_to_members -> address_office_zip = '21401';
                 $add_heritage_to_members -> Contract_ID = $Contract_ID;
                 $add_heritage_to_members -> Agent_ID = $Agent_ID;
                 $add_heritage_to_members -> save();

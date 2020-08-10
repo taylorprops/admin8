@@ -323,7 +323,7 @@
                     </form>
 
                 </div>
-                <div class="modal-footer d-flex justify-content-around">
+                <div class="modal-footer d-flex justify-content-around mb-5 pb-5">
                     <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
                     <a class="btn btn-success" id="save_accept_contract_button"><i class="fad fa-check mr-2"></i> Save</a>
                 </div>
