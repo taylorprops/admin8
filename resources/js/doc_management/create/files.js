@@ -9,6 +9,7 @@ if (document.URL.match(/create\/upload\/files/)) {
     function init() {
         // get forms for each form group
         let data_count = $('.forms-data').length;
+        global_loading_on('', '<div class="h3-responsive text-white">Loading...</div>');
         $('.forms-data').each(function (index) {
             let form_group_id = $(this).data('form-group-id');
             let state = $(this).data('state');
@@ -32,6 +33,8 @@ if (document.URL.match(/create\/upload\/files/)) {
                     $('#upload_file_button').off('click').on('click', upload_file);
 
                     $('.add-non-form-item-button').hide();
+
+                    global_loading_off();
 
                 }, 500);
             }
@@ -603,6 +606,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 let helper_text = response.data.helper_text;
                 let form_categories = response.data.form_categories;
                 let form_tags = response.data.form_tags;
+                let checklist_group_id = response.data.checklist_group_id;
                 let form = $('#edit_file_form');
                 //form.find('select').val('').trigger('change');
                 $('#edit_form_name').text(file_name_orig);
@@ -611,6 +615,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 $('#edit_state').val(state);
                 $('#edit_helper_text').val(helper_text).trigger('change');
                 $('#edit_form_tags').val(form_tags).trigger('change');
+                $('#edit_checklist_group_id').val(checklist_group_id).trigger('change');
                 form_categories = form_categories.split(',');
 
                 $.each(form_categories, function (i, e) {
@@ -644,6 +649,7 @@ if (document.URL.match(/create\/upload\/files/)) {
         $('#no_form_state').val(state);
         $('#no_form_form_categories').val('');
         $('#no_form_form_tags').val('');
+        $('#no_form_checklist_group_id').val('');
 
         $('#save_add_item_no_form_button').off('click').on('click', save_non_form_item);
 
@@ -727,6 +733,7 @@ if (document.URL.match(/create\/upload\/files/)) {
         //console.log($('#form_categories').val());
         $('#form_categories').val('');
         $('#form_tags').val('');
+        $('#checklist_group_id').val('');
 
         select_refresh();
 
@@ -763,7 +770,7 @@ if (document.URL.match(/create\/upload\/files/)) {
             axios.post('/doc_management/upload_file', formData, axios_options)
                 .then(function (response) {
                     $('#add_upload_modal').modal('hide');
-                    $('#file_name_display, #file_upload, #form_categories, #form_tags').val('').trigger('change');
+                    $('#file_name_display, #file_upload, #form_categories, #form_tags, #checklist_group_id').val('').trigger('change');
                     select_refresh();
                     get_forms(form_group_id, state, order);
                     $('#upload_file_button').prop('disabled', false).html('<i class="fad fa-upload mr-2"></i> Upload Form');

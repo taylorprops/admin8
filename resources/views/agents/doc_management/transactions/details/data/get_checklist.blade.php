@@ -28,7 +28,19 @@
 
                 @foreach($checklist_groups as $checklist_group)
 
-                    <div class="h5-responsive text-orange checklist-group-header pb-2 @if(!$loop -> first) mt-4 @else mt-3 @endif">{{ $checklist_group -> resource_name }} <button type="button" class="btn btn-sm btn-success add-checklist-item-button" data-group-id="{{ $checklist_group -> resource_id }}"><i class="fal fa-plus"></i></button></div>
+                    @php
+                    $group_name = $checklist_group -> resource_name;
+                    if($group_name == 'Transaction Docs') {
+                        $group_name = 'Listing Documents';
+                        if($transaction_type == 'contract') {
+                            $group_name = 'Contract Documents';
+                        } else if($transaction_type == 'referral') {
+                            $group_name = 'Referral Documents';
+                        }
+                    }
+                    @endphp
+
+                    <div class="h5-responsive text-orange checklist-group-header pb-2 @if(!$loop -> first) mt-4 @else mt-3 @endif">{{ $group_name }} <button type="button" class="btn btn-sm btn-success add-checklist-item-button" data-group-id="{{ $checklist_group -> resource_id }}"><i class="fal fa-plus"></i></button></div>
                     <div>
 
                     @if(count($transaction_checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)

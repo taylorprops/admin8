@@ -2,7 +2,7 @@ import datepicker from 'js-datepicker';
 
 $(document).ready(function () {
 
-    global_page_transition();
+    /* global_page_transition(); */
 
     inactivityTime();
 
@@ -161,7 +161,7 @@ window.inactivityTime = function () {
 };
 
 // page transitions
-window.global_page_transition = function() {
+/* window.global_page_transition = function() {
 
     if (document.URL.match(/(upload\/files)/)) {
         $('.loader').show();
@@ -177,7 +177,7 @@ window.global_page_transition = function() {
         $('.loader').hide();
     }
 
-}
+} */
 
 /**************************  STANDARD USE FUNCTIONS ***********************************/
 

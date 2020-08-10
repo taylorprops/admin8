@@ -226,8 +226,12 @@ class UploadController extends Controller {
         $resources = ResourceItems::orderBy('resource_order') -> get();
         $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
 
-        return view('/doc_management/create/upload/files', compact('files', 'states', 'resources', 'form_group_id', 'resource_items', 'form_groups'));
-        //  -> withModel($associations)
+        $checklist_types = ['listing', 'both'];
+
+        $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
+
+        return view('/doc_management/create/upload/files', compact('files', 'states', 'resources', 'form_group_id', 'resource_items', 'form_groups', 'checklist_groups'));
+
     }
 
     public function publish_upload(Request $request) {
@@ -267,6 +271,7 @@ class UploadController extends Controller {
         $form_group_id = $request -> no_form_form_group_id;
         $form_categories = implode(',', $request -> no_form_form_categories);
         $form_tags = $request -> no_form_form_tags;
+        $checklist_group_id = $request -> no_form_checklist_group_id;
 
         $upload = new Upload();
         $upload -> file_name_orig= $file_name_display;
@@ -276,6 +281,7 @@ class UploadController extends Controller {
         $upload -> helper_text = $helper_text;
         $upload -> form_categories = $form_categories;
         $upload -> form_tags = $form_tags;
+        $upload -> checklist_group_id = $checklist_group_id;
         $upload -> form_group_id = $form_group_id;
         $upload -> save();
     }
@@ -330,7 +336,8 @@ class UploadController extends Controller {
         $helper_text = $request -> edit_helper_text;
         $form_group_id = $request -> edit_form_group_id;
         $form_categories = implode(',', $request -> edit_form_categories);
-        $form_tags = $request -> form_tags;
+        $form_tags = $request -> edit_form_tags;
+        $checklist_group_id = $request -> edit_checklist_group_id;
 
         $upload = Upload::where('file_id', $file_id) -> first();
         $upload -> file_name_display = $file_name_display;
@@ -338,6 +345,7 @@ class UploadController extends Controller {
         $upload -> helper_text = $helper_text;
         $upload -> form_categories = $form_categories;
         $upload -> form_tags = $form_tags;
+        $upload -> checklist_group_id = $checklist_group_id;
         $upload -> form_group_id = $form_group_id;
         $upload -> save();
     }
@@ -361,6 +369,7 @@ class UploadController extends Controller {
             $helper_text = $request['helper_text'];
             $form_categories = implode(',', $request['form_categories']);
             $form_tags = $request['form_tags'];
+            $checklist_group_id = $request['checklist_group_id'];
             $form_group_id = $request['form_group_id'];
             $file_name_display = $request['file_name_display'];
 
@@ -376,6 +385,7 @@ class UploadController extends Controller {
             $upload -> helper_text = $helper_text;
             $upload -> form_categories = $form_categories;
             $upload -> form_tags = $form_tags;
+            $upload -> checklist_group_id = $checklist_group_id;
             $upload -> form_group_id = $form_group_id;
             $upload -> pages_total = $pages_total;
             $upload -> save();

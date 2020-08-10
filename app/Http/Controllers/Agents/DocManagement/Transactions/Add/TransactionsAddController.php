@@ -109,7 +109,18 @@ class TransactionsAddController extends Controller {
 
         } else if ($bright_type == 'bright') {
 
-            $rets = new \PHRETS\Session(Config::get('rets.rets.rets_config'));
+            $rets_config = new \PHRETS\Configuration;
+            $rets_config -> setLoginUrl(rets('rets.rets.url'))
+                -> setUsername(rets('rets.rets.username'))
+                -> setPassword(rets('rets.rets.password'))
+                -> setRetsVersion('RETS/1.8')
+                -> setUserAgent('Bright RETS Application/1.0')
+                -> setHttpAuthenticationMethod('digest')
+                -> setOption('disable_follow_location', false); // or 'basic' if required
+                // -> setOption('use_post_method', true)
+                ;
+
+            $rets = new \PHRETS\Session($rets_config);
             $connect = $rets -> Login();
             $resource = 'Property';
             $class = 'ALL';
@@ -922,7 +933,18 @@ class TransactionsAddController extends Controller {
         // If not found in database search search bright mls
         if (count($bright_db_search) == 0) {
 
-            $rets = new \PHRETS\Session(Config::get('rets.rets.rets_config'));
+            $rets_config = new \PHRETS\Configuration;
+            $rets_config -> setLoginUrl(rets('rets.rets.url'))
+                -> setUsername(rets('rets.rets.username'))
+                -> setPassword(rets('rets.rets.password'))
+                -> setRetsVersion('RETS/1.8')
+                -> setUserAgent('Bright RETS Application/1.0')
+                -> setHttpAuthenticationMethod('digest')
+                -> setOption('disable_follow_location', false); // or 'basic' if required
+                // -> setOption('use_post_method', true)
+                ;
+
+            $rets = new \PHRETS\Session($rets_config);
             $connect = $rets -> Login();
             $resource = 'Property';
             $class = 'ALL';

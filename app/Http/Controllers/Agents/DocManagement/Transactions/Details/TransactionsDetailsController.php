@@ -171,9 +171,9 @@ class TransactionsDetailsController extends Controller {
         $add_buyer_agent_to_members -> Agent_ID = $listing -> Agent_ID;
         $add_buyer_agent_to_members -> save();
 
-// if using heritage add them to members
+        // if using heritage add them to members
 
-// TODO: notify title if using them
+        // TODO: notify title if using them
         if ($using_heritage == 'yes') {
             $add_heritage_to_members = new Members();
             $add_heritage_to_members -> member_type_id = ResourceItems::TitleResourceId();
@@ -182,13 +182,9 @@ class TransactionsDetailsController extends Controller {
             $add_heritage_to_members -> Agent_ID = $listing -> Agent_ID;
             $add_heritage_to_members -> save();
         }
-
-// TODO: if earnest
-
-// if holding earnest
-
-// notify
-
+        // TODO: if earnest
+        // if holding earnest
+        // notify
         // add checklist
         $checklist_represent = 'buyer';
 
@@ -727,7 +723,7 @@ class TransactionsDetailsController extends Controller {
         return view('/agents/doc_management/transactions/details/data/get_details', compact('transaction_type', 'property', 'list_agent', 'agents', 'teams', 'street_suffixes', 'street_dir_suffixes', 'states_active', 'states', 'counties', 'trans_coords', 'has_listing'));
     }
 
-// End Details Tab
+    // End Details Tab
 
     // Documents Tab
     public function get_documents(Request $request) {
@@ -777,23 +773,22 @@ class TransactionsDetailsController extends Controller {
             $members = Members::where($field, $id) -> where('member_type_id', $member_type_id) -> get();
         }
 
-// if our listing and contract include listing folders with contract
+        // if our listing and contract include listing folders with contract
         if (($property -> Contract_ID > 0 && $property -> Listing_ID > 0) || count($contracts) > 0) {
 
             $folders = TransactionDocumentsFolders::where('Agent_ID', $Agent_ID) -> where(function ($query) use ($Listing_ID, $Contract_ID) {
-                                                                                    $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
-                                                                                })
-                                                                                -> orderBy('order') -> get();
+                $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
+            })
+            -> orderBy('order') -> get();
 
             $documents = TransactionDocuments::where('Agent_ID', $Agent_ID) -> where(function ($query) use ($Listing_ID, $Contract_ID) {
-                                                                               $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
-                                                                           })
-                                                                           -> orderBy('order') -> orderBy('created_at', 'DESC') -> get();
+                $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
+            })
+            -> orderBy('order') -> orderBy('created_at', 'DESC') -> get();
 
         } else {
 
             $folders = TransactionDocumentsFolders::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
-
             $documents = TransactionDocuments::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> orderBy('created_at', 'DESC') -> get();
 
         }
@@ -842,7 +837,7 @@ class TransactionsDetailsController extends Controller {
 
     }
 
-// End Checklist Tab
+    // End Checklist Tab
 
     // Members Tab
     public function get_members(Request $request) {
@@ -981,7 +976,7 @@ class TransactionsDetailsController extends Controller {
         $mls_search_details = bright_mls_search($request -> ListingId);
         $mls_search_details = (object)$mls_search_details;
 
-// only if mls search produced results
+        // only if mls search produced results
         if (isset($mls_search_details -> ListingId)) {
 
             return response() -> json([
@@ -1355,31 +1350,21 @@ class TransactionsDetailsController extends Controller {
         $request -> FullStreetAddress = $FullStreetAddress;
 
         foreach ($request -> all() as $col => $val) {
-
             $ignore_cols = ['Listing_ID', 'Contract_ID', 'Referral_ID', 'transaction_type'];
-
             if (!in_array($col, $ignore_cols) && !stristr($col, '_submit')) {
-
                 if (preg_match('/\$/', $val)) {
                     $val = preg_replace('/[\$,]+/', '', $val);
                 }
-
                 $property -> $col = $val;
-
                 if ($has_listing) {
-
                     if (!in_array($col, Contracts::ContractColumnsNotInListings())) {
                         $property_listing -> $col = $val;
                     }
-
                 }
-
             }
-
         }
 
         $property -> save();
-
         if ($has_listing) {
             $property_listing -> save();
         }
@@ -1396,15 +1381,12 @@ class TransactionsDetailsController extends Controller {
         } else {
             $member = new Members();
         }
-
         $data = $request -> all();
 
         foreach ($data as $col => $val) {
-
             if ($col != 'id') {
                 $member -> $col = $val ?? null;
             }
-
         }
 
         $member -> save();
@@ -1492,7 +1474,7 @@ class TransactionsDetailsController extends Controller {
                 $property_sub_type = '';
             }
 
-// if no results check new construction
+            // if no results check new construction
             if ($property_sub_type == '') {
                 if ($mls_search_details -> NewConstructionYN == 'Y') {
                     $property_sub_type = 'New Construction';
@@ -1530,49 +1512,32 @@ class TransactionsDetailsController extends Controller {
 
         $property_details -> ListingId = $request -> ListingId;
 
-// get cols and vals for mls search
+        // get cols and vals for mls search
         foreach ($mls_search_details as $col => $val) {
 
-// if property_details col matches then update it if it doesn't match original value
+            // if property_details col matches then update it if it doesn't match original value
             if (isset($property_details -> $col)) {
                 if ($property_details -> $col != $val && $val != '') {
-
-// if a name field only replace if blank
+                    // if a name field only replace if blank
                     if (in_array($property_details -> $col, config('global.vars.select_columns_bright_agents'))) {
                         if ($val == '') {
                             $property_details -> $col = $val;
                         }
-
                     } else {
-
                         if ($col == 'PropertyType') {
-
                             $property_details -> $col = $property_type_id;
-
                         } elseif ($col == 'PropertySubType') {
-
                             $property_details -> $col = $property_sub_type_id;
-
                         } elseif ($col == 'County') {
-
                             $property_details -> $col = $location_id;
-
                         } elseif ($col == 'HoaCondoFees') {
-
                             $property_details -> $col = $hoa_condo;
-
                         } else {
-
                             $property_details -> $col = $val;
-
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         $property_details -> MLS_Verified = 'yes';
@@ -1678,13 +1643,13 @@ class TransactionsDetailsController extends Controller {
 
         }
 
-// if manually saving to documents
+        // if manually saving to documents
         if ($document_name) {
             $file_name = sanitize($document_name) . '.pdf';
             $file_name_display = $document_name . '.pdf';
 
-// if adding to checklist item
-            // assign to checklist item
+        // if adding to checklist item
+        // assign to checklist item
         } else {
             $checklist_item = TransactionChecklistItems::where('id', $checklist_item_id) -> first();
             $checklist_form_id = $checklist_item -> checklist_form_id;
@@ -1736,7 +1701,7 @@ class TransactionsDetailsController extends Controller {
         Storage::disk('public') -> makeDirectory($files_path . '/images');
         Storage::disk('public') -> makeDirectory($files_path . '/pages');
 
-// copy images and pages and create merged file
+        // copy images and pages and create merged file
         // copy images
         $page_number = 1;
 
@@ -1829,7 +1794,7 @@ class TransactionsDetailsController extends Controller {
         $pages = Storage::disk('public') -> path($files_path . '/pages');
         exec('pdftk ' . $pages . '/*.pdf cat output ' . $base_path . '/storage/app/public/' . $main_file_location);
 
-//exec('cd '.$base_path.'/storage/app/public/ && cp '.$main_file_location.' '.$converted_file_location);
+        //exec('cd '.$base_path.'/storage/app/public/ && cp '.$main_file_location.' '.$converted_file_location);
         // get split pages, merge and add to converted
         $old_converted_location = Storage::disk('public') -> path('doc_management/transactions/' . $path . '/' . $file_id . '_' . $file_type . '/converted');
         $new_converted_location = Storage::disk('public') -> path($files_path . '/converted');
@@ -1851,7 +1816,7 @@ class TransactionsDetailsController extends Controller {
         $upload -> file_location = '/storage/' . $main_file_location;
         $upload -> save();
 
-// add to checklist
+        // add to checklist
         if ($checklist_id > 0) {
             $document_id = $Transaction_Docs_ID;
 
@@ -1896,9 +1861,7 @@ class TransactionsDetailsController extends Controller {
     public function send_email(Request $request) {
 
         $type = $request -> type;
-
         $email = [];
-
         $from_address = $request -> from;
         $from_name = '';
 
@@ -1932,13 +1895,11 @@ class TransactionsDetailsController extends Controller {
                 $file['name'] = $attachment -> filename;
                 $file['location'] = $attachment -> file_location;
                 $email['attachments'][] = $file;
-
                 $attachment_size += filesize(Storage::disk('public') -> path($attachment -> file_location));
 
             }
 
             $attachment_size = get_mb($attachment_size);
-
             if ($attachment_size > 20) {
                 $fail = json_encode(['fail' => true, 'attachment_size' => $attachment_size]);
                 return ($fail);
@@ -2055,7 +2016,7 @@ class TransactionsDetailsController extends Controller {
         if ($transaction_type == 'listing') {
             $property = Listings::find($id);
 
-// if not all required details submitted require them
+            // if not all required details submitted require them
             if ($property -> ExpirationDate == '' || $property -> ExpirationDate == '0000-00-00') {
                 return redirect('/agents/doc_management/transactions/add/transaction_required_details_listing/' . $id . '/listing');
             }
@@ -2063,7 +2024,7 @@ class TransactionsDetailsController extends Controller {
         } elseif ($transaction_type == 'contract') {
             $property = Contracts::find($id);
 
-// if not all required details submitted require them
+            // if not all required details submitted require them
             if ($property -> ContractDate == '' || $property -> ContractDate == '0000-00-00') {
                 return redirect('/agents/doc_management/transactions/add/transaction_required_details_contract/' . $id . '/contract');
             }
@@ -2110,13 +2071,10 @@ class TransactionsDetailsController extends Controller {
         $resource_items = new ResourceItems();
 
         if ($transaction_type != 'referral') {
-
             $members = Members::where('Contract_ID', $Contract_ID) -> get();
-
             if ($transaction_type == 'listing') {
                 $members = Members::where('Listing_ID', $Listing_ID) -> get();
             }
-
             $buyers = $members -> where('member_type_id', $resource_items -> BuyerResourceId());
             $sellers = $members -> where('member_type_id', $resource_items -> SellerResourceId());
 
@@ -2230,7 +2188,7 @@ class TransactionsDetailsController extends Controller {
             $clean_file_name = sanitize($file_name_no_ext);
             $new_file_name = $clean_file_name . '.' . $ext;
 
-// convert to pdf if image
+            // convert to pdf if image
             if ($ext != 'pdf') {
                 $new_file_name = date('YmdHis') . '_' . $clean_file_name . '.pdf';
                 $file_name_display = $file_name_no_ext . '.pdf';
