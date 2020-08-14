@@ -378,7 +378,7 @@
 <div class="modal fade draggable " id="change_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="change_checklist_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="change_checklist_modal_title">Change Checklist</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -457,7 +457,7 @@
 <div class="modal fade draggable disable-scrollbars" id="confirm_change_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="change_checklist_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="change_checklist_title">Change Checklist Title</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -485,7 +485,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <form id="add_document_form">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="add_document_modal_title">Add Document To Checklist Item</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -529,7 +529,7 @@
 <div class="modal fade draggable disable-scrollbars" id="confirm_delete_checklist_item_doc_modal" tabindex="-1" role="dialog" aria-labelledby="delete_checklist_item_doc_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="delete_checklist_item_doc_title">Delete Document</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>

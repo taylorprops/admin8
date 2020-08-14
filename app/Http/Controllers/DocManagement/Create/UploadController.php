@@ -219,7 +219,8 @@ class UploadController extends Controller {
 
         $form_group_id = $request -> form_group_id ?: null;
         //$files = Upload::groupBy('file_id', 'file_name_orig') -> get();
-        $files = Upload::orderBy('file_name_display') -> get();
+        $upload = new Upload();
+        $files = $upload -> orderBy('file_name_display') -> get();
         $states = LocationData::ActiveStates();
         //dd(ResourceItems::getResourceName('11'));
         $resource_items = new ResourceItems();
@@ -230,7 +231,7 @@ class UploadController extends Controller {
 
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> orderBy('resource_order') -> get();
 
-        return view('/doc_management/create/upload/files', compact('files', 'states', 'resources', 'form_group_id', 'resource_items', 'form_groups', 'checklist_groups'));
+        return view('/doc_management/create/upload/files', compact('upload', 'files', 'states', 'resources', 'form_group_id', 'resource_items', 'form_groups', 'checklist_groups'));
 
     }
 

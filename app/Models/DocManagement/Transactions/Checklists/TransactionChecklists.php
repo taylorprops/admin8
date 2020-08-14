@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\DocManagement\Checklists\Checklists;
 use App\Models\DocManagement\Transactions\Listings\Listings;
+use App\Models\DocManagement\Transactions\Contracts\Contracts;
+use App\Models\DocManagement\Transactions\Referrals\Referrals;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;

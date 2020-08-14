@@ -11,11 +11,9 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
         </div>
         <div class="checklist-items-selected border border-primary" data-simplebar data-simplebar-auto-hide="false">
 
-            <ul class="list-group sortable-checklist-items" id="checklists_top">
+            @foreach($checklist_groups as $checklist_group)
 
-                <li class="list-group-add-helper h5 py-3 pl-2 mb-0 text-orange"><i class="fad fa-arrow-up mr-2"></i> Forms above must be added to a group below before saving.</li>
-
-                @foreach($checklist_groups as $checklist_group)
+                <ul class="list-group sortable-checklist-items">
 
                     <li class="list-group-header h5 py-2 pl-2 mb-0 font-weight-bold" data-form-group-id="{{ $checklist_group -> resource_id }}">{{ $checklist_group -> resource_name }}</li>
 
@@ -73,12 +71,10 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 
                         @endforeach
 
-                    @else
-                        <li class="list-group-item list-group-holder w-100 text-danger p-4">No Forms Yet For This Group</li>
                     @endif
-
+                </ul>
                 @endforeach
-            </ul>
+
         </div>
     </div>
     <div class="col-4">
@@ -121,7 +117,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                         <li class="list-group-item form-name" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}">
                             <div class="d-flex justify-content-start">
                                 <div class="mr-2 my-auto">
-                                    <a href="javascript: void(0)" class="btn btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="{{ $form -> file_location }}">Add</a>
+                                    <a href="javascript: void(0)" class="btn btn-primary add-to-checklist-button" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-form-loc="{{ $form -> file_location }}" data-checklist-group-id="{{ $form -> checklist_group_id }}">Add</a>
                                 </div>
                                 <div title="{{ $form -> file_name_display }}">
                                     {{ shorten_text($form -> file_name_display, 65) }}

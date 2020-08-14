@@ -1,7 +1,7 @@
 <div class="modal fade draggable" id="email_agent_modal" tabindex="-1" role="dialog" aria-labelledby="email_agent_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="email_agent_modal_title">Email Agent</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -87,7 +87,7 @@
 <div class="modal fade draggable" id="confirm_remove_checklist_item_modal" tabindex="-1" role="dialog" aria-labelledby="remove_checklist_item_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="remove_checklist_item_title">Remove Checklist Item</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -122,7 +122,7 @@
 <div class="modal fade draggable" id="add_checklist_item_modal" tabindex="-1" role="dialog" aria-labelledby="add_checklist_item_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="add_checklist_item_modal_title">Add Checklist Item</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -236,7 +236,7 @@
 <div class="modal fade draggable" id="reject_document_modal" tabindex="-1" role="dialog" aria-labelledby="reject_document_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="reject_document_modal_title">Reject Document</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>

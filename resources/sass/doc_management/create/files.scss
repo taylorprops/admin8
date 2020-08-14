@@ -91,14 +91,18 @@
         padding: 2px;
     }
 
+    .checklist-items-collapsible-container {
+        position: relative;
+    }
+
     .checklist-items-collapsible {
         background: #fff;
         width: 80VW;
         position: absolute;
         left: 0px;
-        top: 8px;
+        top: 13px;
         z-index: 1000;
-        padding: 10px;
+        padding: 20px;
     }
     .order-checklist-item-sortable-handle {
         cursor: move;

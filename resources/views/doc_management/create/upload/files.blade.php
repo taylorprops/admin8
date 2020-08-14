@@ -9,6 +9,9 @@
                 <div class="list-group-container" data-simplebar data-simplebar-auto-hide="false">
                     <div class="list-group" role="tablist">
                         @foreach ($form_groups as $form_group)
+                            @php
+                                $form_count = $upload -> GetFormCount($form_group -> resource_id);
+                            @endphp
                             <a class="list-group-item form-group-item list-group-item-action @if ($loop -> first) active @endif @if($loop -> last) last @endif"
                                 id="list_{{ $form_group -> resource_id }}"
                                 data-toggle="list"
@@ -16,7 +19,7 @@
                                 role="tab"
                                 data-id="{{ $form_group -> resource_id }}">
                                 {{ $form_group -> resource_name }}
-                                <span class="float-right badge bg-blue-med py-1 px-2" id="list_div_{{ $form_group -> resource_id }}_file_count"></span>
+                                <span class="float-right badge bg-blue-med py-1 px-2">{{ $form_count['form_count'] }}</span>
                             </a>
                         @endforeach
                     </div>
@@ -80,7 +83,7 @@
         <div class="modal-dialog modal-dialog-centered modal" role="document">
             <div class="modal-content">
                 <form id="checklist_type_form">
-                    <div class="modal-header bg-primary draggable-handle">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="checklist_type_title">Select Checklist Type</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times mt-2"></i>
@@ -113,7 +116,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <form id="add_to_checklists_form">
-                    <div class="modal-header bg-primary draggable-handle">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="add_to_checklists_modal_title">Add Form to Checklists <span class="text-yellow-light ml-3" id="add_to_checklists_form_name"></span></h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times mt-2"></i>
@@ -134,7 +137,7 @@
     <div class="modal fade draggable" id="remove_form_modal" tabindex="-1" role="dialog" aria-labelledby="remove_form_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="remove_form_title">Remove Form</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -158,7 +161,7 @@
     <div class="modal fade draggable" id="replace_form_modal" tabindex="-1" role="dialog" aria-labelledby="replace_form_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="replace_form_title">Replace Form</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -186,7 +189,7 @@
     <div class="modal fade draggable" id="form_manage_modal" tabindex="-1" role="dialog" aria-labelledby="form_manage_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="form_manage_title">Manage Form</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -203,7 +206,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <form id="edit_file_form">
-                    <div class="modal-header bg-primary draggable-handle">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="edit_file_modal_title">Edit Form Details</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times mt-2"></i>
@@ -290,7 +293,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="add_item_no_form_form">
-                    <div class="modal-header bg-primary draggable-handle">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="add_item_no_form_modal_title">Add Checklist Item - No Form</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times mt-2"></i>
@@ -376,7 +379,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <form id="upload_file_form" enctype="multipart/form-data">
-                    <div class="modal-header bg-primary draggable-handle">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="add_upload_modal_title">Add Form</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times mt-2"></i>
@@ -466,8 +469,8 @@
         <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h3-responsive class="modal-title" id="confirm_publish_modal_title">Delete Form</h3>
+                <div class="modal-header">
+                    <h3 class="modal-title" id="confirm_publish_modal_title">Delete Form</h3>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times fa-2x"></i>
                     </button>
@@ -488,8 +491,8 @@
         <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h3-responsive class="modal-title" id="confirm_delete_modal_title">Delete Form</h3>
+                <div class="modal-header">
+                    <h3 class="modal-title" id="confirm_delete_modal_title">Delete Form</h3>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times fa-2x"></i>
                     </button>

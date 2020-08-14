@@ -12,11 +12,11 @@ if (document.URL.match(/transaction_required_details/)) {
 
         $('#MLSListDate').focus(function() {
             $('.custom-picker-header').remove();
-            $('.picker__box').prepend('<h3-responsive class="py-3 bg-primary text-yellow-light my-0 border-bottom custom-picker-header">List Date</h3>');
+            $('.picker__box').prepend('<h3 class="py-3 bg-primary text-yellow-light my-0 border-bottom custom-picker-header">List Date</h3>');
         });
         $('#ExpirationDate').focus(function() {
             $('.custom-picker-header').remove();
-            $('.picker__box').prepend('<h3-responsive class="py-3 bg-primary text-yellow-light my-0 border-bottom custom-picker-header">Expiration Date</h3>');
+            $('.picker__box').prepend('<h3 class="py-3 bg-primary text-yellow-light my-0 border-bottom custom-picker-header">Expiration Date</h3>');
         });
 
         // disable opening steps unless complete

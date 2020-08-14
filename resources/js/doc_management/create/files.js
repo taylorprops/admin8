@@ -10,38 +10,23 @@ if (document.URL.match(/create\/upload\/files/)) {
         // get forms for each form group
         let data_count = $('.forms-data').length;
         global_loading_on('', '<div class="h3-responsive text-white">Loading...</div>');
-        $('.forms-data').each(function (index) {
-            let form_group_id = $(this).data('form-group-id');
-            let state = $(this).data('state');
-            let order = $('#list_div_' + form_group_id).find('.uploads-filter-sort').val();
-            get_forms(form_group_id, state, order);
-            // if all form groups are loaded run init functions
-            if (index === data_count - 1) {
-                setTimeout(function () {
-                    form_elements();
 
-                    // Add file modal
-                    $('.upload-file-button').off('click').on('click', function () {
-                        show_upload($(this));
-                    });
-                    $('.add-non-form-item-button').off('click').on('click', function() {
-                        show_add_non_form_item($(this));
-                    });
-                    // init functions
-                    upload_options();
+        // load first form group
+        let form_group = $('.forms-data').eq(0);
+        let form_group_id = form_group.data('form-group-id');
+        let state = form_group.data('state');
+        let order = $('#list_div_' + form_group_id).find('.uploads-filter-sort').val();
 
-                    $('#upload_file_button').off('click').on('click', upload_file);
+        get_forms(form_group_id, state, order);
 
-                    $('.add-non-form-item-button').hide();
 
-                    global_loading_off();
-
-                }, 500);
-            }
-        });
     }
 
     function get_forms(form_group_id, state, order=null) {
+
+        global_loading_on('', '<div class="h3-responsive text-white">Loading...</div>');
+
+        form_group = $('#list_div_'+form_group_id+'_files');
         let options = {
             params: {
                 form_group_id: form_group_id,
@@ -54,13 +39,28 @@ if (document.URL.match(/create\/upload\/files/)) {
         axios.get('/doc_management/get_form_group_files', options)
             .then(function (response) {
 
-                $('#list_div_' + form_group_id + '_files').html($(response.data));
-                $('#list_div_' + form_group_id + '_file_count').text($('#list_div_' + form_group_id + '_files').find('.files-count').val());
-                let ele = $('#list_div_' + form_group_id + '_files').find('.activate-upload');
+                form_group.html($(response.data));
+                let ele = form_group.find('.activate-upload');
 
                 filter_uploads(ele);
 
+                form_elements();
+
+                // Add file modal
+                $('.upload-file-button').off('click').on('click', function () {
+                    show_upload(form_group);
+                });
+                $('.add-non-form-item-button').off('click').on('click', function() {
+                    show_add_non_form_item(form_group);
+                });
+                // init functions
                 upload_options();
+
+                $('#upload_file_button').off('click').on('click', upload_file);
+
+                $('.add-non-form-item-button').hide();
+
+                global_loading_off();
 
             })
             .catch(function (error) {
@@ -95,16 +95,16 @@ if (document.URL.match(/create\/upload\/files/)) {
         });
 
 
-        $('.uploads-filter-published, .uploads-filter-active').change(function () {
+        $('.uploads-filter-published, .uploads-filter-active').off('change').on('change', function () {
             filter_uploads($(this));
         });
 
-        $('.uploads-filter-sort').change(function () {
+        $('.uploads-filter-sort').off('change').on('change', function () {
             sort_uploads($(this));
         });
         global_tooltip();
 
-        $('.form-group-item').click(function() {
+        $('.form-group-item').off('click').on('click', function() {
             if($(this).hasClass('last')) {
                 $('.add-non-form-item-button').show();
                 $('.upload-file-button').hide();
@@ -112,6 +112,16 @@ if (document.URL.match(/create\/upload\/files/)) {
                 $('.add-non-form-item-button').hide();
                 $('.upload-file-button').show();
             }
+
+            let id = $(this).data('id');
+            let form_group = $('#list_div_'+id+'_files');
+            if(!form_group.html().match(/\</)) {
+                let form_group_id = form_group.data('form-group-id');
+                let state = form_group.data('state');
+                let order = $('#list_div_' + form_group_id).find('.uploads-filter-sort').val();
+                get_forms(form_group_id, state, order);
+            }
+
         });
     }
 
@@ -193,8 +203,8 @@ if (document.URL.match(/create\/upload\/files/)) {
                     }]
                 });
 
-                sortable();
                 order_checklists();
+
 
                 $('.checklist-item-checkbox').change(function() {
                     show_options($(this));
@@ -231,16 +241,39 @@ if (document.URL.match(/create\/upload\/files/)) {
         // highlight background of selected rows
         if(ele.is(':checked')) {
             let bg_class = 'bg-blue-light';
-            let li = ele.closest('tr').find('td').eq(1).find('ul li:first');
-            if((li.length == 0 || li.hasClass('order-checklist-item-sortable')) && !ele.closest('tr').hasClass('in-checklist')) {
-                bg_class = 'bg-orange-light';
-            }
             ele.closest('tr').addClass(bg_class).find('.show-checklist-items-collapsible-div').show();
         } else {
-            ele.closest('tr').removeClass('bg-blue-light bg-orange-light').find('.show-checklist-items-collapsible-div').hide();
+            ele.closest('tr').removeClass('bg-blue-light').find('.show-checklist-items-collapsible-div').hide();
         }
         $('.collapse').collapse('hide');
         $('.show-checklist-items-collapsible').text('Show Checklist Items').addClass('btn-primary').removeClass('btn-success');
+
+        let append_to = ele.closest('td').next('td').find('.checklist-items-collapsible');
+        let button = ele.closest('td').next('td').find('.show-checklist-items-collapsible');
+
+        if(append_to.find('li').length == 0) {
+            let checklist_id = button.data('checklist-id');
+            let file_id = button.data('file-id');
+            axios.get('/doc_management/add_form_get_checklist_items', {
+                params: {
+                    checklist_id: checklist_id,
+                    file_id: file_id
+                },
+                headers: {
+                    'Accept-Version': 1,
+                    'Accept': 'text/html',
+                    'Content-Type': 'text/html'
+                }
+            })
+            .then(function (response) {
+                append_to.html(response.data);
+                sortable();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        }
     }
 
     function check_all() {
@@ -281,11 +314,6 @@ if (document.URL.match(/create\/upload\/files/)) {
         let form_check = validate_form(form);
 
         if (form_check == 'yes') {
-
-            if($('tr.bg-orange-light').length > 0) {
-                $('#modal_danger').modal().find('.modal-body').html('For each checklist your must add the form to a form group.<br>Any rows in red need attention. Click on "Show Checklist Items" to select the from group.');
-                return false;
-            }
 
             $('#save_add_to_checklists_button').html('<span class="spinner-border spinner-border-sm"></span> Saving');
 
@@ -352,12 +380,12 @@ if (document.URL.match(/create\/upload\/files/)) {
     }
 
     function sortable() {
-        $('.checklist-items-collapsible').sortable({
+        $('.checklist-items-sortable').sortable({
             handle: '.order-checklist-item-sortable-handle',
             placeholder: 'bg-orange-sortable',
             stop: function( event, ui ) {
                 reorder_checklists();
-                $(ui.item).closest('tr').removeClass('bg-orange-light').addClass('bg-blue-light');
+                $(ui.item).closest('tr').addClass('bg-blue-light');
             }
         });
     }
@@ -368,35 +396,11 @@ if (document.URL.match(/create\/upload\/files/)) {
             if($(this).text() == 'Show Checklist Items') {
                 $('.show-checklist-items-collapsible').text('Show Checklist Items').addClass('btn-primary').removeClass('btn-success');
                 $(this).text('Hide Checklist Items').removeClass('btn-primary').addClass('btn-success');
-
-                let append_to = $(this).parent('div').next('div').find('.checklist-items-collapsible');
-                if(append_to.find('li').length == 0) {
-                    let checklist_id = $(this).data('checklist-id');
-                    let file_id = $(this).data('file-id');
-                    axios.get('/doc_management/add_form_get_checklist_items', {
-                        params: {
-                            checklist_id: checklist_id,
-                            file_id: file_id
-                        },
-                        headers: {
-                            'Accept-Version': 1,
-                            'Accept': 'text/html',
-                            'Content-Type': 'text/html'
-                        }
-                    })
-                    .then(function (response) {
-                        append_to.html(response.data);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-
-                }
             } else {
                 $(this).text('Show Checklist Items').addClass('btn-primary').removeClass('btn-success');
             }
         });
-        $('.checklist-items-collapsible').disableSelection();
+        $('.checklist-items-sortable').disableSelection();
 
     }
 

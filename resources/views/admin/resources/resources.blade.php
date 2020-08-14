@@ -119,8 +119,8 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
 
         <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h3-responsive class="modal-title" id="confirm_delete_deactivate_resource_modal_title"></h3>
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirm_delete_deactivate_resource_modal_title"></h3>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times fa-2x"></i>
                 </button>

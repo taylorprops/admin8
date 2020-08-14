@@ -259,7 +259,7 @@ if(auth() -> user() -> group == 'agent') {
 <div class="modal fade draggable" id="add_agent_id_modal" tabindex="-1" role="dialog" aria-labelledby="add_agent_id_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="add_agent_id_modal_title">Select Agent</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -289,7 +289,7 @@ if(auth() -> user() -> group == 'agent') {
 <div class="modal fade draggable" id="multiple_results_modal" tabindex="-1" role="dialog" aria-labelledby="multiple_results_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="multiple_results_title">Multiple Results Found</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>

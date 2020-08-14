@@ -306,7 +306,7 @@
 <div class="modal fade draggable" id="send_email_modal" tabindex="-1" role="dialog" aria-labelledby="send_email_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="send_email_modal_title">Email Documents</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -471,7 +471,7 @@
 <div class="modal fade draggable" id="split_document_modal" tabindex="-1" role="dialog" aria-labelledby="split_document_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" id="split_document_modal_dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="split_document_modal_title">Split Document</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -489,7 +489,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <form id="rename_document_form">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="rename_document_modal_title">Rename Document</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -520,7 +520,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <form id="add_to_checklist_form">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="add_to_checklist_modal_title">Assign To Checklist</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -547,7 +547,7 @@
 <div class="modal fade draggable" id="confirm_delete_document_modal" tabindex="-1" role="dialog" aria-labelledby="delete_document_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="delete_document_title">Delete Document</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -575,7 +575,7 @@
 <div class="modal fade draggable" id="confirm_delete_folder_modal" tabindex="-1" role="dialog" aria-labelledby="delete_folder_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="delete_folder_title">Delete Folder</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -601,7 +601,7 @@
 <div class="modal fade draggable" id="confirm_delete_documents_modal" tabindex="-1" role="dialog" aria-labelledby="delete_documents_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="delete_documents_title">Move To Trash</h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>
@@ -624,7 +624,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <form id="move_documents_form">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="move_documents_modal_title">Move Documents</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -659,7 +659,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <form id="add_individual_template_form">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="add_individual_template_modal_title">Add Individual Template Documents</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -788,7 +788,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <form id="add_checklist_template_form">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="add_checklist_template_modal_title">Add Checklist Template Documents</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -878,7 +878,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <form id="upload_documents_form">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="upload_documents_modal_title">Upload Documents</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -904,7 +904,7 @@
                                 </select>
 
                                 <div id="file_upload" class="dm-uploader p-5 mt-3">
-                                    <h3-responsive class="mb-5 mt-5 text-muted">Drag &amp; drop files here</h3>
+                                    <h3 class="mb-5 mt-5 text-muted">Drag &amp; drop files here</h3>
 
                                     <div class="btn btn-primary btn-block mb-5">
                                         <span>Click to browse files</span>
@@ -940,7 +940,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <form id="add_folder_form">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="add_folder_modal_title">Add Folder</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>

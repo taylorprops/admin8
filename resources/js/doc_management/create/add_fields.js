@@ -747,7 +747,7 @@ if (document.URL.match(/create\/add_fields/)) {
             }
 
             let properties = ' \
-                <div class="modal-header bg-primary"> \
+                <div class="modal-header"> \
                     <h4 class="modal-title" id="edit_properties_modal_title">Field Properties</h4> \
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
                         <span aria-hidden="true" class="text-white">&times;</span> \

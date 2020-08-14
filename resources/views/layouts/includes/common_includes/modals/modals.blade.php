@@ -22,7 +22,7 @@
 <div class="modal fade" id="modal_info" tabindex="-1" role="dialog" aria-labelledby="modal_info_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
+            <div class="modal-header">
                 <h5 class="modal-title" id="modal_info_title">Info</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times text-white"></i>
@@ -62,7 +62,7 @@
 <div class="modal fade draggable" id="confirm_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary draggable-handle">
+            <div class="modal-header draggable-handle">
                 <h4 class="modal-title" id="confirm_title"></h4>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times mt-2"></i>

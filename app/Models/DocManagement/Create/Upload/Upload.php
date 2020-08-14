@@ -15,6 +15,13 @@ class Upload extends Model
     protected $guarded = [];
 
 
+    public function scopeGetFormCount($query, $location_id) {
+
+        $form_count = $this -> where('form_group_id', $location_id) -> count();
+        return compact('form_count');
+
+    }
+
     public function scopeFormGroupFiles($query, $location_id, $Listing_ID, $Contract_ID, $type) {
 
         $forms_available = $this -> where('form_group_id', $location_id)
@@ -23,12 +30,12 @@ class Upload extends Model
 
         //$forms_in_use = null;
 
-        if($type != '') {
+        //if($type != '') {
             /* $field = 'Listing_ID';
             if($type == 'contract') {
                 $field = 'Contract_ID';
             } */
-            if($Contract_ID > 0 || $Listing_ID > 0) {
+            /* if($Contract_ID > 0 || $Listing_ID > 0) {
                 $trash_folder = TransactionDocumentsFolders::where(function($query) use ($Contract_ID, $Listing_ID) {
                     $query -> where(function($q) use ($Listing_ID) {
                         $q -> where('Listing_ID', $Listing_ID) -> where('Listing_ID', '>', '0');
@@ -37,7 +44,7 @@ class Upload extends Model
                         $q -> where('Contract_ID', $Contract_ID) -> where('Contract_ID', '>', '0');
                     });
                 })
-                -> where('folder_name', 'Trash') -> first();
+                -> where('folder_name', 'Trash') -> first(); */
 
 
                 /* $forms_in_use = TransactionDocuments::select('orig_file_id')
@@ -45,8 +52,8 @@ class Upload extends Model
                     -> where('orig_file_id', '>', '0')
                     -> where('folder', '!=', $trash_folder -> id)
                     -> pluck('orig_file_id'); */
-            }
-        }
+            //}
+        //}
 
         return compact('forms_available');
 

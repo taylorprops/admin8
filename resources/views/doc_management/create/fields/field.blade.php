@@ -78,7 +78,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-content">
-                    <div class="modal-header bg-primary">
+                    <div class="modal-header">
                         <h4 class="modal-title" id="edit_properties_modal_{{$field['field_id']}}_title">Field Properties</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">&times;</span>

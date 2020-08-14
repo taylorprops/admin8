@@ -96,7 +96,7 @@
     <div class="modal fade draggable" id="confirm_copy_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_copy_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="confirm_copy_title">Confirm Copy</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -117,7 +117,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl-sm" role="document">
             <div class="modal-content">
                 <form id="copy_checklists_form">
-                    <div class="modal-header bg-primary draggable-handle">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="copy_checklists_modal_title">Copy Checklists To Another Form Group</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times mt-2"></i>
@@ -141,8 +141,8 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <form id="checklist_items_form">
-                    <div class="modal-header bg-primary">
-                        <h3-responsive class="modal-title text-white" id="checklist_items_modal_title"></h3>
+                    <div class="modal-header d-flex justify-content-between">
+                        <h4 class="modal-title text-white" id="checklist_items_modal_title"></h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times fa-2x"></i>
                         </button>
@@ -168,7 +168,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="checklist_form">
-                    <div class="modal-header bg-primary draggable-handle">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="checklist_modal_title">Add/Edit Checklist</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times mt-2"></i>
@@ -243,7 +243,7 @@
             <div class="modal-content">
                 <form id="confirm_delete_checklist_form">
                     <div class="modal-header bg-danger draggable-handle">
-                        <h3-responsive class="modal-title" id="confirm_delete_checklist_modal_title">Delete Checklist</h3>
+                        <h3 class="modal-title" id="confirm_delete_checklist_modal_title">Delete Checklist</h3>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times fa-2x"></i>
                         </button>
@@ -269,8 +269,8 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
 
         <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h3-responsive class="modal-title" id="confirm_remove_file_modal_title">Remove Form From Checklist</h3>
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirm_remove_file_modal_title">Remove Form From Checklist</h3>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times fa-2x"></i>
                 </button>

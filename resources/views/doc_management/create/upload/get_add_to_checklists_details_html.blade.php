@@ -120,8 +120,10 @@
                                                 <div class="show-checklist-items-collapsible-div @if(!$in_checklist) hidden @endif">
                                                     <a class="btn btn-sm btn-primary show-checklist-items-collapsible" data-toggle="collapse" href="#items_{{ $loop -> iteration }}" aria-expanded="false" aria-controls="items_{{ $loop -> iteration }}" data-checklist-id="{{ $checklist -> id }}" data-file-id="{{ $file_id }}">Show Checklist Items</a>
                                                 </div>
-                                                <div class="collapsible-container">
-                                                    <ul class="collapse list-group checklist-items-collapsible border z-depth-3 mb-5" id="items_{{ $loop -> iteration }}"></ul>
+                                                <div class="checklist-items-collapsible-container">
+                                                    <div class="collapse checklist-items-collapsible collapsible-container border z-depth-1" id="items_{{ $loop -> iteration }}">
+
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td>{{ $checklist -> checklist_state }}</td>

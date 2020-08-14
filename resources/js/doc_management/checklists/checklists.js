@@ -301,9 +301,6 @@ if (document.URL.match(/checklists/)) {
 
     function fill_empty_groups() {
         $('.list-group-header').each(function() {
-            if($(this).next('li').hasClass('list-group-header')) {
-                $('<li class="list-group-item list-group-holder w-100 text-danger p-4">No Forms Yet For This Group</li>').insertAfter($(this));
-            }
             if($(this).next('li').hasClass('ui-sortable-helper') && $(this).next('li').next('li').hasClass('list-group-header')) {
                 $('<li class="list-group-item list-group-holder w-100 text-danger p-4">No Forms Yet For This Group</li>').insertAfter($(this));
             }
@@ -460,6 +457,7 @@ if (document.URL.match(/checklists/)) {
     function add_to_checklist() {
         let form_id = $(this).data('form-id');
         let text_orig = $(this).data('text');
+        let checklist_group_id = $(this).data('checklist-group-id');
         let form_loc = 'javascript:void(0)';
         if($(this).data('form-loc') != '') {
             form_loc = '/'+$(this).data('form-loc');
@@ -470,7 +468,7 @@ if (document.URL.match(/checklists/)) {
         }
         // this is the helper dragged and inserted in checklist items container
         let checklist_item = ' \
-            <li class="list-group-item checklist-item w-100 pt-1 pb-0 bg-orange-light" data-form-id="' + form_id + '"> \
+            <li class="list-group-item checklist-item w-100 pt-1 pb-0 bg-orange-light" data-form-id="' + form_id + '" data-form-group-id="'+checklist_group_id+'"> \
                 <div class="row"> \
                     <div class="col-8"> \
                         <div class="d-flex justify-content-start my-1"> \
@@ -493,10 +491,9 @@ if (document.URL.match(/checklists/)) {
                 </div> \
             </li> \
         ';
-        $('.sortable-checklist-items').prepend(checklist_item);
+        $(checklist_item).insertAfter($('[data-form-group-id="' + checklist_group_id + '"]').last());
         $('.delete-checklist-item-button').click(delete_checklist_item);
-        // scroll to top
-        window.location = '#checklists_top';
+
 
         // if the form is already included in another checklist get the details and add it to this one
         axios.get('/doc_management/get_checklist_item_details', {

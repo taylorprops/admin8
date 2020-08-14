@@ -2,7 +2,7 @@
 
     <div class="col-12">
 
-        <div class="list-group" id="checklist_listgroup">
+        <div class="list-group" id="checklist_list_group">
 
             @foreach($checklist_groups as $checklist_group)
 
@@ -61,9 +61,9 @@
 
                     <div class="list-group-item px-1 pt-3 pb-2 checklist-item-div {{ $notes_unread }} @if($status == 'Pending') pending @elseif($status == 'Required') required @endif" id="checklist_item_{{ $checklist_item_id }}">
 
-                        <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex justify-content-between align-content-around mb-2">
 
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-start align-items-center w-100">
 
                                 <div class="dropdown">
 
@@ -81,8 +81,8 @@
 
                                 </div>
 
-                                <div class="mx-2">
-                                    <a href="javascript:void(0)" class="d-block checklist-item-name text-gray {{ $unused_status_class }}" data-checklist-item-id="{{ $checklist_item_id }}" data-checklist-item-name="{{ $checklist_item_name }}">{{ $checklist_item_name }}</a>
+                                <div class="mx-2 w-100 h-100 d-block">
+                                    <a href="javascript:void(0)" class="d-block checklist-item-name text-gray w-100 h-100 {{ $unused_status_class }}" data-checklist-item-id="{{ $checklist_item_id }}" data-checklist-item-name="{{ $checklist_item_name }}">{{ $checklist_item_name }}</a>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end align-items-center">
@@ -100,7 +100,7 @@
                             </div>
                         </div>
 
-                        <div id="notes_{{ $checklist_item_id }}" class="collapse checklist-item-notes-div bg-white mb-2" data-parent="#checklist_listgroup">
+                        <div id="notes_{{ $checklist_item_id }}" class="collapse checklist-item-notes-div bg-white mb-2" data-parent="#checklist_list_group">
                             <div class="mt-3 p-2 bg-white text-gray">
                                 <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
                                     <div class="font-weight-bold text-primary">Comments</div>

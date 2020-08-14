@@ -115,7 +115,7 @@ if($transaction_type == 'listing') {
         <div class="modal fade" id="fill_fields_div_modal_{{$field_user -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field_user -> field_id}}_title" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header bg-primary">
+                    <div class="modal-header">
                         <h4 class="modal-title" id="fill_fields_div_modal_{{$field_user -> field_id}}_title">{{ strtoupper($field_user -> field_name_display) }}</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">&times;</span>
@@ -191,7 +191,7 @@ if($transaction_type == 'listing') {
         <div class="modal fade" id="fill_fields_div_modal_{{$field_user -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field_user -> field_id}}_title" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header bg-primary">
+                    <div class="modal-header">
                         <h4 class="modal-title" id="fill_fields_div_modal_{{$field_user -> field_id}}_title">{{ strtoupper($field_user -> field_name_display) }}</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">&times;</span>

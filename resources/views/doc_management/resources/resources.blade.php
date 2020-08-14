@@ -39,6 +39,25 @@
                                     </div>
                                     @endif
 
+                                    @if($resource -> resource_association != '')
+                                    <div class="col px-1">
+                                        <select class="custom-form-element form-select add-resource-association form-select-no-cancel form-select-no-search required" data-label="Assoc.">
+                                            <option value=""></option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                    @endif
+                                    @if($resource -> resource_addendums != '')
+                                    <div class="col px-1">
+                                        <select class="custom-form-element form-select add-resource-addendums form-select-no-cancel form-select-no-search required" data-label="Addenda">
+                                            <option value=""></option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                    @endif
+
                                     @if($resource -> resource_form_group_type != '')
                                     <div class="col px-1">
                                         <select class="custom-form-element form-select add-resource-form-group-type form-select-no-cancel form-select-no-search required" data-label="Form Type">
@@ -53,6 +72,12 @@
                                     @if($resource -> resource_color != '')
                                     <div class="col px-1">
                                         <input type="color" class="custom-form-element form-input-color   add-resource-color colorpicker" value="#4C9BDB" data-default-value="#4C9BDB" data-label="Tag Color">
+                                    </div>
+                                    @endif
+
+                                    @if($resource -> resource_county_abbr != '')
+                                    <div class="col px-1">
+                                        <input type="text" class="custom-form-element form-input add-resource-county-abbr" value="" data-default-value="" data-label="County Abbr">
                                     </div>
                                     @endif
 
@@ -99,6 +124,25 @@
                                             </div>
                                             @endif
 
+                                            @if($resources_item -> resource_association != '')
+                                            <div class="col px-1">
+                                                <select class="custom-form-element form-select edit-resource-association form-select-no-cancel form-select-no-search required" data-label="Assoc." data-default-value="{{ $resources_item -> resource_association }}">
+                                                    <option value=""></option>
+                                                    <option value="yes" @if( $resources_item -> resource_association == 'yes') selected @endif>Yes</option>
+                                                    <option value="no" @if( $resources_item -> resource_association == 'no') selected @endif>No</option>
+                                                </select>
+                                            </div>
+                                            @endif
+                                            @if($resources_item -> resource_addendums != '')
+                                            <div class="col px-1">
+                                                <select class="custom-form-element form-select edit-resource-addendums form-select-no-cancel form-select-no-search required" data-label="Addenda" data-default-value="{{ $resources_item -> resource_addendums }}">
+                                                    <option value=""></option>
+                                                    <option value="yes" @if( $resources_item -> resource_addendums == 'yes') selected @endif>Yes</option>
+                                                    <option value="no" @if( $resources_item -> resource_addendums == 'no') selected @endif>No</option>
+                                                </select>
+                                            </div>
+                                            @endif
+
                                             @if($resources_item -> resource_form_group_type != '')
                                             <div class="col px-1">
                                                 <select class="custom-form-element form-select edit-resource-form-group-type form-select-no-cancel form-select-no-search required" data-label="Form Type" data-default-value="{{ $resources_item -> resource_form_group_type }}">
@@ -113,6 +157,12 @@
                                             @if($resources_item -> resource_color != '')
                                             <div class="col-3 px-1">
                                                 <input type="color" class="custom-form-element form-input-color   edit-resource-color colorpicker" value="{{ $resources_item -> resource_color }}" data-default-value="{{ $resources_item -> resource_color }}" data-label="Tag Color">
+                                            </div>
+                                            @endif
+
+                                            @if($resources_item -> resource_county_abbr != '')
+                                            <div class="col px-1">
+                                                <input type="text" class="custom-form-element form-input edit-resource-county-abbr" value="{{ $resources_item -> resource_county_abbr }}" data-default-value="{{ $resources_item -> resource_county_abbr }}" data-label="County Abbr">
                                             </div>
                                             @endif
 
@@ -143,8 +193,8 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
 
         <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h3-responsive class="modal-title" id="confirm_delete_deactivate_resource_modal_title"></h3>
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirm_delete_deactivate_resource_modal_title"></h3>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <i class="fal fa-times fa-2x"></i>
                 </button>

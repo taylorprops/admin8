@@ -95,7 +95,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="required_fields_form">
-                    <div class="modal-header bg-primary draggable-handle">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="required_fields_modal_title">Add Required Fields</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <i class="fal fa-times mt-2"></i>
@@ -161,7 +161,7 @@
     <div class="modal fade draggable disable-scrollbars" id="accept_contract_modal" tabindex="-1" role="dialog" aria-labelledby="accept_contract_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="accept_contract_modal_title">Accept Contract</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>
@@ -334,7 +334,7 @@
     <div class="modal fade draggable" id="confirm_import_modal" tabindex="-1" role="dialog" aria-labelledby="import_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary draggable-handle">
+                <div class="modal-header draggable-handle">
                     <h4 class="modal-title" id="import_title">Confirm Import</h4>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <i class="fal fa-times mt-2"></i>

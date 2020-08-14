@@ -16,7 +16,7 @@ class Authenticate extends Middleware
     {
         if (! $request -> expectsJson()) {
             // XXX
-            //return response() -> view('/auth/login', [], 404);
+            return redirect('/logout');
         }
     }
 }

@@ -508,11 +508,11 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         let index = parent_div.index();
         cancel = false;
         $('.checklist-item-div.pending').each(function () {
+            let pending = $(this);
             if (cancel == false) {
-                if ($(this).index() > index) {
-                    $(this).find('.checklist-item-name').trigger('click');
-                    let id = $(this).prop('id');
-                    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+                if (pending.index() > index) {
+                    $('.checklist-items-container').scrollTop(0).scrollTop(pending.offset().top - 190);
+                    pending.find('.checklist-item-name').trigger('click');
                     cancel = true;
                 }
             }
