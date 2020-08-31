@@ -46,7 +46,7 @@ window.form_elements = function () {
             const multiple = (element.attr('multiple') == 'multiple' || element.attr('multiple') == true) ? true : false;
 
             // check if form-ele already applied
-            if (!element.parent().hasClass('form-ele')) {
+            if (element.closest('.form-ele').length == 0) {
 
                 let select_input_id = Math.floor(Math.random() * 100000) + 1;
                 // avoid duplicate ids
@@ -85,13 +85,12 @@ window.form_elements = function () {
 
                     let clone = element.wrap('<div></div>').parent().html();
                     element.unwrap();
-
                     let file_html = ' \
                     <div class="form-ele md-form my-0 mt-2"> \
-                        <div class="file-field"> \
-                            <i class="fad fa-upload mt-3 float-left"></i> \
+                        <div class="d-flex justify-content-start align-items-center file-field"> \
+                            <i class="fad fa-upload float-left"></i> \
                             '+ clone + ' \
-                            <div class="file-path-wrapper"> \
+                            <div class="file-path-wrapper w-100"> \
                                 <input class="file-path" type="text" placeholder="'+ label + '"> \
                             </div> \
                         </div> \
@@ -159,17 +158,15 @@ window.form_elements = function () {
                         ' + clear_value + ' \
                         <label class="' + form_type + '-label" for="select_value_' + select_input_id + '">' + label + '</label> \
                         <input type="text" class="form-select-value-input caret '+ disabled + '" id="select_value_' + select_input_id + '" readonly ' + disabled + '> \
-                        <div class="form-select-dropdown shadow-sm"> \
+                        <div class="form-select-dropdown z-depth-2"> \
                     ';
-                    if(!element.hasClass('form-select-no-search')) {
+                    //if(!element.hasClass('form-select-no-search')) {
                         select_html += ' \
                             <div class="form-select-search-div"> \
-                                <div class="w-100 text-center"> \
-                                    <input type="text" class="form-select-search-input" placeholder="Search"> \
-                                </div> \
+                                <input type="text" class="form-select-search-input" placeholder="Search"> \
                             </div> \
                         ';
-                    }
+                    //}
                     select_html += ' \
                             <div class="form-select-options-div"> \
                                 <ul class="form-select-ul"></ul> \
@@ -243,6 +240,7 @@ window.form_elements = function () {
                         $('.form-select-multiple-save').click(function () {
                             setTimeout(function() {
                                 hide_dropdowns();
+                                reset_select();
                             }, 100);
                         });
 
@@ -297,15 +295,15 @@ window.form_elements = function () {
                     }
 
                     // remove search option if class form-select-no-search is set
-                    if (element.hasClass('form-select-no-search')) {
+                    //if (element.hasClass('form-select-no-search')) {
 
-                        wrapper.find('.form-select-search-div').hide();
+                        //wrapper.find('.form-select-search-div').hide();
 
-                    } else {
+                    //} else {
 
                         dropdown_search(wrapper, input, element, multiple);
 
-                    }
+                    //}
 
 
                     // when a single li is clicked
@@ -333,6 +331,8 @@ window.form_elements = function () {
                             // update select element
                             element.val(value);
                             element.trigger('change');
+
+                            reset_select();
                         }
                         if (!element.hasClass('form-select-no-cancel')) {
                             input.siblings('.form-select-value-cancel').show();
@@ -380,12 +380,13 @@ window.form_elements = function () {
 
 
     // show dropdown on focus
-    $('.form-select-wrapper').off('focus').on('focus', function (e) {
+    $('.form-select-wrapper').on('focus', function (e) {
         e.stopImmediatePropagation();
         $(this).find('.form-select-value-input').focus();
     });
-    $('.form-select-value-input').off('focus').on('focus', function (e) {
-        show_dropdown($(this), e);
+    $('.form-select-value-input').on('focus', function (e) {
+        $(this).addClass('form-select-value-input-focus');
+        show_dropdown($(this));
         $(this).next('form-select-dropdown');
     });
 
@@ -394,25 +395,31 @@ window.form_elements = function () {
 }
 
 
-function show_dropdown(input, e) {
+function show_dropdown(input) {
 
     //$('.form-select-dropdown.active').removeClass('active').hide();
     let wrapper = input.closest('.form-ele');
     let select = wrapper.find('select');
 
     if(wrapper.find('select').prop('disabled') == false) {
-        // show dropdown
+        // close dropdown if already open
         if(input.next('.form-select-dropdown').hasClass('active')) {
             input.next('.form-select-dropdown').removeClass('active').hide();
+            $('.form-select-value-input').removeClass('form-select-value-input-focus');
+            if(input.val() == '') {
+                input.prev('label').removeClass('active');
+            }
         } else {
             hide_dropdowns();
             input.next('.form-select-dropdown').addClass('active').show();
+            input.addClass('form-select-value-input-focus');
             // focus on search input is searchable
-            if (!select.hasClass('form-select-no-search')) {
+            //if (!select.hasClass('form-select-no-search')) {
                 input.next('.form-select-dropdown').find('.form-select-search-input').focus();
-                input.prev('label').addClass('active');
-            }
+                //input.prev('label').addClass('active');
+            //}
         }
+
     }
 
 
@@ -421,12 +428,15 @@ function show_dropdown(input, e) {
 function hide_dropdowns() {
     $('.form-select-dropdown').removeClass('active').hide();
     $('.form-select-search-input').val('').trigger('change');
+    $('.form-select-value-input').removeClass('form-select-value-input-focus');
 }
 
 $(document).mouseup(function (e) {
     let container = $('.form-select-wrapper');
     if (!container.is(e.target) && container.has(e.target).length === 0) {
         container.find('.form-select-dropdown').removeClass('active').hide();
+        $('.form-select-value-input').removeClass('form-select-value-input-focus');
+        reset_select();
     }
     reset_labels();
 });
@@ -487,6 +497,8 @@ function dropdown_search(wrapper, input, element, multiple) {
                     input.siblings('.form-select-value-cancel').show();
                     wrapper.find('.form-select-value-input').removeClass('caret');
                 }
+
+
             }
 
             hide_dropdowns();
@@ -697,6 +709,7 @@ function set_multiple_select_value(wrapper, input) {
 window.reset_select = function () {
     hide_dropdowns();
     $('.form-select-li').removeClass('matched').show();
+    $('.form-select-matched-option').removeClass('form-select-matched-option');
     $('.form-select-value-input').each(function() {
         if($(this).val() == '') {
             $(this).prev('label').removeClass('active');

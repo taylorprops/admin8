@@ -53,7 +53,8 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="mt-3">
+
+                    <div class="mt-3 save-split-doc-options">
 
                         <ul class="nav nav-tabs nav-justified md-tabs bg-primary px-3" id="document_options_tabs_nav" role="tablist">
                             <li class="nav-item">
@@ -146,15 +147,13 @@
                         </div>
                     </div>
 
+                    <div class="d-flex justify-content-around align-items-center p-4">
+                        <a href="javascript: void(0)" class="btn btn-lg btn-success" data-dismiss="modal">Finish and Close</a>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12 h-100">
-            <div class="p-4 pb-1 text-center">
-                <a href="javascript: void(0)" class="btn btn-lg btn-success" data-dismiss="modal">Finish and Close</a>
-            </div>
-        </div>
-    </div>
+
 </div>

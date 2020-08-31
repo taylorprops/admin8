@@ -8,6 +8,7 @@
         <div class="col-12">
 
             @php
+
             // set values
             $transaction_type = strtolower($property_details -> transaction_type);
             $property_type_val = $property_details -> PropertyType ?? null;
@@ -15,7 +16,7 @@
             if($property_type_val) {
                 if(stristr($property_type_val, 'lease')) {
                     $forsale = 'no';
-                    $property_type_val = strtolower(str_replace(' Lease', '', $property_type_val));
+                    $property_type_val = str_replace(' Lease', '', $property_type_val);
                 } else {
                     $forsale = 'yes';
                 }
@@ -74,17 +75,17 @@
 
                     <div class="col-12">
 
-                        <div class="h4-responsive text-primary mb-5 mt-3 mt-md-5 text-center">Please Enter and Verify the following details</div>
+                        <div class="h4-responsive text-primary mb-1 mt-3 mt-md-5 text-center">Please Enter and Verify the following details</div>
 
                             <form id="details_form">
 
                                 <div class="row">
 
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="listing_type" id="listing_type" data-label="Transaction Type">
+                                    <div class="col-12 col-md-6 col-lg-4 mt-5">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel show-hide required" name="listing_type" id="listing_type" data-label="Transaction Type">
                                             <option value=""></option>
                                             <option value="sale" @if($forsale == 'yes') selected @endif>Sale</option>
-                                            <option value="rent" @if($forsale == 'no') selected @endif>Rental</option>
+                                            <option value="rental" @if($forsale == 'no') selected @endif>Rental</option>
                                             @if($transaction_type == 'listing')
                                                 <option value="both">Both</option>
                                             @endif
@@ -92,8 +93,8 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="property_type" id="property_type" data-label="Property Type">
+                                    <div class="col-12 col-md-6 col-lg-4 mt-5">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel show-hide required" name="property_type" id="property_type" data-label="Property Type">
                                             <option value=""></option>
                                             @foreach($property_types as $property_type)
                                                 <option value="{{ $property_type -> resource_name }}" @if($property_type -> resource_name == $property_type_val) selected @endif>{{ $property_type -> resource_name }}</option>
@@ -101,8 +102,8 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-12 col-md-6 col-lg-4 property-sub-type">
-                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="property_sub_type" id="property_sub_type" data-label="Sale Type">
+                                    <div class="col-12 col-md-6 col-lg-4 mt-5 property-sub-type">
+                                        <select class="custom-form-element form-select form-select-no-search form-select-no-cancel show-hide required" name="property_sub_type" id="property_sub_type" data-label="Sale Type">
                                             <option value=""></option>
                                             @foreach($property_sub_types as $property_sub_type)
                                                 @if($transaction_type == 'contract' || ($transaction_type == 'listing' && $property_sub_type -> resource_name != 'For Sale By Owner'))
@@ -112,23 +113,20 @@
                                         </select>
                                     </div>
 
-                                </div>
 
-                                <div class="row mt-4">
-
-                                    <div class="col-12 col-md-6 col-lg-4 year-built disclosures">
+                                    <div class="col-12 col-md-6 col-lg-4 mt-5 year-built">
                                         <input type="number" maxlength="4" min="1600" max="{{ date('Y') + 1 }}" class="custom-form-element form-input numbers-only required" name="year_built" id="year_built" value="{{ $YearBuilt }}" data-label="Year Built">
                                     </div>
 
-                                    <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="col-12 col-md-6 col-lg-4 mt-5">
                                         @if($transaction_type == 'listing')
                                             <input type="text" class="custom-form-element form-input numbers-only required" name="list_price" id="list_price" value="{{ $property_details -> ListPrice ?? null }}" data-label="List Price">
                                         @else
-                                            <input type="text" class="custom-form-element form-input numbers-only required" name="contract_price" id="contract_price" value="{{ $property_details -> ContractPrice ?? null }}" data-label="Contract Price">
+                                            <input type="text" class="custom-form-element form-input numbers-only required" name="contract_price" id="contract_price" data-contract-price="{{ $property_details -> ContractPrice ?? null }}" data-close-price="{{ $property_details -> ClosePrice ?? null }}" data-label="Contract Price">
                                         @endif
                                     </div>
 
-                                    <div class="col-12 col-md-6 col-lg-4 hoa disclosures">
+                                    <div class="col-12 col-md-6 col-lg-4 mt-5 hoa">
                                         <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="hoa_condo" id="hoa_condo" data-label="HOA/Condo Fees">
                                             <option value="hoa" @if($hoa_condo == 'hoa') selected @endif>HOA Fees</option>
                                             <option value="condo" @if($hoa_condo == 'condo') selected @endif>Condo Fees</option>

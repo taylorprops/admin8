@@ -8,7 +8,19 @@
                 <select class="custom-form-element form-select form-select-no-search form-select-no-cancel member-type-id required" data-label="Member Type">
                     <option value=""></option>
                     @foreach($contact_types as $contact_type)
-                    <option value="{{ $contact_type -> resource_id }}">{{ $contact_type -> resource_name }}</option>
+                    @php
+                    $member_type = $contact_type -> resource_name;
+                    if($for_sale == false) {
+                        if($member_type == 'Seller') {
+                            $member_type = 'Owner';
+                        } else if($member_type == 'Buyer') {
+                            $member_type = 'Renter';
+                        } else if($member_type == 'Buyer Agent') {
+                            $member_type = 'Renter Agent';
+                        }
+                    }
+                    @endphp
+                    <option value="{{ $contact_type -> resource_id }}">{{ $member_type }}</option>
                     @endforeach
                 </select>
             </div>
@@ -19,7 +31,7 @@
             </div>
 
             <div class="col-12 bank-trust-div">
-                <input type="checkbox" class="custom-form-element form-checkbox bank-trust" data-member="buyer" data-label="Buyer is a Trust, Company or other Entity">
+                <input type="checkbox" class="custom-form-element form-checkbox bank-trust" data-member="" data-label="" disabled>
             </div>
 
             <div class="col-12 member-entity-name-div">

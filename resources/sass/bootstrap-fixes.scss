@@ -22,11 +22,9 @@ body, body.modal-open {
 .modal-dialog .modal-content .modal-header {
     border-top-left-radius: .5rem !important;
     border-top-right-radius: .5rem !important;
-    border: 3px solid $blue;
 }
 .modal-dialog .modal-content {
     border-radius: .7rem !important;
-    border: 3px solid $blue;
 }
 
 .modal-header {
@@ -51,9 +49,10 @@ body, body.modal-open {
 }
 
 
-.list-group-item-action:hover {
-    background-color: rgb(125, 183, 218);
-    color: #fff;
+.list-group-item-action:not(.active):hover {
+    background-color: rgba($blue-light, 0.2);
+    //background-color: rgb(125, 183, 218);
+    //color: #fff;
 }
 
 
@@ -131,17 +130,17 @@ table.dataTable thead .sorting_desc_disabled:before {
 }
 
 // popovers
-.popover {
+/* .popover {
     max-width: 400px;
 }
 
 .popover-header {
-    background-color: rgba($orange, .7);
+    background-color: $orange;
     border-bottom: none;
     color: white;
 }
 
 .popover-body {
-    font-size: 1rem;
+    //font-size: 1rem;
     color: #525050;
-}
+} */

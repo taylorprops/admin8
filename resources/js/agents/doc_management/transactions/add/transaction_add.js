@@ -1,3 +1,5 @@
+
+
 if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
 
     $(document).ready(function () {
@@ -41,7 +43,7 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
 
     function show_add_agent() {
         $('#add_agent_id_modal').modal();
-        $('#save_add_agent_id_button').click(function() {
+        $('#save_add_agent_id_button').off('click').on('click', function() {
             $('#Agent_ID').val($('#add_agent_id').val());
             $('#add_agent_id_modal').modal('hide');
             toastr['success']('Agent Successfully Added')

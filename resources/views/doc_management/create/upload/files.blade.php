@@ -234,7 +234,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="edit_form_tags" id="edit_form_tags" class="custom-form-element form-select form-select-no-cancel form-select-no-search form-select-no-search" data-label="Form Tags">
+                                    <select name="edit_form_tags" id="edit_form_tags" class="custom-form-element form-select form-select-no-search form-select-no-search" data-label="Form Tags">
                                         <option value=""></option>
                                         @foreach($resources -> where('resource_type', 'form_tags') as $resource)
                                             <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>

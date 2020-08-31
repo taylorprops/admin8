@@ -10,4 +10,14 @@ class Referrals extends Model
     public $table = 'docs_transactions_referrals';
     protected $primaryKey = 'Referral_ID';
     protected $guarded = [];
+
+    public static function boot() {
+        parent::boot();
+        static::addGlobalScope(function ($query) {
+            if(auth() -> user() -> group == 'agent') {
+                $query -> where('Agent_ID', auth() -> user() -> user_id);
+            }
+        });
+    }
+
 }

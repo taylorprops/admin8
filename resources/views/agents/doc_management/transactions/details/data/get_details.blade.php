@@ -8,98 +8,110 @@
                     <div class="col-12 col-md-6 my-2">
                         <div class="transaction-details-div z-depth-1 h-100">
                             <div class="h5-responsive m-2 mb-4 text-default">
-                                <i class="fad fa-file-signature mr-3"></i> {{ ucwords($transaction_type) }} Details
+                                <i class="fad fa-file-signature mr-3"></i> {{ ucwords($details_type) }} Details
                             </div>
 
                             @if($transaction_type != 'referral')
 
-                            <div class="row">
-                                <div class="col-12 col-xl-8">
-                                    <div class="row d-flex align-items-center">
-                                        {{-- TODO: this needs to be dynamic if MLS ID is changed --}}
-                                        <div class="col-1">
-                                            @if($property -> MLS_Verified)
-                                                <i class="fal fa-check fa-2x text-success mls-verified" data-toggle="tooltip" title="MLS ID Verified"></i>
+                                <div class="row">
+                                    <div class="col-12 col-xl-8">
+                                        <div class="row d-flex align-items-center">
+                                            {{-- TODO: this needs to be dynamic if MLS ID is changed --}}
+                                            <div class="col-1">
+                                                @if($property -> MLS_Verified)
+                                                    <i class="fal fa-check fa-2x text-success mls-verified" data-toggle="tooltip" title="MLS ID Verified"></i>
+                                                @endif
+                                            </div>
+                                            <div class="col-6 pr-0">
+                                                <input type="text" class="custom-form-element form-input" data-label="MLS ID" name="ListingId" id="ListingId" value="{{ $property -> ListingId }}">
+                                            </div>
+                                            <div class="col-2 pl-0">
+                                                <div class="pt-1">
+                                                    <a href="javascript: void(0)" class="btn btn-primary" id="search_mls_button">Search</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <a href="javascript: void(0)" class="float-left" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Bright MLS ID" data-content="If the MLS ID is found, data from BrightMLS will be imported and auto-populated.<br><br><i class='fad fa-exclamation-triangle mr-2'></i> If the County is changed a new checklist will be provided. Any relevant forms will be kept in the checklist but some may need to be added or replaced."><i class="fad fa-question-circle ml-4  ml-sm-1 ml-md-3 ml-lg-2 ml-xl-3 fa-lg"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6">
+                                        @if($transaction_type == 'listing')
+                                            <input type="text" class="custom-form-element form-input money required" data-label="List Price" name="ListPrice" id="ListPrice" value="{{ $property -> ListPrice }}">
+                                        @else
+                                            @if($for_sale)
+                                                <input type="text" class="custom-form-element form-input money required" data-label="Sale Price" name="ContractPrice" id="ContractPrice" value="{{ $property -> ContractPrice }}">
+                                            @else
+                                            <input type="text" class="custom-form-element form-input money required" data-label="Lease Amount" name="LeaseAmount" id="LeaseAmount" value="{{ $property -> LeaseAmount }}">
+                                            @endif
+                                        @endif
+                                    </div>
+                                    @if($for_sale)
+                                        <div class="col-12 col-sm-6">
+                                            <input type="text" class="custom-form-element form-input" data-label="Year Built" name="YearBuilt" id="YearBuilt" value="{{ $property -> YearBuilt }}">
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            @if($transaction_type == 'listing')
+                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="List Date" name="MLSListDate" id="MLSListDate" value="{{ $property -> MLSListDate }}">
+                                            @else
+                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="Contract Date" name="ContractDate" id="ContractDate" value="{{ $property -> ContractDate }}">
                                             @endif
                                         </div>
-                                        <div class="col-6 pr-0">
-                                            <input type="text" class="custom-form-element form-input" data-label="MLS ID" name="ListingId" id="ListingId" value="{{ $property -> ListingId }}">
+                                        <div class="col-12 col-sm-6">
+                                            @if($transaction_type == 'listing')
+                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="Expiration Date" name="ExpirationDate" id="ExpirationDate" value="{{ $property -> ExpirationDate }}">
+                                            @else
+                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="Settle Date" name="CloseDate" id="CloseDate" value="{{ $property -> CloseDate }}">
+                                            @endif
                                         </div>
-                                        <div class="col-2 pl-0">
-                                            <a href="javascript: void(0)" class="btn btn-primary" id="search_mls_button">Search</a>
+                                    @else
+                                        <div class="col-12 col-md-6">
+                                            <input type="text" class="custom-form-element form-input datepicker required" data-label="Lease Date" name="CloseDate" id="CloseDate" value="{{ $property -> CloseDate }}">
                                         </div>
-                                        <div class="col-2">
-                                            <a href="javascript: void(0)" class="float-left" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Bright MLS ID" data-content="If the MLS ID is found, data from BrightMLS will be imported and auto-populated.<br><br><i class='fad fa-exclamation-triangle mr-2'></i> If the County is changed a new checklist will be provided. Any relevant forms will be kept in the checklist but some may need to be added or replaced."><i class="fad fa-question-circle ml-4  ml-sm-1 ml-md-3 ml-lg-2 ml-xl-3 fa-lg"></i></a>
-                                        </div>
+                                    @endif
+                                    <div class="col-12 col-sm-6">
+                                        <input type="text" class="custom-form-element form-input" data-label="Source" name="Source" id="Source" value="{{ $property -> Source }}">
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-sm-6">
-                                    @if($transaction_type == 'listing')
-                                    <input type="text" class="custom-form-element form-input money required" data-label="List Price" name="ListPrice" id="ListPrice" value="{{ $property -> ListPrice }}">
-                                    @else
-                                    <input type="text" class="custom-form-element form-input money required" data-label="Sale Price" name="ContractPrice" id="ContractPrice" value="{{ $property -> ContractPrice }}">
-                                    @endif
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="custom-form-element form-input required" data-label="Year Built" name="YearBuilt" id="YearBuilt" value="{{ $property -> YearBuilt }}">
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    @if($transaction_type == 'listing')
-                                    <input type="text" class="custom-form-element form-input datepicker required" data-label="List Date" name="MLSListDate" id="MLSListDate" value="{{ $property -> MLSListDate }}">
-                                    @else
-                                    <input type="text" class="custom-form-element form-input datepicker required" data-label="Contract Date" name="ContractDate" id="ContractDate" value="{{ $property -> ContractDate }}">
-                                    @endif
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    @if($transaction_type == 'listing')
-                                    <input type="text" class="custom-form-element form-input datepicker required" data-label="Expiration Date" name="ExpirationDate" id="ExpirationDate" value="{{ $property -> ExpirationDate }}">
-                                    @else
-                                    <input type="text" class="custom-form-element form-input datepicker required" data-label="Settle Date" name="CloseDate" id="CloseDate" value="{{ $property -> CloseDate }}">
-                                    @endif
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="custom-form-element form-input" data-label="Source" name="Source" id="Source" value="{{ $property -> Source }}">
-                                </div>
-                            </div>
-
                             @else
 
-                            <div class="row">
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="custom-form-element form-input" id="ClientFirstName" name="ClientFirstName" value="{{ $property -> ClientFirstName }}" data-label="Client First Name">
+                                <div class="row">
+                                    <div class="col-12 col-sm-6">
+                                        <input type="text" class="custom-form-element form-input" id="ClientFirstName" name="ClientFirstName" value="{{ $property -> ClientFirstName }}" data-label="Client First Name">
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <input type="text" class="custom-form-element form-input" id="ClientLastName" name="ClientLastName" value="{{ $property -> ClientLastName }}" data-label="Client Last Name">
+                                    </div>
                                 </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="custom-form-element form-input" id="ClientLastName" name="ClientLastName" value="{{ $property -> ClientLastName }}" data-label="Client Last Name">
+                                <div class="row">
+                                    <div class="col-12 col-sm-6">
+                                        <input type="text" class="custom-form-element form-input phone" id="ClientPhone" name="ClientPhone" value="{{ $property -> ClientPhone }}" data-label="Client Phone">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="custom-form-element form-input phone" id="ClientPhone" name="ClientPhone" value="{{ $property -> ClientPhone }}" data-label="Client Phone">
-                                </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <input type="text" class="custom-form-element form-input" id="ClientStreet" name="ClientStreet" value="{{ $property -> ClientStreet }}" data-label="Client Street">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <input type="text" class="custom-form-element form-input" id="ClientStreet" name="ClientStreet" value="{{ $property -> ClientStreet }}" data-label="Client Street">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-sm-4">
-                                    <input type="text" class="custom-form-element form-input" id="ClientCity" name="ClientCity" value="{{ $property -> ClientCity }}" data-label="Client City">
+                                <div class="row">
+                                    <div class="col-12 col-sm-4">
+                                        <input type="text" class="custom-form-element form-input" id="ClientCity" name="ClientCity" value="{{ $property -> ClientCity }}" data-label="Client City">
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <select class="custom-form-element form-select buyer-state" id="ClientState" name="ClientState" data-label="Client State">
+                                            <option value=""></option>
+                                            @foreach($states as $state)
+                                            <option value="{{ $state -> state }}" @if($state -> state == $property -> ClientState) selected @endif>{{ $state -> state }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <input type="text" class="custom-form-element form-input numbers-only" maxlength="5" id="ClientZip" name="ClientZip" value="{{ $property -> ClientZip }}" data-label="Client Zip">
+                                    </div>
                                 </div>
-                                <div class="col-12 col-sm-4">
-                                    <select class="custom-form-element form-select buyer-state" id="ClientState" name="ClientState" data-label="Client State">
-                                        <option value=""></option>
-                                        @foreach($states as $state)
-                                        <option value="{{ $state -> state }}" @if($state -> state == $property -> ClientState) selected @endif>{{ $state -> state }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-12 col-sm-4">
-                                    <input type="text" class="custom-form-element form-input numbers-only" maxlength="5" id="ClientZip" name="ClientZip" value="{{ $property -> ClientZip }}" data-label="Client Zip">
-                                </div>
-                            </div>
 
                             @endif
                         </div>
@@ -146,7 +158,7 @@
                                 @if($transaction_type == 'contract' && $property -> Listing_ID > 0)
                                     <div class="row">
                                         <div class="col-12 col-sm-6 col-md-12 col-lg-6">
-                                            <input type="text" class="custom-form-element form-input" disabled value="{{ $property -> BuyerAgentFirstName.' '.$property -> BuyerAgentLastName }}" data-label="Buyer's Agent">
+                                            <input type="text" class="custom-form-element form-input" disabled value="{{ $property -> BuyerAgentFirstName.' '.$property -> BuyerAgentLastName }}" data-label="{{ $for_sale ? 'Buyer' : 'Renter' }} Agent">
                                         </div>
                                     </div>
 
@@ -154,7 +166,7 @@
                                 @elseif($transaction_type == 'contract' && $property -> Listing_ID == 0)
                                     <div class="row">
                                         <div class="col-12 col-sm-6 col-md-12 col-lg-6">
-                                            <select class="custom-form-element form-select required" @if(Auth::user() -> group == 'agent') disabled @endif data-label="Buyer's Agent" name="Agent_ID" id="Agent_ID">
+                                            <select class="custom-form-element form-select required" @if(Auth::user() -> group == 'agent') disabled @endif data-label="{{ $for_sale ? 'Buyer' : 'Renter' }} Agent" name="Agent_ID" id="Agent_ID">
                                                 <option value=""></option>
                                                 @foreach($agents as $agent)
                                                 <option value="{{ $agent -> id }}" @if($property -> Agent_ID == $agent -> id) selected @endif>{{ $agent -> last_name . ', ' . $agent -> first_name }}</option>
@@ -162,7 +174,7 @@
                                             </select>
                                         </div>
                                         <div class="col-12 col-sm-6 col-md-12 col-lg-6">
-                                            <select class="custom-form-element form-select" data-label="Co-Buyer's Agent" name="CoAgent_ID" id="CoAgent_ID">
+                                            <select class="custom-form-element form-select" data-label="Co-{{ $for_sale ? 'Buyer' : 'Renter' }} Agent" name="CoAgent_ID" id="CoAgent_ID">
                                                 <option value=""></option>
                                                 @foreach($agents as $agent)
                                                 <option value="{{ $agent -> id }}" @if($property -> CoAgent_ID == $agent -> id) selected @endif>{{ $agent -> last_name . ', ' . $agent -> first_name }}</option>
@@ -253,7 +265,8 @@
 
                 </div>
 
-                @if($transaction_type == 'contract')
+                @if($transaction_type == 'contract' && $for_sale)
+
                     <div class="row">
 
                         <div class="col-12 col-md-6 my-2">
@@ -263,10 +276,10 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input money-decimal numbers-only" id="EarnestAmount" name="EarnestAmount" value="{{ $property -> EarnestAmount }}" data-label="Earnest Amount">
+                                        <input type="text" class="custom-form-element form-input money-decimal numbers-only" id="EarnestAmount" name="EarnestAmount" value="{{ $property -> EarnestAmount > 0 ? $property -> EarnestAmount : '' }}" data-label="Earnest Amount">
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <select class="custom-form-element form-select form-select-no-cancel form-select-no-search" id="EarnestHeldBy" name="EarnestHeldBy" data-label="Earnest Held By">
+                                        <select class="custom-form-element form-select" id="EarnestHeldBy" name="EarnestHeldBy" data-label="Earnest Held By">
                                             <option value=""></option>
                                             <option value="us" @if($property -> EarnestHeldBy == 'us') selected @endif>Taylor/Anne Arundel Properties</option>
                                             <option value="other_company" @if($property -> EarnestHeldBy == 'other_company') selected @endif>Other Real Estate Company</option>
@@ -292,7 +305,7 @@
                                         <div class="row">
                                             <div class="col-12 col-sm-4 col-md-12 col-lg-3">
                                                 <div class="using-heritage">
-                                                    <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="UsingHeritage" id="UsingHeritage" data-label="Using Heritage">
+                                                    <select class="custom-form-element form-select form-select-no-search form-select-no-cancel" name="UsingHeritage" id="UsingHeritage" data-label="Using Heritage">
                                                         <option value=""></option>
                                                         <option value="yes" @if($property -> UsingHeritage == 'yes') selected @endif>Yes</option>
                                                         <option value="no" @if($property -> UsingHeritage == 'no') selected @endif>No</option>

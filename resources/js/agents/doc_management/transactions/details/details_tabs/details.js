@@ -23,7 +23,7 @@ if (document.URL.match(/transaction_details/)) {
 
             axios.post('/agents/doc_management/transactions/save_details', formData, axios_options)
             .then(function (response) {
-                if(response.data.status == 'ok') {
+                if(response.data.success == 'ok') {
                     load_tabs('details');
                     load_details_header();
                     toastr['success']('Transaction Details Saved!');
@@ -53,9 +53,10 @@ if (document.URL.match(/transaction_details/)) {
             }
         })
         .then(function (response) {
+
             if(response.data.status == 'ok') {
 
-                $('#modal_success').modal().find('.modal-body').html('BrightMLS Data Successfully Imported');
+
                 load_tabs('details');
                 load_tabs('checklist');
                 if(transaction_type == 'listing') {
@@ -63,6 +64,10 @@ if (document.URL.match(/transaction_details/)) {
                 } else {
                     load_details_header();
                 }
+
+                setTimeout(function() {
+                    $('#modal_success').modal().find('.modal-body').html('BrightMLS Data Successfully Imported');
+                }, 1000);
 
             }
         })

@@ -177,7 +177,7 @@ if(auth() -> user() -> group == 'agent') {
                                             </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div class="h4 mt-3 mt-md-0" id="property_details_address"></div>
+                                            <div class="h5-responsive mt-3 mt-md-0" id="property_details_address"></div>
                                             <div class="row pt-2 mt-2 border-top property-details">
                                                 <div class="container">
                                                     <div class="row">

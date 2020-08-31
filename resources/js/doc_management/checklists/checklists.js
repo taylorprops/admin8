@@ -93,7 +93,7 @@ if (document.URL.match(/checklists/)) {
                 }, 500);
             })
             .catch(function (error) {
-                console.log(error);
+
             });
     }
 
@@ -111,7 +111,7 @@ if (document.URL.match(/checklists/)) {
             }, 500);
         })
         .catch(function (error) {
-            console.log(error);
+
         });
     }
 
@@ -158,7 +158,7 @@ if (document.URL.match(/checklists/)) {
 
         })
         .catch(function (error) {
-            console.log(error);
+
         });
     }
 
@@ -191,7 +191,7 @@ if (document.URL.match(/checklists/)) {
             $('#save_copy_checklists_button').prop('disabled', false).html('<i class="fad fa-check mr-2"></i> Copy Checklists');
         })
         .catch(function (error) {
-            console.log(error);
+
         });
 
     }
@@ -391,7 +391,7 @@ if (document.URL.match(/checklists/)) {
 
         })
         .catch(function (error) {
-            console.log(error);
+
         });
     }
 
@@ -446,7 +446,7 @@ if (document.URL.match(/checklists/)) {
                     get_checklists($('#add_item_checklist_location_id').val(), $('#add_item_checklist_type').val());
                 })
                 .catch(function (error) {
-                    console.log(error);
+
                 });
 
             //}
@@ -507,7 +507,7 @@ if (document.URL.match(/checklists/)) {
             forms_status();
         })
         .catch(function (error) {
-            console.log(error);
+
         });
 
 
@@ -656,7 +656,7 @@ if (document.URL.match(/checklists/)) {
                     }, 500);
                 })
                 .catch(function (error) {
-                    console.log(error);
+
                 });
         }
     }
@@ -720,7 +720,7 @@ if (document.URL.match(/checklists/)) {
             $('#confirm_delete_checklist_modal').modal('hide');
         })
         .catch(function (error) {
-            console.log(error);
+
         });
     }
 

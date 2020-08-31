@@ -2,8 +2,6 @@ if (document.URL.match(/transaction_required_details/)) {
 // TODO: need to add company, bank, LLC  as seller
     $(document).ready(function () {
 
-        //$('.stepper').mdbStepper();
-
         form_elements();
 
         $('.add-member-button').click(add_member);
@@ -20,7 +18,7 @@ if (document.URL.match(/transaction_required_details/)) {
         });
 
         // disable opening steps unless complete
-        $('.step-title').click(function(e) {
+        /* $('.step-title').click(function(e) {
             e.stopPropagation();
         });
         // validate section
@@ -32,7 +30,7 @@ if (document.URL.match(/transaction_required_details/)) {
             if(validate == 'no') {
                 e.stopPropagation();
             }
-        });
+        }); */
 
         $('#save_required_details').click(function(e) {
             e.preventDefault();
@@ -76,6 +74,7 @@ if (document.URL.match(/transaction_required_details/)) {
         function search_bright_agents() {
 
             let val = $(this).val();
+            let type = $(this).data('type') || null;
 
             if (val.length > 3) {
 
@@ -101,7 +100,7 @@ if (document.URL.match(/transaction_required_details/)) {
                         if (agents.length > 0) {
                             $.each(agents, function (k, agent) {
                                 let agent_div = ' \
-                                <div class="search-result list-group-item" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '" data-agent-office-phone="' + agent.OfficePhone + '"> \
+                                <div class="search-result list-group-item" data-type="'+type+'" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '" data-agent-office-phone="' + agent.OfficePhone + '"> \
                                     <div class="row"> \
                                         <div class="col-6 col-md-3"> \
                                             <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
@@ -123,7 +122,11 @@ if (document.URL.match(/transaction_required_details/)) {
                     });
 
                     $('.search-result').off('click').on('click', function () {
-                        add_buyers_agent($(this));
+                        if($(this).data('type') == 'list') {
+                            add_list_agent($(this));
+                        } else {
+                            add_buyers_agent($(this));
+                        }
                     });
 
                     $(document).mouseup(function (e) {
@@ -169,6 +172,7 @@ if (document.URL.match(/transaction_required_details/)) {
                 format_money_with_decimals($(this));
             });
         });
+
 
     });
 
@@ -241,6 +245,31 @@ if (document.URL.match(/transaction_required_details/)) {
         $('#receiving_agent_search_div, #referring_agent_search_div').collapse('hide');
     }
 
+    function add_list_agent(ele) {
+
+        let agent_first = ele.data('agent-first');
+        let agent_last = ele.data('agent-last');
+        let agent_company = ele.data('agent-company');
+        let office_street = ele.data('agent-street');
+        let office_city = ele.data('agent-city');
+        let office_state = ele.data('agent-state');
+        let office_zip = ele.data('agent-zip');
+        let office_phone = ele.data('agent-office-phone');
+
+        $('#ListAgentFirstName').val(agent_first).trigger('change');
+        $('#ListAgentLastName').val(agent_last).trigger('change');
+        $('#ListAgentOfficeName').val(agent_company).trigger('change');
+        $('#ListAgentOfficeStreet').val(office_street).trigger('change');
+        $('#ListAgentOfficeCity').val(office_city).trigger('change');
+        $('#ListAgentOfficeState').val(office_state).trigger('change');
+        $('#ListAgentOfficeZip').val(office_zip).trigger('change');
+        $('#ListAgentOfficePhone').val(office_phone).trigger('change');
+        select_refresh();
+
+        $('.search-results').fadeOut('slow');
+        $('#list_agent_search_div').collapse('hide');
+    }
+
     function show_bank_trust() {
         let member = $(this).data('member');
         let field = $(this).closest('.form-ele').next('div').find('.bank-trust-row');
@@ -308,11 +337,8 @@ if (document.URL.match(/transaction_required_details/)) {
                 window.location = '/agents/doc_management/transactions/transaction_details/' + response.data.id + '/' + response.data.type;
             })
             .catch(function (error) {
-                //global_loading_off();
                 console.log(error);
             });
-        } else {
-            //global_loading_off();
         }
 
     }
@@ -330,7 +356,7 @@ if (document.URL.match(/transaction_required_details/)) {
 
         if(type == 'listing' || (type == 'contract' && member == 'buyer')) {
             member_div += ' \
-            <div class="'+member+'-div mb-3 z-depth-1"> \
+            <div class="'+member+'-div mb-3"> \
                 <div class="h5-responsive text-orange '+member+'-header"></div> \
                 <div class="d-flex justify-content-between"> \
                     <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-member="'+member+'" data-member-id="' + member_id + '"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a> \
@@ -339,7 +365,7 @@ if (document.URL.match(/transaction_required_details/)) {
             ';
         } else {
             member_div += ' \
-            <div class="'+member+'-div mb-3 z-depth-1"> \
+            <div class="'+member+'-div mb-3"> \
                 <div class="d-flex justify-content-between"> \
                     <div class="h5-responsive text-orange '+member+'-header"></div> \
                     <div><a href="javascript: void(0)" class="member-delete text-danger" data-member="'+member+'"><i class="fal fa-times fa-2x"></i></a></div> \
@@ -358,22 +384,22 @@ if (document.URL.match(/transaction_required_details/)) {
 
         if(type == 'listing' || (type == 'contract' && member == 'buyer')) {
             member_div += ' \
-                    <div class="col-12 col-md-6 col-lg-3"> \
-                        <input type="text" class="custom-form-element form-input phone '+required+'" name="'+member+'_phone[]" data-label="Phone"> \
+                    <div class="col-12 col-md-6"> \
+                        <input type="text" class="custom-form-element form-input phone" name="'+member+'_phone[]" data-label="Phone"> \
                     </div> \
-                    <div class="col-12 col-md-6 col-lg-3"> \
+                    <div class="col-12 col-md-6"> \
                         <input type="text" class="custom-form-element form-input" name="'+member+'_email[]" data-label="Email"> \
                     </div> \
                 </div> \
                 <div class="row"> \
-                    <div class="col-12 col-md-6 col-lg-5"> \
+                    <div class="col-12"> \
                         <input type="text" class="custom-form-element form-input '+member+'-street '+required+' street-autocomplete" name="'+member+'_street[]" data-label="Home Address"> \
                         <div class="address-autocomplete-container"><div class="address-autocomplete-div z-depth-1"></div></div> \
                     </div> \
-                    <div class="col-12 col-md-6 col-lg-3"> \
+                    <div class="col-12 col-md-6"> \
                         <input type="text" class="custom-form-element form-input '+member+'-city '+required+'" name="'+member+'_city[]" data-label="City"> \
                     </div> \
-                    <div class="col-12 col-md-6 col-lg-2"> \
+                    <div class="col-12 col-md-3"> \
                         <select class="custom-form-element form-select form-select-no-cancel '+member+'-state '+required+'" name="'+member+'_state[]" data-label="State"> \
                             <option value=""></option> \
             ';
@@ -385,7 +411,7 @@ if (document.URL.match(/transaction_required_details/)) {
             member_div += ' \
                         </select> \
                     </div> \
-                    <div class="col-12 col-md-6 col-lg-2"> \
+                    <div class="col-12 col-md-3"> \
                         <input type="text" class="custom-form-element form-input '+member+'-zip '+required+'" name="'+member+'_zip[]" data-label="Zip Code"> \
                     </div> \
                     <input type="hidden" name="'+member+'_crm_contact_id[]"> \
@@ -396,9 +422,17 @@ if (document.URL.match(/transaction_required_details/)) {
             member_div += '</div>';
         }
 
+        let member_type_seller = 'Seller';
+        let member_type_buyer = 'Buyer';
+        if($('#for_sale').val() == 'rental') {
+            member_type_seller = 'Owner';
+            member_type_buyer = 'Renter';
+        }
+
+
         $('.'+member+'-container').append(member_div);
         let count = $('.'+member+'-div').length;
-        $('.'+member+'-div').fadeIn('slow').last().find('.'+member+'-header').text((member == 'seller' ? 'Seller' : 'Buyer')+ ' ' + count);
+        $('.'+member+'-div').fadeIn('slow').last().find('.'+member+'-header').text((member == 'seller' ? member_type_seller : member_type_buyer)+ ' 2');
         form_elements();
         if(count == 2) {
             $('.add-member-button[data-member="'+member+'"]').hide();
@@ -417,7 +451,7 @@ if (document.URL.match(/transaction_required_details/)) {
                 let zip = $('.'+member+'-div').eq(0).find('.'+member+'-zip').val();
 
                 let container = $(this).closest('.row');
-                container.find('.address-autocomplete-div').show().html('<a href="javascript:void(0)" class="text-primary"> <i class="fa fa-plus mr-2"></i> Copy from '+(member == 'seller' ? 'Seller' : 'Buyer')+' 1 address </a>');
+                container.find('.address-autocomplete-div').show().html('<a href="javascript:void(0)" class="text-primary"> <i class="fa fa-plus mr-2"></i> Copy from '+(member == 'seller' ? member_type_seller : member_type_buyer)+' 1 address </a>');
 
                 $(document).on('mousedown', function (e) {
                     if (!$(e.target).is('.address-autocomplete-div *')) {
@@ -448,12 +482,20 @@ if (document.URL.match(/transaction_required_details/)) {
         $(this).closest('.'+member+'-div').fadeOut().remove();
         form_elements();
 
+        /* let member_type_seller = 'Seller';
+        let member_type_buyer = 'Buyer';
+        if($('#for_sale').val() == 'rental') {
+            member_type_seller = 'Owner';
+            member_type_buyer = 'Renter';
+        } */
+
         let count = $('.'+member+'-div').length;
-        $('.'+member+'-div').each(function() {
+
+        /* $('.'+member+'-div').each(function() {
             let index = $(this).index() + 1;
-            $(this).find('.'+member+'-header').text((member == 'seller' ? 'Seller' : 'Buyer') + ' ' + index);
-        });
-        if(count == 3) {
+            $(this).find('.'+member+'-header').text((member == 'seller' ? member_type_seller : member_type_buyer) + ' ' + index);
+        }); */
+        if(count == 2) {
             $('.add-member-button[data-member="'+member+'"]').hide();
         } else {
             $('.add-member-button[data-member="'+member+'"]').removeClass('hidden').show();

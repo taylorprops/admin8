@@ -13216,6 +13216,10 @@ input {
   max-width: 1000px !important;
 }
 
+.container-800 {
+  max-width: 800px !important;
+}
+
 .container-600 {
   max-width: 600px !important;
 }
@@ -13226,6 +13230,14 @@ input {
 
 .hidden {
   display: none;
+}
+
+.font-14 {
+  font-size: 1.4rem;
+}
+
+.font-13 {
+  font-size: 1.3rem;
 }
 
 .font-12 {
@@ -13350,12 +13362,10 @@ body.modal-open {
 .modal-dialog .modal-content .modal-header {
   border-top-left-radius: 0.5rem !important;
   border-top-right-radius: 0.5rem !important;
-  border: 3px solid #4c9bdb;
 }
 
 .modal-dialog .modal-content {
   border-radius: 0.7rem !important;
-  border: 3px solid #4c9bdb;
 }
 
 .modal-header {
@@ -13379,9 +13389,8 @@ body.modal-open {
   margin: 1rem auto !important;
 }
 
-.list-group-item-action:hover {
-  background-color: #7db7da;
-  color: #fff;
+.list-group-item-action:not(.active):hover {
+  background-color: rgba(235, 241, 247, 0.2);
 }
 
 @media (min-width: 1200px) {
@@ -13444,20 +13453,20 @@ table.dataTable thead .sorting_desc_disabled:before {
   }
 }
 
-.popover {
-  max-width: 400px;
+/* .popover {
+    max-width: 400px;
 }
 
 .popover-header {
-  background-color: rgba(223, 121, 53, 0.7);
-  border-bottom: none;
-  color: white;
+    background-color: $orange;
+    border-bottom: none;
+    color: white;
 }
 
 .popover-body {
-  font-size: 1rem;
-  color: #525050;
-}
+    //font-size: 1rem;
+    color: #525050;
+} */
 
 /*
   All a user has to do to change the calendar size is
@@ -13789,15 +13798,6 @@ table.dataTable thead .sorting_desc_disabled:before {
   position: relative;
   margin-top: 0.9rem;
   margin-bottom: 0.6rem;
-  /* .disabled {
-      background: rgba($primary-color, .1);
-  } */
-  /* .invalid-label {
-      color: $danger !important;
-  }
-  .invalid-input-file::placeholder {
-      color: $danger !important;
-  } */
 }
 
 .form-ele .invalid-input {
@@ -13813,6 +13813,7 @@ table.dataTable thead .sorting_desc_disabled:before {
   top: 0px;
   right: 5px;
   font-size: 0.6rem;
+  font-weight: bold;
   color: #b64341;
 }
 
@@ -13826,18 +13827,50 @@ table.dataTable thead .sorting_desc_disabled:before {
 
 .form-ele .form-input,
 .form-ele .form-textarea,
-.form-ele .form-select-value-input {
+.form-ele .form-select-value-input,
+.form-ele .file-field {
   width: 100%;
-  padding: 8px 3px 5px 5px;
-  border: 1px solid #ccc;
-  color: #686767;
+  padding: 8px 20px 5px 5px;
+  border: none;
+  border: 1px solid #eeebeb;
+  color: #647c96;
   font-size: 1rem;
-  border-radius: 3px;
+  border-radius: 4px;
+  -transition: all 0.3s ease-in-out;
+  outline: none;
+}
+
+.form-ele .form-input:focus,
+.form-ele .form-textarea:focus,
+.form-ele .form-select-value-input:focus,
+.form-ele .file-field:focus {
+  border-color: #78c4e7;
+  box-shadow: 0 0 5px #78c4e7;
+}
+
+.form-ele .form-select-value-input-focus {
+  border-color: #78c4e7;
+  box-shadow: 0 0 5px #78c4e7;
+}
+
+.form-ele .file-field {
+  padding: 2px 2px 2px 5px;
+}
+
+.form-ele .file-path {
+  border: none !important;
+}
+
+.form-ele .form-input:not([disabled]),
+.form-ele .form-textarea:not([disabled]),
+.form-ele .form-select-value-input:not([disabled]),
+.form-ele .file-field:not([disabled]) {
+  background-color: #fdfeff;
 }
 
 .form-ele .caret {
   background-image: url(/images/form_elements/arrow-down.png);
-  background-position: 95% 50%;
+  background-position: calc(100% - 5px) 50%;
   background-repeat: no-repeat;
 }
 
@@ -13859,6 +13892,7 @@ table.dataTable thead .sorting_desc_disabled:before {
   white-space: nowrap;
   transition: all 0.1s;
   cursor: pointer;
+  z-index: 0;
 }
 
 .form-ele .form-input-label.active,
@@ -13893,7 +13927,7 @@ table.dataTable thead .sorting_desc_disabled:before {
   height: 12px;
   position: absolute;
   color: gray;
-  top: 7px;
+  top: 9px;
   right: 5px;
   cursor: pointer;
   z-index: 2;
@@ -13906,10 +13940,11 @@ table.dataTable thead .sorting_desc_disabled:before {
 .form-ele .form-select-dropdown {
   display: none;
   position: absolute;
-  top: 35px;
+  top: 43px;
   left: 0px;
   background: #fff;
   border: 1px solid #ccc;
+  border-radius: 5px;
   width: 100%;
   border-top: none;
   z-index: 2000;
@@ -13921,18 +13956,46 @@ table.dataTable thead .sorting_desc_disabled:before {
 
 .form-ele .form-select-search-div {
   width: 100%;
-  padding: 4px;
-  background: #ebf1f7;
+  padding: 8px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background: #4c9bdb;
 }
 
 .form-ele .form-select-search-input {
-  width: 90%;
+  max-width: 150px;
   font-size: 0.8rem;
   padding-left: 5px;
+  background: #4c9bdb;
+  color: #fff;
+  border: none;
+  border-radius: 0px;
+  border-bottom: 1px solid #fff;
+}
+
+.form-ele .form-select-search-input::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.form-ele .form-select-search-input::-moz-placeholder {
+  color: #fff;
+}
+
+.form-ele .form-select-search-input:-ms-input-placeholder {
+  color: #fff;
+}
+
+.form-ele .form-select-search-input::-ms-input-placeholder {
+  color: #fff;
+}
+
+.form-ele .form-select-search-input::placeholder {
+  color: #fff;
 }
 
 .form-ele .form-select-options-div {
   padding-top: 5px;
+  padding-bottom: 5px;
   max-height: 250px;
   overflow: auto;
 }
@@ -13946,16 +14009,29 @@ table.dataTable thead .sorting_desc_disabled:before {
 }
 
 .form-ele .form-select-li {
-  margin: 0px;
-  padding: 5px 0 5px 10px;
+  margin: 0px 8px;
+  padding: 8px;
   font-size: 0.9rem;
   color: #162027;
-  border-bottom: 1px solid #e9e8e8;
 }
 
 .form-ele .form-select-li:hover {
-  background: #ebf1f7;
+  color: #fff !important;
+  background: #4c9bdb;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   cursor: pointer;
+}
+
+.form-ele .form-select-li:hover .form-check-input[type=checkbox] + label:before {
+  border-color: #fff !important;
+}
+
+.form-ele .form-select-li.active:hover .form-check-input[type=checkbox] + label:before {
+  border-bottom-color: #fff !important;
+  border-right-color: #fff !important;
+  border-left-color: transparent !important;
+  border-top-color: transparent !important;
 }
 
 .form-ele .form-select-li.active {
@@ -13967,6 +14043,7 @@ table.dataTable thead .sorting_desc_disabled:before {
   background: #ebf1f7;
   color: #4c9bdb;
   font-weight: bold;
+  border-radius: 5px;
 }
 
 .form-ele .colorpicker {
@@ -14006,8 +14083,9 @@ table.dataTable thead .sorting_desc_disabled:before {
 }
 
 .qs-datepicker-container {
-  width: 200px !important;
-  height: 200px !important;
+  width: 100% !important;
+  max-width: 250px !important;
+  height: auto !important;
   font-size: 0.7rem;
 }
 
@@ -14052,6 +14130,27 @@ table.dataTable thead .sorting_desc_disabled:before {
 
 .qs-datepicker .qs-overlay {
   background: rgba(76, 155, 219, 0.8) !important;
+  color: #fff !important;
+  font-size: 1rem !important;
+}
+
+.qs-overlay-year::-webkit-input-placeholder {
+  color: #fff !important;
+}
+
+.qs-overlay-year::-moz-placeholder {
+  color: #fff !important;
+}
+
+.qs-overlay-year:-ms-input-placeholder {
+  color: #fff !important;
+}
+
+.qs-overlay-year::-ms-input-placeholder {
+  color: #fff !important;
+}
+
+.qs-overlay-year::placeholder {
   color: #fff !important;
 }
 
@@ -14326,6 +14425,22 @@ header .side-nav .side-nav-link {
   header .main-search-div {
     max-width: 170px;
   }
+}
+
+header .navbar {
+  z-index: 1031;
+}
+
+header #slide-out {
+  z-index: 1030 !important;
+}
+
+header .side-nav {
+  width: 100VW !important;
+}
+
+header .menu-ul {
+  max-width: 250px;
 }
 
 header .header-logo {
@@ -15047,7 +15162,6 @@ header .header-logo-link {
 
 .page-required-details .buyer-div,
 .page-required-details .seller-div {
-  border: 1px solid #dee2e6;
   padding: 10px;
 }
 
@@ -15429,7 +15543,7 @@ header .header-logo-link {
   margin-left: auto;
   margin-right: auto;
   border: 1px dashed #4c9bdb;
-  min-height: 35px;
+  min-height: 45px;
 }
 
 .page-transaction-details .checklist-item-badge {
@@ -15454,6 +15568,7 @@ header .header-logo-link {
 
 .page-transaction-details .source-dropped {
   background: rgba(48, 167, 48, 0.5);
+  padding: 10px;
 }
 
 .page-transaction-details .source-dropped > .text-gray {
@@ -15596,6 +15711,38 @@ header .header-logo-link {
   font-size: 0.8rem;
 }
 
+.page-transaction-details .buyer-agent-details,
+.page-transaction-details .our-agent-div {
+  display: none;
+}
+
+.page-transaction-details .commission-container .popout-div {
+  position: relative;
+}
+
+.page-transaction-details .commission-container .popout {
+  display: none;
+  position: absolute;
+}
+
+.page-transaction-details .commission-container .popout .view-add-div {
+  height: 250px;
+  overflow: auto;
+}
+
+.page-transaction-details .commission-container .popout.top {
+  left: 0px;
+  top: 0px;
+}
+
+.page-transaction-details .commission-container .popout.middle {
+  left: 0px;
+}
+
+.page-transaction-details .save-split-doc-options {
+  min-height: 50VH;
+}
+
 @media (min-width: 1200px) {
   .page-transaction-details #split_document_modal_dialog {
     max-width: 95% !important;
@@ -15634,6 +15781,10 @@ header .header-logo-link {
   .page-transaction-details .form-check-input[type=checkbox] + label,
   .page-transaction-details label.btn input[type=checkbox] + label {
     padding-left: 10px;
+  }
+
+  .page-transaction-details .popout {
+    position: relative !important;
   }
 }
 

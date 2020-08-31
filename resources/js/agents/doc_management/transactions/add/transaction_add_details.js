@@ -2,9 +2,6 @@ if (document.URL.match(/transaction_add_details_/)) {
 
     $(document).ready(function () {
 
-        // STEPS
-        //$('.stepper').mdbStepper();
-
         // format list and contract price
         if($('#list_price').length > 0) {
             format_money($('#list_price'));
@@ -24,13 +21,12 @@ if (document.URL.match(/transaction_add_details_/)) {
         }
 
 
-        // show hide disclosure questions - only required for standard and short sales
-        disclosure_options();
-        // show hide sub property types if rental
-        sale_rental_options();
-        $('#listing_type').change(sale_rental_options);
+        hide_property_sub_type();
+        hide_hoa();
+        hide_year_built();
 
-        $('#property_sub_type').change(disclosure_options);
+        show_hide();
+        $('.show-hide').change(show_hide);
 
         form_elements();
 
@@ -42,9 +38,17 @@ if (document.URL.match(/transaction_add_details_/)) {
 
     });
 
+
+
     function save_add_transaction() {
 
         let form = $('#details_form');
+
+        $('#list_price, #contract_price').each(function() {
+            if($(this).val() == '$0') {
+                $(this).val('');
+            }
+        });
 
         let validate = validate_form(form);
 
@@ -63,37 +67,74 @@ if (document.URL.match(/transaction_add_details_/)) {
 
     }
 
-    function disclosure_options() {
-
-        let sale_type = $('#property_sub_type').val();
-
-        if(sale_type == 'Standard' || sale_type == 'Short Sale') {
-            $('.disclosures').show();
-            //$('#hoa_condo').val('').trigger('change');
-        } else {
-            $('.disclosures').hide();
-            $('#hoa_condo').val('none').trigger('change');
-        }
-
-    }
-
-    function sale_rental_options() {
-        let sale_type = $('#property_sub_type').val();
+    function show_hide() {
         let listing_type = $('#listing_type').val();
-        if(listing_type == 'rental') {
-            $('.property-sub-type').hide().find('#property_sub_type').val('Standard').trigger('change');
-            $('.year-built, .hoa').hide();
-        } else {
-            if(sale_type == 'Standard' || sale_type == 'Short Sale') {
-                $('.property-sub-type, .year-built, .hoa').show();
-            } else {
-                $('.property-sub-type, .year-built').show();
+        let property_type = $('#property_type').val();
+        let property_sub_type = $('#property_sub_type').val();
+        let contract_price = $('#contract_price').data('contract-price');
+        let close_price = $('#contract_price').data('close-price');
+
+        if(listing_type == 'sale' || listing_type == 'both') {
+
+            show_all();
+
+            if(property_type != 'Residential' && property_type != 'Multi-Family') {
+                hide_year_built();
+                hide_hoa();
             }
+
+            if(property_sub_type != 'Standard' && property_sub_type != 'Short Sale' && property_sub_type != 'For Sale By Owner') {
+                hide_year_built();
+                hide_hoa();
+            }
+
+            $('#contract_price').data('label', 'Contract Price').val(contract_price);
+            $('label[for="contract_price"]').text('Contract Price');
+            $('label[for="list_price"]').text('List Price');
+
+        } else if(listing_type == 'rental') {
+
+            hide_all();
+
+            $('.property-sub-type').hide().find('#property_sub_type').val('');
+            $('#contract_price').data('label', 'Monthly Lease Amount').val(close_price);
+            $('label[for="contract_price"], label[for="list_price"]').text('Monthly Lease Amount');
+
         }
+
+        select_refresh();
 
     }
 
+    function show_property_sub_type() {
+        $('.property-sub-type').show().find('.custom-form-element').addClass('required');
+    }
+    function show_hoa() {
+        $('.hoa').show().find('.custom-form-element').addClass('required');
+    }
+    function show_year_built() {
+        $('.year-built').show().find('.custom-form-element').addClass('required');
+    }
+    function show_all() {
+        show_property_sub_type();
+        show_hoa();
+        show_year_built();
+    }
 
+    function hide_property_sub_type() {
+        $('.property-sub-type').hide().find('.custom-form-element').removeClass('required');
+    }
+    function hide_hoa() {
+        $('.hoa').hide().find('.custom-form-element').removeClass('required');
+    }
+    function hide_year_built() {
+        $('.year-built').hide().find('.custom-form-element').removeClass('required');
+    }
+    function hide_all() {
+        hide_property_sub_type();
+        hide_hoa();
+        hide_year_built();
+    }
 
 
 }

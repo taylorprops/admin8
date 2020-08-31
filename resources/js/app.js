@@ -33,12 +33,13 @@ require('./agents/doc_management/transactions/add/transaction_add.js');
 require('./agents/doc_management/transactions/details/transaction_details.js');
 require('./agents/doc_management/transactions/transactions.js');
 // details tabs
-require('./agents/doc_management/transactions/details/details_tabs/checklist.js');
-require('./agents/doc_management/transactions/details/details_tabs/commission.js');
-require('./agents/doc_management/transactions/details/details_tabs/contracts.js');
 require('./agents/doc_management/transactions/details/details_tabs/details.js');
-require('./agents/doc_management/transactions/details/details_tabs/documents.js');
 require('./agents/doc_management/transactions/details/details_tabs/members.js');
+require('./agents/doc_management/transactions/details/details_tabs/documents.js');
+require('./agents/doc_management/transactions/details/details_tabs/checklist.js');
+require('./agents/doc_management/transactions/details/details_tabs/contracts.js');
+require('./agents/doc_management/transactions/details/details_tabs/commission.js');
+require('./agents/doc_management/transactions/details/details_tabs/earnest.js');
 require('./agents/doc_management/transactions/upload/upload.js');
 
 require('./agents/doc_management/transactions/shared/checklist_review.js');

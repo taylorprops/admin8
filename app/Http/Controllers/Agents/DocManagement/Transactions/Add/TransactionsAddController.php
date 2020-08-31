@@ -58,16 +58,16 @@ class TransactionsAddController extends Controller {
         $agent = Agents::find($Agent_ID);
 
         $agent_bright_mls_id = $agent -> bright_mls_id_md_dc_tp;
-            $office_bright_mls_id = 'TAYL1';
-            $office_name = 'Taylor Properties';
-            if ($state == 'MD' && $agent -> company == 'Anne Arundel Properties') {
-                $agent_bright_mls_id = $agent -> bright_mls_id_md_aap;
-                $office_bright_mls_id = 'AAP1';
-                $office_name = 'Anne Arundel Properties';
-            } else if ($state == 'VA') {
-                $agent_bright_mls_id = $agent -> bright_mls_id_va_tp;
-                $office_bright_mls_id = 'TAYL13';
-            }
+        $office_bright_mls_id = 'TAYL1';
+        $office_name = 'Taylor Properties';
+        if ($state == 'MD' && $agent -> company == 'Anne Arundel Properties') {
+            $agent_bright_mls_id = $agent -> bright_mls_id_md_aap;
+            $office_bright_mls_id = 'AAP1';
+            $office_name = 'Anne Arundel Properties';
+        } else if ($state == 'VA') {
+            $agent_bright_mls_id = $agent -> bright_mls_id_va_tp;
+            $office_bright_mls_id = 'TAYL13';
+        }
 
         // only pulling tax records from MD
         if ($state == 'MD') {
@@ -83,24 +83,6 @@ class TransactionsAddController extends Controller {
 
             $bright_db_search = ListingsData::select($select_columns_db) -> where('ListingId', $bright_id) -> first() -> toArray();
 
-            if($transaction_type == 'listing') {
-                $bright_db_search['ListAgentEmail'] = $agent -> email;
-                $bright_db_search['ListAgentFirstName'] = $agent -> first_name;
-                $bright_db_search['ListAgentLastName'] = $agent -> last_name;
-                $bright_db_search['ListAgentMlsId'] = $agent_bright_mls_id;
-                $bright_db_search['ListAgentPreferredPhone'] = $agent -> cell_phone;
-                $bright_db_search['ListOfficeMlsId'] = $office_bright_mls_id;
-                $bright_db_search['ListOfficeName'] = $office_name;
-            } else if($transaction_type == 'contract') {
-                $bright_db_search['BuyerAgentEmail'] = $agent -> email;
-                $bright_db_search['BuyerAgentFirstName'] = $agent -> first_name;
-                $bright_db_search['BuyerAgentLastName'] = $agent -> last_name;
-                $bright_db_search['BuyerAgentMlsId'] = $agent_bright_mls_id;
-                $bright_db_search['BuyerAgentPreferredPhone'] = $agent -> cell_phone;
-                $bright_db_search['BuyerOfficeMlsId'] = $office_bright_mls_id;
-                $bright_db_search['BuyerOfficeName'] = $office_name;
-            }
-
             $mls_verified = 'yes';
 
         } elseif ($bright_type == 'db_closed') {
@@ -110,9 +92,9 @@ class TransactionsAddController extends Controller {
         } else if ($bright_type == 'bright') {
 
             $rets_config = new \PHRETS\Configuration;
-            $rets_config -> setLoginUrl(rets('rets.rets.url'))
-                -> setUsername(rets('rets.rets.username'))
-                -> setPassword(rets('rets.rets.password'))
+            $rets_config -> setLoginUrl(config('rets.rets.url'))
+                -> setUsername(config('rets.rets.username'))
+                -> setPassword(config('rets.rets.password'))
                 -> setRetsVersion('RETS/1.8')
                 -> setUserAgent('Bright RETS Application/1.0')
                 -> setHttpAuthenticationMethod('digest')
@@ -139,7 +121,7 @@ class TransactionsAddController extends Controller {
             $bright_db_search = $bright_db_search[0]-> toArray();
 
             // remove all fields that do not apply to current listing
-            if ($bright_db_search['MlsStatus'] == 'CLOSED' && $bright_db_search['CloseDate'] < date("Y-m-d", strtotime("-3 month"))) {
+            if ($bright_db_search['MlsStatus'] == 'CLOSED' && $bright_db_search['CloseDate'] < date("Y-m-d", strtotime("-5 year"))) {
                 $bright_db_search['MlsStatus'] = '';
                 $bright_db_search['CloseDate'] = '';
                 $bright_db_search['ListingId'] = '';
@@ -195,6 +177,8 @@ class TransactionsAddController extends Controller {
 
         }
 
+
+
         $tax_record_search = null;
         if ($tax_id != '') {
             $functions = new GlobalFunctionsController();
@@ -219,6 +203,27 @@ class TransactionsAddController extends Controller {
             $property_details = array_merge($tax_record_search, $bright_db_search);
 
         }
+
+        if(!$bright_db_search || $bright_type == 'db_active' || $bright_type == 'db_closed') {
+            if($transaction_type == 'listing') {
+                $property_details['ListAgentEmail'] = $agent -> email;
+                $property_details['ListAgentFirstName'] = $agent -> first_name;
+                $property_details['ListAgentLastName'] = $agent -> last_name;
+                $property_details['ListAgentMlsId'] = $agent_bright_mls_id;
+                $property_details['ListAgentPreferredPhone'] = $agent -> cell_phone;
+                $property_details['ListOfficeMlsId'] = $office_bright_mls_id;
+                $property_details['ListOfficeName'] = $office_name;
+            } else if($transaction_type == 'contract') {
+                $property_details['BuyerAgentEmail'] = $agent -> email;
+                $property_details['BuyerAgentFirstName'] = $agent -> first_name;
+                $property_details['BuyerAgentLastName'] = $agent -> last_name;
+                $property_details['BuyerAgentMlsId'] = $agent_bright_mls_id;
+                $property_details['BuyerAgentPreferredPhone'] = $agent -> cell_phone;
+                $property_details['BuyerOfficeMlsId'] = $office_bright_mls_id;
+                $property_details['BuyerOfficeName'] = $office_name;
+            }
+        }
+
 
         $property_details['MLS_Verified'] = $mls_verified;
         $property_details['transaction_type'] = $transaction_type;
@@ -260,7 +265,7 @@ class TransactionsAddController extends Controller {
         $Referral_ID = $add_referral -> Referral_ID;
 
         // add email address
-        $address = preg_replace(config('global.vars.bad_characters'), '', $request -> street_number . $request -> street_name . $request -> street_dir . $request -> unit_number);
+        $address = preg_replace(config('global.vars.bad_characters'), '', $request -> street_number . ucwords(strtolower($request -> street_name)) . $request -> street_dir . $request -> unit_number);
         $email = $address.'_R'.$Referral_ID.'@'.config('global.vars.property_email');
 
         $add_referral -> PropertyEmail = $email;
@@ -321,7 +326,22 @@ class TransactionsAddController extends Controller {
 
     public function transaction_add_details_new(Request $request) {
 
+        $transaction_type = $request -> transaction_type;
         $Agent_ID = $request -> Agent_ID;
+        $agent = Agents::find($Agent_ID);
+        $state = $request -> state;
+
+        $agent_bright_mls_id = $agent -> bright_mls_id_md_dc_tp;
+        $office_bright_mls_id = 'TAYL1';
+        $office_name = 'Taylor Properties';
+        if ($state == 'MD' && $agent -> company == 'Anne Arundel Properties') {
+            $agent_bright_mls_id = $agent -> bright_mls_id_md_aap;
+            $office_bright_mls_id = 'AAP1';
+            $office_name = 'Anne Arundel Properties';
+        } else if ($state == 'VA') {
+            $agent_bright_mls_id = $agent -> bright_mls_id_va_tp;
+            $office_bright_mls_id = 'TAYL13';
+        }
 
         $property_details = [
             'FullStreetAddress' => $request -> street_number . ' ' . $request -> street_name . ' ' . $request -> street_dir . ' ' . $request -> unit_number,
@@ -335,7 +355,25 @@ class TransactionsAddController extends Controller {
             'County' => $request -> county,
         ];
 
-        $transaction_type = strtolower($request -> transaction_type);
+        if($transaction_type == 'listing') {
+            $property_details['ListAgentEmail'] = $agent -> email;
+            $property_details['ListAgentFirstName'] = $agent -> first_name;
+            $property_details['ListAgentLastName'] = $agent -> last_name;
+            $property_details['ListAgentMlsId'] = $agent_bright_mls_id;
+            $property_details['ListAgentPreferredPhone'] = $agent -> cell_phone;
+            $property_details['ListOfficeMlsId'] = $office_bright_mls_id;
+            $property_details['ListOfficeName'] = $office_name;
+        } else if($transaction_type == 'contract') {
+            $property_details['BuyerAgentEmail'] = $agent -> email;
+            $property_details['BuyerAgentFirstName'] = $agent -> first_name;
+            $property_details['BuyerAgentLastName'] = $agent -> last_name;
+            $property_details['BuyerAgentMlsId'] = $agent_bright_mls_id;
+            $property_details['BuyerAgentPreferredPhone'] = $agent -> cell_phone;
+            $property_details['BuyerOfficeMlsId'] = $office_bright_mls_id;
+            $property_details['BuyerOfficeName'] = $office_name;
+        }
+
+
         $property_details['transaction_type'] = $transaction_type;
         $property_details = (object)$property_details;
 
@@ -350,21 +388,30 @@ class TransactionsAddController extends Controller {
 
     public function transaction_required_details(Request $request) {
 
-        $transaction_type = strtolower($request -> transaction_type);
+        $transaction_type = $request -> transaction_type;
+        $id = $request -> id;
 
-        $property_details = Contracts::where('Contract_ID', $request -> id) -> first();
-        $transaction_type_header = 'Contract/Lease';
-        if($transaction_type == 'listing') {
-            $property_details = Listings::where('Listing_ID', $request -> id) -> first();
-            $transaction_type_header = 'Listing';
+        $property = Listings::GetPropertyDetails($transaction_type, $id);
+
+        $for_sale = true;
+        if($property -> SaleRent == 'rental') {
+            $for_sale = false;
         }
+
         $states = LocationData::AllStates();
         $states_json = $states -> toJson();
         $statuses = ResourceItems::where('resource_type', 'listing_status') -> orderBy('resource_order') -> get();
-        $contacts = CRMContacts::where('Agent_ID', $property_details -> Agent_ID) -> get();
+
+        $contacts = [];
+        if(auth() -> user() -> group == 'agent') {
+            $contacts = CRMContacts::where('Agent_ID', auth() -> user() -> user_id) -> get();
+        } else if(auth() -> user() -> group == 'admin') {
+            $contacts = CRMContacts::get();
+        }
+
         $resource_items = new ResourceItems();
 
-        return view('/agents/doc_management/transactions/add/transaction_required_details_'.$transaction_type, compact('property_details', 'states', 'states_json', 'statuses', 'contacts', 'resource_items', 'transaction_type', 'transaction_type_header'));
+        return view('/agents/doc_management/transactions/add/transaction_required_details_'.$transaction_type, compact('property', 'for_sale', 'states', 'states_json', 'statuses', 'contacts', 'resource_items', 'transaction_type', 'transaction_type_header'));
     }
 
     public function save_add_transaction(Request $request) {
@@ -400,7 +447,11 @@ class TransactionsAddController extends Controller {
         } */
 
         if($transaction_type == 'contract') {
-            $property_details -> ContractPrice = preg_replace('/[\$,]+/', '', $request -> contract_price) ?? null;
+            if($request -> listing_type == 'sale') {
+                $property_details -> ContractPrice = preg_replace('/[\$,]+/', '', $request -> contract_price) ?? null;
+            } else {
+                $property_details -> LeaseAmount = preg_replace('/[\$,]+/', '', $request -> contract_price) ?? null;
+            }
         }
 
         // replace current values from property details with new data
@@ -488,15 +539,16 @@ class TransactionsAddController extends Controller {
         $Listing_ID = $request -> Listing_ID ?? null;
         $Contract_ID = $request -> Contract_ID ?? null;
         $Agent_ID = $request -> Agent_ID;
-        $transaction_type = strtolower($request -> transaction_type);
+        $transaction_type = $request -> transaction_type;
 
-        $field = 'Listing_ID';
-        $id = $Listing_ID;
+
         if($transaction_type == 'contract') {
             $field = 'Contract_ID';
             $id = $Contract_ID;
             $property = Contracts::find($Contract_ID);
         } else {
+            $field = 'Listing_ID';
+            $id = $Listing_ID;
             $property = Listings::find($Listing_ID);
         }
 
@@ -514,14 +566,30 @@ class TransactionsAddController extends Controller {
         // get property details to add listing agent to members if contract
         if($transaction_type == 'contract') {
 
-            $listing_agent = new Members();
-            $listing_agent -> first_name = $property -> ListAgentFirstName;
-            $listing_agent -> last_name = $property -> ListAgentLastName;
-            $listing_agent -> cell_phone = $property -> ListAgentPreferredPhone;
-            $listing_agent -> email = $property -> ListAgentEmail;
-            $listing_agent -> company = $property -> ListOfficeName;
+            if($property -> PropertySubType != ResourceItems::GetResourceID('For Sale By Owner', 'checklist_property_sub_types')) {
 
-            $list_office_mls_id = $property -> ListOfficeMlsId ?? null;
+                $listing_agent = new Members();
+                $listing_agent -> first_name = $property -> ListAgentFirstName;
+                $listing_agent -> last_name = $property -> ListAgentLastName;
+                $listing_agent -> cell_phone = $property -> ListAgentPreferredPhone;
+                $listing_agent -> email = $property -> ListAgentEmail;
+                $listing_agent -> company = $property -> ListOfficeName;
+
+                $list_office_mls_id = $property -> ListOfficeMlsId ?? null;
+
+            } else {
+
+                $listing_agent = new Members();
+                $listing_agent -> first_name = $request -> ListAgentFirstName;
+                $listing_agent -> last_name = $request -> ListAgentLastName;
+                $listing_agent -> cell_phone = $request -> ListAgentPreferredPhone;
+                $listing_agent -> email = $request -> ListAgentEmail;
+                $listing_agent -> company = $request -> ListOfficeName;
+
+                $list_office_mls_id = $request -> ListOfficeMlsId ?? null;
+
+            }
+
             if($list_office_mls_id) {
 
                 $list_office_details = Offices::where('OfficeMlsId', $list_office_mls_id) -> first();
@@ -651,8 +719,12 @@ class TransactionsAddController extends Controller {
 
 
             if ($i == 0) {
-                $seller_one_first = $seller_first[$i];
-                $seller_one_last = $seller_last[$i];
+                $seller_one_first = $seller_entity_name;
+                $seller_one_last = '';
+                if($seller_entity_name == '') {
+                    $seller_one_first = $seller_first[$i];
+                    $seller_one_last = $seller_last[$i];
+                }
                 $seller_two_first = null;
                 $seller_two_last = null;
             } else if ($i == 1) {
@@ -757,7 +829,7 @@ class TransactionsAddController extends Controller {
             $property -> Status = ResourceItems::GetResourceID('Active', 'contract_status');
             $property -> UsingHeritage = $request -> UsingHeritage;
             $property -> TitleCompany = $request -> TitleCompany;
-            $property -> EarnestAmount = $request -> EarnestAmount;
+            $property -> EarnestAmount = preg_replace('/[\$,]+/', '', $request -> EarnestAmount);
             $property -> EarnestHeldBy = $request -> EarnestHeldBy;
             $property -> save();
 
@@ -934,9 +1006,9 @@ class TransactionsAddController extends Controller {
         if (count($bright_db_search) == 0) {
 
             $rets_config = new \PHRETS\Configuration;
-            $rets_config -> setLoginUrl(rets('rets.rets.url'))
-                -> setUsername(rets('rets.rets.username'))
-                -> setPassword(rets('rets.rets.password'))
+            $rets_config -> setLoginUrl(config('rets.rets.url'))
+                -> setUsername(config('rets.rets.username'))
+                -> setPassword(config('rets.rets.password'))
                 -> setRetsVersion('RETS/1.8')
                 -> setUserAgent('Bright RETS Application/1.0')
                 -> setHttpAuthenticationMethod('digest')

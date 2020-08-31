@@ -11,15 +11,17 @@ if (document.URL.match(/transaction_details/)) {
         let type = member_div.find('.member-type-id option:selected').text();
 
         let bank_trust_div = member_div.find('.bank-trust-div');
+        let bank_trust_label = bank_trust_div.find('label');
         let member_entity_name_div = member_div.find('.member-entity-name-div');
         let company_div = member_div.find('.company-div');
         let home_address_div = member_div.find('.home-address-div');
         let office_address_div = member_div.find('.office-address-div');
         let bright_mls_id_div = member_div.find('.bright-mls-id-div');
 
-        if(type == 'Buyer' || type == 'Seller') {
+        if(type == 'Buyer' || type == 'Seller' || type == 'Owner' || type == 'Renter') {
 
-            bank_trust_div.show();
+            bank_trust_div.show().find('.bank-trust').data('member', type);
+            bank_trust_label.text(type +' is a Trust, Company or other Entity');
             if(member_entity_name_div.find('input').val() != '') {
                 member_entity_name_div.show();
             }
@@ -28,7 +30,7 @@ if (document.URL.match(/transaction_details/)) {
             office_address_div.hide();
             bright_mls_id_div.hide();
 
-        } else if(type == 'Listing Agent' || type == 'Buyer Agent') {
+        } else if(type == 'Listing Agent' || type == 'Buyer Agent' || type == 'Renter Agent') {
 
             bank_trust_div.hide();
             member_entity_name_div.hide();
@@ -54,9 +56,9 @@ if (document.URL.match(/transaction_details/)) {
     window.show_bank_trust = function() {
         let input = $(this).closest('.col-12').next('.member-entity-name-div');
         if($(this).is(':checked')) {
-            input.fadeIn('slow');
+            input.fadeIn();
         } else {
-            input.fadeOut('slow');
+            input.fadeOut();
         }
     }
 
@@ -111,9 +113,15 @@ if (document.URL.match(/transaction_details/)) {
 
     window.show_add_member = function() {
         let transaction_type = $('#transaction_type').val();
+        let Listing_ID = $('#Listing_ID').val();
+        let Contract_ID = $('#Contract_ID').val();
+        let Referral_ID = $('#Referral_ID').val();
         axios.get('/agents/doc_management/transactions/add_member_html', {
             params: {
-                transaction_type: transaction_type
+                transaction_type: transaction_type,
+                Listing_ID: Listing_ID,
+                Contract_ID: Contract_ID,
+                Referral_ID: Referral_ID
             },
             headers: {
                 'Accept-Version': 1,
@@ -143,7 +151,7 @@ if (document.URL.match(/transaction_details/)) {
             if($('.list-group-item-member[data-member-type="Listing Agent"]').length > 0) {
                 add_list_agent = false;
             }
-            if($('.list-group-item-member[data-member-type="Buyer Agent"]').length > 0) {
+            if($('.list-group-item-member[data-member-type="Buyer Agent"]').length > 0 || $('.list-group-item-member[data-member-type="Renter Agent"]').length > 0) {
                 add_buyer_agent = false;
             }
             $('#members_tab_div').find('.member-type-id').find('option').each(function() {

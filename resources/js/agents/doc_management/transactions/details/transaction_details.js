@@ -21,6 +21,10 @@ if (document.URL.match(/transaction_details/)) {
             load_tabs('commission');
         });
 
+        $('#open_earnest_tab').one('click', function () {
+            load_tabs('earnest');
+        });
+
         load_details_header();
 
 
@@ -90,7 +94,7 @@ if (document.URL.match(/transaction_details/)) {
                     if (axios.isCancel(error)) {
 
                     } else {
-                        //console.log(error);
+                        //
                     }
                 });
 
@@ -104,9 +108,155 @@ if (document.URL.match(/transaction_details/)) {
         }
 
         $('#agent_search').on('keyup', search_bright_agents);
+
+
     });
 
 
+    function show_undo_cancel() {
+        let Contract_ID = $(this).data('contract-id');
+        $('#confirm_undo_cancel_modal').modal();
+        $('#undo_cancel_button').off('click').on('click', function() {
+            undo_cancel(Contract_ID)
+        });
+    }
+
+    function undo_cancel(Contract_ID) {
+
+        let formData = new FormData();
+        formData.append('Contract_ID', Contract_ID);
+        axios.post('/agents/doc_management/transactions/undo_cancel_contract', formData, axios_options)
+        .then(function (response) {
+
+            $('#confirm_undo_cancel_modal').modal('hide');
+
+            if(response.data.error) {
+                $('#modal_danger').modal().find('.modal-body').html('The Listing is currently under contract with another Contract. You must release the current Contract before Reactivating this one.');
+                return false;
+            }
+
+            load_details_header();
+            toastr['success']('Undo Successful');
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+    function show_release_contract() {
+
+        let cancel = $(this);
+        let for_sale = cancel.data('for-sale');
+        let docs_submitted = '';
+        let listing_expiration_date = cancel.data('listing-expiration-date') || null;
+        let today = new Date();
+        let expire = new Date(listing_expiration_date);
+        $('#cancel_contract_modal').modal();
+
+        // check if any docs have been submitted and accepted
+        let Listing_ID = $('#Listing_ID').val();
+        let Contract_ID = $('#Contract_ID').val();
+        let Referral_ID = $('#Referral_ID').val();
+        let transaction_type = $('#transaction_type').val();
+
+        $('.cancel-contract, .cancel-lease, .expired-listing').removeClass('d-flex').hide();
+
+        axios.get('/agents/doc_management/transactions/check_docs_submitted_and_accepted', {
+            params: {
+                Listing_ID: Listing_ID,
+                Contract_ID: Contract_ID,
+                Referral_ID: Referral_ID,
+                transaction_type: transaction_type
+            }
+        })
+        .then(function (response) {
+
+            if(for_sale == 'yes') {
+
+                if(listing_expiration_date) {
+                    $('.cancel-contract.has-listing').addClass('d-flex').show();
+                } else {
+                    $('.cancel-contract.has-listing').removeClass('d-flex').hide();
+                }
+
+                if(response.data.docs_submitted == true) {
+                    $('.cancel-contract.docs-submitted').addClass('d-flex').show();
+                    $('.cancel-contract.docs-not-submitted').removeClass('d-flex').hide();
+                    docs_submitted = 'yes';
+                } else {
+                    $('.cancel-contract.docs-submitted').removeClass('d-flex').hide();
+                    $('.cancel-contract.docs-not-submitted').addClass('d-flex').show();
+                    docs_submitted = 'no';
+                }
+
+            } else {
+
+                if(listing_expiration_date) {
+                    $('.cancel-lease.has-listing').addClass('d-flex').show();
+                } else {
+                    $('.cancel-lease.has-listing').removeClass('d-flex').hide();
+                }
+                if(response.data.docs_submitted == true) {
+                    $('.cancel-lease.docs-submitted').addClass('d-flex').show();
+                    $('.cancel-lease.docs-not-submitted').removeClass('d-flex').hide();
+                } else {
+                    $('.cancel-lease.docs-submitted').removeClass('d-flex').hide();
+                    $('.cancel-lease.docs-not-submitted').addClass('d-flex').show();
+                }
+
+            }
+
+            if(listing_expiration_date) {
+                if(today > expire) {
+                    $('.expired-listing').addClass('d-flex').show();
+                } else {
+                    $('.expired-listing').removeClass('d-flex').hide();
+                }
+            }
+
+            $('#save_cancel_contract_button').off('click').on('click', function() {
+                release_contract(docs_submitted, for_sale);
+            });
+
+        })
+        .catch(function (error) {
+
+        });
+
+    }
+
+    function release_contract(docs_submitted, for_sale) {
+
+        let Listing_ID = $('#Listing_ID').val();
+        let Contract_ID = $('#Contract_ID').val();
+
+        let type = 'Contract';
+        if(for_sale == 'no') {
+            type = 'Lease';
+        }
+
+        let success = type+' Successfully Canceled';
+        if(docs_submitted == 'yes') {
+            success = 'Cancel Request Successfully Sent';
+        }
+
+        let formData = new FormData();
+        formData.append('Listing_ID', Listing_ID);
+        formData.append('Contract_ID', Contract_ID);
+        formData.append('docs_submitted', docs_submitted);
+        axios.post('/agents/doc_management/transactions/release_contract', formData, axios_options)
+        .then(function (response) {
+            $('#cancel_contract_modal').modal('hide');
+            load_details_header();
+            toastr['success'](success);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
 
     function show_accept_contract() {
         $('#accept_contract_modal').modal();
@@ -117,6 +267,47 @@ if (document.URL.match(/transaction_details/)) {
             }, 500);
         });
 
+        $('#accept_contract_BuyerRepresentedBy').change(function () {
+
+            $('.agent-details').val('').trigger('change');
+            $('.buyer-agent-details, .our-agent-div').hide();
+
+            if($(this).val() == 'other_agent') {
+                $('.buyer-agent-details').show();
+                $('.agent-details-required').addClass('required');
+            } else if($(this).val() == 'agent') {
+                $('.buyer-agent-details').show();
+                $('.agent-details-required').addClass('required');
+                $('.agent-details').each(function() {
+                    $(this).val($(this).data('agent-detail')).trigger('change');
+                });
+            } else if($(this).val() == 'our_agent') {
+                $('.our-agent-div').show();
+                $('.agent-details-required').addClass('required');
+                $('#accept_contract_our_agent').change(function() {
+                    if($(this).val() == '') {
+                        $('.agent-details').val('').trigger('change');
+                        $('.buyer-agent-details').hide();
+                    } else {
+                        $('.buyer-agent-details').show();
+                        $('.agent-details').each(function() {
+                            $(this).val($(this).data('agent-detail')).trigger('change');
+                        });
+                        let option = $(this).find('option:selected');
+                        $('#accept_contract_buyer_agent_company').val(option.data('company'));
+                        $('#accept_contract_buyer_agent_first').val(option.data('first'));
+                        $('#accept_contract_buyer_agent_last').val(option.data('last'));
+                        $('#accept_contract_buyer_agent_phone').val(option.data('phone'));
+                        $('#accept_contract_buyer_agent_email').val(option.data('email'));
+                        $('#accept_contract_OtherAgent_ID').val(option.data('id'));
+                    }
+                });
+            } else {
+                $('.buyer-agent-details').hide();
+                $('.agent-details-required').removeClass('required');
+            }
+        });
+
         $('#accept_contract_using_heritage').change(function() {
             if($(this).val() == 'yes') {
                 $('.not-using-heritage').hide();
@@ -125,6 +316,7 @@ if (document.URL.match(/transaction_details/)) {
                 $('.not-using-heritage').show();
             }
         });
+
     }
 
     function add_buyers_agent(ele) {
@@ -183,14 +375,17 @@ if (document.URL.match(/transaction_details/)) {
             let buyer_one_last = $('#accept_contract_buyer_one_last').val();
             let buyer_two_first = $('#accept_contract_buyer_two_first').val();
             let buyer_two_last = $('#accept_contract_buyer_two_last').val();
-            let contract_date = $('#accept_contract_contract_date').val();
+            let contract_date = $('#accept_contract_contract_date').val() || null;
             let close_date = $('#accept_contract_close_date').val();
-            let contract_price = $('#accept_contract_contract_price').val();
-            let using_heritage = $('#accept_contract_using_heritage').val();
-            let title_company = $('#accept_contract_title_company').val();
-            let earnest_amount = $('#accept_contract_earnest_amount').val();
-            let earnest_held_by = $('#accept_contract_earnest_held_by').val();
+            let lease_amount = $('#accept_contract_lease_amount').val() || null;
+            let contract_price = $('#accept_contract_contract_price').val() || null;
+            let using_heritage = $('#accept_contract_using_heritage').val() || null;
+            let title_company = $('#accept_contract_title_company').val() || null;
+            let earnest_amount = $('#accept_contract_earnest_amount').val() || null;
+            let earnest_held_by = $('#accept_contract_earnest_held_by').val() || null;
             let Listing_ID = $('#Listing_ID').val();
+            let BuyerRepresentedBy = $('#accept_contract_BuyerRepresentedBy').val();
+            let OtherAgent_ID = $('#accept_contract_OtherAgent_ID').val();
 
             let formData = new FormData();
             formData.append('agent_first', agent_first);
@@ -210,21 +405,24 @@ if (document.URL.match(/transaction_details/)) {
             formData.append('contract_date', contract_date);
             formData.append('close_date', close_date);
             formData.append('contract_price', contract_price);
+            formData.append('lease_amount', lease_amount);
             formData.append('using_heritage', using_heritage);
             formData.append('title_company', title_company);
             formData.append('earnest_amount', earnest_amount);
             formData.append('earnest_held_by', earnest_held_by);
             formData.append('Listing_ID', Listing_ID);
+            formData.append('OtherAgent_ID', OtherAgent_ID);
+            formData.append('BuyerRepresentedBy', BuyerRepresentedBy);
             axios.post('/agents/doc_management/transactions/accept_contract', formData, axios_options)
                 .then(function (response) {
                     $('#accept_contract_modal').modal('hide');
                     load_tabs('contracts');
+                    load_details_header();
                     let Contract_ID = response.data.Contract_ID;
                     $('#modal_info').modal().find('.modal-body').html('<div class="w-100 text-center">Your Contract was successfully added. You will find it in the "Contracts" tab<br><br><a class="btn btn-primary" href="/agents/doc_management/transactions/transaction_details/' + Contract_ID + '/contract">View Contract</a></div>');
-                    $('.header-contract-active').hide();
                 })
                 .catch(function (error) {
-                    console.log(error);
+
                 });
 
         }
@@ -247,7 +445,9 @@ if (document.URL.match(/transaction_details/)) {
             .then(function (response) {
                 $('#details_header').html(response.data);
                 $('[data-toggle="popover"]').popover({ placement: 'bottom' });
-                $('#accept_contract_button').click(show_accept_contract);
+                $('#accept_contract_button').off('click').on('click', show_accept_contract);
+                $('#release_contract_button').off('click').on('click', show_release_contract);
+                $('.undo-cancel-button').off('click').on('click', show_undo_cancel);
                 /* $('#disabled_accept_contract_button').click(function () {
                     $('#modal_danger').modal().find('.modal-body').html('You cannot accept a contract until the current one is released');
                 });
@@ -256,7 +456,7 @@ if (document.URL.match(/transaction_details/)) {
                 }); */
             })
             .catch(function (error) {
-                console.log(error);
+
             });
     }
 
@@ -288,11 +488,6 @@ if (document.URL.match(/transaction_details/)) {
 
                     // update counties when state is changed
                     $('#StateOrProvince').change(update_county_select);
-
-                    // open checklist tab shortcut from helper
-                    $(document).on('click', '#open_checklist_button', function () {
-                        $('#open_checklist_tab').trigger('click');
-                    });
 
                     $('#search_mls_button').off('click').on('click', search_mls);
 
@@ -465,6 +660,10 @@ if (document.URL.match(/transaction_details/)) {
                         $(this).removeClass('z-depth-3').addClass('z-depth-1');
                     });
 
+                } else if(tab == 'commission') {
+
+                    $('.popout').eq(0).show();
+
                 }
 
 
@@ -526,7 +725,7 @@ if (document.URL.match(/transaction_details/)) {
 
             })
             .catch(function (error) {
-                console.log(error);
+
             });
     }
 

@@ -1,8 +1,10 @@
 @php
 
 $sale_rent = 'For Sale';
+$for_sale = true;
 if($property -> SaleRent == 'rental') {
     $sale_rent = 'Rental';
+    $for_sale = false;
 } else if($property -> SaleRent == 'both' && $transaction_type == 'listing') {
     $sale_rent = 'For Sale And Rent';
 }
@@ -11,7 +13,10 @@ if($transaction_type == 'listing') {
     $header_transaction_type = '<i class="fad fa-sign mr-2"></i> Listing Agreement';
     $transaction_type_bg = 'bg-orange';
 } else if($transaction_type == 'contract') {
-    $header_transaction_type = '<i class="fad fa-file-signature mr-2"></i> Sales Contract';
+    $header_transaction_type = '<i class="fad fa-file-signature mr-2"></i> Lease Agreement';
+    if($for_sale) {
+        $header_transaction_type = '<i class="fad fa-file-signature mr-2"></i> Sales Contract';
+    }
     $transaction_type_bg = 'bg-success';
 } else if($transaction_type == 'referral') {
     $header_transaction_type = '<i class="fad fa-handshake mr-2"></i> Referral Agreement';
@@ -20,14 +25,14 @@ if($transaction_type == 'listing') {
 @endphp
 <div class="row mt-1 mt-sm-4">
 
-    <div class="col-12 col-lg-9">
+    <div class="col-12 col-lg-7">
 
-        <div class="d-flex justify-content-start flex-wrap">
+        <div class="d-flex justify-content-start">
 
             @if($property -> ListPictureURL)
                 <div class="d-none d-sm-block ml-2 mr-3">
                     <div class="property-image-div">
-                        <img src="{{ $property -> ListPictureURL }}" class="img-fluid z-depth-2">
+                        <img loading="lazy" src="{{ $property -> ListPictureURL }}" class="img-fluid z-depth-2">
                     </div>
                 </div>
             @endif
@@ -35,12 +40,12 @@ if($transaction_type == 'listing') {
             <div class="ml-2 ml-md-3">
                 <div class="h3-responsive mb-2 text-gray text-uppercase">{!! $property -> FullStreetAddress.' '.$property -> Street.' '.$property -> City.', '.$property -> StateOrProvince.' '.$property -> PostalCode !!}</div>
                 <div class="mb-1 mb-md-3">
-                    <span class="badge {{ $transaction_type_bg }}"><span class="transaction-type text-white">{!! $header_transaction_type !!}</span></span>
+                    <span class="badge {{ $transaction_type_bg }} my-1"><span class="transaction-type text-white">{!! $header_transaction_type !!}</span></span>
                     @if($transaction_type != 'referral')
-                        <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $sale_rent }}</span></span>
-                        <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertyType) }}</span></span>
+                        <span class="badge bg-primary ml-0 ml-sm-2 my-1"><span class="transaction-sub-type text-white">{{ $sale_rent }}</span></span>
+                        <span class="badge bg-primary ml-0 ml-sm-2 my-1"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertyType) }}</span></span>
                         @if($sale_rent != 'Rental' && $property -> PropertySubType > '0')
-                            <span class="badge bg-primary ml-1 ml-lg-2"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertySubType) }}</span></span>
+                            <span class="badge bg-primary ml-0 ml-sm-2 my-1"><span class="transaction-sub-type text-white">{{ $resource_items -> GetResourceName($property -> PropertySubType) }}</span></span>
                         @endif
                     @endif
                 </div>
@@ -49,42 +54,79 @@ if($transaction_type == 'listing') {
         </div>
 
     </div>
-    <div class="col-12 col-lg-3 mt-3 mt-lg-0">
+    <div class="col-12 col-lg-5 mt-3 mt-lg-0">
 
         @if($transaction_type == 'listing')
 
         <div class="row">
             @if(in_array($property -> Status, $resource_items -> GetActiveListingStatuses('no', 'yes', 'yes') -> toArray()))
-                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-right header-contract-active">
-                    <a href="javascript: void(0);" class="btn btn-success mt-2 d-block d-sm-inline-block" id="accept_contract_button"><i class="fa fa-plus mr-2"></i> Accept Contract</a>
+                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-right">
+                    <a href="javascript: void(0);" class="btn btn-success mt-2 d-block d-sm-inline-block" id="accept_contract_button"><i class="fa fa-plus mr-2"></i> Accept {{ $for_sale ? 'Contract' : 'Lease' }}</a>
                 </div>
-                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-left text-lg-right header-contract-active">
+                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-left text-lg-right">
                     <a href="javascript: void(0);" class="btn btn-danger mt-2 d-block d-sm-inline-block" id="withdraw_listing_button"><i class="fa fa-minus mr-2"></i> Withdraw Listing</a>
                 </div>
             @else
-                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-right">
-                    <div class="h2-responsive text-success"><i class="fad fa-check-circle mr-2"></i> Under Contract!</div>
+                <div class="col-12">
+                    <div class="h2-responsive text-success w-100 text-sm-left text-lg-right"><i class="fad fa-check-circle mr-2"></i> {{ $for_sale ? 'Under Contract' : 'Lease Accepted' }}!</div>
                 </div>
             @endif
         </div>
 
         @elseif($transaction_type == 'contract')
 
+            @php
+            $status = $resource_items -> GetResourceName($property -> Status);
+            @endphp
+
             <div class="row">
-                <div class="col-12 col-sm-6 col-lg-12 text-sm-left text-lg-right">
-                    <a href="javascript: void(0);" class="btn btn-danger mt-2 d-block d-sm-inline-block" id="release_contract_button"><i class="fa fa-minus mr-2"></i> Release Contract</a>
-                </div>
-            </div>
 
-            @if($property -> Listing_ID > 0 && $property -> Contract_ID > 0)
+                <div class="col-12">
 
-                <div class="row">
-                    <div class="col-12 col-sm-6 col-lg-12 text-sm-left text-lg-right">
-                        <a href="/agents/doc_management/transactions/transaction_details/{{ $property -> Listing_ID }}/listing" class="btn btn-primary mt-2"><i class="fad fa-sign mr-2 d-block d-sm-inline-block"></i> View Listing</a>
+                    <div class="d-flex flex-wrap justify-content-end align-items-center">
+
+                        @if($property -> Status == $resource_items -> GetResourceID('Active', 'contract_status'))
+
+                            <div>
+                                <a href="javascript: void(0);" class="btn btn-danger mt-2" id="release_contract_button" data-for-sale="{{ $for_sale ? 'yes' : 'no' }}" data-listing-expiration-date="{{ $listing_expiration_date }}"><i class="fa fa-minus mr-2"></i> {{ $for_sale ? 'Release Contract' : 'Cancel Lease' }}</a>
+                            </div>
+
+                        @elseif($property -> Status == $resource_items -> GetResourceID('Cancel Pending', 'contract_status'))
+
+                            <span class="badge bg-orange text-white mr-2 font-12"><i class="fad fa-hourglass-start mr-2 text-white"></i> {{ $status }}</span>
+                            <div class="mx-3 mt-1">
+                                <a href="javascript: void(0)"class="undo-cancel-button" data-contract-id="{{ $property -> Contract_ID }}"><i class="fad fa-undo mr-1"></i> Undo</a>
+                            </div>
+                            @if(auth() -> user() -> group == 'admin')
+                                <div>
+                                    <button class="btn btn-danger process-cancellation-button" data-contract-id="{{ $property -> Contract_ID }}"><i class="fad fa-cogs mr-2 text-white"></i> Process</button>
+                                </div>
+                            @endif
+
+                        @elseif($property -> Status == $resource_items -> GetResourceID('Released', 'contract_status') || $property -> Status == $resource_items -> GetResourceID('Canceled', 'contract_status'))
+
+                            <span class="badge bg-danger text-white mr-2 font-13"><i class="fad fa-ban mr-2 text-white"></i> {{ $status }}</span>
+                            <div class="mx-3 mt-1">
+                                <a href="javascript: void(0)"class="undo-cancel-button" data-contract-id="{{ $property -> Contract_ID }}"><i class="fad fa-undo mr-1"></i> Undo</a>
+                            </div>
+
+                        @else
+                            <span class="badge bg-primary text-white mr-2 font-13"><i class="fad fa-exclamation-circle mr-2 text-white"></i> {{ $status }}</span>
+                        @endif
+
+                        @if($property -> Listing_ID > 0 && $property -> Contract_ID > 0)
+
+                            <div>
+                                <a href="/agents/doc_management/transactions/transaction_details/{{ $property -> Listing_ID }}/listing" class="btn btn-primary mt-2"><i class="fad fa-sign mr-2"></i> View Listing</a>
+                            </div>
+
+                        @endif
+
                     </div>
+
                 </div>
 
-            @endif
+            </div>
 
         @endif
     </div>
@@ -101,6 +143,8 @@ if($transaction_type == 'listing') {
                 <div class="text-white d-none d-sm-inline-block mr-2">
                     <i class="fad fa-users fa-2x"></i>
                 </div>
+
+                @if($resource_items -> GetResourceId('For Sale By Owner', 'checklist_property_sub_types') != $property -> PropertySubType)
                 <div class="ml-2 pr-2 agent-section border-right header-section">
                     <span class="font-weight-bold text-yellow">List Agent</span>
                     <br>
@@ -116,9 +160,11 @@ if($transaction_type == 'listing') {
                         <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Contact Details" data-content="{!! $contact_details !!}"><i class="fad fa-address-book mr-1"></i> Contact</a>
                     </div>
                 </div>
+                @endif
+
                 @if($sellers)
                 <div class="ml-2 header-section">
-                    <span class="font-weight-bold text-yellow">Sellers</span>
+                    <span class="font-weight-bold text-yellow">{{ $for_sale ? 'Sellers' : 'Owners' }}</span>
                     <br>
                     <div>
                         @foreach($sellers as $seller)
@@ -147,13 +193,13 @@ if($transaction_type == 'listing') {
                 @endif
             </div>
 
-            @if($transaction_type == 'contract')
+            @if($transaction_type == 'contract' && $property -> BuyerRepresentedBy != 'none')
             <div class="bg-primary d-flex justify-content-start flex-wrap text-white m-1 p-2">
                 <div class="text-white d-none d-sm-inline-block mr-2">
                     <i class="fad fa-users fa-2x"></i>
                 </div>
                 <div class="ml-2 pr-2 agent-section border-right header-section">
-                    <span class="font-weight-bold text-yellow">Buyer's Agent</span>
+                    <span class="font-weight-bold text-yellow">{{ $for_sale ? 'Buyer' : 'Renter' }} Agent</span>
                     <br>
                     <div>
                         {{ $property -> BuyerAgentFirstName . ' ' . $property -> BuyerAgentLastName }}
@@ -169,7 +215,7 @@ if($transaction_type == 'listing') {
                 </div>
                 @if(count($buyers) > 0)
                 <div class="ml-2 header-section">
-                    <span class="font-weight-bold text-yellow">Buyers</span>
+                    <span class="font-weight-bold text-yellow">{{ $for_sale ? 'Buyers' : 'Renters' }}</span>
                     <br>
                     <div>
                         @foreach($buyers as $buyer)
@@ -203,40 +249,66 @@ if($transaction_type == 'listing') {
                 <div class="text-white d-none d-sm-inline-block mr-2">
                     <i class="fad fa-home-alt fa-2x"></i>
                 </div>
-                <div class="container pr-5">
-                    <div class="row">
-                        <div class="col-6 text-right pr-0">
-                            <span class="font-weight-bold text-yellow text-nowrap">Status</span>
+
+                @if($for_sale || $transaction_type == 'listing')
+
+                    <div class="container pr-5">
+                        <div class="row">
+                            <div class="col-6 text-right pr-0">
+                                <span class="font-weight-bold text-yellow text-nowrap">Status</span>
+                            </div>
+                            <div class="col-6 text-left text-nowrap">
+                                {{ $resource_items -> GetResourceName($property -> Status) }}
+                            </div>
                         </div>
-                        <div class="col-6 text-left text-nowrap">
-                            {{ $resource_items -> GetResourceName($property -> Status) }}
+                        <div class="row">
+                            <div class="col-6 text-right pr-0">
+                                <span class="font-weight-bold text-yellow text-nowrap">@if($transaction_type == 'listing') List Date @else Offer Date @endif</span>
+                            </div>
+                            <div class="col-6 text-left">
+                                @if($transaction_type == 'listing') {{ date('n/j/Y', strtotime($property -> MLSListDate)) }} @else {{ date('n/j/Y', strtotime($property -> ContractDate)) }} @endif
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-right pr-0">
+                                <span class="font-weight-bold text-yellow text-nowrap">@if($transaction_type == 'listing') Expires Date @else Settle Date @endif</span>
+                            </div>
+                            <div class="col-6 text-left">
+                                @if($transaction_type == 'listing') {{ date('n/j/Y', strtotime($property -> ExpirationDate)) }} @else {{ date('n/j/Y', strtotime($property -> CloseDate)) }} @endif
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-right pr-0 text-nowrap text-nowrap">
+                                <span class="font-weight-bold text-yellow">@if($transaction_type == 'listing') List Price @else Sale Price @endif</span>
+                            </div>
+                            <div class="col-6 text-left text-nowrap">
+                                @if($transaction_type == 'listing') ${{ number_format($property -> ListPrice) }} @else ${{ number_format($property -> ContractPrice) }} @endif
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-6 text-right pr-0">
-                            <span class="font-weight-bold text-yellow text-nowrap">@if($transaction_type == 'listing') List Date @else Offer Date @endif</span>
+
+                @else
+
+                    <div class="container pr-5">
+                        <div class="row">
+                            <div class="col-6 text-right pr-0">
+                                <span class="font-weight-bold text-yellow text-nowrap">Lease Date</span>
+                            </div>
+                            <div class="col-6 text-left">
+                                {{ date('n/j/Y', strtotime($property -> CloseDate)) }}
+                            </div>
                         </div>
-                        <div class="col-6 text-left">
-                            @if($transaction_type == 'listing') {{ date('n/j/Y', strtotime($property -> MLSListDate)) }} @else {{ date('n/j/Y', strtotime($property -> ContractDate)) }} @endif
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 text-right pr-0">
-                            <span class="font-weight-bold text-yellow text-nowrap">@if($transaction_type == 'listing') Expires Date @else Settle Date @endif</span>
-                        </div>
-                        <div class="col-6 text-left">
-                            @if($transaction_type == 'listing') {{ date('n/j/Y', strtotime($property -> ExpirationDate)) }} @else {{ date('n/j/Y', strtotime($property -> CloseDate)) }} @endif
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 text-right pr-0 text-nowrap text-nowrap">
-                            <span class="font-weight-bold text-yellow">@if($transaction_type == 'listing') List Price @else Sale Price @endif</span>
-                        </div>
-                        <div class="col-6 text-left text-nowrap">
-                            @if($transaction_type == 'listing') ${{ number_format($property -> ListPrice) }} @else ${{ number_format($property -> ContractPrice) }} @endif
+                        <div class="row">
+                            <div class="col-6 text-right pr-0 text-nowrap text-nowrap">
+                                <span class="font-weight-bold text-yellow">Lease Price</span>
+                            </div>
+                            <div class="col-6 text-left text-nowrap">
+                                @if($transaction_type == 'listing') ${{ number_format($property -> ListPrice) }} @else ${{ number_format($property -> LeaseAmount) }}  @endif
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                @endif
 
             </div>
 

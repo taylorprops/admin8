@@ -311,7 +311,7 @@
         margin-left: auto;
         margin-right: auto;
         border: 1px dashed $primary;
-        min-height: 35px;
+        min-height: 45px;
     }
     .checklist-item-badge {
         width: 100px;
@@ -332,6 +332,7 @@
     }
     .source-dropped {
         background: rgba($success, .5);
+        padding: 10px;
 
         > .text-gray {
             color: white !important;
@@ -478,6 +479,40 @@
 
     }
 
+    .buyer-agent-details, .our-agent-div {
+        display: none;
+    }
+
+    .commission-container {
+
+        .popout-div {
+            position: relative;
+        }
+
+        .popout {
+            display: none;
+            position: absolute;
+
+            .view-add-div {
+                height: 250px;
+                overflow: auto;
+            }
+        }
+
+        .popout.top {
+            left: 0px;
+            top: 0px;
+        }
+        .popout.middle {
+            left: 0px;
+        }
+
+    }
+
+    .save-split-doc-options {
+        min-height: 50VH;
+    }
+
     @media (min-width: 1200px) {
         #split_document_modal_dialog {
             max-width: 95% !important;
@@ -516,6 +551,10 @@
             padding-left: 10px;
         }
 
+        .popout {
+            position: relative !important;
+        }
+
 
     }
 
@@ -523,6 +562,7 @@
         .form-check-input[type="checkbox"] + label, label.btn input[type="checkbox"] + label {
             padding-left: 25px;
         }
+
     }
 
 

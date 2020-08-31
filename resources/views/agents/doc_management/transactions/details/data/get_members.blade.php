@@ -9,10 +9,22 @@
                     " id="members_tab" role="tablist">
                         <a class="list-group-item list-group-item-action hidden font-weight-bold" id="add_member_group" data-toggle="list" href="#add_member_div" role="tab">New Contact</a>
                         @foreach($members as $member)
+                            @php
+                            $member_type = $resource_items -> GetResourceName($member -> member_type_id);
+                            if($for_sale == false) {
+                                if($member_type == 'Seller') {
+                                    $member_type = 'Owner';
+                                } else if($member_type == 'Buyer') {
+                                    $member_type = 'Renter';
+                                } else if($member_type == 'Buyer Agent') {
+                                    $member_type = 'Renter Agent';
+                                }
+                            }
+                            @endphp
                             <a class="list-group-item list-group-item-action list-group-item-member @if($loop -> first) active @endif" id="member_{{ $member -> id }}_item" data-toggle="list" href="#member_{{ $member -> id }}_div" role="tab" data-member-type="{{ $member -> member_type }}">
                                 <div class="row">
                                     <div class="col-5">
-                                        <span class="font-weight-bold">{{ $resource_items -> GetResourceName($member -> member_type_id) }}</span>
+                                        <span class="font-weight-bold">{{ $member_type }}</span>
                                     </div>
                                     <div class="col-7">
                                         @if($member -> entity_name) {{ $member -> entity_name }} @elseif($member -> first_name) {{ $member -> first_name . ' ' . $member -> last_name }} @else {{ $member -> company }} @endif
@@ -40,7 +52,19 @@
                                             <select class="custom-form-element form-select form-select-no-search form-select-no-cancel member-type-id" {{ $disabled }} data-label="Member Role">
                                                 <option value=""></option>
                                                 @foreach($contact_types as $contact_type)
-                                                <option value="{{ $contact_type -> resource_id }}" @if($contact_type -> resource_id == $member -> member_type_id) selected @endif>{{ $contact_type -> resource_name }}</option>
+                                                    @php
+                                                    $member_type = $contact_type -> resource_name;
+                                                    if($for_sale == false) {
+                                                        if($member_type == 'Seller') {
+                                                            $member_type = 'Owner';
+                                                        } else if($member_type == 'Buyer') {
+                                                            $member_type = 'Renter';
+                                                        } else if($member_type == 'Buyer Agent') {
+                                                            $member_type = 'Renter Agent';
+                                                        }
+                                                    }
+                                                    @endphp
+                                                    <option value="{{ $contact_type -> resource_id }}" @if($contact_type -> resource_id == $member -> member_type_id) selected @endif>{{ $member_type }}</option>
                                                 @endforeach
                                             </select>
                                         </div>

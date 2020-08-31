@@ -627,7 +627,8 @@ if (document.URL.match(/transaction_details/)) {
 
 
 
-                    $('#save_add_to_checklist_button').off('click').on('click', function () {
+                    $('#save_add_to_checklist_button').one('click', function () {
+                        $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2"></span> Saving...');
                         save_add_to_checklist($(this).data('checklist-id'));
                     });
                 })

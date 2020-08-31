@@ -28,8 +28,8 @@ class VerifyCsrfToken extends Middleware
     {
 
         if(basename(request() -> path()) != 'login') {
-            if(auth() -> user() == null) {
-                return redirect() -> route('login');
+            if (!auth() -> user()) {
+                return redirect('login');
             }
         }
         return $next($request);

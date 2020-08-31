@@ -33,7 +33,7 @@
     Route::post('/agents/doc_management/transactions/save_transaction_required_details', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@save_transaction_required_details');
 
     // listing details page
-    Route::get('/agents/doc_management/transactions/transaction_details/{id}/{type}', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@transaction_details');
+    Route::get('/agents/doc_management/transactions/transaction_details/{id}/{transaction_type}', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@transaction_details');
     // get header for listing details page
     Route::get('/agents/doc_management/transactions/transaction_details_header', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@transaction_details_header');
 
@@ -106,10 +106,21 @@
     Route::post('/agents/doc_management/transactions/save_required_fields', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_required_fields');
 
 
+    // get commission
+    Route::get('/agents/doc_management/transactions/get_commission', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_commission');
+    // get earnest
+    Route::get('/agents/doc_management/transactions/get_earnest', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_earnest');
+
 
 
     // Accept new contract for listing
     Route::post('/agents/doc_management/transactions/accept_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@accept_contract');
+    // Release contract on listing
+    Route::post('/agents/doc_management/transactions/release_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@release_contract');
+    // UNDO release or canceled contract
+    Route::post('/agents/doc_management/transactions/undo_cancel_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@undo_cancel_contract');
+    // check if docs submitted and accepted
+    Route::get('/agents/doc_management/transactions/check_docs_submitted_and_accepted', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@check_docs_submitted_and_accepted');
 
     // search bright mls agents
     Route::get('/agents/doc_management/transactions/search_bright_agents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@search_bright_agents');

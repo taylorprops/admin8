@@ -24,8 +24,6 @@ Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout') -> name('logout');
 
 
-
-
 // Route::get('/test', 'Testcontroller@test');
 /* Route::get('/testing', function() {
     return view('/tests/test');

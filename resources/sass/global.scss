@@ -126,6 +126,9 @@ input {
 .container-1000 {
     max-width: 1000px !important;
 }
+.container-800 {
+    max-width: 800px !important;
+}
 .container-600 {
     max-width: 600px !important;
 }
@@ -137,7 +140,12 @@ input {
 .hidden {
     display: none;
 }
-
+.font-14 {
+    font-size: 1.4rem;
+}
+.font-13 {
+    font-size: 1.3rem;
+}
 .font-12 {
     font-size: 1.2rem;
 }

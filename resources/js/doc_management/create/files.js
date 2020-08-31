@@ -156,7 +156,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         })
         .catch(function (error) {
-            console.log(error);
+
         });
     }
 
@@ -222,7 +222,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         })
         .catch(function (error) {
-            console.log(error);
+
         });
 
     }
@@ -270,7 +270,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 sortable();
             })
             .catch(function (error) {
-                console.log(error);
+
             });
 
         }
@@ -373,7 +373,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 $('#save_add_to_checklists_button').html('<i class="fad fa-check mr-2"></i> Save');
             })
             .catch(function (error) {
-                console.log(error);
+
             });
 
         }
@@ -425,7 +425,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 toastr['success']('Form Successfully Removed');
             })
             .catch(function (error) {
-                console.log(error);
+
             });
         });
     }
@@ -447,7 +447,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 toastr['success']('Form Successfully Replaced');
             })
             .catch(function (error) {
-                console.log(error);
+
             });
         });
     }
@@ -482,7 +482,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 toastr['success'](msg);
             })
             .catch(function (error) {
-                console.log(error);
+
             });
     }
 
@@ -543,7 +543,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 toastr['success']('Form Published Successfully');
             })
             .catch(function (error) {
-                console.log(error);
+
             });
     }
 
@@ -560,7 +560,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 toastr['success']('Form Duplicated Successfully');
             })
             .catch(function (error) {
-                console.log(error);
+
             });
     }
 
@@ -588,7 +588,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 toastr['success']('Form Deleted Successfully');
             })
             .catch(function (error) {
-                console.log(error);
+
             });
     }
 
@@ -638,7 +638,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
             })
             .catch(function (error) {
-                console.log(error);
+
             });
     }
 
@@ -689,7 +689,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                     $('#list_' + form_group_id).trigger('click');
                 })
                 .catch(function (error) {
-                    //console.log(error);
+                    //
                 });
 
         }
@@ -719,7 +719,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                     toastr['success']('Upload Edited Successfully');
                 })
                 .catch(function (error) {
-                    //console.log(error);
+                    //
                 });
 
         }
@@ -744,10 +744,10 @@ if (document.URL.match(/create\/upload\/files/)) {
         setTimeout(function () {
             $('.file-path').bind('change', function () {
                 let form_name = $('.file-path').val().replace(/\.pdf/, '');
-                form_name = form_name.replace(/^[0-9\.\s]+/, '');
+                form_name = form_name.replace(/^[0-9\.\s-]+/, '');
                 form_name = form_name.replace(/^\([a-zA-Z\s]+\)/, '');
                 form_name = form_name.replace(/^[-\s]{1}/, '');
-                form_name = form_name.replace(/[0-9\.\s_]+$/, '');
+                form_name = form_name.replace(/[0-9\.\s_-]+$/, '');
                 $('#file_name_display, #helper_text').val(form_name).trigger('change');
             });
             $('#form_group_id').change(function () {
@@ -780,7 +780,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                     $('#upload_file_button').prop('disabled', false).html('<i class="fad fa-upload mr-2"></i> Upload Form');
                 })
                 .catch(function (error) {
-                    //console.log(error);
+                    //
                 });
         }
     }

@@ -30,6 +30,8 @@ class TransactionChecklists extends Model
             if($checklist_sale_rent == 'both') {
                 $checklist_sale_rent = 'sale';
                 $for_sale_and_rent = true;
+            } else if($checklist_sale_rent == 'rental') {
+                $checklist_property_sub_type_id = 0;
             }
             $where = [
                 ['checklist_represent', $checklist_represent],
@@ -42,8 +44,15 @@ class TransactionChecklists extends Model
             ];
         }
 
+
+
         // get checklist
         $checklist = Checklists::where($where) -> first();
+
+        /* $checklist = Checklists::where($where);
+        dd(vsprintf(str_replace('?', '%s', $checklist -> toSql()), collect($checklist -> getBindings()) -> map(function($binding){
+            return is_numeric($binding) ? $binding : "'{$binding}'";
+        }) -> toArray())); */
 
         // get checklist items
         $checklist_items = new ChecklistsItems();
@@ -146,6 +155,8 @@ class TransactionChecklists extends Model
             $if_applicable[$form_tag -> resource_name]['id'] = $form_tag -> resource_id;
             $if_applicable[$form_tag -> resource_name]['required'] = false;
         }
+
+        $if_applicable['contract']['required'] = true;
 
         if($checklist_state == 'MD' || $checklist_state == 'DC') {
             if($checklist_year_built < 1978) {

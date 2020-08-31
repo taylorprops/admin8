@@ -115,22 +115,28 @@
         $docs_count = $documents -> where('folder', $folder -> id) -> count();
 
         $show_folder = '';
+        $folder_name = $folder -> folder_name;
+
         if($transaction_type == 'listing') {
-            if($folder -> folder_name == 'Listing Documents' && $docs_count > 0) {
+            if($folder_name == 'Listing Documents' && $docs_count > 0) {
                 $show_folder = 'show';
             }
         } else if($transaction_type == 'contract') {
-            if($folder -> folder_name == 'Contract Documents' && $docs_count > 0) {
+            if($folder_name == 'Contract Documents' && $docs_count > 0) {
                 $show_folder = 'show';
             }
         } else if($transaction_type == 'referral') {
-            if($folder -> folder_name == 'Referral Documents' && $docs_count > 0) {
+            if($folder_name == 'Referral Documents' && $docs_count > 0) {
                 $show_folder = 'show';
             }
         }
 
+        if($for_sale == false) {
+            $folder_name = str_replace('Contract', 'Lease', $folder_name);
+        }
+
         $deletable_folder = true;
-        if(preg_match('/(Listing\sDocuments|Contract\sDocuments|Referral\sDocuments|Trash)/', $folder -> folder_name)) {
+        if(preg_match('/(Listing\sDocuments|Contract\sDocuments|Lease\sDocuments|Referral\sDocuments|Trash)/', $folder_name)) {
             $deletable_folder = false;
         }
         @endphp
@@ -143,9 +149,9 @@
                     </div>
                     <div class="h5 mt-2">
                         <a class="folder-collapse text-orange" data-toggle="collapse" href="#documents_folder_{{ $loop -> index }}" aria-expanded="false" aria-controls="documents_folder_{{ $loop -> index }}">
-                            <i class="fal @if($folder -> folder_name == 'Trash' || $show_folder == '') fa-angle-right @else fa-angle-down @endif fa-lg mr-3"></i>
+                            <i class="fal @if($folder_name == 'Trash' || $show_folder == '') fa-angle-right @else fa-angle-down @endif fa-lg mr-3"></i>
                             <i class="fad fa-folder mr-1 mr-sm-3 fa-lg"></i>
-                            {{ $folder -> folder_name }}
+                            {{ $folder_name }}
                         </a>
                         <span class="badge badge-pill badge-primary ml-1 ml-sm-3 py-1 docs-count">{{ $docs_count }}</span>
                     </div>
@@ -158,7 +164,7 @@
             </div>
 
 
-            <div class="collapse sortable-documents @if($folder -> folder_name != 'Trash') {{ $show_folder }} @endif" id="documents_folder_{{ $loop -> index }}" data-folder-id="{{ $folder -> id }}">
+            <div class="collapse sortable-documents @if($folder_name != 'Trash') {{ $show_folder }} @endif" id="documents_folder_{{ $loop -> index }}" data-folder-id="{{ $folder -> id }}">
 
                 @if(count($documents) > 0)
 
@@ -166,128 +172,128 @@
 
                         @if($document -> folder == $folder -> id)
 
-                        @php
-                        $assigned = $document -> assigned == 'yes' ? 'assigned' : null;
-                        $disabled = $assigned == 'yes' ? 'disabled' : null;
-                        @endphp
+                            @php
+                            $assigned = $document -> assigned == 'yes' ? 'assigned' : null;
+                            $disabled = $assigned == 'yes' ? 'disabled' : null;
+                            @endphp
 
-                        <div class="document-div row mx-0 py-0" data-folder-id="{{ $folder -> id }}" data-document-id="{{ $document -> id }}">
+                            <div class="document-div row mx-0 py-0" data-folder-id="{{ $folder -> id }}" data-document-id="{{ $document -> id }}">
 
-                            <div class="col-10 col-xl-4">
+                                <div class="col-10 col-xl-4">
 
-                                <div class="d-flex justify-content-start align-items-center">
-                                    <div class="mt-1">
-                                        <a href="javascript:void(0)" class="document-handle text-blue"><i class="fal fa-bars fa-lg"></i></a>
-                                    </div>
-                                    <div class="mt-1 mx-2 mr-md-4">
-                                        <input type="checkbox" class="custom-form-element form-checkbox check-document  {{ $assigned }}" data-document-id="{{ $document -> id }}">
-                                    </div>
-                                    <div class="text-gray document-title py-1 py-sm-2">
-                                        <a href="{{ $document -> file_location_converted }}" target="_blank">{{ $document -> file_name_display }}</a>
-                                        <div class="d-flex justify-content-start flex-wrap">
-                                            <div>
-                                                <span class="small">Added: {{ date('n/j/Y g:i:sA', strtotime($document -> created_at)) }} </span>
-                                            </div>
-                                            <div>
-                                                @if($document -> file_type == 'user')
-                                                    <span class="badge badge-secondary p-1 ml-2">User File</span>
-                                                @else
-                                                    <span class="badge badge-primary p-1 ml-2">System File</span>
-                                                @endif
-                                                <span class="small ml-2">{{ get_mb(filesize(Storage::disk('public') -> path(str_replace('/storage/', '', $document -> file_location_converted)))).'MB' }}</span>
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        <div class="mt-1">
+                                            <a href="javascript:void(0)" class="document-handle text-blue"><i class="fal fa-bars fa-lg"></i></a>
+                                        </div>
+                                        <div class="mt-1 mx-2 mr-md-4">
+                                            <input type="checkbox" class="custom-form-element form-checkbox check-document  {{ $assigned }}" data-document-id="{{ $document -> id }}">
+                                        </div>
+                                        <div class="text-gray document-title py-1 py-sm-2">
+                                            <a href="{{ $document -> file_location_converted }}" target="_blank">{{ $document -> file_name_display }}</a>
+                                            <div class="d-flex justify-content-start flex-wrap">
+                                                <div>
+                                                    <span class="small">Added: {{ date('n/j/Y g:i:sA', strtotime($document -> created_at)) }} </span>
+                                                </div>
+                                                <div>
+                                                    @if($document -> file_type == 'user')
+                                                        <span class="badge badge-secondary p-1 ml-2">User File</span>
+                                                    @else
+                                                        <span class="badge badge-primary p-1 ml-2">System File</span>
+                                                    @endif
+                                                    <span class="small ml-2">{{ get_mb(filesize(Storage::disk('public') -> path(str_replace('/storage/', '', $document -> file_location_converted)))).'MB' }}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
 
-                            </div>
+                                <div class="col-2 col-xl-8">
 
-                            <div class="col-2 col-xl-8">
+                                    <div class="d-flex justify-content-end align-items-center h-100">
 
-                                <div class="d-flex justify-content-end align-items-center h-100">
+                                        @if($folder_name != 'Trash')
 
-                                    @if($folder -> folder_name != 'Trash')
+                                            @php
+                                            $menu_options = '';
 
-                                        @php
-                                        $menu_options = '';
+                                            if($assigned) {
 
-                                        if($assigned) {
+                                                $menu_options .= '<div class="mr-1  text-success"><i class="fal fa-check mr-2"></i> <span class="d-inline-block d-xl-inline-block"> Assigned</span></div>';
 
-                                            $menu_options .= '<div class="mr-1  text-success"><i class="fal fa-check mr-2"></i> <span class="d-inline-block d-xl-inline-block"> Assigned</span></div>';
+                                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
 
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
+                                            } else {
 
-                                        } else {
+                                                $menu_options .= '<button type="button" class="dropdown-item text-primary add-to-checklist-button" data-document-id="'.$document -> id.'"  data-checklist-id="'.$checklist_id.'" title="Assign Document To Checklist Item"><i class="fad fa-tasks mr-1 "></i> Assign</button>';
 
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary add-to-checklist-button" data-document-id="'.$document -> id.'"  data-checklist-id="'.$checklist_id.'" title="Assign Document To Checklist Item"><i class="fad fa-tasks mr-1 "></i> Assign</button>';
+                                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
 
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
+                                                if($document -> pages_total > 1) {
+                                                    $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" data-checklist-id="'.$checklist_id.'" data-file-name="'.$document -> file_name_display.'" data-file-type="'.$document -> file_type.'" data-folder="'.$folder -> id.'" title="Split Document"><i class="fad fa-page-break mr-1 "></i> Split</button>';
+                                                }
 
-                                            if($document -> pages_total > 1) {
-                                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" data-checklist-id="'.$checklist_id.'" data-file-name="'.$document -> file_name_display.'" data-file-type="'.$document -> file_type.'" data-folder="'.$folder -> id.'" title="Split Document"><i class="fad fa-page-break mr-1 "></i> Split</button>';
+                                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Edit and Fill Fields"><i class="fad fa-edit mr-1 "></i> Edit/Fill</button>';
+
+                                                $menu_options .= '<button type="button" class="dropdown-item text-primary doc-get-signed-button" data-document-id="'.$document -> id.'" title="Get Signed"><i class="fad fa-signature mr-1 "></i> Get Signed</button>';
+
                                             }
 
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-edit-button" onClick="window.open(\'/agents/doc_management/transactions/edit_files/'.$document -> id.'\')" data-document-id="'.$document -> id.'" title="Edit and Fill Fields"><i class="fad fa-edit mr-1 "></i> Edit/Fill</button>';
-
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-get-signed-button" data-document-id="'.$document -> id.'" title="Get Signed"><i class="fad fa-signature mr-1 "></i> Get Signed</button>';
-
-                                        }
 
 
+                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
 
-                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
+                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
 
-                                        $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
+                                            $menu_options .= '
+                                            <div class="dropdown-submenu">
+                                                <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Download Form"><i class="fad fa-download mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Download</span></button>
+                                                <div class="dropdown-menu">
+                                                    <a class="text-primary dropdown-item" href="'.$document -> file_location_converted.'" download="'.$document -> file_name_display.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
+                                                    <a class="text-primary dropdown-item" href="'.$document -> file_location.'" download="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
+                                                </div>
+                                            </div>';
 
-                                        $menu_options .= '
-                                        <div class="dropdown-submenu">
-                                            <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Download Form"><i class="fad fa-download mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Download</span></button>
-                                            <div class="dropdown-menu">
-                                                <a class="text-primary dropdown-item" href="'.$document -> file_location_converted.'" download="'.$document -> file_name_display.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
-                                                <a class="text-primary dropdown-item" href="'.$document -> file_location.'" download="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
+                                            $menu_options .= '
+                                            <div class="dropdown-submenu">
+                                                <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Print Form"><i class="fad fa-print mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Print</span></button>
+                                                <div class="dropdown-menu">
+                                                    <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location_converted.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
+                                                    <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location.'" data-filename="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                                                </div>
+                                            </div>';
+
+                                            $menu_options .= '<div class="dropdown-divider d-block d-xl-none"></div>';
+
+                                            if(!$assigned) {
+
+                                                $menu_options .= '<button type="button" class="dropdown-item text-danger doc-delete-button" data-document-id="'.$document -> id.'" data-document-name="' . $document -> file_name_display . '" title="Delete Form"><i class="fad fa-trash mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Trash</span></button>';
+
+                                            }
+
+                                            $menu_options_large = preg_replace('/dropdown-item\stext-primary/', 'btn btn-primary', $menu_options);
+                                            $menu_options_large = preg_replace('/dropdown-item\stext-danger/', 'btn btn-danger', $menu_options_large);
+                                            $menu_options_large = preg_replace('/dropdown-submenu/', 'dropleft', $menu_options_large);
+                                            @endphp
+
+                                            <div class="d-block d-xl-none dropleft">
+                                                <button type="button" class="btn btn-primary dropdown-toggle pl-2 pr-1 py-0 pl-sm-2 pt-sm-1 pb-sm-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                                <div class="dropdown-menu">
+                                                    {!! $menu_options !!}
+                                                </div>
                                             </div>
-                                        </div>';
 
-                                        $menu_options .= '
-                                        <div class="dropdown-submenu">
-                                            <button type="button" class="dropdown-item text-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Print Form"><i class="fad fa-print mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Print</span></button>
-                                            <div class="dropdown-menu">
-                                                <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location_converted.'"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
-                                                <a class="text-primary dropdown-item doc-print-button" href="javascript: void(0)" data-link="'.$document -> file_location.'" data-filename="'.$document -> file_name_display.'"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                                            <div class="d-none d-xl-flex align-items-center">
+                                                {!! $menu_options_large !!}
                                             </div>
-                                        </div>';
 
-                                        $menu_options .= '<div class="dropdown-divider d-block d-xl-none"></div>';
+                                        @endif
 
-                                        if(!$assigned) {
-
-                                            $menu_options .= '<button type="button" class="dropdown-item text-danger doc-delete-button" data-document-id="'.$document -> id.'" data-document-name="' . $document -> file_name_display . '" title="Delete Form"><i class="fad fa-trash mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Trash</span></button>';
-
-                                        }
-
-                                        $menu_options_large = preg_replace('/dropdown-item\stext-primary/', 'btn btn-primary', $menu_options);
-                                        $menu_options_large = preg_replace('/dropdown-item\stext-danger/', 'btn btn-danger', $menu_options_large);
-                                        $menu_options_large = preg_replace('/dropdown-submenu/', 'dropleft', $menu_options_large);
-                                        @endphp
-
-                                        <div class="d-block d-xl-none dropleft">
-                                            <button type="button" class="btn btn-primary dropdown-toggle pl-2 pr-1 py-0 pl-sm-2 pt-sm-1 pb-sm-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                                            <div class="dropdown-menu">
-                                                {!! $menu_options !!}
-                                            </div>
-                                        </div>
-
-                                        <div class="d-none d-xl-flex align-items-center">
-                                            {!! $menu_options_large !!}
-                                        </div>
-
-                                    @endif
+                                    </div>
 
                                 </div>
 
                             </div>
-
-                        </div>
 
                         @endif
 
@@ -637,8 +643,14 @@
                                 <div class="mb-4">Move Documents To:</div>
                                 <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="move_documents_folder" data-label="Select Folder">
                                     @foreach($folders as $folder)
-                                        @if($folder -> folder_name != 'Trash')
-                                        <option value="{{ $folder -> id }}">{{ $folder -> folder_name }}</option>
+                                        @php
+                                        $folder_name = $folder -> folder_name;
+                                        if($for_sale == false) {
+                                            $folder_name = str_replace('Contract', 'Lease', $folder_name);
+                                        }
+                                        @endphp
+                                        @if($folder_name != 'Trash')
+                                            <option value="{{ $folder -> id }}">{{ $folder_name }}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -674,7 +686,7 @@
                                         <select class="custom-form-element form-select form-select-no-cancel form-select-no-search select-form-group mt-3" data-label="Select Form Group">
                                             <option value="all">All</option>
                                             @foreach($form_groups as $form_group)
-                                            <option value="{{ $form_group -> resource_id }}" @if($loop -> first) selected @endif>{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
+                                                <option value="{{ $form_group -> resource_id }}" @if($loop -> first) selected @endif>{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -753,23 +765,33 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-12 col-lg-4 pt-3 mx-auto mb-3">
-                                <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="individual_templates_folder" data-label="Select Folder To Add Forms To">
-                                    @foreach($folders as $folder)
-                                        @php
-                                        if($transaction_type == 'listing') {
-                                            $selected_folder = 'Listing Documents';
-                                        } else if($transaction_type == 'contract') {
-                                            $selected_folder = 'Contract Documents';
-                                        } else if($transaction_type == 'referral') {
-                                            $selected_folder = 'Referral Documents';
-                                        }
-                                        @endphp
-                                        @if($folder -> folder_name != 'Trash')
-                                        <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder -> folder_name }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
+                            <div class="col-12 col-lg-4 mx-auto">
+                                <div class="my-5">
+                                    <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="individual_templates_folder" data-label="Select Folder To Add Forms To">
+                                        @foreach($folders as $folder)
+                                            @php
+                                            $folder_name = $folder -> folder_name;
+                                            if($for_sale == false) {
+                                                $folder_name = str_replace('Contract', 'Lease', $folder_name);
+                                            }
+
+                                            if($transaction_type == 'listing') {
+                                                $selected_folder = 'Listing Documents';
+                                            } else if($transaction_type == 'contract') {
+                                                $selected_folder = 'Contract Documents';
+                                                if($for_sale == false) {
+                                                    $selected_folder = 'Lease Documents';
+                                                }
+                                            } else if($transaction_type == 'referral') {
+                                                $selected_folder = 'Referral Documents';
+                                            }
+                                            @endphp
+                                            @if($folder -> folder_name != 'Trash')
+                                            <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder_name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -805,14 +827,24 @@
                                         <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="checklist_templates_folder" data-label="Select Folder">
                                             @foreach($folders as $folder)
                                                 @php
+                                                $folder_name = $folder -> folder_name;
+                                                if($for_sale == false) {
+                                                    $folder_name = str_replace('Contract', 'Lease', $folder_name);
+                                                }
+
                                                 if($transaction_type == 'listing') {
                                                     $selected_folder = 'Listing Documents';
                                                 } else if($transaction_type == 'contract') {
                                                     $selected_folder = 'Contract Documents';
+                                                    if($for_sale == false) {
+                                                        $selected_folder = 'Lease Documents';
+                                                    }
+                                                } else if($transaction_type == 'referral') {
+                                                    $selected_folder = 'Referral Documents';
                                                 }
                                                 @endphp
                                                 @if($folder -> folder_name != 'Trash')
-                                                <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder -> folder_name }}</option>
+                                                <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder_name }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
@@ -891,14 +923,24 @@
                                 <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="documents_folder" data-label="Select Folder">
                                     @foreach($folders as $folder)
                                         @php
+                                        $folder_name = $folder -> folder_name;
+                                        if($for_sale == false) {
+                                            $folder_name = str_replace('Contract', 'Lease', $folder_name);
+                                        }
+
                                         if($transaction_type == 'listing') {
                                             $selected_folder = 'Listing Documents';
                                         } else if($transaction_type == 'contract') {
                                             $selected_folder = 'Contract Documents';
+                                            if($for_sale == false) {
+                                                $selected_folder = 'Lease Documents';
+                                            }
+                                        } else if($transaction_type == 'referral') {
+                                            $selected_folder = 'Referral Documents';
                                         }
                                         @endphp
                                         @if($folder -> folder_name != 'Trash')
-                                        <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder -> folder_name }}</option>
+                                        <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder_name }}</option>
                                         @endif
                                     @endforeach
                                 </select>

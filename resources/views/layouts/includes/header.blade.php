@@ -1,18 +1,21 @@
 @unless (Auth::check())
     @php header('Location: /'); exit(); @endphp
 @endunless
+@if(!auth() -> user())
+    @php header('Location: /'); exit(); @endphp
+@endif
 
 <!--Double navigation-->
 <header>
     <!-- Sidebar navigation -->
     <div id="slide-out" class="side-nav bg-primary">
-        <ul class="custom-scrollbar">
+        <ul class="custom-scrollbar menu-ul">
             <!-- Logo -->
-            <li>
+            {{-- <li>
                 <div class="waves-light">
                     <a class="header-logo-link text-center" href="javascript: void(0)"><img src="{{ \Session::get('header_logo_src') }}" class="header-logo"></a>
                 </div>
-            </li>
+            </li> --}}
             <!--/. Logo -->
 
             <hr class="bg-white">

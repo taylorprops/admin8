@@ -31,18 +31,19 @@ $(document).ready(function () {
     // Add a response interceptor
     axios.interceptors.response.use(function (response) {
         //console.log(response);
-        // log out user on axios calls if session expired
-        if (response.data.dismiss || response.data.error) {
-            window.parent.location = '/';
+        if(response.status != 200) {
+            // if ajax returns a redirect to login page this will force the parent page to redirect to login
+            if(response.data.match(/doctype/)) {
+                window.location = '/';
+            }
         }
         return response;
+
     }, function (error) {
+
         console.log('error = '+error);
-        //location.reload();
-        /* if(error.response.status === 404 || error.response.match(/404/) || error.response.status === 500 || error.response.match(/500/)) {
-            window.location = '/';
-        } */
-        //return Promise.reject('error '+error);
+
+
     });
 
 
@@ -139,7 +140,11 @@ window.datepicker_custom = function() {
             },
             showAllDates: true,
         });
+        $('.datepicker').on('focus', function() {
+            picker.show();
+        });
     });
+
 }
 
 // session timeout
