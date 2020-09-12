@@ -21,6 +21,9 @@ if (document.URL.match(/edit_files/)) {
                     onSelect: (instance, date) => {
                         const value = date.toLocaleDateString();
                         $('#' + instance.el.id).prev('div.data-div').html(value);
+                        let element = $('#' + instance.el.id);
+                        let wrapper = element.closest('.form-ele');
+                        show_cancel_date(wrapper, element);
                     },
                     onHide: instance => {
                         $('.field-div').removeClass('active');
@@ -32,7 +35,6 @@ if (document.URL.match(/edit_files/)) {
                     showAllDates: true,
                 });
             });
-
 
         }
 

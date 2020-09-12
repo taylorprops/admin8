@@ -100,7 +100,7 @@ if (document.URL.match(/transaction_required_details/)) {
                         if (agents.length > 0) {
                             $.each(agents, function (k, agent) {
                                 let agent_div = ' \
-                                <div class="search-result list-group-item" data-type="'+type+'" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '" data-agent-office-phone="' + agent.OfficePhone + '"> \
+                                <div class="search-result list-group-item" data-type="'+type+'" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
                                     <div class="row"> \
                                         <div class="col-6 col-md-3"> \
                                             <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
@@ -218,7 +218,6 @@ if (document.URL.match(/transaction_required_details/)) {
         let office_city = ele.data('agent-city');
         let office_state = ele.data('agent-state');
         let office_zip = ele.data('agent-zip');
-        let office_phone = ele.data('agent-office-phone');
 
         if(type == 'receiving') {
             $('#ReferringAgentFirstName').val(agent_first).trigger('change');
@@ -228,7 +227,6 @@ if (document.URL.match(/transaction_required_details/)) {
             $('#ReferringAgentOfficeCity').val(office_city).trigger('change');
             $('#ReferringAgentOfficeState').val(office_state).trigger('change');
             $('#ReferringAgentOfficeZip').val(office_zip).trigger('change');
-            $('#ReferringAgentOfficePhone').val(office_phone).trigger('change');
         } else {
             $('#ReceivingAgentFirstName').val(agent_first).trigger('change');
             $('#ReceivingAgentLastName').val(agent_last).trigger('change');
@@ -237,7 +235,6 @@ if (document.URL.match(/transaction_required_details/)) {
             $('#ReceivingAgentOfficeCity').val(office_city).trigger('change');
             $('#ReceivingAgentOfficeState').val(office_state).trigger('change');
             $('#ReceivingAgentOfficeZip').val(office_zip).trigger('change');
-            $('#ReceivingAgentOfficePhone').val(office_phone).trigger('change');
         }
         select_refresh();
 
@@ -249,21 +246,25 @@ if (document.URL.match(/transaction_required_details/)) {
 
         let agent_first = ele.data('agent-first');
         let agent_last = ele.data('agent-last');
+        let agent_phone = ele.data('agent-phone');
+        let agent_email = ele.data('agent-email');
         let agent_company = ele.data('agent-company');
         let office_street = ele.data('agent-street');
         let office_city = ele.data('agent-city');
         let office_state = ele.data('agent-state');
         let office_zip = ele.data('agent-zip');
-        let office_phone = ele.data('agent-office-phone');
+        let agent_mls = ele.data('agent-mls-id');
 
         $('#ListAgentFirstName').val(agent_first).trigger('change');
         $('#ListAgentLastName').val(agent_last).trigger('change');
+        $('#ListAgentPreferredPhone').val(agent_phone).trigger('change');
+        $('#ListAgentEmail').val(agent_email).trigger('change');
         $('#ListAgentOfficeName').val(agent_company).trigger('change');
         $('#ListAgentOfficeStreet').val(office_street).trigger('change');
         $('#ListAgentOfficeCity').val(office_city).trigger('change');
         $('#ListAgentOfficeState').val(office_state).trigger('change');
         $('#ListAgentOfficeZip').val(office_zip).trigger('change');
-        $('#ListAgentOfficePhone').val(office_phone).trigger('change');
+        $('#ListAgentMlsId').val(agent_mls).trigger('change');
         select_refresh();
 
         $('.search-results').fadeOut('slow');

@@ -78,6 +78,17 @@ body, body.modal-open {
     cursor: default;
 }
 
+.badge {
+    padding: 0.25em 0.45em 0.32rem;
+}
+
+.border-2 {
+    border-width:2px !important;
+}
+.border-3 {
+    border-width:3px !important;
+}
+
 // datatables
 table.dataTable thead .sorting:after,
 table.dataTable thead .sorting:before,

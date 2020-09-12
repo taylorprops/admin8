@@ -15,9 +15,9 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+       // return $next($request);
         //dd($request);
-       /*  if(auth() -> user()) {
+        if(auth() -> user()) {
             $group = auth() -> user() -> group;
             if($group == 'admin'){
                 return $next($request);
@@ -30,7 +30,7 @@ class Admin
         }
 
         return redirect('/') -> with('error','Session Has Expired');
-        //echo '<script>top.location.href="/";</script>'; */
+        //echo '<script>top.location.href="/";</script>';
 
     }
 }

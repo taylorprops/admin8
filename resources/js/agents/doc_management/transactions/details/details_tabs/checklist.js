@@ -87,8 +87,12 @@ if (document.URL.match(/transaction_details/)) {
             toastr['success']('Document Removed From Checklist');
             load_documents_on_tab_click();
             let doc_count = button.closest('.checklist-item-div').find('.doc-count');
-            doc_count.text(parseInt(doc_count.text()) - 1);
-            button.closest('.document-row').fadeOut().remove();
+            if(parseInt(doc_count.text()) - 1 == 0) {
+                load_tabs('checklist');
+            } else {
+                doc_count.text(parseInt(doc_count.text()) - 1);
+                button.closest('.document-row').fadeOut().remove();
+            }
         })
         .catch(function (error) {
             console.log(error);
@@ -149,14 +153,13 @@ if (document.URL.match(/transaction_details/)) {
     }
 
     window.add_document = function(button) {
-        let active_collapse = button.data('target');
         $('.select-document-button').off('click').on('click', function( ){
-            save_add_document($(this).data('document-id'), active_collapse);
+            save_add_document($(this).data('document-id'));
         });
         $('#add_document_modal').modal();
     }
 
-    window.save_add_document = function(document_id, active_collapse) {
+    window.save_add_document = function(document_id) {
 
         let checklist_id = $('#add_document_checklist_id').val();
         let checklist_item_id = $('#add_document_checklist_item_id').val();
@@ -180,9 +183,12 @@ if (document.URL.match(/transaction_details/)) {
             toastr['success']('Document Added To Checklist');
             load_tabs('checklist');
             load_documents_on_tab_click();
-            /* setTimeout(function() {
-                $('#'+active_collapse).collapse('show');
-            }, 500); */
+            /* if(response.data) {
+                if(response.data.release_submitted == 'yes') {
+                    $('#release_contract_button').trigger('click');
+                }
+            } */
+
         })
         .catch(function (error) {
             console.log(error);

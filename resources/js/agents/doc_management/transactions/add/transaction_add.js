@@ -39,6 +39,9 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
                 show_add_agent();
             }
         });
+
+
+
     });
 
     function show_add_agent() {

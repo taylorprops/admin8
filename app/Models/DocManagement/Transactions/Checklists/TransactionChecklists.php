@@ -184,7 +184,7 @@ class TransactionChecklists extends Model
             $upload = Upload::where('file_id', $checklist_item -> checklist_form_id) -> first();
             $form_tag_id = $upload -> form_tags;
 
-            foreach($form_tags as $form_tag) {
+            foreach($form_tags -> whereNotIn('resource_name', ['release', 'closing_docs']) as $form_tag) {
                 // see if required form tag matches checklist item form_tag
                 if($if_applicable[$form_tag -> resource_name]['id'] == $form_tag_id) {
                     if($if_applicable[$form_tag -> resource_name]['required']) {

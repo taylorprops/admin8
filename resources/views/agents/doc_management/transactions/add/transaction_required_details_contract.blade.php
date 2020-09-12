@@ -163,7 +163,7 @@ if($property -> Owner2 != '') {
                     </div>
                 </div>
 
-                @if($property -> ListAgentFirstName == '' && $property -> PropertySubType != $resource_items -> GetResourceID('For Sale By Owner', 'checklist_property_sub_types'))
+                @if($property -> PropertySubType != $resource_items -> GetResourceID('For Sale By Owner', 'checklist_property_sub_types'))
 
                 <div class="container z-depth-1 mb-4 py-3">
                     <div class="row">
@@ -193,41 +193,35 @@ if($property -> Owner2 != '') {
 
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input required" id="ListAgentFirstName" name="ListAgentFirstName" data-label="Agent First Name">
+                                        <input type="text" class="custom-form-element form-input required" id="ListAgentFirstName" name="ListAgentFirstName" value="{{ $property -> ListAgentFirstName }}" data-label="Agent First Name">
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input required" id="ListAgentLastName" name="ListAgentLastName" data-label="Agent Last Name">
+                                        <input type="text" class="custom-form-element form-input required" id="ListAgentLastName" name="ListAgentLastName" value="{{ $property -> ListAgentLastName }}" data-label="Agent Last Name">
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input required" id="ListAgentOfficeName" name="ListAgentOfficeName" data-label="Agent Company">
+                                        <input type="text" class="custom-form-element form-input required" id="ListAgentOfficeName" name="ListAgentOfficeName" value="{{ $property -> ListOfficeName }}" data-label="Agent Company">
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <input type="text" class="custom-form-element form-input" id="ListAgentMlsId" name="ListAgentMlsId" value="{{ $property -> ListAgentMlsId }}" data-label="Agent MLS ID">
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input required" id="ListAgentOfficeStreet" name="ListAgentOfficeStreet" data-label="Office Street">
+                                        <input type="text" class="custom-form-element form-input phone numbers-only required" id="ListAgentPreferredPhone" name="ListAgentPreferredPhone" value="{{ $property -> ListAgentPreferredPhone }}" data-label="Agent Phone">
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input required" id="ListAgentOfficeCity" name="ListAgentOfficeCity" data-label="Office City">
+                                        <input type="text" class="custom-form-element form-input" id="ListAgentEmail" name="ListAgentEmail" value="{{ $property -> ListAgentEmail }}" data-label="Agent Email">
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-12 col-sm-6">
-                                        <select class="custom-form-element form-select buyer-state required" id="ListAgentOfficeState" name="ListAgentOfficeState" data-label="Office State">
-                                            <option value=""></option>
-                                            @foreach($states as $state)
-                                            <option value="{{ $state -> state }}">{{ $state -> state }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input numbers-only required" maxlength="5" id="ListAgentOfficeZip" name="ListAgentOfficeZip" data-label="Office Zip">
-                                    </div>
-                                </div>
+                                <input type="hidden" id="ListAgentOfficeStreet" name="ListAgentOfficeStreet" value="{{ $office -> OfficeAddress1 ?? null }}">
+                                <input type="hidden" id="ListAgentOfficeCity" name="ListAgentOfficeCity" value="{{ $office -> OfficeCity ?? null }}">
+                                <input type="hidden" id="ListAgentOfficeState" name="ListAgentOfficeState" value="{{ $office -> OfficeStateOrProvince ?? null }}">
+                                <input type="hidden" id="ListAgentOfficeZip" name="ListAgentOfficeZip" value="{{ $office -> OfficePostalCode ?? null }}">
 
                             </div>
 
@@ -248,13 +242,13 @@ if($property -> Owner2 != '') {
                                     <div class="col-12 col-md-6">
                                         <div class="p-3">
                                             <div class="h5-responsive text-orange mb-3">Contract Date</div>
-                                            <input type="text" class="custom-form-element form-input datepicker required" name="ContractDate" id="ContractDate" data-label="Contract Date" value="{{ ($property -> ContractDate != '0000-00-00' ? $property -> ContractDate : '') }}">
+                                            <input type="text" class="custom-form-element form-input datepicker required" name="ContractDate" id="ContractDate" data-label="Contract Date" value="{{ ($property -> ContractDate != '0000-00-00' ? $property -> ContractDate : '') }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <div class="p-3">
                                             <div class="h5-responsive text-orange mb-3">Settlement Date</div>
-                                            <input type="text" class="custom-form-element form-input datepicker required" name="CloseDate" id="CloseDate" data-label="Settlement Date" value="{{ ($property -> CloseDate != '0000-00-00' ? $property -> CloseDate : '') }}">
+                                            <input type="text" class="custom-form-element form-input datepicker required" name="CloseDate" id="CloseDate" data-label="Settlement Date" value="{{ ($property -> CloseDate != '0000-00-00' ? $property -> CloseDate : '') }}" readonly>
                                         </div>
                                     </div>
                                 </div>

@@ -28,8 +28,8 @@
             @endphp
             @if($status != 'If Applicable')
                 <tr>
-                    <td width="15%">
-                        <div class="{{ $badge_class }}">
+                    <td>
+                        <div style="white-space: nowrap" class="{{ $badge_class }}">
                             {{ $status }}
                         </div>
                     </td>
@@ -38,8 +38,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td width="15%" style="border-bottom: 1px dotted #ccc;"></td>
-                    <td style="border-bottom: 1px dotted #ccc; padding-left: 10px;">
+                    <td colspan="2" style="border-bottom: 1px dotted #ccc; padding-left: 10px;">
                         @if($notes)
                             <div style="color: rgb(163, 80, 80); font-size: 13px;"> {!! $notes -> notes !!} </div>
                         @endif

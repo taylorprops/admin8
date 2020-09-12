@@ -83,11 +83,16 @@ window.form_elements = function () {
 
                 } else if (form_type == 'form-input-file') {
 
+                    let required_class = '';
+                    if(element.hasClass('required')) {
+                        required_class = 'required-form-ele';
+                    }
+
                     let clone = element.wrap('<div></div>').parent().html();
                     element.unwrap();
                     let file_html = ' \
                     <div class="form-ele md-form my-0 mt-2"> \
-                        <div class="d-flex justify-content-start align-items-center file-field"> \
+                        <div class="d-flex justify-content-start align-items-center file-field '+required_class+'"> \
                             <i class="fad fa-upload float-left"></i> \
                             '+ clone + ' \
                             <div class="file-path-wrapper w-100"> \
@@ -100,7 +105,6 @@ window.form_elements = function () {
                     let parent = element.parent();
                     element.remove();
                     parent.html(file_html);
-
 
                 } else if (form_type == 'form-checkbox') {
 
@@ -294,16 +298,14 @@ window.form_elements = function () {
                         });
                     }
 
-                    // remove search option if class form-select-no-search is set
-                    //if (element.hasClass('form-select-no-search')) {
+                    // hide search option if class form-select-no-search is set
+                    if (element.hasClass('form-select-no-search')) {
 
-                        //wrapper.find('.form-select-search-div').hide();
+                        wrapper.find('.form-select-search-div').css({ 'opacity': '0', 'height': '0px' });
 
-                    //} else {
+                    }
 
-                        dropdown_search(wrapper, input, element, multiple);
-
-                    //}
+                    dropdown_search(wrapper, input, element, multiple);
 
 
                     // when a single li is clicked
@@ -344,11 +346,24 @@ window.form_elements = function () {
                 } // end else if (form_type == 'form-select') {
 
                 if (form_type != 'form-checkbox' && form_type != 'form-radio') {
-                    if(element.hasClass('required')) {
-                        element.closest('.form-ele').append('<div class="required-div">R</div>');
+                    if(element.hasClass('required') && form_type == 'form-select') {
+                        //element.closest('.form-ele').append('<div class="required-div">R</div>');
+                        $(this).next('div').find('.form-select-value-input').addClass('required-form-ele');
                     }
+
                     if(element.hasClass('datepicker')) {
-                        element.closest('.form-ele').append('<div class="datepicker-div"><i class="fal fa-calendar-alt fa-xs"></i></div>');
+
+                        element.prop('readonly', true);
+
+                        let wrapper = element.closest('.form-ele');
+
+                        element.closest('.form-ele').append('<div class="form-datepicker-cancel"><i class="fal fa-times fa-xs"></i></div><div class="datepicker-div"><i class="fal fa-calendar-alt fa-xs"></i></div>');
+
+                        show_cancel_date(wrapper, element);
+                        element.on('change', function() {
+                            show_cancel_date(wrapper, element);
+                        });
+
                     }
                 }
 
@@ -379,45 +394,58 @@ window.form_elements = function () {
 
 
 
-    // show dropdown on focus
-    $('.form-select-wrapper').on('focus', function (e) {
-        e.stopImmediatePropagation();
-        $(this).find('.form-select-value-input').focus();
-    });
+    // show dropdown on focus or click
+
     $('.form-select-value-input').on('focus', function (e) {
         $(this).addClass('form-select-value-input-focus');
         show_dropdown($(this));
-        $(this).next('form-select-dropdown');
+    });
+    $('.form-select-value-input').on('mousedown', function (e) {
+        e.preventDefault();
+        $(this).addClass('form-select-value-input-focus');
+        show_dropdown($(this));
     });
 
 
 
 }
 
+window.show_cancel_date = function(wrapper, element) {
+
+    if(element.val() == '') {
+        wrapper.find('.form-datepicker-cancel').hide();
+        if(element.prev('div.data-div').length == 1) {
+            element.prev('div.data-div').html('');
+        }
+    } else {
+        wrapper.find('.form-datepicker-cancel').show().click(function () {
+            element.val('').trigger('change');
+            wrapper.find('.form-datepicker-cancel').hide();
+        });
+    }
+}
+
 
 function show_dropdown(input) {
 
-    //$('.form-select-dropdown.active').removeClass('active').hide();
     let wrapper = input.closest('.form-ele');
     let select = wrapper.find('select');
+    let dropdown = input.next('.form-select-dropdown');
+
+    $('.form-select-value-input').removeClass('form-select-value-input-focus');
 
     if(wrapper.find('select').prop('disabled') == false) {
         // close dropdown if already open
-        if(input.next('.form-select-dropdown').hasClass('active')) {
-            input.next('.form-select-dropdown').removeClass('active').hide();
-            $('.form-select-value-input').removeClass('form-select-value-input-focus');
+        if(dropdown.hasClass('active')) {
+            dropdown.removeClass('active').hide();
             if(input.val() == '') {
                 input.prev('label').removeClass('active');
             }
         } else {
             hide_dropdowns();
-            input.next('.form-select-dropdown').addClass('active').show();
+            dropdown.addClass('active').show();
             input.addClass('form-select-value-input-focus');
-            // focus on search input is searchable
-            //if (!select.hasClass('form-select-no-search')) {
-                input.next('.form-select-dropdown').find('.form-select-search-input').focus();
-                //input.prev('label').addClass('active');
-            //}
+            dropdown.find('.form-select-search-input').focus();
         }
 
     }
@@ -446,27 +474,10 @@ function dropdown_search(wrapper, input, element, multiple) {
     let search_input = wrapper.find('.form-select-search-input');
     // search for matching li's if tab not pressed
     search_input.keydown(function (e) {
-        var keyCode = e.keyCode || e.which;
-        if (keyCode != 9) {
-            search_input.keyup(function () {
-                let search_value = new RegExp($(this).val(), 'i');
-                if (search_input.val() != '') {
-                    $('.form-select-li').hide().removeClass('matched form-select-matched-option');
-                    wrapper.find('.form-select-li').each(function () {
-                        if ($(this).text().match(search_value)) {
-                            $(this).show().addClass('matched');
-                        }
-                    });
-                    $('.matched').first().addClass('form-select-matched-option');
+        let keyCode = e.keyCode || e.which;
 
-                } else {
-                    $('.form-select-li').show().removeClass('matched form-select-matched-option');
-                }
-            });
-
-        } else {
         // if tab pressed
-
+        if (!e.shiftKey && keyCode == 9) {
 
             if(wrapper.find('.form-select-matched-option').length > 0) {
 
@@ -475,13 +486,13 @@ function dropdown_search(wrapper, input, element, multiple) {
                 if (!multiple) {
 
                     input.val(wrapper.find('.form-select-matched-option').text()).trigger('change');
-                    reset_select();
                     element.find('option').attr('selected', false);
                     element.find('option').eq($('.form-select-matched-option').data('index')).attr('selected', true);
                     element.trigger('change');
                     // remove active from all li and add to selected
                     wrapper.find('.form-select-li').removeClass('active');
                     $('.form-select-matched-option').addClass('active');
+                    reset_select();
 
                 } else {
 
@@ -503,6 +514,28 @@ function dropdown_search(wrapper, input, element, multiple) {
 
             hide_dropdowns();
             reset_labels();
+
+        } else {
+
+            search_input.keyup(function () {
+                let search_value = new RegExp($(this).val(), 'i');
+                if (search_input.val() != '') {
+                    wrapper.find('.form-select-li').removeClass('matched form-select-matched-option');
+                    if(!element.hasClass('form-select-no-search')) {
+                        wrapper.find('.form-select-li').hide();
+                    }
+                    wrapper.find('.form-select-li').each(function () {
+                        if ($(this).text().match(search_value)) {
+                            $(this).show().addClass('matched');
+                        }
+                    });
+                    $('.matched').first().addClass('form-select-matched-option');
+
+                } else {
+                    $('.form-select-li').show().removeClass('matched form-select-matched-option');
+                }
+            });
+
         }
 
     });
@@ -617,6 +650,10 @@ window.validate_form = function (form) {
 
         if (invalid_focus.hasClass('file-path')) {
             invalid_focus.parent().prev('input').trigger('click');
+        } else if(invalid_focus.hasClass('datepicker')) {
+            setTimeout(function() {
+                invalid_focus.closest('.form-ele').find('.qs-datepicker-container').removeClass('qs-hidden');
+            }, 200);
         } else {
             invalid_focus.focus().trigger('click');
         }

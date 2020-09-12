@@ -131,7 +131,11 @@ if (document.URL.match(/transaction_details/)) {
             $('#confirm_undo_cancel_modal').modal('hide');
 
             if(response.data.error) {
-                $('#modal_danger').modal().find('.modal-body').html('The Listing is currently under contract with another Contract. You must release the current Contract before Reactivating this one.');
+                if($('#for_sale').val() == 'yes') {
+                    $('#modal_danger').modal().find('.modal-body').html('The Listing is currently under contract with another Contract. You must release the current Contract before Reactivating this one.');
+                } else {
+                    $('#modal_danger').modal().find('.modal-body').html('Another Lease Agreement has already been accepted for this listing. You must cancel the current Lease before Reactivating this one.');
+                }
                 return false;
             }
 
@@ -149,11 +153,11 @@ if (document.URL.match(/transaction_details/)) {
 
         let cancel = $(this);
         let for_sale = cancel.data('for-sale');
-        let docs_submitted = '';
+        let contract_accepted = '';
         let listing_expiration_date = cancel.data('listing-expiration-date') || null;
         let today = new Date();
         let expire = new Date(listing_expiration_date);
-        $('#cancel_contract_modal').modal();
+
 
         // check if any docs have been submitted and accepted
         let Listing_ID = $('#Listing_ID').val();
@@ -181,14 +185,18 @@ if (document.URL.match(/transaction_details/)) {
                     $('.cancel-contract.has-listing').removeClass('d-flex').hide();
                 }
 
-                if(response.data.docs_submitted == true) {
+                if(response.data.contract_accepted == true) {
                     $('.cancel-contract.docs-submitted').addClass('d-flex').show();
                     $('.cancel-contract.docs-not-submitted').removeClass('d-flex').hide();
-                    docs_submitted = 'yes';
+                    contract_accepted = 'yes';
+                    if(response.data.release_submitted == false) {
+                        $('#modal_danger').modal().find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><i class="fa fa-exclamation-circle fa-2x text-danger mr-2"></i> <div class="text-center">You must submit a RELEASE for the Sales Contract on the checklist before you can request a cancellation.</div></div>');
+                        return false;
+                    }
                 } else {
                     $('.cancel-contract.docs-submitted').removeClass('d-flex').hide();
                     $('.cancel-contract.docs-not-submitted').addClass('d-flex').show();
-                    docs_submitted = 'no';
+                    contract_accepted = 'no';
                 }
 
             } else {
@@ -198,12 +206,14 @@ if (document.URL.match(/transaction_details/)) {
                 } else {
                     $('.cancel-lease.has-listing').removeClass('d-flex').hide();
                 }
-                if(response.data.docs_submitted == true) {
+                if(response.data.contract_accepted == true) {
                     $('.cancel-lease.docs-submitted').addClass('d-flex').show();
                     $('.cancel-lease.docs-not-submitted').removeClass('d-flex').hide();
+                    contract_accepted = 'yes';
                 } else {
                     $('.cancel-lease.docs-submitted').removeClass('d-flex').hide();
                     $('.cancel-lease.docs-not-submitted').addClass('d-flex').show();
+                    contract_accepted = 'no';
                 }
 
             }
@@ -217,8 +227,10 @@ if (document.URL.match(/transaction_details/)) {
             }
 
             $('#save_cancel_contract_button').off('click').on('click', function() {
-                release_contract(docs_submitted, for_sale);
+                release_contract(contract_accepted, for_sale);
             });
+
+            $('#cancel_contract_modal').modal();
 
         })
         .catch(function (error) {
@@ -227,7 +239,7 @@ if (document.URL.match(/transaction_details/)) {
 
     }
 
-    function release_contract(docs_submitted, for_sale) {
+    function release_contract(contract_accepted, for_sale) {
 
         let Listing_ID = $('#Listing_ID').val();
         let Contract_ID = $('#Contract_ID').val();
@@ -238,14 +250,14 @@ if (document.URL.match(/transaction_details/)) {
         }
 
         let success = type+' Successfully Canceled';
-        if(docs_submitted == 'yes') {
+        if(contract_accepted == 'yes') {
             success = 'Cancel Request Successfully Sent';
         }
 
         let formData = new FormData();
         formData.append('Listing_ID', Listing_ID);
         formData.append('Contract_ID', Contract_ID);
-        formData.append('docs_submitted', docs_submitted);
+        formData.append('contract_accepted', contract_accepted);
         axios.post('/agents/doc_management/transactions/release_contract', formData, axios_options)
         .then(function (response) {
             $('#cancel_contract_modal').modal('hide');
@@ -271,9 +283,11 @@ if (document.URL.match(/transaction_details/)) {
 
             $('.agent-details').val('').trigger('change');
             $('.buyer-agent-details, .our-agent-div').hide();
+            $('.bright-search-row').hide();
+            $('#accept_contract_our_agent').removeClass('required')
 
             if($(this).val() == 'other_agent') {
-                $('.buyer-agent-details').show();
+                $('.buyer-agent-details, .bright-search-row').show();
                 $('.agent-details-required').addClass('required');
             } else if($(this).val() == 'agent') {
                 $('.buyer-agent-details').show();
@@ -284,7 +298,7 @@ if (document.URL.match(/transaction_details/)) {
             } else if($(this).val() == 'our_agent') {
                 $('.our-agent-div').show();
                 $('.agent-details-required').addClass('required');
-                $('#accept_contract_our_agent').change(function() {
+                $('#accept_contract_our_agent').addClass('required').change(function() {
                     if($(this).val() == '') {
                         $('.agent-details').val('').trigger('change');
                         $('.buyer-agent-details').hide();
@@ -419,7 +433,11 @@ if (document.URL.match(/transaction_details/)) {
                     load_tabs('contracts');
                     load_details_header();
                     let Contract_ID = response.data.Contract_ID;
-                    $('#modal_info').modal().find('.modal-body').html('<div class="w-100 text-center">Your Contract was successfully added. You will find it in the "Contracts" tab<br><br><a class="btn btn-primary" href="/agents/doc_management/transactions/transaction_details/' + Contract_ID + '/contract">View Contract</a></div>');
+                    let type = 'Contract';
+                    if($('#for_sale').val() == 'no') {
+                        type = 'Lease';
+                    }
+                    $('#modal_info').modal().find('.modal-body').html('<div class="w-100 text-center">Your '+type+' was successfully added. You will find it in the "'+type+'s" tab<br><br><a class="btn btn-primary" href="/agents/doc_management/transactions/transaction_details/' + Contract_ID + '/contract">View '+type+'</a></div>');
                 })
                 .catch(function (error) {
 
@@ -717,9 +735,9 @@ if (document.URL.match(/transaction_details/)) {
                 });
 
                 setTimeout(function() {
-                    form_elements();
+                    select_refresh();
                     global_loading_off();
-                }, 500);
+                }, 200);
 
                 $('.modal-backdrop').remove();
 

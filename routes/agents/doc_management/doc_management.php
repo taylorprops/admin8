@@ -41,6 +41,8 @@
     Route::get('/agents/doc_management/transactions/get_details', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_details');
     Route::get('/agents/doc_management/transactions/get_members', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_members');
     Route::get('/agents/doc_management/transactions/get_checklist', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checklist');
+    // get checklist notes
+    Route::get('/doc_management/get_notes', 'DocManagement\Review\DocumentReviewController@get_notes');
     Route::get('/agents/doc_management/transactions/get_documents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_documents');
     Route::get('/agents/doc_management/transactions/get_contracts', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_contracts');
 

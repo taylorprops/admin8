@@ -393,6 +393,11 @@ class TransactionsAddController extends Controller {
 
         $property = Listings::GetPropertyDetails($transaction_type, $id);
 
+        $office = null;
+        if($property -> ListOfficeMlsId != '') {
+            $office = Offices::where('OfficeMlsId', $property -> ListOfficeMlsId) -> first();
+        }
+
         $for_sale = true;
         if($property -> SaleRent == 'rental') {
             $for_sale = false;
@@ -411,7 +416,7 @@ class TransactionsAddController extends Controller {
 
         $resource_items = new ResourceItems();
 
-        return view('/agents/doc_management/transactions/add/transaction_required_details_'.$transaction_type, compact('property', 'for_sale', 'states', 'states_json', 'statuses', 'contacts', 'resource_items', 'transaction_type', 'transaction_type_header'));
+        return view('/agents/doc_management/transactions/add/transaction_required_details_'.$transaction_type, compact('property', 'office', 'for_sale', 'states', 'states_json', 'statuses', 'contacts', 'resource_items', 'transaction_type', 'transaction_type_header'));
     }
 
     public function save_add_transaction(Request $request) {
@@ -488,7 +493,7 @@ class TransactionsAddController extends Controller {
             $code = 'R'.$new_transaction -> Referral_ID;
         }
 
-        $street_address = $property_details -> FullStreetAddress;
+        $street_address = ucwords(strtolower($property_details -> FullStreetAddress));
 
         // add email address
         $address = preg_replace(config('global.vars.bad_characters'), '', $street_address);
@@ -566,9 +571,8 @@ class TransactionsAddController extends Controller {
         // get property details to add listing agent to members if contract
         if($transaction_type == 'contract') {
 
-            if($property -> PropertySubType != ResourceItems::GetResourceID('For Sale By Owner', 'checklist_property_sub_types')) {
-
-                $listing_agent = new Members();
+            $listing_agent = new Members();
+            /* if($property -> PropertySubType != ResourceItems::GetResourceID('For Sale By Owner', 'checklist_property_sub_types') && $property -> ListAgentFirstName != '') {
                 $listing_agent -> first_name = $property -> ListAgentFirstName;
                 $listing_agent -> last_name = $property -> ListAgentLastName;
                 $listing_agent -> cell_phone = $property -> ListAgentPreferredPhone;
@@ -578,8 +582,6 @@ class TransactionsAddController extends Controller {
                 $list_office_mls_id = $property -> ListOfficeMlsId ?? null;
 
             } else {
-
-                $listing_agent = new Members();
                 $listing_agent -> first_name = $request -> ListAgentFirstName;
                 $listing_agent -> last_name = $request -> ListAgentLastName;
                 $listing_agent -> cell_phone = $request -> ListAgentPreferredPhone;
@@ -588,22 +590,33 @@ class TransactionsAddController extends Controller {
 
                 $list_office_mls_id = $request -> ListOfficeMlsId ?? null;
 
-            }
+            } */
 
-            if($list_office_mls_id) {
+            $listing_agent -> first_name = $request -> ListAgentFirstName;
+            $listing_agent -> last_name = $request -> ListAgentLastName;
+            $listing_agent -> cell_phone = $request -> ListAgentPreferredPhone;
+            $listing_agent -> email = $request -> ListAgentEmail;
+            $listing_agent -> company = $request -> ListAgentOfficeName;
 
-                $list_office_details = Offices::where('OfficeMlsId', $list_office_mls_id) -> first();
+            // add list agent details to property
+            $property -> ListAgentFirstName = $request -> ListAgentFirstName;
+            $property -> ListAgentLastName = $request -> ListAgentLastName;
+            $property -> ListAgentPreferredPhone = $request -> ListAgentPreferredPhone;
+            $property -> ListAgentEmail = $request -> ListAgentEmail;
+            $property -> ListOfficeName = $request -> ListAgentOfficeName;
 
-                $listing_agent -> bright_mls_id = $property -> ListAgentMlsId;
-                $listing_agent -> address_office_street = $list_office_details -> OfficeAddress1;
-                $listing_agent -> address_office_city = $list_office_details -> OfficeCity;
-                $listing_agent -> address_office_state = $list_office_details -> OfficeStateOrProvince;
-                $listing_agent -> address_office_zip = $list_office_details -> OfficePostalCode;
-                $listing_agent -> Contract_ID = $Contract_ID;
-                $listing_agent -> member_type_id = ResourceItems::ListingAgentResourceId();
-                $listing_agent -> save();
+            $list_office_mls_id = $request -> ListOfficeMlsId ?? null;
 
-            }
+            $listing_agent -> bright_mls_id = $request -> ListAgentMlsId;
+            $listing_agent -> address_office_street = $request -> ListAgentOfficeStreet;
+            $listing_agent -> address_office_city = $request -> ListAgentOfficeCity;
+            $listing_agent -> address_office_state = $request -> ListAgentOfficeState;
+            $listing_agent -> address_office_zip = $request -> ListAgentOfficeZip;
+            $listing_agent -> Contract_ID = $Contract_ID;
+            $listing_agent -> member_type_id = ResourceItems::ListingAgentResourceId();
+
+
+            $listing_agent -> save();
 
             $buyers_agent = new Members();
             $buyers_agent -> first_name = $agent -> first_name;
@@ -621,6 +634,13 @@ class TransactionsAddController extends Controller {
             $buyers_agent -> member_type_id = ResourceItems::BuyerAgentResourceId();
             $buyers_agent -> disabled = true;
             $buyers_agent -> save();
+
+            // add list agent details to property
+            $property -> BuyerAgentFirstName = $agent -> first_name;
+            $property -> BuyerAgentLastName = $agent -> last_name;
+            $property -> BuyerAgentPreferredPhone = $agent -> cell_phone;
+            $property -> BuyerAgentEmail = $agent -> email;
+            $property -> BuyerOfficeName = $agent -> company;
 
             // if using heritage add them to members
             // TODO: notify title if using them

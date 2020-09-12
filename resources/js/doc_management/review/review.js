@@ -20,7 +20,61 @@ if(document.URL.match(/document_review/)) {
         $('.next-button').off('click').on('click', function() {
             next_property();
         });
+
+        $('#search_properties').keyup(search_properties);
+        $('#cancel_search_properties').click(cancel_search_properties);
+
+        /* $('#reject_cancellation_button').click(reject_cancellation);
+        $('#accept_cancellation_button').click(accept_cancellation); */
+
+        form_elements();
+
     });
+
+    /* function reject_cancellation() {
+
+    }
+
+    function accept_cancellation() {
+
+    } */
+
+    function search_properties() {
+        if($(this).val() != '') {
+            let v = new RegExp($(this).val(), 'i');
+            $('.property-list-header, .property-item').hide();
+            $('.address-div').each(function() {
+                if($(this).text().match(v)) {
+                    $(this).closest('.property-item').show();
+                }
+            });
+            $('.property-list-header').each(function() {
+
+                let header = $(this);
+                let cat = header.data('cat');
+                let items = $('[data-cat="' + cat + '"]');
+                let show = false;
+
+                items.each(function() {
+                    if($(this).css('display') == 'block') {
+                        show = true;
+                    }
+                });
+                if(show) {
+                    header.show();
+                }
+
+            });
+        } else {
+            $('.property-list-header, .property-item').show();
+        }
+
+    }
+
+    function cancel_search_properties() {
+        $('.property-list-header, .property-item').show();
+        $('#search_properties').val('').trigger('change');
+    }
 
     function set_property_item_active(ele) {
         $('.property-item').removeClass('active').addClass('list-group-item-action');
@@ -93,15 +147,16 @@ if(document.URL.match(/document_review/)) {
             let item_div = '';
             let show_notes = false;
             if($('.checklist-item-div.pending').length > 0 || $('.checklist-item-div.notes-unread').length > 0) {
-                let pending_index = '';
-                let notes_index = '';
+                let pending_index = '1000';
+                let notes_index = '1000';
                 if($('.checklist-item-div.pending').length > 0) {
                     pending_index = $('.checklist-item-div.pending').eq(0).index();
                 }
                 if($('.checklist-item-div.notes-unread').length > 0) {
                     notes_index = $('.checklist-item-div.notes-unread').eq(0).index();
                 }
-                if(pending_index < notes_index || notes_index == '') {
+
+                if(pending_index < notes_index) {
                     item_div = $('.checklist-item-div.pending');
                 } else {
                     item_div = $('.checklist-item-div.notes-unread');
@@ -190,7 +245,7 @@ if(document.URL.match(/document_review/)) {
             // add documents to checklist item and open it
             if($('.checklist-item-docs-div').length > 0) {
                 $('.list-group-item.checklist-item-div.active').find('.documents-list').show()
-                    .append('<div class="font-weight-bold text-primary border-bottom">Documents</div>')
+                    .append('<div class="font-weight-bold text-primary border-bottom mb-2">Documents</div>')
                     .append($('.checklist-item-docs-div'))
                     .find('.document-link').on('click', function() {
                         let id = $(this).data('document-id');
@@ -271,6 +326,12 @@ if(document.URL.match(/document_review/)) {
         })
         .then(function (response) {
             $('.details-div').html(response.data);
+            /* $('#reject_cancellation_section').on('show.bs.collapse', function() {
+                $('.cancellation-options').prop('disabled', true);
+            });
+            $('#reject_cancellation_section').on('hide.bs.collapse', function() {
+                $('.cancellation-options').prop('disabled', false);
+            }); */
         })
         .catch(function (error) {
             console.log(error);
@@ -285,6 +346,7 @@ if(document.URL.match(/document_review/)) {
         $('.documents-div').children().addClass('animated bounceOutDown');
         $('.documents-div').html('<div class="h1-responsive text-primary w-100 text-center mt-5 pt-5"><i class="fa fa-arrow-left mr-2"></i> To Begin Select A Property</div>');
         $('.details-div').children().addClass('animated fadeOut');
+        cancel_search_properties();
     }
 
     function zoom() {

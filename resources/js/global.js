@@ -120,7 +120,7 @@ $(document).ready(function () {
 
 
 window.datepicker_custom = function() {
-    $('.datepicker').not('.datepicker-added').each(function() {
+    $('.datepicker').not('.datepicker-added').not('.field-datepicker').each(function() {
         $(this).addClass('datepicker-added');
         let id = $(this).prop('id');
         if(!id) {
@@ -128,7 +128,9 @@ window.datepicker_custom = function() {
         }
         window.picker = datepicker('#'+id, {
             onSelect: (instance, date) => {
-
+                let element = $('#' + instance.el.id);
+                let wrapper = element.closest('.form-ele');
+                show_cancel_date(wrapper, element);
             },
             onHide: instance => {
 
@@ -140,9 +142,8 @@ window.datepicker_custom = function() {
             },
             showAllDates: true,
         });
-        $('.datepicker').on('focus', function() {
-            picker.show();
-        });
+
+
     });
 
 }

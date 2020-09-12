@@ -124,8 +124,17 @@ class TransactionsDetailsController extends Controller {
             if($transaction_type == 'listing') {
                 $members = Members::where('Listing_ID', $Listing_ID) -> get();
             }
-            $buyers = $members -> where('member_type_id', $resource_items -> BuyerResourceId());
-            $sellers = $members -> where('member_type_id', $resource_items -> SellerResourceId());
+            //$buyers = $members -> where('member_type_id', $resource_items -> BuyerResourceId());
+            //$sellers = $members -> where('member_type_id', $resource_items -> SellerResourceId());
+
+            $buyers = collect($property -> BuyerOneFirstName.' '.$property -> BuyerOneLastName);
+            if($property -> BuyerTwoFirstName != '') {
+                $buyers -> push($property -> BuyerTwoFirstName.' '.$property -> BuyerTwoLastName);
+            }
+            $sellers = collect($property -> SellerOneFirstName.' '.$property -> SellerOneLastName);
+            if($property -> SellerTwoFirstName != '') {
+                $sellers -> push($property -> SellerTwoFirstName.' '.$property -> SellerTwoLastName);
+            }
 
             // get active contracts
             /* $status = ResourceItems::GetResourceID('Active', 'contract_status');
@@ -399,7 +408,7 @@ class TransactionsDetailsController extends Controller {
                 $property_listing -> MLS_Verified = 'no';
             }
 
-            if(bright_mls_search($request -> ListingId)) {
+            if($request -> ListingId && bright_mls_search($request -> ListingId)) {
                 $property -> MLS_Verified = 'yes';
 
                 if($has_listing) {
@@ -420,7 +429,7 @@ class TransactionsDetailsController extends Controller {
             $FullStreetAddress .= ' ' . $request -> UnitNumber;
         }
 
-        $request -> FullStreetAddress = $FullStreetAddress;
+        $request -> merge(['FullStreetAddress' => $FullStreetAddress]);
 
         foreach ($request -> all() as $col => $val) {
 
@@ -587,46 +596,39 @@ class TransactionsDetailsController extends Controller {
             $field = 'Contract_ID';
         }
 
-        $property = Listings::find($id);
-
         if($type == 'contract') {
             $property = Contracts::find($id);
+        } else {
+            $property = Listings::find($id);
         }
 
-        $sellers = Members::where($field, $id) -> where('member_type_id', ResourceItems::SellerResourceId());
+        $sellers = Members::where($field, $id) -> where('member_type_id', ResourceItems::SellerResourceId()) -> get();
 
-        if($sellers -> count() > 0) {
-            $seller_two_first = $seller_two_last = '';
-            $seller_one_first = $sellers -> first() -> first_name;
-            $seller_one_last = $sellers -> first() -> last_name;
-
-            if($sellers -> take(1) -> first()) {
-                $seller_two_first = $sellers -> take(1) -> first() -> first_name;
-                $seller_two_last = $sellers -> take(1) -> first() -> last_name;
+        $c = 0;
+        foreach($sellers as $seller) {
+            if($c == 0) {
+                $property -> SellerOneFirstName = $seller -> first_name;
+                $property -> SellerOneLastName = $seller -> last_name;
+            } else if($c == 1) {
+                $property -> SellerTwoFirstName = $seller -> first_name;
+                $property -> SellerTwoLastName = $seller -> last_name;
             }
-
-            $property -> SellerOneFirstName = $seller_one_first;
-            $property -> SellerOneLastName = $seller_one_last;
-            $property -> SellerTwoFirstName = $seller_two_first;
-            $property -> SellerTwoLastName = $seller_two_last;
+            $c += 1;
         }
 
-        $buyers = Members::where($field, $id) -> where('member_type_id', ResourceItems::BuyerResourceId());
 
-        if($buyers -> count() > 0) {
-            $buyer_two_first = $buyer_two_last = '';
-            $buyer_one_first = $buyers -> first() -> first_name;
-            $buyer_one_last = $buyers -> first() -> last_name;
+        $buyers = Members::where($field, $id) -> where('member_type_id', ResourceItems::BuyerResourceId()) -> get();
 
-            if($buyers -> take(1) -> first()) {
-                $buyer_two_first = $buyers -> take(1) -> first() -> first_name;
-                $buyer_two_last = $buyers -> take(1) -> first() -> last_name;
+        $c = 0;
+        foreach($buyers as $buyer) {
+            if($c == 0) {
+                $property -> BuyerOneFirstName = $buyer -> first_name;
+                $property -> BuyerOneLastName = $buyer -> last_name;
+            } else if($c == 1) {
+                $property -> BuyerTwoFirstName = $buyer -> first_name;
+                $property -> BuyerTwoLastName = $buyer -> last_name;
             }
-
-            $property -> BuyerOneFirstName = $buyer_one_first;
-            $property -> BuyerOneLastName = $buyer_one_last;
-            $property -> BuyerTwoFirstName = $buyer_two_first;
-            $property -> BuyerTwoLastName = $buyer_two_last;
+            $c += 1;
         }
 
         $buyer_agent = Members::where($field, $id) -> where('member_type_id', ResourceItems::BuyerAgentResourceId()) -> first();
@@ -1806,6 +1808,10 @@ class TransactionsDetailsController extends Controller {
         $rejected_reasons = ResourceItemsAdmin::where('resource_type', 'rejected_reason') -> orderBy('resource_order') -> get();
 
         $trash_folder = TransactionDocumentsFolders::where($field, $id) -> where('folder_name', 'Trash') -> first();
+        // if the contract was released just use the folder from the listing
+        if(!$trash_folder && $field == 'Contract_ID') {
+            $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $property -> Listing_ID) -> where('folder_name', 'Trash') -> first();
+        }
         $documents_model = new TransactionDocuments();
         $documents_available = $documents_model -> where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
         $documents_checklist = $documents_model -> where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
@@ -1856,7 +1862,20 @@ class TransactionsDetailsController extends Controller {
         $add_checklist_item_doc -> save();
 
         $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
-        $update_checklist_item = TransactionChecklistItems::where('id', $checklist_item_id) -> update(['checklist_item_status' => 'not_reviewed']);
+        $checklist_item = TransactionChecklistItems::where('id', $checklist_item_id) -> first();
+        $checklist_item -> update(['checklist_item_status' => 'not_reviewed']);
+
+        /* $checklist_form_id = $checklist_item -> checklist_form_id;
+        $upload = Upload::find($checklist_form_id);
+
+        if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
+            $release_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
+            if($release_submitted_check) {
+                return response() -> json([
+                    'release_submitted' => 'yes'
+                ]);
+            }
+        } */
 
     }
 
@@ -2114,8 +2133,10 @@ class TransactionsDetailsController extends Controller {
         $Listing_ID = $request -> Listing_ID ?? 0;
         $contracts = Contracts::where('Listing_ID', $Listing_ID) -> orderBy('Contract_ID', 'DESC') -> get();
         $resource_items = new ResourceItems();
+        $property = Listings::find($Listing_ID);
+        $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? true : false;
 
-        return view('/agents/doc_management/transactions/details/data/get_contracts', compact('contracts', 'resource_items'));
+        return view('/agents/doc_management/transactions/details/data/get_contracts', compact('contracts', 'resource_items', 'for_sale'));
     }
 
     // End Contracts Tab
@@ -2216,13 +2237,14 @@ class TransactionsDetailsController extends Controller {
         $contract_data -> OtherAgent_ID = $OtherAgent_ID;
         $contract_data -> BuyerRepresentedBy = $BuyerRepresentedBy;
 
-        $FullStreetAddress = $contract_data -> FullStreetAddress;
+        $FullStreetAddress = ucwords(strtolower($contract_data -> FullStreetAddress));
 
         $contract_data -> Status = ResourceItems::GetResourceID('Active', 'contract_status');
 
         $contract_data = collect($contract_data -> toArray()) -> except(['Contract_ID']);
 
         $contract_data = json_decode($contract_data, true);
+
         $new_contract = Contracts::create($contract_data);
         $Contract_ID = $new_contract -> Contract_ID;
 
@@ -2323,39 +2345,41 @@ class TransactionsDetailsController extends Controller {
 
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
-        $docs_submitted = $request -> docs_submitted;
+        $contract_accepted = $request -> contract_accepted;
 
-        $status = $docs_submitted == 'yes' ? 'Cancel Pending' : 'Canceled';
+        $status = $contract_accepted == 'yes' ? 'Cancel Pending' : 'Canceled';
 
         // remove Buyer from listing
         $listing = Listings::find($Listing_ID);
 
         // update listing
-        $listing -> BuyerAgentFirstName = '';
-        $listing -> BuyerAgentLastName = '';
-        $listing -> BuyerAgentEmail = '';
-        $listing -> BuyerAgentPreferredPhone = '';
-        $listing -> BuyerAgentMlsId = '';
-        $listing -> BuyerOfficeName = '';
-        $listing -> BuyerOfficeMlsId = '';
-        $listing -> BuyerOfficeName = '';
-        $listing -> BuyerOneFirstName = '';
-        $listing -> BuyerOneLastName = '';
-        $listing -> BuyerTwoFirstName = '';
-        $listing -> BuyerTwoLastName = '';
-        $listing -> Status = ResourceItems::GetResourceID('Active', 'listing_status');
-        $listing -> save();
+        if($listing) {
+            $listing -> BuyerAgentFirstName = '';
+            $listing -> BuyerAgentLastName = '';
+            $listing -> BuyerAgentEmail = '';
+            $listing -> BuyerAgentPreferredPhone = '';
+            $listing -> BuyerAgentMlsId = '';
+            $listing -> BuyerOfficeName = '';
+            $listing -> BuyerOfficeMlsId = '';
+            $listing -> BuyerOfficeName = '';
+            $listing -> BuyerOneFirstName = '';
+            $listing -> BuyerOneLastName = '';
+            $listing -> BuyerTwoFirstName = '';
+            $listing -> BuyerTwoLastName = '';
+            $listing -> Status = ResourceItems::GetResourceID('Active', 'listing_status');
+            $listing -> save();
+        }
 
         $contract = Contracts::find($Contract_ID);
         $contract -> Status = ResourceItems::GetResourceID($status, 'contract_status');
         $contract -> save();
 
         // add to pending table for review
-        if($status == 'Cancel Pending') {
+        /* if($status == 'Cancel Pending') {
             $cancel_request = CancelRequests::firstOrNew(['Contract_ID' => $Contract_ID]);
             $cancel_request -> cancel_status = 'open';
             $cancel_request -> save();
-        }
+        } */
 
         return true;
 
@@ -2364,26 +2388,29 @@ class TransactionsDetailsController extends Controller {
     public function undo_cancel_contract(Request $request) {
         $Contract_ID = $request -> Contract_ID;
         $contract = Contracts::find($Contract_ID);
-        $Listing_ID = $contract -> first() -> Listing_ID;
-        $active_ids = ResourceItems::GetActiveAndClosedContractStatuses();
-        $open_contracts = Contracts::where('Listing_ID', $Listing_ID) -> whereIn('Status', $active_ids) -> get();
-        $listing_under_contract = Listings::find($Listing_ID);
+        $Listing_ID = $contract -> Listing_ID;
 
-        if(count($open_contracts) > 0) {
-            return response() -> json([
-                'error' => 'under_contract'
-            ]);
+        if($Listing_ID > 0) {
+            $active_ids = ResourceItems::GetActiveAndClosedContractStatuses();
+            $open_contracts = Contracts::where('Listing_ID', $Listing_ID) -> whereIn('Status', $active_ids) -> get();
+            $listing_under_contract = Listings::find($Listing_ID);
+
+            if(count($open_contracts) > 0) {
+                return response() -> json([
+                    'error' => 'under_contract'
+                ]);
+            }
+
+            $listing_under_contract -> Status = ResourceItems::GetResourceID('Under Contract', 'listing_status');
+            $listing_under_contract -> save();
         }
 
-        $listing_under_contract -> Status = ResourceItems::GetResourceID('Under Contract', 'listing_status');
-        $listing_under_contract -> save();
-
-        $before = $contract -> Status;
+        //$before = $contract -> Status;
         $contract -> Status = ResourceItems::GetResourceID('Active', 'contract_status');
         $contract -> save();
 
         // delete from cancel requests
-        $cancel_request = CancelRequests::where('Contract_ID', $Contract_ID) -> delete();
+        //$cancel_request = CancelRequests::where('Contract_ID', $Contract_ID) -> delete();
 
 
     }
@@ -2404,21 +2431,35 @@ class TransactionsDetailsController extends Controller {
             $field = 'Referral_ID';
             $id = $Referral_ID;
         }
-        $checklist_id = TransactionChecklists::where($field, $id) -> pluck('id');
-        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> where('checklist_item_status', 'accepted') -> get();
-        $docs_submitted = false;
+        $checklist = TransactionChecklists::where($field, $id) -> first();
+        $checklist_id = $checklist -> id;
+        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
+
+        $contract_accepted = false;
+        $release_submitted = false;
 
         foreach($checklist_items as $checklist_item) {
+
             $checklist_form_id = $checklist_item -> checklist_form_id;
             $upload = Upload::find($checklist_form_id);
 
-            if($upload -> form_tags == ResourceItems::GetResourceID('contract', 'form_tags')) {
-                $docs_submitted = true;
+            if($checklist_item -> checklist_item_status == 'accepted' && $upload -> form_tags == ResourceItems::GetResourceID('contract', 'form_tags')) {
+                $contract_accepted = true;
             }
+            if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
+                $release_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
+                if($release_submitted_check) {
+                    if($checklist_item -> checklist_item_status != 'rejected') {
+                        $release_submitted = true;
+                    }
+                }
+            }
+
         }
 
         return response() -> json([
-            'docs_submitted' => $docs_submitted
+            'contract_accepted' => $contract_accepted,
+            'release_submitted' => $release_submitted
         ]);
     }
 

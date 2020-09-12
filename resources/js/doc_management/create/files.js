@@ -58,7 +58,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
                 $('#upload_file_button').off('click').on('click', upload_file);
 
-                $('.add-non-form-item-button').hide();
+                //$('.add-non-form-item-button').hide();
 
                 global_loading_off();
 
@@ -603,6 +603,11 @@ if (document.URL.match(/create\/upload\/files/)) {
         })
             .then(function (response) {
 
+                let disabled = false;
+                if(response.data.published == 'yes') {
+                    disabled = true;
+                }
+
                 let file_name_orig = response.data.file_name_orig;
                 let file_name = response.data.file_name_display;
                 let form_group_id = response.data.form_group_id;
@@ -615,11 +620,11 @@ if (document.URL.match(/create\/upload\/files/)) {
                 //form.find('select').val('').trigger('change');
                 $('#edit_form_name').text(file_name_orig);
                 $('#edit_file_name_display').val(file_name).trigger('change');
-                $('#edit_form_group_id').val(form_group_id);
-                $('#edit_state').val(state);
+                $('#edit_form_group_id').val(form_group_id).prop('disabled', disabled);
+                $('#edit_state').val(state).prop('disabled', disabled);
                 $('#edit_helper_text').val(helper_text).trigger('change');
                 $('#edit_form_tags').val(form_tags).trigger('change');
-                $('#edit_checklist_group_id').val(checklist_group_id).trigger('change');
+                $('#edit_checklist_group_id').val(checklist_group_id).trigger('change').prop('disabled', disabled);
                 form_categories = form_categories.split(',');
 
                 $.each(form_categories, function (i, e) {

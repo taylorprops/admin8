@@ -12,7 +12,7 @@ if (document.URL.match(/checklists/)) {
             $('#list_' + checklist_location_id).trigger('click');
             $('#list_div_' + checklist_location_id).find('.checklist-type-option').val(type).trigger('change');
             checklist_type();
-            select_refresh();
+            //select_refresh();
         }
 
         $('.referral-tab').on('shown.bs.tab', function (e) {
@@ -31,13 +31,11 @@ if (document.URL.match(/checklists/)) {
         // get first location to load. others will be loaded when location is selected from menu
         let location_id = $('.checklist-data').eq(0).data('location-id');
         get_checklists(location_id, 'listing');
-        init();
-
     }
 
     // functions to run on load and after adding elements
     function init() {
-        form_elements();
+
         // show add/edit modal to edit checklist details
         $('.add-checklist-button, .edit-checklist-button').off('click').on('click', show_add_edit_checklist);
         // add referral checklist
@@ -71,6 +69,9 @@ if (document.URL.match(/checklists/)) {
             get_checklists(location_id, 'listing');
         });
 
+        setTimeout(function() {
+            select_refresh();
+        }, 200);
 
     }
 
@@ -88,9 +89,6 @@ if (document.URL.match(/checklists/)) {
         axios.post(url, formData, axios_options)
             .then(function (response) {
                 get_checklists(location_id, 'referral');
-                setTimeout(function() {
-                    init();
-                }, 500);
             })
             .catch(function (error) {
 
@@ -106,9 +104,6 @@ if (document.URL.match(/checklists/)) {
         axios.post('/doc_management/duplicate_checklist', formData, axios_options)
         .then(function (response) {
             get_checklists(checklist_location_id, checklist_type);
-            setTimeout(function() {
-                init();
-            }, 500);
         })
         .catch(function (error) {
 
@@ -502,7 +497,7 @@ if (document.URL.match(/checklists/)) {
             },
         })
         .then(function (response) {
-            select_refresh();
+            //select_refresh();
             form_elements();
             forms_status();
         })
@@ -573,7 +568,7 @@ if (document.URL.match(/checklists/)) {
         $('#checklist_state').val(state);
         $('#form_type').val(form_type);
 
-        select_refresh();
+        //select_refresh();
 
         show_hide_options();
 
@@ -599,6 +594,7 @@ if (document.URL.match(/checklists/)) {
         } else {
             select_checklist_represent.prop('disabled', false);
         }
+
 
         // if residential show property_sub_types | but not if rental
         if (select_checklist_property_type.find('option:selected').text() == 'Residential') {
@@ -650,7 +646,6 @@ if (document.URL.match(/checklists/)) {
                 .then(function (response) {
                     get_checklists($('#checklist_location_id').val(), $('#checklist_type').val());
                     setTimeout(function() {
-                        init();
                         let els = $('#list_div_' + $('#checklist_location_id').val() + '_files').find('.sortable-checklist').children('.checklist-items-container');
                         reorder_checklists(els);
                     }, 500);
@@ -688,7 +683,7 @@ if (document.URL.match(/checklists/)) {
                 // make sure correct checklist type is shown
                 //$('.checklist-type-option').val(checklist_type);
 
-                select_refresh();
+                //select_refresh();
                 init();
             })
             .catch(function (error) {
@@ -714,9 +709,6 @@ if (document.URL.match(/checklists/)) {
         axios.post('/doc_management/delete_checklist', formData, axios_options)
         .then(function (response) {
             get_checklists(checklist_location_id, checklist_type);
-            setTimeout(function() {
-                init();
-            }, 500);
             $('#confirm_delete_checklist_modal').modal('hide');
         })
         .catch(function (error) {

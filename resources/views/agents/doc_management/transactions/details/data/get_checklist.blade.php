@@ -173,9 +173,9 @@
 
                                             <div class="row mt-1">
 
-                                                <div class="col-12 col-sm-6 col-md-4 mx-auto">
+                                                <div class="col-12 col-sm-6 col-md-4 ">
 
-                                                    <div class="checklist-item-options d-flex justify-content-between align-items-center p-1 my-1 my-md-0 bg-light">
+                                                    <div class="checklist-item-options d-flex justify-content-between align-items-center p-1 my-1 my-md-0 mx-auto bg-light">
                                                         <div class="font-weight-bold text-primary checklist-attachment">Docs</div>
                                                         <div>
                                                             <button type="button" class="btn btn-sm btn-success add-document-button" data-checklist-id="{{ $transaction_checklist_id }}" data-checklist-item-id="{{ $checklist_item_id }}" data-target="documents_div_{{ $checklist_item_id }}"><i class="fa fa-plus"></i></button>
@@ -191,7 +191,7 @@
 
                                                 <div class="col-12 col-sm-6 col-md-4 mx-auto">
 
-                                                    <div class="checklist-item-options d-flex justify-content-betwen align-items-center p-1 pr-2 my-1 my-md-0 bg-light">
+                                                    <div class="checklist-item-options d-flex justify-content-betwen align-items-center p-1 pr-2 my-1 my-md-0 mx-auto bg-light">
 
                                                         <div class="font-weight-bold text-primary checklist-attachment">Comments</div>
 
@@ -221,7 +221,7 @@
                                                         }
                                                         @endphp
 
-                                                        <div class="checklist-item-options d-flex justify-content-between align-items-center my-1 my-md-0">
+                                                        <div class="checklist-item-options d-flex justify-content-between align-items-center my-1 my-md-0 mx-auto">
 
                                                             <div class="review-options p-1 {{ $bg_color }}">
 

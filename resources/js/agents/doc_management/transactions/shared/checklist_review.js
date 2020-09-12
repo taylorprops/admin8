@@ -110,6 +110,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
     }
 
     window.get_notes = function (checklist_item_id) {
+
         let Agent_ID = $('#Agent_ID').val();
         axios.get('/doc_management/get_notes', {
             params: {
@@ -145,6 +146,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         axios.post('/agents/doc_management/transactions/mark_note_read', formData, axios_options)
             .then(function (response) {
                 button.parent().html('<span class="text-success small"><i class="fa fa-check"></i> Read</span>');
+                update_notes_count();
             })
             .catch(function (error) {
                 console.log(error);
@@ -249,7 +251,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
             $('#add_checklist_item_modal').appendTo('body');
         }
         $('#add_checklist_item_modal').modal();
-        form_elements();
+        select_refresh();
 
         $('.form-name').off('click').on('click', function (e) {
 
@@ -495,14 +497,13 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
 
     function update_pending_count() {
         let count = $('.pending').length;
-        $('.property-item.active').find('.badge-pill').text(count);
+        $('.property-item.active').not('.comment').find('.todo-count').text(count);
     }
 
-    // TODO: this for comments
-    /* function update_notes_count() {
-        let count = $('.pending').length;
-        $('.property-item.active').find('.badge-pill').text(count);
-    } */
+    function update_notes_count() {
+        let count = $('.mark-read-button').length;
+        $('.property-item.active').find('.todo-count').text(count);
+    }
 
     function next_item(parent_div) {
         let index = parent_div.index();

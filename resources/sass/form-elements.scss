@@ -29,15 +29,23 @@
     }
     .datepicker-div {
         position: absolute;
-        top: 4px;
+        top: 6px;
         right: 6px;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         color: $primary;
+    }
+    .form-datepicker-cancel {
+        position: absolute;
+        top: 7px;
+        right: 23px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        color: $default;
     }
 
     .form-input, .form-textarea, .form-select-value-input, .file-field {
         width: 100%;
-        padding: 8px 20px 5px 5px;
+        padding: 12px 20px 2px 5px;
         border: none;
         //border-bottom: 1px solid #ccc;
         border: 1px solid rgb(238, 235, 235);
@@ -51,7 +59,36 @@
             border-color: rgb(120, 196, 231);
             box-shadow: 0 0 5px rgb(120, 196, 231);
         }
+
     }
+
+    /*
+    .form-input.required, .form-textarea.required, .required-form-ele, .file-field.required {
+        border-bottom: 1px solid rgb(252, 192, 192) !important;
+    }
+
+    .form-input:not([disabled]), .form-textarea:not([disabled]), .form-select-value-input:not([disabled]), .file-field:not([disabled]) {
+        background-color: #fdfeff;
+
+        &.required {
+            background-color: rgb(252, 192, 192, 0.05);
+        }
+    }
+    */
+
+    .required-form-ele:not([disabled]) {
+        //background-color: rgb(252, 192, 192, 0.02) !important;
+        border-bottom: 1px solid rgb(252, 192, 192) !important;
+    }
+    .form-input:not([disabled]), .form-textarea:not([disabled]), .form-select-value-input:not([disabled]), .file-field:not([disabled]) {
+        background-color: #fdfeff;
+
+        &.required {
+            //background-color: rgb(252, 192, 192, 0.02) !important;
+            border-bottom: 1px solid rgb(252, 192, 192) !important;
+        }
+    }
+
 
     .form-select-value-input-focus {
         border-color: rgb(120, 196, 231);
@@ -68,9 +105,7 @@
     }
 
 
-    .form-input:not([disabled]), .form-textarea:not([disabled]), .form-select-value-input:not([disabled]), .file-field:not([disabled]) {
-        background-color: #fdfeff;
-    }
+
 
     .caret {
         background-image: url(/images/form_elements/arrow-down.png);
@@ -105,10 +140,10 @@
         color: $default;
         background: rgba(white, 0.9);
         line-height: .8rem;
-        //border-radius: 10px;
-        padding-bottom: 2px;
+        border-radius: 4px;
+        padding-bottom: 1px;
         padding-top: 1px;
-        //box-shadow: 0px 5px 11px 5px rgba(255,255,255,0.59);
+        box-shadow: 0px 4px 7px 4px rgba(255,255,255,0.59);
         z-index: 10;
     }
 
@@ -139,7 +174,7 @@
     .form-select-dropdown {
         display: none;
         position: absolute;
-        top: 43px;
+        top: 45px;
         left: 0px;
         background: #fff;
         border: 1px solid #ccc;
@@ -154,22 +189,23 @@
 
     .form-select-search-div {
         width: 100%;
-        padding: 8px;
+        padding: 0 8px 2px 8px;
         //background: rgba($blue-light, 0.3);
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
-        background: $primary;
+        background: $blue-gray;
     }
 
     .form-select-search-input {
+        width: 100%;
         max-width: 150px;
         font-size: .8rem;
         padding-left: 5px;
-        background: $primary;
+        background: $blue-gray;
         color: $white;
         border: none;
         border-radius: 0px;
-        border-bottom: 1px solid $white;
+        //border-bottom: 1px solid $white;
     }
     .form-select-search-input::placeholder {
         color: $white;

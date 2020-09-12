@@ -179,7 +179,7 @@
 
                             <div class="document-div row mx-0 py-0" data-folder-id="{{ $folder -> id }}" data-document-id="{{ $document -> id }}">
 
-                                <div class="col-10 col-xl-4">
+                                <div class="col-10 col-xl-5">
 
                                     <div class="d-flex justify-content-start align-items-center">
                                         <div class="mt-1">
@@ -208,7 +208,7 @@
 
                                 </div>
 
-                                <div class="col-2 col-xl-8">
+                                <div class="col-2 col-xl-7">
 
                                     <div class="d-flex justify-content-end align-items-center h-100">
 
@@ -219,7 +219,7 @@
 
                                             if($assigned) {
 
-                                                $menu_options .= '<div class="mr-1  text-success"><i class="fal fa-check mr-2"></i> <span class="d-inline-block d-xl-inline-block"> Assigned</span></div>';
+                                                $menu_options .= '<div class="mr-1 mb-2 ml-2 mb-xl-0 ml-xl-0 text-success"><i class="fal fa-check mr-2"></i> <span class="d-inline-block d-xl-inline-block"> Assigned</span></div>';
 
                                                 $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
 
@@ -271,8 +271,8 @@
 
                                             }
 
-                                            $menu_options_large = preg_replace('/dropdown-item\stext-primary/', 'btn btn-primary', $menu_options);
-                                            $menu_options_large = preg_replace('/dropdown-item\stext-danger/', 'btn btn-danger', $menu_options_large);
+                                            $menu_options_large = preg_replace('/dropdown-item\stext-primary/', 'btn btn-sm btn-primary', $menu_options);
+                                            $menu_options_large = preg_replace('/dropdown-item\stext-danger/', 'btn btn-sm btn-danger', $menu_options_large);
                                             $menu_options_large = preg_replace('/dropdown-submenu/', 'dropleft', $menu_options_large);
                                             @endphp
 
@@ -506,7 +506,9 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="text-center">
-                                    Enter New Name<br>
+                                    <div class="h4 text-primary">
+                                        Enter New Name
+                                    </div>
                                     <input type="text" class="custom-form-element form-input" id="new_document_name" data-title="Enter Document Name">
                                 </div>
                             </div>
@@ -740,7 +742,14 @@
                                                 <div class="d-flex justify-content-between">
                                                     <div class="d-flex justify-content-start align-items-center">
                                                         <div class="mr-3 mt-1">
-                                                            <input type="checkbox" class="custom-form-element form-checkbox individual-template-form" data-file-id="{{ $form -> file_id }}" data-file-name="{{ $form -> file_name }}" data-file-name-display="{{ $form -> file_name_display }}" data-pages-total="{{ $form -> pages_total }}" data-file-location="{{ $form -> file_location }}">
+                                                            <input type="checkbox" class="custom-form-element form-checkbox individual-template-form"
+                                                            data-file-id="{{ $form -> file_id }}"
+                                                            data-file-name="{{ $form -> file_name }}"
+                                                            data-file-name-display="{{ $form -> file_name_display }}"
+                                                            data-pages-total="{{ $form -> pages_total }}"
+                                                            data-file-location="{{ $form -> file_location }}"
+                                                            data-file-size="{{ get_mb(filesize(Storage::disk('public') -> path(str_replace('/storage/', '', $form -> file_location)))) }}"
+                                                            >
                                                         </div>
                                                         <div title="{{ $form -> file_name_display }}">
                                                             <a href="{{ $form -> file_location }}" target="_blank">{{ shorten_text($form -> file_name_display, 65) }}</a>
@@ -787,7 +796,7 @@
                                             }
                                             @endphp
                                             @if($folder -> folder_name != 'Trash')
-                                            <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder_name }}</option>
+                                            <option value="{{ $folder -> id }}" @if($selected_folder == $folder_name) selected @endif >{{ $folder_name }}</option>
                                             @endif
                                         @endforeach
                                     </select>
@@ -842,9 +851,10 @@
                                                 } else if($transaction_type == 'referral') {
                                                     $selected_folder = 'Referral Documents';
                                                 }
+
                                                 @endphp
                                                 @if($folder -> folder_name != 'Trash')
-                                                <option value="{{ $folder -> id }}" @if($selected_folder == $folder -> folder_name) selected @endif >{{ $folder_name }}</option>
+                                                <option value="{{ $folder -> id }}" @if($selected_folder == $folder_name) selected @endif >{{ $folder_name }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
@@ -861,16 +871,25 @@
                                         // get if required
                                         $checklist_form_required = $available_files -> where('file_id', $checklist_item_required -> checklist_form_id) -> first();
                                         @endphp
-                                        <li class="list-group-item">
-                                            <div class="d-flex justify-content-start align-items-center">
-                                                <div>
-                                                    <input type="checkbox" class="custom-form-element form-checkbox checklist-template-form" data-file-id="{{ $checklist_form_required -> file_id }}" data-file-name="{{ $checklist_form_required -> file_name }}" data-file-name-display="{{ $checklist_form_required -> file_name_display }}" data-pages-total="{{ $checklist_form_required -> pages_total }}" data-file-location="{{ $checklist_form_required -> file_location }}" checked>
+                                        @if($checklist_form_required -> file_location != '')
+                                            <li class="list-group-item">
+                                                <div class="d-flex justify-content-start align-items-center">
+                                                    <div>
+                                                        <input type="checkbox" class="custom-form-element form-checkbox checklist-template-form"
+                                                        data-file-id="{{ $checklist_form_required -> file_id }}"
+                                                        data-file-name="{{ $checklist_form_required -> file_name }}"
+                                                        data-file-name-display="{{ $checklist_form_required -> file_name_display }}"
+                                                        data-pages-total="{{ $checklist_form_required -> pages_total }}"
+                                                        data-file-location="{{ $checklist_form_required -> file_location }}"
+                                                        data-file-size="{{ get_mb(filesize(Storage::disk('public') -> path(str_replace('/storage/', '', $checklist_form_required -> file_location)))) }}"
+                                                        checked>
+                                                    </div>
+                                                    <div class="ml-3">
+                                                        <a href="javascript: void(0)">{{ $checklist_form_required -> file_name_display }}</a>
+                                                    </div>
                                                 </div>
-                                                <div class="ml-3">
-                                                    <a href="{{ $checklist_form_required -> file_location }}" target="_blank">{{ $checklist_form_required -> file_name_display }}</a>
-                                                </div>
-                                            </div>
-                                        </li>
+                                            </li>
+                                        @endif
                                     @endforeach
 
                                     <div class="h5-responsive text-orange">If Applicable Documents</div>
@@ -880,16 +899,25 @@
                                         // get if applicable
                                         $checklist_form_if_applicable = $available_files -> where('file_id', $checklist_item_if_applicable -> checklist_form_id) -> first();
                                         @endphp
-                                        <li class="list-group-item">
-                                            <div class="d-flex justify-content-start align-items-center">
-                                                <div>
-                                                    <input type="checkbox" class="custom-form-element form-checkbox checklist-template-form" data-file-id="{{ $checklist_form_if_applicable -> file_id }}" data-file-name="{{ $checklist_form_if_applicable -> file_name }}" data-file-name-display="{{ $checklist_form_if_applicable -> file_name_display }}" data-pages-total="{{ $checklist_form_if_applicable -> pages_total }}" data-file-location="{{ $checklist_form_if_applicable -> file_location }}">
+                                        @if($checklist_form_if_applicable -> file_location != '')
+                                            <li class="list-group-item">
+                                                <div class="d-flex justify-content-start align-items-center">
+                                                    <div>
+                                                        <input type="checkbox" class="custom-form-element form-checkbox checklist-template-form"
+                                                        data-file-id="{{ $checklist_form_if_applicable -> file_id }}"
+                                                        data-file-name="{{ $checklist_form_if_applicable -> file_name }}"
+                                                        data-file-name-display="{{ $checklist_form_if_applicable -> file_name_display }}"
+                                                        data-pages-total="{{ $checklist_form_if_applicable -> pages_total }}"
+                                                        data-file-location="{{ $checklist_form_if_applicable -> file_location }}"
+                                                        data-file-size="{{ get_mb(filesize(Storage::disk('public') -> path(str_replace('/storage/', '', $checklist_form_if_applicable -> file_location)))) }}"
+                                                        >
+                                                    </div>
+                                                    <div class="ml-3">
+                                                        <a href="javascript:void(0)">{{ $checklist_form_if_applicable -> file_name_display }}</a>
+                                                    </div>
                                                 </div>
-                                                <div class="ml-3">
-                                                    <a href="{{ $checklist_form_if_applicable -> file_location }}" target="_blank">{{ $checklist_form_if_applicable -> file_name_display }}</a>
-                                                </div>
-                                            </div>
-                                        </li>
+                                            </li>
+                                        @endif
                                     @endforeach
 
                                 </ul>

@@ -55,7 +55,7 @@
                                         <div>
                                             <select class="custom-form-element form-select form-select-no-search form-select-no-cancel checklist-type-option" data-label="Checklist Type">
                                                 <option value="listing">Listing</option>
-                                                <option value="contract">Contract</option>
+                                                <option value="contract">Contract/Lease</option>
                                             </select>
                                         </div>
                                         <div>
@@ -179,7 +179,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-12">
-                                    <select id="checklist_location_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Location">
+                                    <select id="checklist_location_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Checklist Location">
                                         <option value=""></option>
                                         @foreach($locations as $location)
                                         <option value="{{ $location -> resource_id }}">@if ($location -> resource_state != $location -> resource_name){{ $location -> resource_state }}  | @endif{{ $location -> resource_name }} </option>
@@ -187,14 +187,14 @@
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <select id="checklist_sale_rent" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="For Sale/Rental">
+                                    <select id="checklist_sale_rent" class="custom-form-element form-select form-select-no-cancel required" data-label="For Sale/Rental">
                                         <option value=""></option>
                                         <option value="sale">For Sale</option>
                                         <option value="rental">Rental</option>
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <select id="checklist_property_type_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Property Type">
+                                    <select id="checklist_property_type_id" class="custom-form-element form-select form-select-no-cancel required" data-label="Checklist Property Type">
                                         <option value=""></option>
                                         @foreach($property_types as $property_type)
                                         <option value="{{ $property_type -> resource_id }}">{{ $property_type -> resource_name }}</option>
@@ -202,7 +202,7 @@
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <select id="checklist_property_sub_type_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search hidden required" data-label="Checklist Property Sub Type">
+                                    <select id="checklist_property_sub_type_id" class="custom-form-element form-select form-select-no-cancel hidden required" data-label="Checklist Property Sub Type">
                                         <option value=""></option>
                                         @foreach($property_sub_types as $property_sub_type)
                                         <option value="{{ $property_sub_type -> resource_id }}">{{ $property_sub_type -> resource_name }}</option>
@@ -210,14 +210,14 @@
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <select id="checklist_type" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Checklist Type">
+                                    <select id="checklist_type" class="custom-form-element form-select form-select-no-cancel required" data-label="Checklist Type">
                                         <option value=""></option>
                                         <option value="listing">Listing</option>
                                         <option value="contract">Contract/Lease</option>
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <select id="checklist_represent" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Represent">
+                                    <select id="checklist_represent" class="custom-form-element form-select form-select-no-cancel required" data-label="Represent">
                                         <option value=""></option>
                                         <option value="seller">Seller/Owner</option>
                                         <option value="buyer">Buyer/Renter</option>

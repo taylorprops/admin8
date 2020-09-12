@@ -31,16 +31,16 @@
             }
             @endphp
 
-            <div class="p-2 note-div rounded @if($unread) bg-orange-light @else bg-blue-light @endif">
+            <div class="p-2 note-div rounded @if($unread) bg-orange-light animated shake @else bg-blue-light @endif">
 
                 <div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="emp_photo mr-2">
-                            <div class="rounded-pill {{ $avatar_bg }} p-2">
+                            <div class="rounded-pill avatar-initials {{ $avatar_bg }} p-2">
                                 @if($emp_photo_location)
                                     <img src="{{ $emp_photo_location }}" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
                                 @else
-                                    <span class="avatar-initials text-white">{{ $initials }}</span>
+                                    <span class="text-white">{{ $initials }}</span>
                                 @endif
                             </div>
                         </div>

@@ -553,7 +553,6 @@ if (document.URL.match(/transaction_details/)) {
                         },
                         animation: 150,
                         sort: false,
-
                         onStart: function (evt) {
                             let source = evt.srcElement;
                             let el = evt.item;
@@ -617,18 +616,16 @@ if (document.URL.match(/transaction_details/)) {
                                     $(target).addClass('drop-activated');
                                 }
 
-                                setTimeout(function () {
+                                //setTimeout(function () {
                                     show_drop_activated();
-                                }, 300);
+                                //}, 300);
 
                             },
                         });
                     });
 
-
-
-                    $('#save_add_to_checklist_button').one('click', function () {
-                        $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2"></span> Saving...');
+                    $('#save_add_to_checklist_button').click(function () {
+                        $(this).hide();
                         save_add_to_checklist($(this).data('checklist-id'));
                     });
                 })
@@ -819,8 +816,10 @@ if (document.URL.match(/transaction_details/)) {
                 let file_data = {};
                 file_data['file_id'] = $(this).data('file-id');
                 file_data['file_name'] = $(this).data('file-name');
+                file_data['file_size'] = $(this).data('file-size');
                 file_data['file_name_display'] = $(this).data('file-name-display');
                 file_data['pages_total'] = $(this).data('pages-total');
+                file_data['file_location'] = $(this).data('file-location');
                 file_data['file_location'] = $(this).data('file-location');
                 file_data['order'] = c;
                 files.push(file_data);
@@ -829,13 +828,50 @@ if (document.URL.match(/transaction_details/)) {
 
             });
 
-            files = JSON.stringify(files);
-            formData.append('files', files);
+            let files_json = JSON.stringify(files);
+            formData.append('files', files_json);
 
             let validate = validate_form(form);
             if (validate == 'yes') {
 
-                global_loading_on('', '<div class="h5-responsive text-white">Importing Documents...</div>');
+                let loading_html = ' \
+                <div class="h5-responsive text-white mb-3">Importing Documents...</div> \
+                <div class="w-100 text-left document-loading-container disable-scrollbars"> \
+                    <div id="loading_div"></div> \
+                </div> \
+                ';
+
+                global_loading_on('', loading_html);
+
+                files.forEach(function(file, index) {
+
+                    let interval = file['file_size'] * 20000;
+
+                    let file_html = ' \
+                    <div class="text-white w-100 p-1"> \
+                        <span>'+file['file_name']+'</span> \
+                        <div class="progress"> \
+                            <div id="progress_'+index+'" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div> \
+                        </div> \
+                    </div> \
+                    ';
+                    setTimeout(function () {
+                        $('#loading_div').append(file_html);
+                        let progress_bar = $('#progress_'+index);
+                        let width = 0;
+                        let progress_interval = setInterval(progress, interval / 100);
+                        function progress() {
+                            if (width >= 100) {
+                                clearInterval(progress_interval);
+                            } else {
+                                width++;
+                                progress_bar.css({ width: width + '%' }).attr('aria-valuenow', width);
+                            }
+                        }
+                        document.getElementById('progress_'+index).scrollIntoView();
+                    }, index * 1000);
+
+                });
 
                 axios.post('/agents/doc_management/transactions/save_add_template_documents', formData, axios_options)
                     .then(function (response) {
@@ -845,6 +881,7 @@ if (document.URL.match(/transaction_details/)) {
                         let sortables = $('.document-div[data-folder-id="' + folder + '"]');
                         reorder_documents(sortables);
                         global_loading_off();
+                        $('.progress-bar').css({ width: '0%' });
                     })
                     .catch(function (error) {
                         console.log(error);

@@ -343,11 +343,11 @@
                                         <i class="fad fa-location mr-3"></i> Property Location
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-6 col-xl-9">
+                                {{-- <div class="col-12 col-sm-6 col-xl-9">
                                     @if($property -> MLS_Verified && $disabled == null)
                                         <div class="text-success mb-3"><i class="fal fa-check fa-lg mr-3 mls-verified"></i> Location Details were verified by BrightMLS <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="How To Change The Address" data-content="To change the address you must remove the MLS ID or enter a different MLS ID."><i class="fad fa-question-circle ml-2 fa-lg"></i></a></div>
                                     @endif
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="row">
                                 <div class="col-12 col-sm-6 col-lg-3 col-xl-2">
@@ -403,7 +403,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-1 pl-0 pt-2">
-                                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="County" data-content="You cannot change the County here because it will change the checklist requirements. To change the county you must withdraw the listing and create a new one."><i class="fad fa-question-circle ml-2 fa-lg"></i></a>
+                                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="County" data-content='You cannot change the County here because it will change the checklist requirements. To change the county you need to click on the "Checklist" tab and select "Change Checklist".'><i class="fad fa-question-circle ml-2 fa-lg"></i></a>
                                             </div>
                                         </div>
                                     </div>

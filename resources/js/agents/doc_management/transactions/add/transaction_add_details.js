@@ -102,7 +102,9 @@ if (document.URL.match(/transaction_add_details_/)) {
 
         }
 
-        select_refresh();
+        setTimeout(function() {
+            select_refresh();
+        }, 500);
 
     }
 

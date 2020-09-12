@@ -38,6 +38,9 @@
         box-shadow: none;
     }
 
+    .cancel-alerts .list-group-item {
+        border: none;
+    }
 
     .status-badge {
         padding: 1rem !important;
@@ -123,6 +126,8 @@
         min-height: 55px;
     }
 
+
+
     .document-div {
         border-bottom: 1px dotted $border-color;
         line-height: 1;
@@ -163,6 +168,8 @@
         background: $blue-light;
     }
 
+
+
     #upload_documents_modal .form-ele {
         margin-bottom: 0rem;
 
@@ -191,7 +198,7 @@
     }
 
     .form-groups-container {
-        height: 420px;
+        height: 300px;
         overflow: auto;
     }
 
@@ -248,6 +255,12 @@
 
     .checklist-group-header {
         border-bottom: 3px solid $border-color;
+    }
+
+    .avatar-initials {
+        height: 40px;
+        width: 40px;
+        text-align: center;
     }
 
     .notes-container {
@@ -513,6 +526,8 @@
         min-height: 50VH;
     }
 
+
+
     @media (min-width: 1200px) {
         #split_document_modal_dialog {
             max-width: 95% !important;
@@ -637,4 +652,13 @@
         }
     }
 
+}
+
+.document-loading-container {
+    max-height: 500px;
+    overflow: auto;
+    font-size: .9rem;
+}
+.progress {
+    height: 5px;
 }

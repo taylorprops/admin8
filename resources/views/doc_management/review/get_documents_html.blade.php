@@ -4,7 +4,7 @@
 
         <div class="review-container">
 
-            <div class="review-image-container">
+            <div class="review-image-container disable-scrollbars">
 
                 <div class="review-image-div mx-auto">
 
@@ -15,9 +15,19 @@
                         $document_images = $checklist_item_images_model -> where('document_id', $document_id) -> orderBy('order') -> get();
                         $document_details = $transaction_documents_model -> GetDocInfo($document_id);
                         $file_name = $document_details['file_name'];
+                        $file_location = $document_details['file_location_converted'];
                         @endphp
 
-                        <div class="h5-responsive bg-blue-light text-primary p-2 w-100 text-center" id="document_{{ $document_id }}">{{ $file_name }}</div>
+                        <div class="bg-blue-light text-primary p-2 d-flex justify-content-between align-items-center" id="document_{{ $document_id }}">
+                            <div class="h5-responsive">
+                                {{ $file_name }}
+                            </div>
+                            <div>
+                                <a href="{{ $file_location }}" target="_blank">
+                                    <i class="fad fa-download fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
 
                         @foreach($document_images as $document_image)
 
@@ -29,7 +39,7 @@
 
                         {{-- this will be removed and appended to list-group-item.active --}}
                         <div class="checklist-item-docs-div bg-white p-1 small">
-                            <a href="javascript:void(0)" class="document-link" data-document-id="{{ $document_id }}">{{ $file_name }}</a>
+                            <a href="javascript:void(0)" class="document-link d-block bg-primary text-white p-1 rounded" data-document-id="{{ $document_id }}">{{ $file_name }}</a>
                         </div>
 
                     @endforeach

@@ -6,10 +6,10 @@ $show_title = false;
 <div class="p-2 mb-4 uploads-list @if($file -> published == 'yes') published @else notpublished @endif @if($file -> active == 'yes') active @else notactive @endif">
     <div class="container">
         <div class="row">
-            <div class="col-8">
+            <div class="col-12 col-md-8">
                 <div class="h5-responsive text-secondary" @if($show_title) title="{{ $file -> file_name_display }}" @endif>@if($file -> file_location != '') <i class="fad fa-file-plus mr-2 text-success"></i> @else <i class="fad fa-file-minus mr-2 text-gray"></i> @endif {{ shorten_text($file -> file_name_display, 65) }}</div>
             </div>
-            <div class="col-4">
+            <div class="col-12 col-md-4">
                 <div class="d-flex justify-content-end">
                     @php $categories = explode(',', $file -> form_categories); @endphp
                     @foreach($categories as $category)
@@ -19,8 +19,8 @@ $show_title = false;
             </div>
         </div>
         <div class="row">
-            <div class="col-10 options-holder">
-                <div class="d-flex justify-content-start">
+            <div class="col-12 options-holder">
+                <div class="d-flex justify-content-start align-items-center flex-wrap">
                     <div>
                         @if($file -> published == 'no')
                             @if($file -> file_location != '')
@@ -67,14 +67,13 @@ $show_title = false;
                             <button class="delete-upload btn btn-sm btn-danger" data-id="{{ $file -> file_id }}" data-state="{{ $state }}" data-form-group-id="{{ $form_group_id }}"  data-toggle="tooltip" data-html="true" title="Permantly delete form"><i class="fad fa-trash-alt mr-2"></i> Delete</button>
                         </div>
                     @endif
+                    <div class="px-2">
+                        <div class="small text-right">Added: {{ date('M jS, Y', strtotime($file -> created_at)) }} {{ date('g:i A', strtotime($file -> created_at)) }}</div>
+                    </div>
                 </div>
             </div>
-            <div class="col-2">
-                <div>
-                    <div class="small text-right">Added: {{ date('M jS, Y', strtotime($file -> created_at)) }}<br>{{ date('g:i A', strtotime($file -> created_at)) }}</div>
-                </div>
-            </div>
-        </div><!-- ./ .row -->
+        </div>
+
     </div><!-- ./ .container -->
 </div>
 @endforeach

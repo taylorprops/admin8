@@ -67,6 +67,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
         $('.delete-input').off('click').on('click', delete_input);
 
+
         // on page double click add field
         $('#file_viewer').on('dblclick', '.file-view-page-container.active .file-image', function (e) { // changed from just .file-view-page-container.active - adding .file-image prevents new field being created when double clicking in edit properties div
 
@@ -150,9 +151,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 field_status();
 
-                setTimeout(function() {
-                    form_elements();
-                }, 1000);
+                setTimeout(select_refresh, 500);
 
             }
         });
@@ -1189,6 +1188,7 @@ if (document.URL.match(/create\/add_fields/)) {
                         });
                         $('#' + type + '_select_options').val(select_options).trigger('change');
                     });
+                    setTimeout(select_refresh, 500);
 
                 }
             });

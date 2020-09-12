@@ -6,9 +6,10 @@
 
             @foreach($checklist_groups as $checklist_group)
 
-                <div class="list-group-item d-flex justify-content-start align-items-center border-left-0 border-right-0 bg-blue-light @if($loop -> first) mt-3 @else mt-4 @endif">
+                {{-- <div class="list-group-item d-flex justify-content-start align-items-center border-left-0 border-right-0 bg-blue-light @if($loop -> first) mt-3 @else mt-4 @endif"> --}}
+                <div class="list-group-item border border-primary border-2 d-flex justify-content-start align-items-center @if($loop -> first) mt-3 @else mt-5 @endif py-0">
                     <div>
-                        <div class="h5-responsive text-orange">{{ $checklist_group -> resource_name }}</div>
+                        <div class="h5-responsive text-primary">{{ $checklist_group -> resource_name }}</div>
                     </div>
                     <div class="ml-3">
                         <button type="button" class="btn btn-success btn-sm add-checklist-item-button" data-toggle="tooltip" data-group-id="{{ $checklist_group -> resource_id }}" title="Add Checklist Item"><i class="fal fa-plus"></i></button>
@@ -57,11 +58,13 @@
                     if($status == 'Required' || $status == 'If Applicable') {
                         $unused_status_class = 'checklist-item-unused';
                     }
+
+
                     @endphp
 
-                    <div class="list-group-item px-1 pt-3 pb-2 checklist-item-div {{ $notes_unread }} @if($status == 'Pending') pending @elseif($status == 'Required') required @endif" id="checklist_item_{{ $checklist_item_id }}">
+                    <div class="list-group-item px-1 py-1 checklist-item-div {{ $notes_unread }} @if($status == 'Pending') pending @elseif($status == 'Required') required @endif" id="checklist_item_{{ $checklist_item_id }}">
 
-                        <div class="d-flex justify-content-between align-content-around mb-2">
+                        <div class="d-flex justify-content-between align-content-around mb-1">
 
                             <div class="d-flex justify-content-start align-items-center w-100">
 
@@ -82,26 +85,31 @@
                                 </div>
 
                                 <div class="mx-2 w-100 h-100 d-block">
-                                    <a href="javascript:void(0)" class="d-block checklist-item-name text-gray w-100 h-100 {{ $unused_status_class }}" data-checklist-item-id="{{ $checklist_item_id }}" data-checklist-item-name="{{ $checklist_item_name }}">{{ $checklist_item_name }}</a>
+                                    <a href="javascript:void(0)" class="d-flex align-items-center checklist-item-name text-gray w-100 h-100 {{ $unused_status_class }}" data-checklist-item-id="{{ $checklist_item_id }}" data-checklist-item-name="{{ $checklist_item_name }}">{{ $checklist_item_name }}</a>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-end align-items-center">
-                                <div class="mr-2" data-toggle="tooltip" data-html="true" title="{!! $notes_tooltip !!}">
+
+                            <div>
+
+                                <div class="status-badge badge {{ $admin_classes }} {{ $unused_status_class }} p-2 w-100">
+                                    {!! $status !!}
+                                </div>
+
+                                <div class="w-100 text-center" data-toggle="tooltip" data-html="true" title="{!! $notes_tooltip !!}">
                                     <a class="notes-toggle" data-toggle="collapse" href="#notes_{{ $checklist_item_id }}" role="button" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}">
-                                        <span class="fa-stack fa-2x">
+                                        <span class="fa-stack fa-2x mt-1">
                                             <i class="fa fa-comment fa-stack-1x @if($notes_unread_count > 0) text-orange @else @if($notes) text-primary @else text-blue-light @endif @endif"></i>
                                             @if($notes_unread_count > 0) <span class="fa-stack-1x notes-count text-white">{{ $notes_unread_count }}</span> @endif
                                         </span>
                                     </a>
                                 </div>
-                                <div class="status-badge badge {{ $admin_classes }} {{ $unused_status_class }} p-2">
-                                    {!! $status !!}
-                                </div>
+
                             </div>
+
                         </div>
 
                         <div id="notes_{{ $checklist_item_id }}" class="collapse checklist-item-notes-div bg-white mb-2" data-parent="#checklist_list_group">
-                            <div class="mt-3 p-2 bg-white text-gray">
+                            <div class="mt-1 p-2 bg-white text-gray">
                                 <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
                                     <div class="font-weight-bold text-primary">Comments</div>
                                     <a data-toggle="collapse" href="#notes_{{ $checklist_item_id }}" role="button" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}">

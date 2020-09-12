@@ -25,7 +25,7 @@
 
                 @if($transaction_type == 'listing')
 
-                    <li class="nav-item"><a href="javascript: void(0)" data-tab="contracts" id="open_contracts_tab" data-target="#contracts_tab" data-toggle="tab" class="nav-link"><i class="fad fa-file-signature mr-2 d-none d-md-inline-block"></i> Contracts</a></li>
+                    <li class="nav-item"><a href="javascript: void(0)" data-tab="contracts" id="open_contracts_tab" data-target="#contracts_tab" data-toggle="tab" class="nav-link"><i class="fad fa-file-signature mr-2 d-none d-md-inline-block"></i> {{ $for_sale ? 'Contracts' : 'Leases' }}</a></li>
 
                 @else
 
@@ -109,6 +109,7 @@
     <input type="hidden" id="Agent_ID" value="{{ $property -> Agent_ID }}">
     <input type="hidden" id="transaction_type" value="{{ $transaction_type }}">
     <input type="hidden" id="questions_confirmed" value="{{ $questions_confirmed }}">
+    <input type="hidden" id="for_sale" value="{{ $for_sale == true ? 'yes' : 'no' }}">
 
 
     <div class="modal fade draggable" id="confirm_undo_cancel_modal" tabindex="-1" role="dialog" aria-labelledby="undo_cancel_title" aria-hidden="true">
@@ -124,7 +125,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                This will reactivate the Sales Contract.<br>
+                                This will reactivate the {{ $for_sale ? 'Sales Contract' : 'Lease Agreement' }}.<br>
                                 Are you sure you want to UNDO this Release/Cancellation?
                             </div>
                         </div>
@@ -137,6 +138,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade draggable" id="cancel_contract_modal" tabindex="-1" role="dialog" aria-labelledby="cancel_contract_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -148,7 +150,7 @@
                 </div>
                 <div class="modal-body pt-3">
 
-                    <div class="list-group">
+                    <div class="list-group cancel-alerts">
 
                         {{-- Contracts --}}
                         <div class="list-group-item cancel-contract docs-submitted d-flex justify-content-start align-items-center">
@@ -167,21 +169,13 @@
                                 Your listing will remain active and you will be able to accept a new {{ $for_sale ? 'Sales Contract' : 'Lease Agreement' }} once the cancellation is approved.
                             </div>
                         </div>
-                        <div class="list-group-item cancel-contract docs-submitted d-flex justify-content-start align-items-center">
-                            <div class="pr-3">
-                                <i class="fa fa-exclamation-circle text-danger fa-2x"></i>
-                            </div>
-                            <div>
-                                You submitted a Sales Contract that has been accepted by the office so you must submit a <span class="font-weight-bold text-primary">Mutual Release of Obligation Under Contract Of Sale</span> for your request to be processed.
-                            </div>
-                        </div>
 
                         <div class="list-group-item cancel-contract docs-not-submitted d-flex justify-content-start align-items-center">
                             <div class="pr-3">
                                 <i class="fa fa-info-circle text-primary fa-2x"></i>
                             </div>
                             <div>
-                                Since you have not submitted a contract for this property the Sales Contract will be instantly canceled.
+                                Since we have not reviewed and approved a Sales Contract for this property the Contract will be instantly canceled.
                             </div>
                         </div>
                         <div class="list-group-item cancel-contract has-listing docs-not-submitted d-flex justify-content-start align-items-center">
@@ -207,7 +201,7 @@
                                 <i class="fa fa-info-circle text-primary fa-2x"></i>
                             </div>
                             <div>
-                                Since you have not submitted a lease for this property the Lease Agreement will be instantly canceled.
+                                Since we have not reviewed and approved a Lease Agreement for this property the Lease Agreement will be instantly canceled.
                             </div>
                         </div>
 
@@ -335,7 +329,7 @@
                                         Who is representing the {{ $for_sale ? 'Buyer' : 'Renter' }}(s)?
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-6">
+                                <div class="col-12 col-lg-6">
                                     <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" id="accept_contract_BuyerRepresentedBy" data-label="Select One">
                                         <option value=""></option>
                                         <option value="other_agent">Agent From Other Company</option>
@@ -363,7 +357,7 @@
 
                             <div class="buyer-agent-details">
 
-                                <div class="row">
+                                <div class="row bright-search-row">
                                     <div class="col-12">
                                         <a class="btn btn-primary btn-sm my-3" data-toggle="collapse" href="#agent_search_div" role="button" aria-expanded="false" aria-controls="agent_search_div">
                                             <i class="fad fa-search mr-2"></i> Search Agents in Bright MLS
@@ -381,32 +375,33 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input agent-details agent-details-required required" id="accept_contract_buyer_agent_company" data-label="Agent Company" data-agent-detail="{{ $agent_details -> company }}">
+                                        <input type="text" class="custom-form-element form-input agent-details agent-details-required required" id="accept_contract_buyer_agent_first" data-label="{{ $for_sale ? 'Buyer' : 'Renter' }}'s Agent First Name" data-agent-detail="{{ $agent_details -> first_name }}">
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input agent-details" id="accept_contract_buyer_agent_mls_id" data-label="Agent BrightMLS ID">
+                                        <input type="text" class="custom-form-element form-input agent-details agent-details-required required" id="accept_contract_buyer_agent_last" data-label="{{ $for_sale ? 'Buyer' : 'Renter' }}'s Agent Last Name" data-agent-detail="{{ $agent_details -> last_name }}">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input agent-details agent-details-required required" id="accept_contract_buyer_agent_first" data-label="Agent First Name" data-agent-detail="{{ $agent_details -> first_name }}">
+                                        <input type="text" class="custom-form-element form-input agent-details agent-details-required required" id="accept_contract_buyer_agent_company" data-label="{{ $for_sale ? 'Buyer' : 'Renter' }}'s Agent Company" data-agent-detail="{{ $agent_details -> company }}">
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input agent-details agent-details-required required" id="accept_contract_buyer_agent_last" data-label="Agent Last Name" data-agent-detail="{{ $agent_details -> last_name }}">
+                                        <input type="text" class="custom-form-element form-input agent-details" id="accept_contract_buyer_agent_mls_id" data-label="{{ $for_sale ? 'Buyer' : 'Renter' }}'s Agent BrightMLS ID">
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input phone agent-details" id="accept_contract_buyer_agent_phone" data-label="Agent Phone" data-agent-detail="{{ $agent_details -> cell_phone }}">
+                                        <input type="text" class="custom-form-element form-input phone agent-details" id="accept_contract_buyer_agent_phone" data-label="{{ $for_sale ? 'Buyer' : 'Renter' }}'s Agent Phone" data-agent-detail="{{ $agent_details -> cell_phone }}">
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <input type="email" class="custom-form-element form-input agent-details" id="accept_contract_buyer_agent_email" data-label="Agent Email" data-agent-detail="{{ $agent_details -> email }}">
+                                        <input type="email" class="custom-form-element form-input agent-details" id="accept_contract_buyer_agent_email" data-label="{{ $for_sale ? 'Buyer' : 'Renter' }}'s Agent Email" data-agent-detail="{{ $agent_details -> email }}">
                                     </div>
-                                    <input type="hidden" id="accept_contract_buyer_agent_street" calss="agent-details" data-agent-detail="175 Admiral Cochrane Dr., Suite 111">
-                                    <input type="hidden" id="accept_contract_buyer_agent_city" calss="agent-details" data-agent-detail="Annapolis">
-                                    <input type="hidden" id="accept_contract_buyer_agent_state" calss="agent-details" data-agent-detail="MD">
-                                    <input type="hidden" id="accept_contract_buyer_agent_zip" calss="agent-details" data-agent-detail="21401">
-                                    <input type="hidden" id="accept_contract_OtherAgent_ID" calss="agent-details">
+                                    <input type="hidden" id="accept_contract_buyer_agent_street" class="agent-details" data-agent-detail="175 Admiral Cochrane Dr., Suite 111">
+                                    <input type="hidden" id="accept_contract_buyer_agent_city" class="agent-details" data-agent-detail="Annapolis">
+                                    <input type="hidden" id="accept_contract_buyer_agent_state" class="agent-details" data-agent-detail="MD">
+                                    <input type="hidden" id="accept_contract_buyer_agent_zip" class="agent-details" data-agent-detail="21401">
+                                    <input type="hidden" id="accept_contract_OtherAgent_ID" class="agent-details">
                                 </div>
 
                             </div>

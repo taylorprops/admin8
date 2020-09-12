@@ -47,7 +47,7 @@
 
     </head>
 
-    <body class="hidden-sn @if(Request::is('*/edit_files/*')) y-scroll-none @endif ">
+    <body class="hidden-sn @if(Request::is('*/edit_files/*')) y-scroll-none @endif @if(Request::is('*/document_review')) overflow-y-hidden @endif">
 
         @include('layouts.includes.header')
 

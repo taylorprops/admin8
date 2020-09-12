@@ -12,7 +12,7 @@
             width: 100%;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-top: 70px;
+            margin-top: 60px;
             z-index: 1;
         }
 
@@ -23,7 +23,7 @@
         }
 
         .notes-count {
-            font-size: 1rem;
+            font-size: .8rem;
             bottom: 2px;
         }
 
@@ -50,6 +50,7 @@
                 display: none;
             }
 
+
             .checklist-item-div {
 
                 .status-badge {
@@ -63,13 +64,24 @@
             }
 
             .list-group-item.active {
-                background-color: rgba($primary, 0.8);
-                border-color: rgba($primary, 0.8);
+                background-color: rgba($orange, 0.8);
+                border-color: rgba($orange, 0.8);
             }
 
             .notes-div {
                 max-height: 300px;
                 overflow: auto;
+
+                .avatar-initials {
+                    height: 40px;
+                    width: 40px;
+                    text-align: center;
+                }
+
+                .mark-read-button {
+                    padding: 0.1rem 0.4rem;
+                    font-size: 0.65rem !important;
+                }
             }
 
 
@@ -78,19 +90,21 @@
     }
 
     .documents-container {
+        height: 100%;
+        overflow: hidden;
 
         .documents-div {
-            height: 93VH;
+            height: 92VH;
             overflow: hidden;
         }
 
         .review-container {
             position: relative;
-            height: 93VH;
+            height: 92VH;
         }
 
         .review-image-container {
-            height: 86VH;
+            height: 85VH;
             overflow-y: auto;
             scroll-behavior: smooth;
             padding-bottom: 25px;
@@ -135,11 +149,15 @@
 
     .details-container {
 
+        height: 100%;
+        overflow: hidden;
+
         .details-content {
-            height: 76VH;
+            height: 73VH;
             overflow-y: auto;
             overflow-x: hidden;
         }
+
 
         .transaction-details .badge {
             font-size: 1rem;
@@ -173,7 +191,7 @@
 
 
 .form-groups-container {
-    height: 420px;
+    height: 300px;
     overflow: auto;
 }
 

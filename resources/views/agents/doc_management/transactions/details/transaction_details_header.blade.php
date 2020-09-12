@@ -58,17 +58,17 @@ if($transaction_type == 'listing') {
 
         @if($transaction_type == 'listing')
 
-        <div class="row">
+        <div class="d-flex flex-wrap justify-content-end align-items-center">
             @if(in_array($property -> Status, $resource_items -> GetActiveListingStatuses('no', 'yes', 'yes') -> toArray()))
-                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-right">
+                <div>
                     <a href="javascript: void(0);" class="btn btn-success mt-2 d-block d-sm-inline-block" id="accept_contract_button"><i class="fa fa-plus mr-2"></i> Accept {{ $for_sale ? 'Contract' : 'Lease' }}</a>
                 </div>
-                <div class="col-12 col-sm-6 col-lg-12 text-center text-sm-left text-lg-right">
+                <div>
                     <a href="javascript: void(0);" class="btn btn-danger mt-2 d-block d-sm-inline-block" id="withdraw_listing_button"><i class="fa fa-minus mr-2"></i> Withdraw Listing</a>
                 </div>
             @else
-                <div class="col-12">
-                    <div class="h2-responsive text-success w-100 text-sm-left text-lg-right"><i class="fad fa-check-circle mr-2"></i> {{ $for_sale ? 'Under Contract' : 'Lease Accepted' }}!</div>
+                <div>
+                    <span class="badge bg-orange text-white mr-2 font-12"><i class="fad fa-check-circle mr-2"></i> {{ $for_sale ? 'Under Contract' : 'Lease Accepted' }}!</span>
                 </div>
             @endif
         </div>
@@ -170,9 +170,9 @@ if($transaction_type == 'listing') {
                         @foreach($sellers as $seller)
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                {{ ($seller -> entity_name ? $seller -> entity_name : $seller -> first_name . ' ' . $seller -> last_name) }}
+                                {{ $seller }}
                             </div>
-                            <div class="ml-2">
+                            {{-- <div class="ml-2">
                                 @php
                                 $contact_details = '';
                                 if($seller -> cell_phone != '') {
@@ -185,7 +185,7 @@ if($transaction_type == 'listing') {
                                 @if($seller -> cell_phone != '' || $seller -> email != '')
                                 <a href="javascript: void(0)" class="btn btn-sm btn-primary" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Contact Details" data-content="{!! $contact_details !!}"><i class="fad fa-address-book mr-1"></i> Contact</a>
                                 @endif
-                            </div>
+                            </div> --}}
                         </div>
                         @endforeach
                     </div>
@@ -199,7 +199,7 @@ if($transaction_type == 'listing') {
                     <i class="fad fa-users fa-2x"></i>
                 </div>
                 <div class="ml-2 pr-2 agent-section border-right header-section">
-                    <span class="font-weight-bold text-yellow">{{ $for_sale ? 'Buyer' : 'Renter' }} Agent</span>
+                    <span class="font-weight-bold text-yellow">{{ $for_sale ? 'Buyer' : 'Renter' }}'s Agent</span>
                     <br>
                     <div>
                         {{ $property -> BuyerAgentFirstName . ' ' . $property -> BuyerAgentLastName }}
@@ -221,9 +221,9 @@ if($transaction_type == 'listing') {
                         @foreach($buyers as $buyer)
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                {{ $buyer -> first_name . ' ' . $buyer -> last_name }}
+                                {{ $buyer }}
                             </div>
-                            <div class="ml-2">
+                            {{-- <div class="ml-2">
                                 @php
                                 $contact_details = '';
                                 if($buyer -> cell_phone != '') {
@@ -236,7 +236,7 @@ if($transaction_type == 'listing') {
                                 @if($buyer -> cell_phone != '' || $buyer -> email != '')
                                 <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-2" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Contact Details" data-content="{!! $contact_details !!}"><i class="fad fa-address-book mr-1"></i> Contact</a>
                                 @endif
-                            </div>
+                            </div> --}}
                         </div>
                         @endforeach
                     </div>
@@ -279,7 +279,7 @@ if($transaction_type == 'listing') {
                         </div>
                         <div class="row">
                             <div class="col-6 text-right pr-0 text-nowrap text-nowrap">
-                                <span class="font-weight-bold text-yellow">@if($transaction_type == 'listing') List Price @else Sale Price @endif</span>
+                                <span class="font-weight-bold text-yellow">@if($transaction_type == 'listing') {{ $for_sale ? 'List Price' : 'Lease Amount' }} @else Sale Price @endif</span>
                             </div>
                             <div class="col-6 text-left text-nowrap">
                                 @if($transaction_type == 'listing') ${{ number_format($property -> ListPrice) }} @else ${{ number_format($property -> ContractPrice) }} @endif

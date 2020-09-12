@@ -230,10 +230,10 @@ if (document.URL.match(/transaction_details/)) {
             member_div.find('.member-company').val($(this).data('contact-company'));
             member_div.find('.member-phone').val($(this).data('contact-phone'));
             member_div.find('.member-email').val($(this).data('contact-email'));
-            member_div.find('.member-street').val($(this).data('contact-street'));
-            member_div.find('.member-city').val($(this).data('contact-city'));
-            member_div.find('.member-state').val($(this).data('contact-state'));
-            member_div.find('.member-zip').val($(this).data('contact-zip'));
+            member_div.find('.member-home-street').val($(this).data('contact-street'));
+            member_div.find('.member-home-city').val($(this).data('contact-city'));
+            member_div.find('.member-home-state').val($(this).data('contact-state'));
+            member_div.find('.member-home-zip').val($(this).data('contact-zip'));
             member_div.find('.member-crm-contact-id').val($(this).data('contact-id'));
 
             $('input').trigger('change');

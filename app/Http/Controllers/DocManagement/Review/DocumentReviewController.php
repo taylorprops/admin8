@@ -46,13 +46,17 @@ use App\Models\Admin\Resources\ResourceItemsAdmin;
 // use App\Mail\DocManagement\Emails\Documents;
 // use App\Mail\DefaultEmail;
 // use Illuminate\Support\Facades\DB;
+use App\Models\DocManagement\Transactions\CancelRequests\CancelRequests;
 
 class DocumentReviewController extends Controller
 {
     public function document_review(Request $request) {
 
+        $cancel_request_ids = CancelRequests::where('cancel_status', 'open') -> pluck('Contract_ID');
+        $cancel_requests = Contracts::whereIn('Contract_ID', $cancel_request_ids) -> get();
+
         $listing_checklist_items = TransactionChecklistItemsDocs::where('doc_status', 'pending') -> where('Listing_ID', '>', '0') -> groupBy('Listing_ID') -> get();
-        $contract_checklist_items = TransactionChecklistItemsDocs::where('doc_status', 'pending') -> where('Contract_ID', '>', '0') -> groupBy('Contract_ID') -> get();
+        $contract_checklist_items = TransactionChecklistItemsDocs::where('doc_status', 'pending') -> where('Contract_ID', '>', '0') -> whereNotIn('Contract_ID', $cancel_request_ids) -> groupBy('Contract_ID') -> get();
         $referral_checklist_items = TransactionChecklistItemsDocs::where('doc_status', 'pending') -> where('Referral_ID', '>', '0') -> groupBy('Referral_ID') -> get();
 
         $listing_ids = $listing_checklist_items -> pluck('Listing_ID');
@@ -76,7 +80,8 @@ class DocumentReviewController extends Controller
         $contracts_with_notes = Contracts::whereIn('Contract_ID', $contract_checklist_item_notes_ids) -> get();
         $referrals_with_notes = Referrals::whereIn('Referral_ID', $referral_checklist_item_notes_ids) -> get();
 
-        return view('/doc_management/review/document_review', compact('listing_checklist_items', 'contract_checklist_items', 'referral_checklist_items', 'listings', 'contracts', 'referrals', 'checklist_items', 'members', 'checklist_item_docs', 'checklist_item_notes', 'listings_with_notes', 'contracts_with_notes', 'referrals_with_notes'));
+
+        return view('/doc_management/review/document_review', compact('listing_checklist_items', 'contract_checklist_items', 'referral_checklist_items', 'listings', 'contracts', 'referrals', 'checklist_items', 'members', 'checklist_item_docs', 'checklist_item_notes', 'listings_with_notes', 'contracts_with_notes', 'referrals_with_notes', 'cancel_requests'));
 
     }
 
@@ -167,8 +172,10 @@ class DocumentReviewController extends Controller
         $resource_items = new ResourceItems();
 
         $sale_rent = 'For Sale';
+        $for_sale = true;
         if($property -> SaleRent == 'rental') {
             $sale_rent = 'Rental';
+            $for_sale = false;
         } else if($property -> SaleRent == 'both' && $transaction_type == 'listing') {
             $sale_rent = 'For Sale And Rent';
         }
@@ -192,7 +199,9 @@ class DocumentReviewController extends Controller
         $agent_details = Agents::find($property -> Agent_ID);
         $co_agent_details = Agents::find($property -> CoAgent_ID);
 
-        return view('/doc_management/review/get_details_html', compact('transaction_type', 'id', 'members', 'property', 'address', 'sale_rent', 'resource_items', 'agent_details', 'co_agent_details', 'earnest_held_by', 'title_company'));
+        $canceled_status_id = $resource_items -> GetResourceID('Cancel Pending', 'contract_status');
+
+        return view('/doc_management/review/get_details_html', compact('transaction_type', 'id', 'members', 'property', 'address', 'sale_rent', 'for_sale', 'resource_items', 'agent_details', 'co_agent_details', 'earnest_held_by', 'title_company', 'canceled_status_id'));
 
     }
 
