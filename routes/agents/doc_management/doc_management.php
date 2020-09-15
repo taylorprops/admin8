@@ -118,7 +118,7 @@
     // Accept new contract for listing
     Route::post('/agents/doc_management/transactions/accept_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@accept_contract');
     // Release contract on listing
-    Route::post('/agents/doc_management/transactions/release_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@release_contract');
+    Route::post('/agents/doc_management/transactions/cancel_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@cancel_contract');
     // UNDO release or canceled contract
     Route::post('/agents/doc_management/transactions/undo_cancel_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@undo_cancel_contract');
     // check if docs submitted and accepted

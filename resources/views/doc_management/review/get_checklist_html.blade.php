@@ -6,12 +6,11 @@
 
             @foreach($checklist_groups as $checklist_group)
 
-                {{-- <div class="list-group-item d-flex justify-content-start align-items-center border-left-0 border-right-0 bg-blue-light @if($loop -> first) mt-3 @else mt-4 @endif"> --}}
-                <div class="list-group-item border border-primary border-2 d-flex justify-content-start align-items-center @if($loop -> first) mt-3 @else mt-5 @endif py-0">
+                <div class="list-group-item bg-blue-light border border-primary border-left-0 border-right-0 d-flex justify-content-between align-items-center @if($loop -> first) mt-3 @else mt-5 @endif">
                     <div>
                         <div class="h5-responsive text-primary">{{ $checklist_group -> resource_name }}</div>
                     </div>
-                    <div class="ml-3">
+                    <div>
                         <button type="button" class="btn btn-success btn-sm add-checklist-item-button" data-toggle="tooltip" data-group-id="{{ $checklist_group -> resource_id }}" title="Add Checklist Item"><i class="fal fa-plus"></i></button>
                     </div>
                 </div>
@@ -62,9 +61,9 @@
 
                     @endphp
 
-                    <div class="list-group-item px-1 py-1 checklist-item-div {{ $notes_unread }} @if($status == 'Pending') pending @elseif($status == 'Required') required @endif" id="checklist_item_{{ $checklist_item_id }}">
+                    <div class="list-group-item p-0 mt-2 mx-2 border-top z-depth-1 rounded checklist-item-div {{ $notes_unread }} @if($status == 'Pending') pending @elseif($status == 'Required') required @endif" id="checklist_item_{{ $checklist_item_id }}">
 
-                        <div class="d-flex justify-content-between align-content-around mb-1">
+                        <div class="d-flex justify-content-between align-content-around mb-1 p-1">
 
                             <div class="d-flex justify-content-start align-items-center w-100">
 
@@ -91,7 +90,7 @@
 
                             <div>
 
-                                <div class="status-badge badge {{ $admin_classes }} {{ $unused_status_class }} p-2 w-100">
+                                <div class="status-badge badge {{ $admin_classes }} {{ $unused_status_class }} p-1 d-block">
                                     {!! $status !!}
                                 </div>
 
@@ -108,16 +107,16 @@
 
                         </div>
 
-                        <div id="notes_{{ $checklist_item_id }}" class="collapse checklist-item-notes-div bg-white mb-2" data-parent="#checklist_list_group">
+                        <div id="notes_{{ $checklist_item_id }}" class="collapse checklist-item-notes-div bg-white" data-parent="#checklist_list_group">
                             <div class="mt-1 p-2 bg-white text-gray">
-                                <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
+                                <div class="d-flex justify-content-between align-items-center border-bottom mb-3 pb-3">
                                     <div class="font-weight-bold text-primary">Comments</div>
                                     <a data-toggle="collapse" href="#notes_{{ $checklist_item_id }}" role="button" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}">
                                         <i class="fad fa-times-circle text-danger fa-lg"></i>
                                     </a>
                                 </div>
 
-                                <div class="notes-div my-2" data-checklist-item-id="{{ $checklist_item_id }}">
+                                <div class="notes-div my-2 disable-scrollbars" data-checklist-item-id="{{ $checklist_item_id }}">
                                     <div class="text-gray">No Comments</div>
                                 </div>
 
@@ -135,7 +134,7 @@
                         </div>
 
 
-                        <div class="documents-list bg-white p-2"></div>
+                        <div class="documents-list bg-white p-2 rounded-bottom"></div>
 
                     </div>
 

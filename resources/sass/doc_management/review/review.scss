@@ -65,7 +65,10 @@
 
             .list-group-item.active {
                 background-color: rgba($orange, 0.8);
-                border-color: rgba($orange, 0.8);
+                //border: 1px solid rgba($orange, 1) !important;
+                border: none !important;
+                margin-top: 15px !important;
+                margin-bottom: 15px !important;
             }
 
             .notes-div {

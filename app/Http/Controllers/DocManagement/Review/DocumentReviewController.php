@@ -46,13 +46,12 @@ use App\Models\Admin\Resources\ResourceItemsAdmin;
 // use App\Mail\DocManagement\Emails\Documents;
 // use App\Mail\DefaultEmail;
 // use Illuminate\Support\Facades\DB;
-use App\Models\DocManagement\Transactions\CancelRequests\CancelRequests;
 
 class DocumentReviewController extends Controller
 {
     public function document_review(Request $request) {
-
-        $cancel_request_ids = CancelRequests::where('cancel_status', 'open') -> pluck('Contract_ID');
+        // TODO: get cancel requests from uploaded docs_transaction_fields_inputs_values
+        $cancel_request_ids = [];
         $cancel_requests = Contracts::whereIn('Contract_ID', $cancel_request_ids) -> get();
 
         $listing_checklist_items = TransactionChecklistItemsDocs::where('doc_status', 'pending') -> where('Listing_ID', '>', '0') -> groupBy('Listing_ID') -> get();

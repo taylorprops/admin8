@@ -543,7 +543,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer d-flex justify-content-around">
+                <div class="modal-footer save-add-to-checklist-footer d-flex justify-content-around">
                     <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
                     <a class="btn btn-success" id="save_add_to_checklist_button" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-check mr-2"></i> Save</a>
                 </div>

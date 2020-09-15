@@ -112,7 +112,9 @@ if (document.URL.match(/transaction_details/)) {
 
     });
 
-
+    // TODO: remove this and undo_cancel
+    // remove confirm_undo_cancel_modal
+    // use undo_cancel_contract function in controller
     function show_undo_cancel() {
         let Contract_ID = $(this).data('contract-id');
         $('#confirm_undo_cancel_modal').modal();
@@ -124,7 +126,9 @@ if (document.URL.match(/transaction_details/)) {
     function undo_cancel(Contract_ID) {
 
         let formData = new FormData();
+        let Agent_ID = $('#Agent_ID').val();
         formData.append('Contract_ID', Contract_ID);
+        formData.append('Agent_ID', Agent_ID);
         axios.post('/agents/doc_management/transactions/undo_cancel_contract', formData, axios_options)
         .then(function (response) {
 
@@ -149,30 +153,24 @@ if (document.URL.match(/transaction_details/)) {
 
     }
 
-    function show_release_contract() {
+    function show_cancel_contract() {
 
         let cancel = $(this);
         let for_sale = cancel.data('for-sale');
-        let contract_accepted = '';
+        let contract_submitted = '';
         let listing_expiration_date = cancel.data('listing-expiration-date') || null;
         let today = new Date();
         let expire = new Date(listing_expiration_date);
 
 
         // check if any docs have been submitted and accepted
-        let Listing_ID = $('#Listing_ID').val();
         let Contract_ID = $('#Contract_ID').val();
-        let Referral_ID = $('#Referral_ID').val();
-        let transaction_type = $('#transaction_type').val();
 
         $('.cancel-contract, .cancel-lease, .expired-listing').removeClass('d-flex').hide();
 
         axios.get('/agents/doc_management/transactions/check_docs_submitted_and_accepted', {
             params: {
-                Listing_ID: Listing_ID,
-                Contract_ID: Contract_ID,
-                Referral_ID: Referral_ID,
-                transaction_type: transaction_type
+                Contract_ID: Contract_ID
             }
         })
         .then(function (response) {
@@ -185,18 +183,19 @@ if (document.URL.match(/transaction_details/)) {
                     $('.cancel-contract.has-listing').removeClass('d-flex').hide();
                 }
 
-                if(response.data.contract_accepted == true) {
-                    $('.cancel-contract.docs-submitted').addClass('d-flex').show();
+                if(response.data.contract_submitted == true) {
                     $('.cancel-contract.docs-not-submitted').removeClass('d-flex').hide();
-                    contract_accepted = 'yes';
                     if(response.data.release_submitted == false) {
                         $('#modal_danger').modal().find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><i class="fa fa-exclamation-circle fa-2x text-danger mr-2"></i> <div class="text-center">You must submit a RELEASE for the Sales Contract on the checklist before you can request a cancellation.</div></div>');
-                        return false;
                     }
+                    return false;
                 } else {
-                    $('.cancel-contract.docs-submitted').removeClass('d-flex').hide();
-                    $('.cancel-contract.docs-not-submitted').addClass('d-flex').show();
-                    contract_accepted = 'no';
+                    if(response.data.release_submitted == true) {
+                        $('#modal_danger').modal().find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><i class="fa fa-exclamation-circle fa-2x text-danger mr-2"></i> <div class="text-center">You must submit a Sales Contract and it must be reviewed before you can submit a release and request a cancellation.</div></div>');
+                        return false;
+                    } else {
+                        $('.cancel-contract.docs-not-submitted').addClass('d-flex').show();
+                    }
                 }
 
             } else {
@@ -206,14 +205,12 @@ if (document.URL.match(/transaction_details/)) {
                 } else {
                     $('.cancel-lease.has-listing').removeClass('d-flex').hide();
                 }
-                if(response.data.contract_accepted == true) {
-                    $('.cancel-lease.docs-submitted').addClass('d-flex').show();
+                if(response.data.contract_submitted == true) {
+                    //$('.cancel-lease.docs-submitted').addClass('d-flex').show();
                     $('.cancel-lease.docs-not-submitted').removeClass('d-flex').hide();
-                    contract_accepted = 'yes';
                 } else {
-                    $('.cancel-lease.docs-submitted').removeClass('d-flex').hide();
+                    //$('.cancel-lease.docs-submitted').removeClass('d-flex').hide();
                     $('.cancel-lease.docs-not-submitted').addClass('d-flex').show();
-                    contract_accepted = 'no';
                 }
 
             }
@@ -227,10 +224,11 @@ if (document.URL.match(/transaction_details/)) {
             }
 
             $('#save_cancel_contract_button').off('click').on('click', function() {
-                release_contract(contract_accepted, for_sale);
+                cancel_contract(for_sale);
             });
 
             $('#cancel_contract_modal').modal();
+            load_details_header();
 
         })
         .catch(function (error) {
@@ -239,7 +237,7 @@ if (document.URL.match(/transaction_details/)) {
 
     }
 
-    function release_contract(contract_accepted, for_sale) {
+    function cancel_contract(for_sale) {
 
         let Listing_ID = $('#Listing_ID').val();
         let Contract_ID = $('#Contract_ID').val();
@@ -250,15 +248,12 @@ if (document.URL.match(/transaction_details/)) {
         }
 
         let success = type+' Successfully Canceled';
-        if(contract_accepted == 'yes') {
-            success = 'Cancel Request Successfully Sent';
-        }
 
         let formData = new FormData();
         formData.append('Listing_ID', Listing_ID);
         formData.append('Contract_ID', Contract_ID);
-        formData.append('contract_accepted', contract_accepted);
-        axios.post('/agents/doc_management/transactions/release_contract', formData, axios_options)
+        formData.append('contract_submitted', 'no');
+        axios.post('/agents/doc_management/transactions/cancel_contract', formData, axios_options)
         .then(function (response) {
             $('#cancel_contract_modal').modal('hide');
             load_details_header();
@@ -464,7 +459,7 @@ if (document.URL.match(/transaction_details/)) {
                 $('#details_header').html(response.data);
                 $('[data-toggle="popover"]').popover({ placement: 'bottom' });
                 $('#accept_contract_button').off('click').on('click', show_accept_contract);
-                $('#release_contract_button').off('click').on('click', show_release_contract);
+                $('#cancel_contract_button').off('click').on('click', show_cancel_contract);
                 $('.undo-cancel-button').off('click').on('click', show_undo_cancel);
                 /* $('#disabled_accept_contract_button').click(function () {
                     $('#modal_danger').modal().find('.modal-body').html('You cannot accept a contract until the current one is released');

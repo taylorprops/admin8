@@ -296,28 +296,43 @@
         text-align: right;
     } */
 
-    #add_to_checklist_items_wrapper, #add_to_checklist_documents_wrapper {
+    #add_to_checklist_documents_wrapper {
+        position: relative;
         max-height: 65VH;
+        overflow-y: hidden;
+        padding-top: 70px;
+        padding-bottom: 400px;
+    }
+
+    #add_to_checklist_items_wrapper {
+        max-height: 68VH;
         overflow-y: auto;
     }
-    #add_to_checklist_documents_div {
+
+    .doc-list-arrows-div {
+        position: absolute;
+        top: 7%;
+        left: 0px;
+
+    }
+
+    .checklist-item-badge {
+        width: 70px;
+    }
+
+    .add-to-checklist-document-div {
+        &.assigned {
+            opacity: 0.5;
+        }
+    }
+
+    /* #add_to_checklist_documents_div {
         min-height: 200px;
     }
     #add_to_checklist_items_div {
         padding-bottom: 100px;
     }
-    .add-to-checklist-document-div {
-        touch-action: none;
-        user-select: none;
-        cursor: move;
-        padding: .3rem .6rem;
-        width: 95%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    /* .add-to-checklist-item-div, .add-to-checklist-document-div {
-        width: 95%;
-    } */
+
 
     .checklist-item-droparea {
         width: 96%;
@@ -353,7 +368,7 @@
     }
     .doc-match {
         background: rgba($orange, .7);
-    }
+    } */
 
     .template-docs-div .list-group-item {
         padding: 0.3rem 1.25rem !important;
@@ -570,6 +585,20 @@
             position: relative !important;
         }
 
+        #add_to_checklist_documents_wrapper, #add_to_checklist_items_wrapper {
+            max-height: 30VH;
+            padding-top: 0px;
+            padding-bottom: 40px;
+        }
+
+        .save-add-to-checklist-footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: #fff;
+        }
+
 
     }
 
@@ -608,7 +637,7 @@
             float: none;
         }
 
-        .add-notes-div {
+        /* .add-notes-div {
             textarea {
                 height: 50px;
             }
@@ -628,7 +657,7 @@
 
         .checklist-item-badge {
             width: 65px;
-        }
+        } */
 
 
     }

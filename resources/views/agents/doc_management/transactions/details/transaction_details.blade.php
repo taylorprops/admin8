@@ -125,7 +125,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                This will reactivate the {{ $for_sale ? 'Sales Contract' : 'Lease Agreement' }}.<br>
+                                This will {{ $for_sale ? 'REJECT the Release (if submitted) and' : '' }} reactivate the {{ $for_sale ? 'Sales Contract' : 'Lease Agreement' }}.<br>
                                 Are you sure you want to UNDO this Release/Cancellation?
                             </div>
                         </div>
@@ -153,23 +153,6 @@
                     <div class="list-group cancel-alerts">
 
                         {{-- Contracts --}}
-                        <div class="list-group-item cancel-contract docs-submitted d-flex justify-content-start align-items-center">
-                            <div class="pr-3">
-                                <i class="fa fa-info-circle text-primary fa-2x"></i>
-                            </div>
-                            <div>
-                                By submitting this form your cancellation request will be sent to the office for approval.
-                            </div>
-                        </div>
-                        <div class="list-group-item cancel-contract has-listing docs-submitted d-flex justify-content-start align-items-center">
-                            <div class="pr-3">
-                                <i class="fa fa-info-circle text-primary fa-2x"></i>
-                            </div>
-                            <div>
-                                Your listing will remain active and you will be able to accept a new {{ $for_sale ? 'Sales Contract' : 'Lease Agreement' }} once the cancellation is approved.
-                            </div>
-                        </div>
-
                         <div class="list-group-item cancel-contract docs-not-submitted d-flex justify-content-start align-items-center">
                             <div class="pr-3">
                                 <i class="fa fa-info-circle text-primary fa-2x"></i>
@@ -183,19 +166,11 @@
                                 <i class="fa fa-info-circle text-primary fa-2x"></i>
                             </div>
                             <div>
-                                Your listing will remain active and you will be able to accept a new {{ $for_sale ? 'Sales Contract' : 'Lease Agreement' }} immediately.
+                                Your listing will remain active and you will be able to accept a new Sales Contract immediately.
                             </div>
                         </div>
 
                         {{-- Leases --}}
-                        <div class="list-group-item cancel-lease docs-submitted d-flex justify-content-start align-items-center">
-                            <div class="pr-3">
-                                <i class="fa fa-info-circle text-primary fa-2x"></i>
-                            </div>
-                            <div>
-                                By submitting this form your cancellation request will be sent to the office for approval.
-                            </div>
-                        </div>
                         <div class="list-group-item cancel-lease docs-not-submitted d-flex justify-content-start align-items-center">
                             <div class="pr-3">
                                 <i class="fa fa-info-circle text-primary fa-2x"></i>
@@ -210,7 +185,7 @@
                                 <i class="fa fa-info-circle text-primary fa-2x"></i>
                             </div>
                             <div>
-                                Your listing will remain active and you will be able to accept a new {{ $for_sale ? 'Sales Contract' : 'Lease Agreement' }} immediately.
+                                Your listing will remain active and you will be able to accept a new Lease Agreement immediately.
                             </div>
                         </div>
                         <div class="list-group-item expired-listing d-flex justify-content-start align-items-center">
@@ -228,7 +203,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-around">
                     <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Do Not Cancel</a>
-                    <a class="btn btn-success" id="save_cancel_contract_button"><i class="fad fa-check mr-2"></i> Submit Cancellation {{ $for_sale ? 'Request' : '' }}</a>
+                    <a class="btn btn-success" id="save_cancel_contract_button"><i class="fad fa-check mr-2"></i> Submit Cancellation</a>
                 </div>
             </div>
         </div>

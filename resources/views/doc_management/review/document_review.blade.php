@@ -2,7 +2,7 @@
 @section('title', 'Document Review')
 
 @section('content')
-<div class="container-fluid page-document-review">
+<div class="container-fluid page-document-review px-0">
 
     <div class="row no-gutters">
 
@@ -14,7 +14,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <div class="d-flex justify-content-start align-items-center w-100">
+                            <div class="d-flex justify-content-start align-items-center w-100 pl-3">
                                 <input type="text" class="custom-form-element form-input" id="search_properties" data-label="Search">
                                 <a href="javascript: void(0)" class="btn btn-danger ml-2 mt-2" id="cancel_search_properties"><i class="fa fa-times mr-2"></i> Clear</a>
                             </div>
@@ -206,7 +206,7 @@
                     <div class="py-5"></div>
                 </div>
 
-                <div class="checklist-items-container w-100 pr-2 disable-scrollbars">
+                <div class="checklist-items-container w-100 disable-scrollbars">
 
                     <div class="sticky bg-white py-2 border-bottom">
                         <div class="d-flex justify-content-between align-items-center">

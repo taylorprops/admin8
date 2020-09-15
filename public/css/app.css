@@ -15213,8 +15213,48 @@ header .header-logo-link {
       width: 70px;
       text-align: right;
   } */
-  /* .add-to-checklist-item-div, .add-to-checklist-document-div {
-      width: 95%;
+  /* #add_to_checklist_documents_div {
+      min-height: 200px;
+  }
+  #add_to_checklist_items_div {
+      padding-bottom: 100px;
+  }
+
+
+  .checklist-item-droparea {
+      width: 96%;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1px dashed $primary;
+      min-height: 45px;
+  }
+  .checklist-item-badge {
+      width: 100px;
+  }
+
+  .drop-activated, .source-dropped, .doc-match {
+      margin-top: 0px !important;
+      margin-bottom: 0px !important;
+      width: 100%;
+  }
+
+  .drop-activated {
+      border: 1px dashed $success;
+
+      .drop-div-title {
+          color: $success;
+      }
+  }
+  .source-dropped {
+      background: rgba($success, .5);
+      padding: 10px;
+
+      > .text-gray {
+          color: white !important;
+      }
+  }
+  .doc-match {
+      background: rgba($orange, .7);
   } */
 }
 
@@ -15513,72 +15553,31 @@ header .header-logo-link {
   width: 210px;
 }
 
-.page-transaction-details #add_to_checklist_items_wrapper,
 .page-transaction-details #add_to_checklist_documents_wrapper {
+  position: relative;
   max-height: 65VH;
+  overflow-y: hidden;
+  padding-top: 70px;
+  padding-bottom: 400px;
+}
+
+.page-transaction-details #add_to_checklist_items_wrapper {
+  max-height: 68VH;
   overflow-y: auto;
 }
 
-.page-transaction-details #add_to_checklist_documents_div {
-  min-height: 200px;
-}
-
-.page-transaction-details #add_to_checklist_items_div {
-  padding-bottom: 100px;
-}
-
-.page-transaction-details .add-to-checklist-document-div {
-  touch-action: none;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  cursor: move;
-  padding: 0.3rem 0.6rem;
-  width: 95%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.page-transaction-details .checklist-item-droparea {
-  width: 96%;
-  margin-left: auto;
-  margin-right: auto;
-  border: 1px dashed #4c9bdb;
-  min-height: 45px;
+.page-transaction-details .doc-list-arrows-div {
+  position: absolute;
+  top: 7%;
+  left: 0px;
 }
 
 .page-transaction-details .checklist-item-badge {
-  width: 100px;
+  width: 70px;
 }
 
-.page-transaction-details .drop-activated,
-.page-transaction-details .source-dropped,
-.page-transaction-details .doc-match {
-  margin-top: 0px !important;
-  margin-bottom: 0px !important;
-  width: 100%;
-}
-
-.page-transaction-details .drop-activated {
-  border: 1px dashed #30a730;
-}
-
-.page-transaction-details .drop-activated .drop-div-title {
-  color: #30a730;
-}
-
-.page-transaction-details .source-dropped {
-  background: rgba(48, 167, 48, 0.5);
-  padding: 10px;
-}
-
-.page-transaction-details .source-dropped > .text-gray {
-  color: white !important;
-}
-
-.page-transaction-details .doc-match {
-  background: rgba(223, 121, 53, 0.7);
+.page-transaction-details .add-to-checklist-document-div.assigned {
+  opacity: 0.5;
 }
 
 .page-transaction-details .template-docs-div .list-group-item {
@@ -15788,6 +15787,21 @@ header .header-logo-link {
   .page-transaction-details .popout {
     position: relative !important;
   }
+
+  .page-transaction-details #add_to_checklist_documents_wrapper,
+  .page-transaction-details #add_to_checklist_items_wrapper {
+    max-height: 30VH;
+    padding-top: 0px;
+    padding-bottom: 40px;
+  }
+
+  .page-transaction-details .save-add-to-checklist-footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+  }
 }
 
 @media (max-width: 768px) {
@@ -15798,6 +15812,30 @@ header .header-logo-link {
 }
 
 @media (max-width: 576px) {
+  .page-transaction-details {
+    /* .add-notes-div {
+        textarea {
+            height: 50px;
+        }
+    }
+
+    #add_to_checklist_items_div {
+        padding-bottom: 10px;
+    }
+    #add_to_checklist_items_wrapper, #add_to_checklist_documents_wrapper {
+        max-height: 45VH;
+        overflow-y: auto;
+    }
+
+    .add-to-checklist-item-list-group {
+        max-height: 100%;
+    }
+
+    .checklist-item-badge {
+        width: 65px;
+    } */
+  }
+
   .page-transaction-details .details-list-group .nav-link {
     padding: 0.2rem 0.2rem;
     font-size: 0.8rem;
@@ -15821,28 +15859,6 @@ header .header-logo-link {
 
   .page-transaction-details .add-buttons-div {
     float: none;
-  }
-
-  .page-transaction-details .add-notes-div textarea {
-    height: 50px;
-  }
-
-  .page-transaction-details #add_to_checklist_items_div {
-    padding-bottom: 10px;
-  }
-
-  .page-transaction-details #add_to_checklist_items_wrapper,
-  .page-transaction-details #add_to_checklist_documents_wrapper {
-    max-height: 45VH;
-    overflow-y: auto;
-  }
-
-  .page-transaction-details .add-to-checklist-item-list-group {
-    max-height: 100%;
-  }
-
-  .page-transaction-details .checklist-item-badge {
-    width: 65px;
   }
 }
 
@@ -16226,7 +16242,9 @@ header .header-logo-link {
 
 .page-document-review .transactions-container .checklist-items-container .list-group-item.active {
   background-color: rgba(223, 121, 53, 0.8);
-  border-color: rgba(223, 121, 53, 0.8);
+  border: none !important;
+  margin-top: 15px !important;
+  margin-bottom: 15px !important;
 }
 
 .page-document-review .transactions-container .checklist-items-container .notes-div {

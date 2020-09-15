@@ -77,6 +77,8 @@ if($transaction_type == 'listing') {
 
             @php
             $status = $resource_items -> GetResourceName($property -> Status);
+            $docs_submitted = $upload -> ContractDocsSubmitted($Contract_ID);
+            $action = $docs_submitted['contract_submitted'] ? 'Release' : 'Cancel';
             @endphp
 
             <div class="row">
@@ -88,7 +90,7 @@ if($transaction_type == 'listing') {
                         @if($property -> Status == $resource_items -> GetResourceID('Active', 'contract_status'))
 
                             <div>
-                                <a href="javascript: void(0);" class="btn btn-danger mt-2" id="release_contract_button" data-for-sale="{{ $for_sale ? 'yes' : 'no' }}" data-listing-expiration-date="{{ $listing_expiration_date }}"><i class="fa fa-minus mr-2"></i> {{ $for_sale ? 'Release Contract' : 'Cancel Lease' }}</a>
+                                <a href="javascript: void(0);" class="btn btn-danger mt-2" id="cancel_contract_button" data-for-sale="{{ $for_sale ? 'yes' : 'no' }}" data-listing-expiration-date="{{ $listing_expiration_date }}"><i class="fa fa-minus mr-2"></i> {{ $for_sale ? $action.' Contract' : 'Cancel Lease' }}</a>
                             </div>
 
                         @elseif($property -> Status == $resource_items -> GetResourceID('Cancel Pending', 'contract_status'))

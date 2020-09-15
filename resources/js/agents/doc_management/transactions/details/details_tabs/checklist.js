@@ -179,15 +179,27 @@ if (document.URL.match(/transaction_details/)) {
         formData.append('Agent_ID', Agent_ID);
         axios.post('/agents/doc_management/transactions/add_document_to_checklist_item', formData, axios_options)
         .then(function (response) {
+
             $('#add_document_modal').modal('hide');
+
+            if(response.data.release_rejected == 'yes') {
+
+                $('#modal_danger').modal().find('.modal-body').html('You cannot upload a Release until you have submitted a Sales Contract');
+                return false;
+
+            }
+
             toastr['success']('Document Added To Checklist');
             load_tabs('checklist');
             load_documents_on_tab_click();
-            /* if(response.data) {
+            if(response.data) {
                 if(response.data.release_submitted == 'yes') {
-                    $('#release_contract_button').trigger('click');
+                    $('#cancel_contract_button').trigger('click');
+                    load_details_header();
+                } else if(response.data.contract_submitted == 'yes') {
+                    load_details_header();
                 }
-            } */
+            }
 
         })
         .catch(function (error) {

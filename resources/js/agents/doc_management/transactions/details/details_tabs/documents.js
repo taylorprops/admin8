@@ -514,9 +514,10 @@ if (document.URL.match(/transaction_details/)) {
             if (assigned == 'yes') {
                 // notify user
                 $('#modal_info').modal().find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><div class="mr-4"><i class="fal fa-exclamation-triangle fa-2x text-danger"></i></div><div class="text-gray text-center">Some documents you selected have already be assigned and will not be included</div></div>');
-                $('#modal_info').find('.modal-footer').find('.btn').text('Continue');
+                let button = $('#modal_info').find('.modal-footer').find('.btn');
+                button.text('Continue');
 
-                $('#modal_info').on('hidden.bs.modal', function () {
+                button.off('click').on('click', function() {
                     $('#add_to_checklist_modal').modal();
                     add_to_checklist_html(checklist_id, document_ids);
                 });
@@ -547,7 +548,34 @@ if (document.URL.match(/transaction_details/)) {
                 .then(function (response) {
                     $('#add_items_to_checklist_div').html(response.data);
 
-                    new Sortable(document.querySelector('#add_to_checklist_documents_div'), {
+                    disable_arrows();
+
+                    $('.doc-list-arrow').on('click', function() {
+                        let new_active_item = '';
+                        if($(this).data('dir') == 'up') {
+                            new_active_item = $('.add-to-checklist-document-div.active').prev('.add-to-checklist-document-div');
+                        } else {
+                            new_active_item = $('.add-to-checklist-document-div.active').next('.add-to-checklist-document-div');
+                        }
+                        arrows(new_active_item);
+                    });
+
+                    $('.add-to-checklist-document-div').click(function() {
+                        arrows($(this));
+                    });
+
+                    $('#add_to_checklist_documents_wrapper').off('wheel').on('wheel', function(e){
+                        if(e.originalEvent.deltaY > 0) {
+                            $('.add-to-checklist-document-div.active').next('.add-to-checklist-document-div').trigger('click');
+                        } else {
+                            $('.add-to-checklist-document-div.active').prev('.add-to-checklist-document-div').trigger('click');
+                        }
+                        return false;
+                    });
+
+                    $('.assign-button').off('click').on('click', assign_document);
+
+                    /* new Sortable(document.querySelector('#add_to_checklist_documents_div'), {
                         group: {
                             name: 'shared',
                         },
@@ -589,10 +617,10 @@ if (document.URL.match(/transaction_details/)) {
                             show_drop_activated();
 
                         },
-                    });
+                    }); */
 
                     // loop through all item drop areas and add sortable
-                    let drop_areas = document.getElementsByClassName('checklist-item-droparea');
+                    /* let drop_areas = document.getElementsByClassName('checklist-item-droparea');
                     drop_areas.forEach(function (el) {
                         new Sortable(el, {
                             group: {
@@ -622,9 +650,9 @@ if (document.URL.match(/transaction_details/)) {
 
                             },
                         });
-                    });
+                    }); */
 
-                    $('#save_add_to_checklist_button').click(function () {
+                    $('#save_add_to_checklist_button').off('click').on('click', function () {
                         $(this).hide();
                         save_add_to_checklist($(this).data('checklist-id'));
                     });
@@ -635,7 +663,40 @@ if (document.URL.match(/transaction_details/)) {
 
         }
 
-        function show_drop_activated() {
+        function arrows(new_active_item) {
+
+            let active_item = $('.add-to-checklist-document-div.active');
+            active_item.removeClass('active z-depth-2 p-4').addClass('p-2');
+
+            let wrapper = $('#add_to_checklist_documents_wrapper');
+
+            new_active_item.addClass('active z-depth-2 p-4');
+            if(new_active_item.hasClass('assigned')) {
+                $('.assign-button').prop('disabled', true);
+            } else {
+                $('.assign-button').prop('disabled', false);
+            }
+            wrapper.scrollTop(wrapper.scrollTop() + new_active_item.position().top - (wrapper.height()/2) + (new_active_item.height()/2) - 41);
+
+            disable_arrows();
+
+        }
+
+
+        function disable_arrows() {
+
+            let active_item = $('.add-to-checklist-document-div.active');
+            $('.doc-list-arrow').prop('disabled', true);
+            if(active_item.prev('.add-to-checklist-document-div').length > 0) {
+                $('.doc-list-arrow[data-dir="up"]').prop('disabled', false);
+            }
+            if(active_item.next('.add-to-checklist-document-div').length > 0) {
+                $('.doc-list-arrow[data-dir="down"]').prop('disabled', false);
+            }
+
+        }
+
+        /* function show_drop_activated() {
             $('.checklist-item-droparea').each(function () {
 
                 if ($(this).find('.add-to-checklist-document-div').length == 0) {
@@ -644,6 +705,44 @@ if (document.URL.match(/transaction_details/)) {
                 //$(this).find('.drop-div-title').prependTo($(this));
 
             });
+        } */
+
+        function assign_document() {
+
+            let checklist_id = $(this).data('checklist-id');
+            let checklist_item_id = $(this).data('checklist-item-id');
+            let active_div = $('.add-to-checklist-document-div.active');
+            let document_id = active_div.data('document-id');
+            let file_name = active_div.data('file-name');
+            let docs_div = $(this).closest('.list-group-item').find('.submitted-docs');
+
+            docs_div.closest('.submitted-docs-div').show();
+
+            docs_div.prepend('<div class="added-document d-flex justify-content-start align-items-center" data-document-id="'+document_id+'" data-checklist-id="'+checklist_id+'" data-checklist-item-id="'+checklist_item_id+'"><div><a href="javascript: void(0)" class="delete-doc" data-document-id="'+document_id+'"><i class="fad fa-times-circle text-danger mr-2"></i></a></div><div class="text-orange">'+file_name.substring(0, 70)+'</div></div>');
+
+            active_div.addClass('assigned');
+            if(active_div.nextAll('.add-to-checklist-document-div').not('.assigned').length > 0) {
+                active_div.nextAll('.add-to-checklist-document-div').not('.assigned').first().trigger('click');
+            } else {
+                active_div.trigger('click');
+            }
+
+            $('.delete-doc').click(function() {
+                let remove_document_id = $(this).data('document-id');
+                let container = $(this).closest('.submitted-docs-div');
+
+                $(this).closest('.added-document').remove();
+                $('.add-to-checklist-document-div[data-document-id="' + remove_document_id + '"]').removeClass('assigned');
+                if(container.find('.added-document').length == 0) {
+                    container.hide();
+                }
+
+                if(document_id == remove_document_id) {
+                    $('.assign-button').prop('disabled', false);
+                }
+
+            });
+
         }
 
         function save_add_to_checklist(checklist_id) {

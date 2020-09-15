@@ -21,7 +21,6 @@ use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDo
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsNotes;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
 use App\Models\DocManagement\Transactions\Contracts\Contracts;
-use App\Models\DocManagement\Transactions\CancelRequests\CancelRequests;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsImages;
@@ -145,9 +144,11 @@ class TransactionsDetailsController extends Controller {
             $sellers = null;
         }
 
+        $upload = new Upload();
+
         //$statuses = $resource_items -> where('resource_type', 'listing_status') -> orderBy('resource_order') -> get();
 
-        return view('/agents/doc_management/transactions/details/transaction_details_header', compact('transaction_type', 'property', 'buyers', 'sellers', 'resource_items', 'listing_expiration_date'));
+        return view('/agents/doc_management/transactions/details/transaction_details_header', compact('transaction_type', 'property', 'buyers', 'sellers', 'resource_items', 'listing_expiration_date', 'upload', 'Contract_ID'));
     }
 
 
@@ -1845,12 +1846,33 @@ class TransactionsDetailsController extends Controller {
         $Agent_ID = $request -> Agent_ID;
         $transaction_type = $request -> transaction_type;
 
+        $checklist_item = TransactionChecklistItems::where('id', $checklist_item_id) -> first();
+        $checklist_form_id = $checklist_item -> checklist_form_id;
+
+        // if release is submitted make sure contract was submitted first. Otherwise reject it
+        if($transaction_type == 'contract') {
+
+            $docs_submitted = Upload::ContractDocsSubmitted($Contract_ID);
+            // if this is a release
+            if(Upload::IsRelease($checklist_form_id)) {
+                // if contract not submitted
+                if($docs_submitted['contract_submitted'] === false) {
+                    return response() -> json([
+                        'release_rejected' => 'yes'
+                    ]);
+                }
+
+            }
+
+        }
+
+        // add doc
         $add_checklist_item_doc = new TransactionChecklistItemsDocs();
         $add_checklist_item_doc -> document_id = $document_id;
         $add_checklist_item_doc -> checklist_id = $checklist_id;
         $add_checklist_item_doc -> checklist_item_id = $checklist_item_id;
         $add_checklist_item_doc -> Agent_ID = $Agent_ID;
-
+        // set id
         if($transaction_type == 'listing') {
             $add_checklist_item_doc -> Listing_ID = $Listing_ID;
         } else if($transaction_type == 'contract') {
@@ -1858,24 +1880,38 @@ class TransactionsDetailsController extends Controller {
         } else if($transaction_type == 'referral') {
             $add_checklist_item_doc -> Referral_ID = $Referral_ID;
         }
-
+        // save add doc
         $add_checklist_item_doc -> save();
 
+        // set doc assigned and checklist item not reviewed
         $update_docs = TransactionDocuments::where('id', $document_id) -> update(['assigned' => 'yes', 'checklist_item_id' => $checklist_item_id]);
-        $checklist_item = TransactionChecklistItems::where('id', $checklist_item_id) -> first();
         $checklist_item -> update(['checklist_item_status' => 'not_reviewed']);
 
-        /* $checklist_form_id = $checklist_item -> checklist_form_id;
-        $upload = Upload::find($checklist_form_id);
 
-        if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
-            $release_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
-            if($release_submitted_check) {
+        if($transaction_type == 'contract') {
+
+            if(Upload::IsContract($checklist_form_id)) {
+
+                return response() -> json([
+                    'contract_submitted' => 'yes'
+                ]);
+
+            }
+            if(Upload::IsRelease($checklist_form_id)) {
+
+                $contract = Contracts::find($Contract_ID);
+                $contract -> Status = ResourceItems::GetResourceID('Cancel Pending', 'contract_status');
+                $contract -> save();
+
+                // TODO: notify delia
+
                 return response() -> json([
                     'release_submitted' => 'yes'
                 ]);
+
             }
-        } */
+
+        }
 
     }
 
@@ -1890,7 +1926,8 @@ class TransactionsDetailsController extends Controller {
 
         $checklist_items = $transaction_checklist_items_modal -> where('checklist_id', $checklist_id) -> orderBy('checklist_item_order') -> get();
         $transaction_checklist_item_documents = TransactionChecklistItemsDocs::where('checklist_id', $checklist_id) -> get();
-        $documents = TransactionDocuments::whereIn('id', $document_ids) -> orderBy('order') -> get();
+        $transaction_documents_model = new TransactionDocuments();
+        $documents = $transaction_documents_model -> whereIn('id', $document_ids) -> orderBy('order') -> get();
 
         $checklist_types = ['listing', 'both'];
 
@@ -1902,7 +1939,7 @@ class TransactionsDetailsController extends Controller {
 
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
-        return view('/agents/doc_management/transactions/details/data/add_document_to_checklist_item_html', compact('checklist_id', 'documents', 'transaction_checklist_item_documents', 'checklist_items_model', 'transaction_checklist_items_modal', 'checklist_items', 'checklist_groups'));
+        return view('/agents/doc_management/transactions/details/data/add_document_to_checklist_item_html', compact('checklist_id', 'documents', 'transaction_checklist_item_documents', 'checklist_items_model', 'transaction_checklist_items_modal', 'transaction_documents_model', 'checklist_items', 'checklist_groups'));
     }
 
     public function add_notes_to_checklist_item(Request $request) {
@@ -2341,19 +2378,17 @@ class TransactionsDetailsController extends Controller {
 
     }
 
-    public function release_contract(Request $request) {
+    public function cancel_contract(Request $request) {
 
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
-        $contract_accepted = $request -> contract_accepted;
 
-        $status = $contract_accepted == 'yes' ? 'Cancel Pending' : 'Canceled';
-
-        // remove Buyer from listing
-        $listing = Listings::find($Listing_ID);
+        $status = 'Canceled';
 
         // update listing
-        if($listing) {
+        if($Listing_ID > 0) {
+            // remove Buyer from listing and update status
+            $listing = Listings::find($Listing_ID);
             $listing -> BuyerAgentFirstName = '';
             $listing -> BuyerAgentLastName = '';
             $listing -> BuyerAgentEmail = '';
@@ -2374,21 +2409,16 @@ class TransactionsDetailsController extends Controller {
         $contract -> Status = ResourceItems::GetResourceID($status, 'contract_status');
         $contract -> save();
 
-        // add to pending table for review
-        /* if($status == 'Cancel Pending') {
-            $cancel_request = CancelRequests::firstOrNew(['Contract_ID' => $Contract_ID]);
-            $cancel_request -> cancel_status = 'open';
-            $cancel_request -> save();
-        } */
-
         return true;
 
     }
 
     public function undo_cancel_contract(Request $request) {
+
         $Contract_ID = $request -> Contract_ID;
         $contract = Contracts::find($Contract_ID);
         $Listing_ID = $contract -> Listing_ID;
+        $Agent_ID = $request -> Agent_ID;
 
         if($Listing_ID > 0) {
             $active_ids = ResourceItems::GetActiveAndClosedContractStatuses();
@@ -2400,66 +2430,49 @@ class TransactionsDetailsController extends Controller {
                     'error' => 'under_contract'
                 ]);
             }
-
+            // if no open contracts than add this contract to the listing
             $listing_under_contract -> Status = ResourceItems::GetResourceID('Under Contract', 'listing_status');
             $listing_under_contract -> save();
         }
 
-        //$before = $contract -> Status;
         $contract -> Status = ResourceItems::GetResourceID('Active', 'contract_status');
         $contract -> save();
 
-        // delete from cancel requests
-        //$cancel_request = CancelRequests::where('Contract_ID', $Contract_ID) -> delete();
+        // reject release if submitted
+        $checklist_items = TransactionChecklistItems::where('Contract_ID', $Contract_ID) -> where('checklist_item_status', 'accepted') -> get();
+        foreach($checklist_items as $checklist_item) {
+            if(Upload::IsRelease($checklist_item -> checklist_form_id)) {
+
+                // reject checklist item if release
+                $checklist_item -> checklist_item_status = 'rejected';
+                $checklist_item -> save();
+
+                // add rejection to notes
+                $add_notes = new TransactionChecklistItemsNotes();
+                $add_notes -> checklist_id = $checklist_item -> checklist_id;
+                $add_notes -> checklist_item_id = $checklist_item -> id;
+                $add_notes -> Contract_ID = $Contract_ID;
+                $add_notes -> Agent_ID = $Agent_ID;
+                $add_notes -> note_user_id = '0';
+                $add_notes -> note_status = 'unread';
+                $add_notes -> notes = 'Cancellation undone by '.auth() -> user() -> name;
+                $add_notes -> save();
+            }
+        }
+
 
 
     }
 
     public function check_docs_submitted_and_accepted(Request $request) {
-        $transaction_type = $request -> transaction_type;
-        $Listing_ID = $request -> Listing_ID ?? 0;
-        $Contract_ID = $request -> Contract_ID ?? 0;
-        $Referral_ID = $request -> Referral_ID ?? 0;
 
-        if($transaction_type == 'listing') {
-            $field = 'Listing_ID';
-            $id = $Listing_ID;
-        } else if($transaction_type == 'contract') {
-            $field = 'Contract_ID';
-            $id = $Contract_ID;
-        } else if($transaction_type == 'referral') {
-            $field = 'Referral_ID';
-            $id = $Referral_ID;
-        }
-        $checklist = TransactionChecklists::where($field, $id) -> first();
-        $checklist_id = $checklist -> id;
-        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
+        $Contract_ID = $request -> Contract_ID;
 
-        $contract_accepted = false;
-        $release_submitted = false;
-
-        foreach($checklist_items as $checklist_item) {
-
-            $checklist_form_id = $checklist_item -> checklist_form_id;
-            $upload = Upload::find($checklist_form_id);
-
-            if($checklist_item -> checklist_item_status == 'accepted' && $upload -> form_tags == ResourceItems::GetResourceID('contract', 'form_tags')) {
-                $contract_accepted = true;
-            }
-            if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
-                $release_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
-                if($release_submitted_check) {
-                    if($checklist_item -> checklist_item_status != 'rejected') {
-                        $release_submitted = true;
-                    }
-                }
-            }
-
-        }
+        $docs_submitted = Upload::ContractDocsSubmitted($Contract_ID);
 
         return response() -> json([
-            'contract_accepted' => $contract_accepted,
-            'release_submitted' => $release_submitted
+            'contract_submitted' => $docs_submitted['contract_submitted'],
+            'release_submitted' => $docs_submitted['release_submitted']
         ]);
     }
 
