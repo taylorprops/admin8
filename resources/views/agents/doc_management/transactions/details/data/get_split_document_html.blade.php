@@ -4,7 +4,7 @@
         <div class="col-12 col-lg-8">
             <div class="row">
                 <div class="col-12">
-                    <div class="h3-responsive text-orange mt-1 mt-sm-0">Step 1</div>
+                    <div class="h4-responsive text-orange mt-1 mt-sm-0">Step 1</div>
                     <div class="text-gray">Split combined documents by adding pages from the "Available Documents" section to the "Selected Documents" section.</div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
         <div class="col-12 col-lg-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="h3-responsive text-orange mt-1 mt-sm-0">Step 2</div>
+                    <div class="h4-responsive text-orange mt-1 mt-sm-0">Step 2</div>
                     <div class="text-gray">Add the "Selected Documents" to Checklist Item or Save to Documents</div>
                 </div>
             </div>
@@ -98,7 +98,7 @@
                                                     $fa = str_replace('mr-2', 'mr-1', $status_details -> fa);
                                                     $helper_text = $status_details -> helper_text;
                                                     @endphp
-                                                    <div class="list-group-item py-1 px-0 mb-2 d-flex justify-content-start align-items-center" data-checklist-item-id="{{ $checklist_item -> id }}">
+                                                    <div class="list-group-item py-1 px-0 mb-2 border-left-0 border-right-0 d-flex justify-content-start align-items-center" data-checklist-item-id="{{ $checklist_item -> id }}">
                                                         <div class="mr-1 mr-sm-2">
                                                             <button class="btn btn-sm btn-success add-docs-to-checklist-item-button" data-checklist-item-id="{{ $checklist_item -> id }}" data-checklist-id="{{ $checklist_item -> checklist_id }}" data-file-id="{{ $file_id }}" data-upload-id="{{ $checklist_item -> checklist_form_id }}" disabled><i class="fa fa-plus mr-1 mr-sm-2"></i> Add</button>
                                                         </div>
@@ -147,9 +147,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-around align-items-center p-4">
-                        <a href="javascript: void(0)" class="btn btn-lg btn-success" data-dismiss="modal">Finish and Close</a>
-                    </div>
+
 
                 </div>
             </div>

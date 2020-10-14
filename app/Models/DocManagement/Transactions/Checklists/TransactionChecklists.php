@@ -9,6 +9,7 @@ use App\Models\DocManagement\Transactions\Listings\Listings;
 use App\Models\DocManagement\Transactions\Contracts\Contracts;
 use App\Models\DocManagement\Transactions\Referrals\Referrals;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
 use App\Models\DocManagement\Resources\ResourceItems;
@@ -55,8 +56,7 @@ class TransactionChecklists extends Model
         }) -> toArray())); */
 
         // get checklist items
-        $checklist_items = new ChecklistsItems();
-        $items = $checklist_items -> where('checklist_id', $checklist -> id) -> orderBy('checklist_item_order') -> get();
+        $items = ChecklistsItems::where('checklist_id', $checklist -> id) -> orderBy('checklist_item_order') -> get();
 
         // some items and docs from old checklist will be kept and added to the new
         $remove_ids = [];
@@ -150,14 +150,22 @@ class TransactionChecklists extends Model
             $property = Referrals::find($Referral_ID);
         }
 
+        // set all tagged items to not required
         $if_applicable = [];
         foreach($form_tags as $form_tag) {
             $if_applicable[$form_tag -> resource_name]['id'] = $form_tag -> resource_id;
             $if_applicable[$form_tag -> resource_name]['required'] = false;
         }
 
+        // tags that will always be required
+        $if_applicable['listing_agreement']['required'] = true;
         $if_applicable['contract']['required'] = true;
 
+        // tags to ignore
+        $ignore_tags = ['release', 'closing_docs', 'withdraw'];
+
+        // set items to required if applicable for this transaction
+        // set lead paint, hoa and condo
         if($checklist_state == 'MD' || $checklist_state == 'DC') {
             if($checklist_year_built < 1978) {
                 $if_applicable['lead_paint']['required'] = true;
@@ -169,36 +177,37 @@ class TransactionChecklists extends Model
             }
         }
 
+        // set earnest held by title
         if($property -> EarnestHeldBy == 'title') {
             $if_applicable['title_holding_earnest']['required'] = true;
         }
 
+        // if both listing and contract require rental listing agreement too
         if($for_sale_and_rent) {
             $if_applicable['rental_listing_agreement']['required'] = true;
         }
 
-        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
+        $transaction_checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
 
-        $checklist_items -> map(function($checklist_item) use ($if_applicable, $form_tags) {
+        // mark all if applicable items required or remove
+        $transaction_checklist_items -> map(function($transaction_checklist_item) use ($if_applicable, $form_tags, $ignore_tags) {
 
-            $upload = Upload::where('file_id', $checklist_item -> checklist_form_id) -> first();
+            $upload = Upload::where('file_id', $transaction_checklist_item -> checklist_form_id) -> first();
             $form_tag_id = $upload -> form_tags;
 
-            foreach($form_tags -> whereNotIn('resource_name', ['release', 'closing_docs']) as $form_tag) {
+            foreach($form_tags -> whereNotIn('resource_name', $ignore_tags) as $form_tag) {
                 // see if required form tag matches checklist item form_tag
                 if($if_applicable[$form_tag -> resource_name]['id'] == $form_tag_id) {
                     if($if_applicable[$form_tag -> resource_name]['required']) {
-                        $checklist_item -> checklist_item_required = 'yes';
-                        $checklist_item -> save();
+                        $transaction_checklist_item -> checklist_item_required = 'yes';
+                        $transaction_checklist_item -> save();
                     } else {
-                        $checklist_item -> delete();
+                        $transaction_checklist_item -> delete();
                     }
                 }
             }
 
         });
-
-
 
     }
 }

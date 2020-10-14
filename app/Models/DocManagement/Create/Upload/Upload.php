@@ -10,6 +10,7 @@ use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Resources\ResourceItems;
+use App\Models\DocManagement\Transactions\Listings\Listings;
 use App\Models\DocManagement\Transactions\Contracts\Contracts;
 
 class Upload extends Model
@@ -22,7 +23,7 @@ class Upload extends Model
 
     public function scopeIsContract($query, $checklist_form_id) {
 
-        $upload = $this -> find($checklist_form_id);
+        $upload = $this -> where('file_id', $checklist_form_id) -> first();
 
         if($upload -> form_tags == ResourceItems::GetResourceID('contract', 'form_tags')) {
             return true;
@@ -32,9 +33,21 @@ class Upload extends Model
 
     }
 
+    public function scopeIsClosingDoc($query, $checklist_form_id) {
+
+        $upload = $this -> where('file_id', $checklist_form_id) -> first();
+
+        if($upload -> form_tags == ResourceItems::GetResourceID('closing_docs', 'form_tags')) {
+            return true;
+        }
+
+        return false;
+
+    }
+
     public function scopeIsRelease($query, $checklist_form_id) {
 
-        $upload = $this -> find($checklist_form_id);
+        $upload = $this -> where('file_id', $checklist_form_id) -> first();
 
         if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
             return true;
@@ -44,12 +57,46 @@ class Upload extends Model
 
     }
 
-    public function scopeContractDocsSubmitted($query, $Contract_ID) {
+    public function scopeIsWithdraw($query, $checklist_form_id) {
 
-        $checklist = TransactionChecklists::where('Contract_ID', $Contract_ID) -> first();
+        $upload = $this -> where('file_id', $checklist_form_id) -> first();
+
+        if($upload -> form_tags == ResourceItems::GetResourceID('withdraw', 'form_tags')) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public function scopePendingReleases($query) {
+
+        // get ids of all release forms
+        $release_ids = $this -> where('form_tags',  ResourceItems::GetResourceID('release', 'form_tags')) -> pluck('file_id');
+        // limit checklist item search to only contracts pending cancellation
+        $contracts_pending_cancellation_ids = Contracts::where('Status', ResourceItems::GetResourceID('Cancel Pending', 'contract_status')) -> pluck('Contract_ID');
+        // get checklist items that are releases
+        $contract_checklist_items = TransactionChecklistItems::whereIn('Contract_ID', $contracts_pending_cancellation_ids) -> whereIn('checklist_form_id', $release_ids) -> pluck('id');
+        // get contracts with pending releases uploaded
+        $contract_ids = TransactionChecklistItemsDocs::whereIn('checklist_item_id', $contract_checklist_items) -> where('doc_status', 'pending') -> groupBy('Contract_ID') -> pluck('Contract_ID');
+
+        return $contract_ids;
+    }
+
+    public function scopeDocsSubmitted($query, $Listing_ID, $Contract_ID) {
+
+        if($Listing_ID) {
+            $checklist = TransactionChecklists::where('Listing_ID', $Listing_ID) -> first();
+        } else {
+            $checklist = TransactionChecklists::where('Contract_ID', $Contract_ID) -> first();
+        }
         $checklist_id = $checklist -> id;
         $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
 
+        $listing_submitted = false;
+        $listing_accepted = false;
+        $listing_withdraw_submitted = false;
+        $listing_expired = false;
         $contract_submitted = false;
         $release_submitted = false;
 
@@ -58,26 +105,54 @@ class Upload extends Model
             $checklist_form_id = $checklist_item -> checklist_form_id;
             $upload = Upload::find($checklist_form_id);
 
-            if($upload -> form_tags == ResourceItems::GetResourceID('contract', 'form_tags')) {
+            if($upload -> form_tags == ResourceItems::GetResourceID('listing_agreement', 'form_tags')) {
+
+                $listing_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
+                if($listing_submitted_check) {
+                    if($checklist_item -> checklist_item_status != 'rejected') {
+                        $listing_submitted = true;
+                        if($checklist_item -> checklist_item_status == 'accepted') {
+                            $listing_accepted = true;
+                            $listing = Listings::find($Listing_ID);
+                            if($listing -> ExpirationDate <= date('Y-m-d')) {
+                                $listing_expired = true;
+                            }
+                        }
+                    }
+                }
+
+            } else if($upload -> form_tags == ResourceItems::GetResourceID('withdraw', 'form_tags')) {
+
+                $listing_withdraw_submitted_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
+                if($listing_withdraw_submitted_submitted_check) {
+                    if($checklist_item -> checklist_item_status != 'rejected') {
+                        $listing_withdraw_submitted = true;
+                    }
+                }
+
+            } else if($upload -> form_tags == ResourceItems::GetResourceID('contract', 'form_tags')) {
+
                 $contract_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
                 if($contract_submitted_check) {
                     if($checklist_item -> checklist_item_status != 'rejected') {
                         $contract_submitted = true;
                     }
                 }
-            }
-            if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
+
+            } else if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
+
                 $release_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
                 if($release_submitted_check) {
                     if($checklist_item -> checklist_item_status != 'rejected') {
                         $release_submitted = true;
                     }
                 }
+
             }
 
         }
 
-        return compact('contract_submitted', 'release_submitted');
+        return compact('listing_submitted', 'listing_accepted', 'listing_withdraw_submitted', 'listing_expired', 'contract_submitted', 'release_submitted');
 
     }
 

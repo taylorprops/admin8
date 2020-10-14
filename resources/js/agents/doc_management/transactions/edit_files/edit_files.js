@@ -64,7 +64,7 @@ if (document.URL.match(/edit_files/)) {
 
         field_list();
 
-        $('#save_field_input_values_button').click(function() {
+        $('#save_field_input_values_button').on('click', function() {
             save_field_input_values('no');
         });
 
@@ -82,7 +82,7 @@ if (document.URL.match(/edit_files/)) {
             reset_field_properties();
         });
 
-        $('.field-div').not('.disabled').click(function () {
+        $('.field-div').not('.disabled').on('click', function () {
 
             let group_id = $(this).data('group-id');
             // checkboxes and radios never get highlighted
@@ -131,7 +131,7 @@ if (document.URL.match(/edit_files/)) {
         });
 
 
-        $('.save-fillable-fields').click(function () {
+        $('.save-fillable-fields').on('click', function () {
             let type = $(this).data('type');
             let group_id = $(this).data('group-id');
             let form_div = $(this).parent('div.modal-footer').prev('div.modal-body').find('.form-div');
@@ -139,7 +139,7 @@ if (document.URL.match(/edit_files/)) {
         });
 
         // highlight active thumb when clicked and scroll into view
-        $('.file-view-thumb-container').click(function () {
+        $('.file-view-thumb-container').on('click', function () {
             $('.file-view-thumb-container').removeClass('active');
             $(this).addClass('active');
             let id = $(this).data('id');
@@ -188,7 +188,7 @@ if (document.URL.match(/edit_files/)) {
         $(document).on('click', '#save_edit_options_button', save_edit_options);
         $(document).on('click', '#cancel_edit_options_button', close_edit_options);
 
-        $('.edit-form-action').click(function() {
+        $('.edit-form-action').on('click', function() {
             $('.edit-form-action').removeClass('active text-white').addClass('text-primary-dark');
             $(this).removeClass('text-primary-dark').addClass('active text-white');
         });
@@ -341,7 +341,7 @@ if (document.URL.match(/edit_files/)) {
 
     function set_field_options(field_type, ele, id, rect, container) {
 
-        ele.click(function (e) {
+        ele.on('click', function (e) {
 
             if (e.target === this) {
                 e.stopPropagation();
@@ -411,7 +411,7 @@ if (document.URL.match(/edit_files/)) {
 
 
         // hide all handles and buttons when another container is selected
-        $('.field-select-container').click(function (e) {
+        $('.field-select-container').on('click', function (e) {
             $('.focused').hide();
         });
 
@@ -635,7 +635,7 @@ if (document.URL.match(/edit_files/)) {
     function close_edit_options() {
         $('#confirm_modal').modal().find('.modal-body').html('This will delete all changes made. Continue?');
         $('#confirm_modal').modal().find('.modal-title').html('Delete Changes?');
-        $('#confirm_button').click(function() {
+        $('#confirm_button').on('click', function() {
             location.reload();
         });
     }

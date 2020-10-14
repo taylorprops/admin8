@@ -107,10 +107,36 @@
     <input type="hidden" id="Contract_ID" value="{{ $property -> Contract_ID }}">
     <input type="hidden" id="Referral_ID" value="{{ $property -> Referral_ID }}">
     <input type="hidden" id="Agent_ID" value="{{ $property -> Agent_ID }}">
+    <input type="hidden" id="Commission_ID" value="{{ $property -> Commission_ID }}">
     <input type="hidden" id="transaction_type" value="{{ $transaction_type }}">
     <input type="hidden" id="questions_confirmed" value="{{ $questions_confirmed }}">
     <input type="hidden" id="for_sale" value="{{ $for_sale == true ? 'yes' : 'no' }}">
 
+
+
+    <div class="modal fade draggable" id="cancel_listing_modal" tabindex="-1" role="dialog" aria-labelledby="cancel_listing_modal_title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary draggable-handle">
+                    <h4 class="modal-title" id="cancel_listing_modal_title">cancel Listing</h4>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <i class="fal fa-times mt-2"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-around">
+                    <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Do Not Cancel</a>
+                    <a class="btn btn-success" id="save_cancel_listing_button"><i class="fad fa-check mr-2"></i> Submit Cancellation</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade draggable" id="confirm_undo_cancel_modal" tabindex="-1" role="dialog" aria-labelledby="undo_cancel_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -153,6 +179,14 @@
                     <div class="list-group cancel-alerts">
 
                         {{-- Contracts --}}
+                        <div class="list-group-item cancel-contract docs-submitted d-flex justify-content-start align-items-center">
+                            <div class="pr-3">
+                                <i class="fa fa-info-circle text-primary fa-2x"></i>
+                            </div>
+                            <div>
+                                Your cancellation request will submitted to the office for review.
+                            </div>
+                        </div>
                         <div class="list-group-item cancel-contract docs-not-submitted d-flex justify-content-start align-items-center">
                             <div class="pr-3">
                                 <i class="fa fa-info-circle text-primary fa-2x"></i>
@@ -193,7 +227,7 @@
                                 <i class="fa fa-exclamation-circle text-danger fa-2x"></i>
                             </div>
                             <div>
-                                Your Listing Agreement is past its expiration date, please submit an extension or Withdraw it.
+                                Your Listing Agreement is past its expiration date, please submit an extension or Cancel it.
                             </div>
                         </div>
 
@@ -276,7 +310,7 @@
         </div>
     </div>
 
-    <div class="modal fade draggable disable-scrollbars" id="accept_contract_modal" tabindex="-1" role="dialog" aria-labelledby="accept_contract_modal_title" aria-hidden="true">
+    <div class="modal fade draggable" id="accept_contract_modal" tabindex="-1" role="dialog" aria-labelledby="accept_contract_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header draggable-handle">

@@ -72,7 +72,7 @@
             </div>
             <div class="modal-footer d-flex justify-content-around">
                 <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success modal-confirm-button" id="confirm_button"><i class="fad fa-check mr-2"></i> Confirm</a>
+                <a class="btn btn-success modal-confirm-button" data-dismiss="modal" id="confirm_button"><i class="fad fa-check mr-2"></i> Confirm</a>
             </div>
         </div>
     </div>

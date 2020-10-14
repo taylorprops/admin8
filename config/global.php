@@ -36,6 +36,7 @@ return [
         'active_states' => explode(',', env('ACTIVE_STATES')),
         'google_api_key' => env('GOOGLE_API_KEY'),
         'socrata_api_key' => env('SOCRATA_API_KEY'),
+        'tinymce_api_key' => env('TINYMCE_KEY'),
         'company_street' => env('COMPANY_STREET'),
         'company_city' => env('COMPANY_CITY'),
         'company_state' => env('COMPANY_STATE'),

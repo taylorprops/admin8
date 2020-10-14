@@ -79,20 +79,31 @@ if (document.URL.match(/transaction_details/)) {
     }
 
     window.delete_doc = function(button, document_id) {
+
+        let transaction_type = $('#transaction_type').val();
+        let Contract_ID = $('#Contract_ID').val();
         let formData = new FormData();
+
         formData.append('document_id', document_id);
+        formData.append('transaction_type', transaction_type);
+        formData.append('Contract_ID', Contract_ID);
         axios.post('/agents/doc_management/transactions/remove_document_from_checklist_item', formData, axios_options)
         .then(function (response) {
             $('#confirm_delete_checklist_item_doc_modal').modal('hide');
             toastr['success']('Document Removed From Checklist');
             load_documents_on_tab_click();
+            load_details_header();
             let doc_count = button.closest('.checklist-item-div').find('.doc-count');
-            if(parseInt(doc_count.text()) - 1 == 0) {
+            doc_count.text(parseInt(doc_count.text()) - 1);
+
+            if(doc_count.text() == '0') {
+                /* button.closest('.documents-collapse').collapse('hide');
+                doc_count.closest('button').prop('disabled', true).closest('.row').find('.review-options').find('button').prop('disabled', true); */
                 load_tabs('checklist');
-            } else {
-                doc_count.text(parseInt(doc_count.text()) - 1);
-                button.closest('.document-row').fadeOut().remove();
             }
+
+            button.closest('.document-row').fadeOut('slow').remove();
+
         })
         .catch(function (error) {
             console.log(error);
@@ -153,10 +164,37 @@ if (document.URL.match(/transaction_details/)) {
     }
 
     window.add_document = function(button) {
-        $('.select-document-button').off('click').on('click', function( ){
-            save_add_document($(this).data('document-id'));
+
+        let Listing_ID = $('#Listing_ID').val();
+        let Contract_ID = $('#Contract_ID').val();
+        let Referral_ID = $('#Referral_ID').val();
+        let transaction_type = $('#transaction_type').val();
+        let Agent_ID = $('#Agent_ID').val();
+
+        axios.get('/agents/doc_management/transactions/get_add_document_to_checklist_documents_html', {
+            params: {
+                Listing_ID: Listing_ID,
+                Contract_ID: Contract_ID,
+                Referral_ID: Referral_ID,
+                transaction_type: transaction_type,
+                Agent_ID: Agent_ID
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+            $('#add_document_modal').modal();
+            $('#documents_available_div').html(response.data);
+            $('.select-document-button').off('click').on('click', function( ){
+                save_add_document($(this).data('document-id'));
+            });
+        })
+        .catch(function (error) {
+            console.log(error);
         });
-        $('#add_document_modal').modal();
     }
 
     window.save_add_document = function(document_id) {
@@ -188,6 +226,7 @@ if (document.URL.match(/transaction_details/)) {
                 return false;
 
             }
+
 
             toastr['success']('Document Added To Checklist');
             load_tabs('checklist');

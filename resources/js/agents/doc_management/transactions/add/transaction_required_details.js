@@ -18,7 +18,7 @@ if (document.URL.match(/transaction_required_details/)) {
         });
 
         // disable opening steps unless complete
-        /* $('.step-title').click(function(e) {
+        /* $('.step-title').on('click', function(e) {
             e.stopPropagation();
         });
         // validate section
@@ -32,7 +32,7 @@ if (document.URL.match(/transaction_required_details/)) {
             }
         }); */
 
-        $('#save_required_details').click(function(e) {
+        $('#save_required_details').on('click', function(e) {
             e.preventDefault();
             save_transaction_required_details();
         });
@@ -53,7 +53,7 @@ if (document.URL.match(/transaction_required_details/)) {
         $('.bank-trust').change(show_bank_trust);
 
 
-        $('#import_property_address_button').click(function() {
+        $('#import_property_address_button').on('click', function() {
             $('#ClientStreet').val($(this).data('street')).trigger('change');
             $('#ClientCity').val($(this).data('city')).trigger('change');
             $('#ClientState').val($(this).data('state')).trigger('change');
@@ -61,7 +61,7 @@ if (document.URL.match(/transaction_required_details/)) {
             select_refresh();
         });
 
-        $('#CommissionAmount, #AgentCommission, #OtherAgentCommission').change(function() {
+        $('#CommissionAmount, #AgentCommission, #OtherAgentCommission').on('change', function() {
             format_money_with_decimals($(this));
         });
 
@@ -155,7 +155,7 @@ if (document.URL.match(/transaction_required_details/)) {
 
         $('.agent-search').on('keyup', search_bright_agents);
 
-        $('#UsingHeritage').change(function() {
+        $('#UsingHeritage').on('change', function() {
             if($(this).val() == 'no') {
                 $('.not-using-heritage').show();
             } else {
@@ -168,7 +168,7 @@ if (document.URL.match(/transaction_required_details/)) {
             if($(this).val() != '') {
                 format_money_with_decimals($(this));
             }
-            $(this).change(function() {
+            $(this).on('change', function() {
                 format_money_with_decimals($(this));
             });
         });

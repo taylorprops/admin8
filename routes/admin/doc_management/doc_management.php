@@ -122,7 +122,7 @@ Route::middleware('admin') -> group(function () {
 
     /********* Document Review ************/
     // doc review page
-    Route::get('/doc_management/document_review', 'DocManagement\Review\DocumentReviewController@document_review');
+    Route::get('/doc_management/document_review/{Contract_ID?}', 'DocManagement\Review\DocumentReviewController@document_review');
     // get checklist
     Route::get('/doc_management/get_checklist', 'DocManagement\Review\DocumentReviewController@get_checklist');
     // get docs

@@ -108,7 +108,7 @@ input {
 .btn:not(.btn-rounded),
 .btn:not(.btn-rounded):hover {
     border: 1px transparent;
-    //border-radius: 0px;
+    border-radius: 0.15rem;
     white-space: nowrap;
 }
 
@@ -241,5 +241,19 @@ ul {
     user-select: none;
 }
 
+.ck.ck-toolbar {
+    background: $blue-light !important;
+}
+.ck.ck-button, a.ck.ck-button {
+    font-size: .6rem !important;
+}
 
+.ck.ck-editor__editable_inline  {
+    border: 1px solid $border-color !important;
+
+    &:focus {
+        border-color: rgb(120, 196, 231) !important;
+        box-shadow: 0 0 5px rgb(120, 196, 231) !important;
+    }
+}
 

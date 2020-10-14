@@ -33,14 +33,14 @@ class LoginController extends Controller
 
         if(auth() -> user() -> group == 'admin') {
 
-            \Request::session() -> put('header_logo_src', '/images/logo/logo_tp.png');
-            \Request::session() -> put('email_logo_src', '/images/emails/TP-flat-white.png');
+            session(['header_logo_src' => '/images/logo/logo_tp.png']);
+            session(['email_logo_src' => '/images/emails/TP-flat-white.png']);
 
             $user_id = auth() -> user() -> user_id;
 
-            // get agent details and add to session
+            // get admin details and add to session
             $admin_details = InHouse::whereId($user_id) -> first();
-            \Request::session() -> put('admin_details', $admin_details);
+            session(['admin_details' => $admin_details]);
 
         } else if(auth() -> user() -> group == 'agent') {
 
@@ -48,14 +48,14 @@ class LoginController extends Controller
 
             // get agent details and add to session
             $agent_details = Agents::whereId($user_id) -> first();
-            \Request::session() -> put('agent_details', $agent_details);
+            session(['agent_details', $agent_details]);
 
             // set logo for header logo and EMAILS by company and add to session
-            \Request::session() -> put('header_logo_src', '/images/logo/logo_aap.png');
-            \Request::session() -> put('email_logo_src', '/images/emails/AAP-flat-white.png');
+            session(['header_logo_src' => '/images/logo/logo_aap.png']);
+            session(['email_logo_src' => '/images/emails/AAP-flat-white.png']);
             if (stristr($agent_details -> company, 'Taylor')) {
-                \Request::session() -> put('header_logo_src', '/images/logo/logo_tp.png');
-                \Request::session() -> put('email_logo_src', '/images/emails/TP-flat-white.png');
+                session(['header_logo_src' => '/images/logo/logo_tp.png']);
+                session(['email_logo_src' => '/images/emails/TP-flat-white.png']);
             }
 
         }

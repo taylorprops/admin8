@@ -9,7 +9,7 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
         // search address in google
         search_address_continue();
 
-        $('#enter_state').change(function () {
+        $('#enter_state').on('change', function () {
             update_county_select($(this).val());
         });
 
@@ -158,7 +158,7 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
             if(
                 (response.data.results_bright_type == 'db_active')
                 || (
-                    (response.data.results_bright_type == 'db_closed' || response.data.results_bright_type == 'bright')
+                    (/* response.data.results_bright_type == 'db_closed' ||  */response.data.results_bright_type == 'bright')
                     && MlsStatus.match(/(CLOSED)/) && global_date_diff(CloseDate, Today) < 180
                 )
             ) {

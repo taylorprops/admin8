@@ -17,12 +17,12 @@
                                     <div class="col-12 col-xl-8">
                                         <div class="row d-flex align-items-center">
                                             {{-- TODO: this needs to be dynamic if MLS ID is changed --}}
-                                            <div class="col-1">
-                                                @if($property -> MLS_Verified)
+                                            {{-- <div class="col-1">
+                                                @if($property -> MLS_Verified == 'yes')
                                                     <i class="fal fa-check fa-2x text-success mls-verified" data-toggle="tooltip" title="MLS ID Verified"></i>
                                                 @endif
-                                            </div>
-                                            <div class="col-6 pr-0">
+                                            </div> --}}
+                                            <div class="col-8 pr-0">
                                                 <input type="text" class="custom-form-element form-input" data-label="MLS ID" name="ListingId" id="ListingId" value="{{ $property -> ListingId }}">
                                             </div>
                                             <div class="col-2 pl-0">
@@ -38,31 +38,31 @@
 
                                     <div class="col-12 col-sm-6">
                                         @if($transaction_type == 'listing')
-                                            <input type="text" class="custom-form-element form-input money required" data-label="List Price" name="ListPrice" id="ListPrice" value="{{ $property -> ListPrice }}">
+                                            <input type="text" class="custom-form-element form-input money numbers-only required" data-label="List Price" name="ListPrice" id="ListPrice" value="{{ $property -> ListPrice }}">
                                         @else
                                             @if($for_sale)
-                                                <input type="text" class="custom-form-element form-input money required" data-label="Sale Price" name="ContractPrice" id="ContractPrice" value="{{ $property -> ContractPrice }}">
+                                                <input type="text" class="custom-form-element form-input money numbers-only required" data-label="Sale Price" name="ContractPrice" id="ContractPrice" value="{{ $property -> ContractPrice }}">
                                             @else
-                                            <input type="text" class="custom-form-element form-input money required" data-label="Lease Amount" name="LeaseAmount" id="LeaseAmount" value="{{ $property -> LeaseAmount }}">
+                                            <input type="text" class="custom-form-element form-input money numbers-only required" data-label="Lease Amount" name="LeaseAmount" id="LeaseAmount" value="{{ $property -> LeaseAmount }}">
                                             @endif
                                         @endif
                                     </div>
                                     @if($for_sale)
                                         <div class="col-12 col-sm-6">
-                                            <input type="text" class="custom-form-element form-input" data-label="Year Built" name="YearBuilt" id="YearBuilt" value="{{ $property -> YearBuilt }}">
+                                            <input type="text" class="custom-form-element form-input numbers-only" data-label="Year Built" name="YearBuilt" id="YearBuilt" value="{{ $property -> YearBuilt }}">
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             @if($transaction_type == 'listing')
-                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="List Date" name="MLSListDate" id="MLSListDate" value="{{ $property -> MLSListDate }}">
+                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="List Date" name="MLSListDate" id="MLSListDate" value="{{ $property -> MLSListDate }}" @if($listing_closed) disabled @endif>
                                             @else
-                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="Contract Date" name="ContractDate" id="ContractDate" value="{{ $property -> ContractDate }}">
+                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="Contract Date" name="ContractDate" id="ContractDate" value="{{ $property -> ContractDate }}" @if($contract_closed) disabled @endif>
                                             @endif
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             @if($transaction_type == 'listing')
-                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="Expiration Date" name="ExpirationDate" id="ExpirationDate" value="{{ $property -> ExpirationDate }}">
+                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="Expiration Date" name="ExpirationDate" id="ExpirationDate" value="{{ $property -> ExpirationDate }}" @if($listing_closed) disabled @endif>
                                             @else
-                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="Settle Date" name="CloseDate" id="CloseDate" value="{{ $property -> CloseDate }}">
+                                                <input type="text" class="custom-form-element form-input datepicker required" data-label="Settle Date" name="CloseDate" id="CloseDate" value="{{ $property -> CloseDate }}" @if($contract_closed) disabled @endif>
                                             @endif
                                         </div>
                                     @else

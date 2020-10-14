@@ -197,7 +197,7 @@ if (document.URL.match(/transaction_details/)) {
                         $('#email_attachments').append(attachment);
                     });
 
-                    $('.delete-attachment-button').click(function() {
+                    $('.delete-attachment-button').on('click', function() {
                         $(this).closest('.attachment-row').remove();
                     });
 
@@ -271,6 +271,7 @@ if (document.URL.match(/transaction_details/)) {
             let file_type = $(this).data('file-type');
             let file_name = $(this).data('file-name');
             let transaction_type = $('#transaction_type').val();
+
             $('#split_document_modal').modal();
             axios.get('/agents/doc_management/transactions/get_split_document_html', {
                 params: {
@@ -328,11 +329,11 @@ if (document.URL.match(/transaction_details/)) {
                         form_elements();
                         $('[data-toggle="popover"]').popover();
 
-                        $('#save_document_name_button').click(function() {
+                        $('#save_document_name_button').on('click', function() {
                             $(this).html('<i class="fas fa-spinner fa-pulse mr-2"></i> Saving...');
                             save_document_name($(this));
                         });
-                        $('.add-docs-to-checklist-item-button').click(function() {
+                        $('.add-docs-to-checklist-item-button').on('click', function() {
                             $(this).html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding...');
                             save_document_name($(this));
                         });
@@ -418,7 +419,7 @@ if (document.URL.match(/transaction_details/)) {
             let document_name = $(this).data('document-name');
             $('#rename_document_modal').modal();
             $('#new_document_name').val(document_name);
-            $('#save_rename_document_button').click(function () {
+            $('#save_rename_document_button').on('click', function () {
                 save_rename_document(document_id);
             });
         }
@@ -518,13 +519,11 @@ if (document.URL.match(/transaction_details/)) {
                 button.text('Continue');
 
                 button.off('click').on('click', function() {
-                    $('#add_to_checklist_modal').modal();
                     add_to_checklist_html(checklist_id, document_ids);
                 });
 
             } else {
 
-                $('#add_to_checklist_modal').modal();
                 add_to_checklist_html(checklist_id, document_ids);
 
             }
@@ -560,7 +559,7 @@ if (document.URL.match(/transaction_details/)) {
                         arrows(new_active_item);
                     });
 
-                    $('.add-to-checklist-document-div').click(function() {
+                    $('.add-to-checklist-document-div').on('click', function() {
                         arrows($(this));
                     });
 
@@ -575,91 +574,84 @@ if (document.URL.match(/transaction_details/)) {
 
                     $('.assign-button').off('click').on('click', assign_document);
 
-                    /* new Sortable(document.querySelector('#add_to_checklist_documents_div'), {
-                        group: {
-                            name: 'shared',
-                        },
-                        animation: 150,
-                        sort: false,
-                        onStart: function (evt) {
-                            let source = evt.srcElement;
-                            let el = evt.item;
-                            // remove green background from match
-                            $('.checklist-item-droparea').removeClass('doc-match');
-                            // see if document matches any items and add green bg if so
-                            if ($(window).width() > 576) {
-                                if ($(source).prop('id') == 'add_to_checklist_documents_div') {
-                                    let source_file_name = $(el).data('file-name');
-                                    $('.add-to-checklist-item-div').each(function () {
-                                        if ($(this).data('file-name') == source_file_name) {
-                                            $(this).find('.checklist-item-droparea').addClass('doc-match');
-                                            this.scrollIntoView({
-                                                block: 'center',
-                                            });
-                                        }
-                                    });
-                                }
-                            }
-                        },
-                        onEnd: function (evt) {
-
-                            let source = evt.srcElement;
-                            let target = evt.to;
-                            let el = evt.item;
-
-                            $('.checklist-item-droparea').removeClass('doc-match');
-
-                            if ($(target).hasClass('checklist-item-droparea')) {
-                                $(target).addClass('drop-activated');
-                                $(target).find('.add-to-checklist-document-div').addClass('source-dropped');
-                            }
-
-                            show_drop_activated();
-
-                        },
-                    }); */
-
-                    // loop through all item drop areas and add sortable
-                    /* let drop_areas = document.getElementsByClassName('checklist-item-droparea');
-                    drop_areas.forEach(function (el) {
-                        new Sortable(el, {
-                            group: {
-                                name: 'shared',
-                            },
-                            animation: 150,
-                            sort: true,
-                            onStart: function (evt) {
-                                let source = evt.srcElement;
-                                let el = evt.item;
-                                // remove source-dropped class
-                                $(el).removeClass('source-dropped');
-                                $(source).removeClass('drop-activated');
-                            },
-                            onEnd: function (evt) {
-                                let source = evt.srcElement;
-                                let target = evt.to;
-                                // if not moving outside of items div readd source-dropped class
-                                if ($(target).hasClass('checklist-item-droparea') && $(source).hasClass('checklist-item-droparea')) {
-                                    $(target).find('.add-to-checklist-document-div').addClass('source-dropped');
-                                    $(target).addClass('drop-activated');
-                                }
-
-                                //setTimeout(function () {
-                                    show_drop_activated();
-                                //}, 300);
-
-                            },
-                        });
-                    }); */
-
                     $('#save_add_to_checklist_button').off('click').on('click', function () {
                         $(this).hide();
                         save_add_to_checklist($(this).data('checklist-id'));
                     });
+
+                    let matches = [];
+                    $('.add-to-checklist-document-div').each(function() {
+                        let doc_name = $(this).data('file-name');
+                        let match_document_id = $(this).data('document-id');
+                        if($('.assign-button[data-file-name="' + doc_name + '"]').length == 1) {
+                            matches.push(match_document_id);
+                        }
+                    });
+
+
+                    if(matches.length > 0) {
+                        $('#confirm_matches_modal').modal().find('#match_count').text(matches.length);
+                        $('#confirm_matches_button').off('click').on('click', confirm_matches);
+                        $('#cancel_matches_button').on('click', function() {
+                            $('#add_to_checklist_modal').modal();
+                            disable_closing_docs();
+                        });
+                    } else {
+                        $('#add_to_checklist_modal').modal();
+                        disable_closing_docs();
+                    }
+
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+
+        }
+
+
+        function disable_closing_docs() {
+
+            $('.assign-button.closing_doc, .assign-button.release').addClass('disabled').prop('disabled', true);
+            if(!$('.add-to-checklist-document-div.active').hasClass('assigned')) {
+                if($('.assign-button.contract').not('.rejected').length > 0) {
+                    if($('.assign-button.contract').closest('.list-group-item').find('.docs').length > 0) {
+                        $('.assign-button.closing_doc, .assign-button.release').removeClass('disabled').prop('disabled', false);
+                    }
+                }
+            }
+        }
+
+        function confirm_matches() {
+            let release_submitted = false;
+            $('.add-to-checklist-document-div').each(function() {
+                let doc = $(this);
+                let doc_name = doc.data('file-name');
+                if($('.assign-button[data-file-name="' + doc_name + '"]').length == 1) {
+                    doc.trigger('click');
+                    let id = 'rand_'+Math.floor(Math.random() * 10000000);
+                    $('.assign-button[data-file-name="' + doc_name + '"]').prop('id', id).trigger('click');
+                    setTimeout(function() {
+                        document.getElementById(id).scrollIntoView();
+                    }, 500);
+                    if($('#'+id).hasClass('release') || $(id).hasClass('contract')) {
+                        release_submitted = true;
+                    }
+                }
+            });
+            $('#confirm_matches_modal').modal('hide');
+            $('#add_to_checklist_modal').modal();
+            $('.add-to-checklist-document-div').not('.assigned').first().trigger('click');
+
+            if(release_submitted == true) {
+                // if contract item in checklist and not rejected
+                if($('.assign-button.contract').not('.rejected').length > 0) {
+                    // if contract not submitted
+                    if($('.assign-button.contract').closest('.list-group-item').find('.docs').length == 0) {
+                        $('.assign-button.closing_doc, .assign-button.release').closest('.list-group-item').find('.delete-doc').trigger('click');
+                        $('#modal_danger').modal().find('.modal-body').html('You must submit a contract before you can submit any closing documents or a release');
+                    }
+                }
+            }
 
         }
 
@@ -674,7 +666,7 @@ if (document.URL.match(/transaction_details/)) {
             if(new_active_item.hasClass('assigned')) {
                 $('.assign-button').prop('disabled', true);
             } else {
-                $('.assign-button').prop('disabled', false);
+                $('.assign-button').not('.disabled').prop('disabled', false);
             }
             wrapper.scrollTop(wrapper.scrollTop() + new_active_item.position().top - (wrapper.height()/2) + (new_active_item.height()/2) - 41);
 
@@ -696,16 +688,6 @@ if (document.URL.match(/transaction_details/)) {
 
         }
 
-        /* function show_drop_activated() {
-            $('.checklist-item-droparea').each(function () {
-
-                if ($(this).find('.add-to-checklist-document-div').length == 0) {
-                    $(this).removeClass('drop-activated');
-                }
-                //$(this).find('.drop-div-title').prependTo($(this));
-
-            });
-        } */
 
         function assign_document() {
 
@@ -718,7 +700,7 @@ if (document.URL.match(/transaction_details/)) {
 
             docs_div.closest('.submitted-docs-div').show();
 
-            docs_div.prepend('<div class="added-document d-flex justify-content-start align-items-center" data-document-id="'+document_id+'" data-checklist-id="'+checklist_id+'" data-checklist-item-id="'+checklist_item_id+'"><div><a href="javascript: void(0)" class="delete-doc" data-document-id="'+document_id+'"><i class="fad fa-times-circle text-danger mr-2"></i></a></div><div class="text-orange">'+file_name.substring(0, 70)+'</div></div>');
+            docs_div.prepend('<div class="added-document d-flex justify-content-start align-items-center docs" data-document-id="'+document_id+'" data-checklist-id="'+checklist_id+'" data-checklist-item-id="'+checklist_item_id+'"><div><a href="javascript: void(0)" class="delete-doc" data-document-id="'+document_id+'"><i class="fad fa-times-circle text-danger mr-2"></i></a></div><div class="text-orange">'+file_name.substring(0, 70)+'</div></div>');
 
             active_div.addClass('assigned');
             if(active_div.nextAll('.add-to-checklist-document-div').not('.assigned').length > 0) {
@@ -727,7 +709,9 @@ if (document.URL.match(/transaction_details/)) {
                 active_div.trigger('click');
             }
 
-            $('.delete-doc').click(function() {
+            disable_closing_docs();
+
+            $('.delete-doc').on('click', function() {
                 let remove_document_id = $(this).data('document-id');
                 let container = $(this).closest('.submitted-docs-div');
 
@@ -740,6 +724,7 @@ if (document.URL.match(/transaction_details/)) {
                 if(document_id == remove_document_id) {
                     $('.assign-button').prop('disabled', false);
                 }
+                disable_closing_docs();
 
             });
 
@@ -747,20 +732,19 @@ if (document.URL.match(/transaction_details/)) {
 
         function save_add_to_checklist(checklist_id) {
 
-            let checklist_items = [];
-            $('.add-to-checklist-item-div').each(function () {
 
+            let checklist_items = [];
+            $('.added-document').each(function () {
+
+                let checklist_id = $(this).data('checklist-id');
                 let checklist_item_id = $(this).data('checklist-item-id');
-                let document_ids = [];
-                $(this).find('.add-to-checklist-document-div').each(function () {
-                    document_ids.push($(this).data('document-id'));
+                let document_id = $(this).data('document-id');
+
+                checklist_items.push({
+                    checklist_id: checklist_id,
+                    checklist_item_id: checklist_item_id,
+                    document_id: document_id
                 });
-                if (document_ids.length > 0) {
-                    checklist_items.push({
-                        checklist_item_id: checklist_item_id,
-                        document_ids: document_ids
-                    });
-                }
 
             });
 
@@ -774,7 +758,6 @@ if (document.URL.match(/transaction_details/)) {
 
             checklist_items = JSON.stringify(checklist_items);
 
-            formData.append('checklist_id', checklist_id);
             formData.append('Agent_ID', Agent_ID);
             formData.append('Listing_ID', Listing_ID);
             formData.append('Contract_ID', Contract_ID);
@@ -786,6 +769,12 @@ if (document.URL.match(/transaction_details/)) {
                     toastr['success']('Documents Successfully Added')
                     load_tabs('documents', false);
                     load_checklist_on_tab_click();
+                    if(response.data) {
+                        if(response.data.release_submitted == 'yes') {
+                            $('#cancel_contract_button').trigger('click');
+                            load_details_header();
+                        }
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -869,7 +858,8 @@ if (document.URL.match(/transaction_details/)) {
                 $('.list-group-header').hide();
                 // hide all names
                 $('.form-name').hide().each(function () {
-                    if ($(this).data('text').match(new RegExp(v, 'i'))) {
+                    let regex = new RegExp(v, 'i');
+                    if ($(this).data('text').match(regex)) {
                         // show name
                         $(this).show();
                         // show header
@@ -935,7 +925,7 @@ if (document.URL.match(/transaction_details/)) {
 
                 let loading_html = ' \
                 <div class="h5-responsive text-white mb-3">Importing Documents...</div> \
-                <div class="w-100 text-left document-loading-container disable-scrollbars"> \
+                <div class="w-100 text-left document-loading-container"> \
                     <div id="loading_div"></div> \
                 </div> \
                 ';
@@ -944,7 +934,7 @@ if (document.URL.match(/transaction_details/)) {
 
                 files.forEach(function(file, index) {
 
-                    let interval = file['file_size'] * 20000;
+                    let interval = file['file_size'] * 25000;
 
                     let file_html = ' \
                     <div class="text-white w-100 p-1"> \
@@ -981,6 +971,7 @@ if (document.URL.match(/transaction_details/)) {
                         reorder_documents(sortables);
                         global_loading_off();
                         $('.progress-bar').css({ width: '0%' });
+
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -995,7 +986,7 @@ if (document.URL.match(/transaction_details/)) {
             // search by tag
             $('#form_categories_search').change(tag_search);
             // select and show form groups
-            $('.select-form-group').change(function () {
+            $('.select-form-group').on('change', function () {
                 select_form_group();
             });
         }
@@ -1018,7 +1009,7 @@ if (document.URL.match(/transaction_details/)) {
         function show_upload_documents() {
             $('#upload_documents_modal').modal();
             upload_documents();
-            $('#save_upload_documents_button').click(function () {
+            $('#save_upload_documents_button').on('click', function () {
                 $(this).html('<span class="spinner-border spinner-border-sm mr-2"></span> Uploading Documents');
                 $("#file_upload").dmUploader('start');
             });
@@ -1066,7 +1057,7 @@ if (document.URL.match(/transaction_details/)) {
 
         function confirm_delete_folder(folder_id) {
             $('#confirm_delete_folder_modal').modal();
-            $('#confirm_delete_folder_button').click(function () {
+            $('#confirm_delete_folder_button').on('click', function () {
                 delete_folder(folder_id)
             });
         }

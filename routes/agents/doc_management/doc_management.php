@@ -43,6 +43,7 @@
     Route::get('/agents/doc_management/transactions/get_checklist', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checklist');
     // get checklist notes
     Route::get('/doc_management/get_notes', 'DocManagement\Review\DocumentReviewController@get_notes');
+    Route::post('/doc_management/delete_note', 'DocManagement\Review\DocumentReviewController@delete_note');
     Route::get('/agents/doc_management/transactions/get_documents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_documents');
     Route::get('/agents/doc_management/transactions/get_contracts', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_contracts');
 
@@ -73,6 +74,8 @@
     Route::post('/agents/doc_management/transactions/reorder_documents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@reorder_documents');
     // get add document to checklist html
     Route::get('/agents/doc_management/transactions/add_document_to_checklist_item_html', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@add_document_to_checklist_item_html');
+    // get documents for add document to checklist html
+    Route::get('/agents/doc_management/transactions/get_add_document_to_checklist_documents_html', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_add_document_to_checklist_documents_html');
 
     // delete document from checklist item
     Route::post('/agents/doc_management/transactions/remove_document_from_checklist_item', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@remove_document_from_checklist_item');
@@ -108,8 +111,23 @@
     Route::post('/agents/doc_management/transactions/save_required_fields', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_required_fields');
 
 
+    /////// COMMISSION
     // get commission
     Route::get('/agents/doc_management/transactions/get_commission', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_commission');
+    // get check in details from pdf
+    Route::post('/agents/doc_management/transactions/get_check_in_details', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_check_in_details');
+    // get checks in
+    Route::get('/agents/doc_management/transactions/get_checks_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checks_in');
+    // get commission notes
+    Route::get('/agents/doc_management/transactions/get_commission_notes', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_commission_notes');
+    // save add check in
+    Route::post('/agents/doc_management/transactions/save_add_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_check_in');
+    // delete check in
+    Route::post('/agents/doc_management/transactions/save_delete_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_delete_check_in');
+
+
+
+
     // get earnest
     Route::get('/agents/doc_management/transactions/get_earnest', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_earnest');
 
@@ -121,8 +139,14 @@
     Route::post('/agents/doc_management/transactions/cancel_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@cancel_contract');
     // UNDO release or canceled contract
     Route::post('/agents/doc_management/transactions/undo_cancel_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@undo_cancel_contract');
+    // UNDO canceled listing
+    Route::post('/agents/doc_management/transactions/undo_cancel_listing', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@undo_cancel_listing');
     // check if docs submitted and accepted
     Route::get('/agents/doc_management/transactions/check_docs_submitted_and_accepted', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@check_docs_submitted_and_accepted');
+    // cancel listing
+    Route::post('/agents/doc_management/transactions/cancel_listing', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@cancel_listing');
+    // update contract status
+    Route::post('/agents/doc_management/transactions/update_contract_status', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@update_contract_status');
 
     // search bright mls agents
     Route::get('/agents/doc_management/transactions/search_bright_agents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@search_bright_agents');

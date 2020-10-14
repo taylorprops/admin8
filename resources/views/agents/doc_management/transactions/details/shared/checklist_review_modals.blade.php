@@ -1,4 +1,27 @@
-<div class="modal fade draggable" id="email_agent_modal" tabindex="-1" role="dialog" aria-labelledby="email_agent_modal_title" aria-hidden="true">
+<div class="modal fade draggable" id="docs_complete_modal" tabindex="-1" role="dialog" aria-labelledby="docs_complete_modal_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success draggable-handle">
+                <h4 class="modal-title" id="docs_complete_modal_title">All Documents Submitted</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <i class="fal fa-times mt-2"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="docs-complete-div"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+                <a href="javascript: void(0);" class="btn btn-lg btn-primary email-agent-docs-complete" data-dismiss="modal"><i class="fal fa-envelope mr-2"></i> Notify Agent</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade draggable modal-shared" id="email_agent_modal" tabindex="-1" role="dialog" aria-labelledby="email_agent_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header draggable-handle">
@@ -18,7 +41,7 @@
                                     </div>
                                 </div>
                                 <div class="col-10 pl-0">
-                                    <input type="text" class="custom-form-element form-input" id="email_agent_from" value="{{ \Auth::user() -> name }} <{{ \Auth::user() -> email }}>">
+                                    <input type="text" class="custom-form-element form-input form-small" id="email_agent_from" value="{{ \Auth::user() -> name.' - '.$agent -> company }} <{{ \Auth::user() -> email }}>">
                                 </div>
                             </div>
                             <div class="row">
@@ -28,7 +51,7 @@
                                     </div>
                                 </div>
                                 <div class="col-10 pl-0">
-                                    <input type="text" class="custom-form-element form-input" id="email_agent_to" value="{{ $agent -> first_name.' '.$agent -> last_name }} <{{ $agent -> email }}>">
+                                    <input type="text" class="custom-form-element form-input form-small" id="email_agent_to" value="{{ $agent -> first_name.' '.$agent -> last_name }} <{{ $agent -> email }}>">
                                 </div>
                             </div>
                             <div class="row">
@@ -38,7 +61,10 @@
                                     </div>
                                 </div>
                                 <div class="col-10 pl-0">
-                                    <input type="text" class="custom-form-element form-input" id="email_agent_cc">
+                                    <input type="text" class="custom-form-element form-input form-small" id="email_agent_cc">
+                                </div>
+                                <div class="col-10 ml-auto p-0 small">
+                                    Separate multiple addresses with "," or ";"
                                 </div>
                             </div>
                         </div>
@@ -53,18 +79,20 @@
                             </div>
                         </div>
                         <div class="col-10 pl-0">
-                            <input type="text" class="custom-form-element form-input" id="email_agent_subject" value="{{ $property -> FullStreetAddress }} {{ $property -> City }}, {{ $property -> StateOrProvince }} {{ $property -> PostalCode }}">
+                            <input type="text" class="custom-form-element form-input form-small" id="email_agent_subject" value="{{ $property -> FullStreetAddress }} {{ $property -> City }}, {{ $property -> StateOrProvince }} {{ $property -> PostalCode }}">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-2">
-                            <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="h-100 d-flex justify-content-end align-items-top">
                                 <div>Message:</div>
                             </div>
                         </div>
                         <div class="col-10 pl-0">
-                            <textarea class="custom-form-input form-textarea" id="email_agent_message" rows="4">&#13;&#10; &#13;&#10; Thank you,&#13;&#10; {{ \Auth::user() -> name }}</textarea>
+                            <div id="email_agent_message" class="text-editor font-9">
+                                <br><br>{!! session('admin_details') -> signature !!}
+                            </div>
                         </div>
                     </div>
 
@@ -84,7 +112,7 @@
     </div>
 </div>
 
-<div class="modal fade draggable" id="confirm_remove_checklist_item_modal" tabindex="-1" role="dialog" aria-labelledby="remove_checklist_item_title" aria-hidden="true">
+<div class="modal fade draggable modal-shared" id="confirm_remove_checklist_item_modal" tabindex="-1" role="dialog" aria-labelledby="remove_checklist_item_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header draggable-handle">
@@ -119,7 +147,7 @@
 </div>
 
 
-<div class="modal fade draggable" id="add_checklist_item_modal" tabindex="-1" role="dialog" aria-labelledby="add_checklist_item_modal_title" aria-hidden="true">
+<div class="modal fade draggable modal-shared" id="add_checklist_item_modal" tabindex="-1" role="dialog" aria-labelledby="add_checklist_item_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header draggable-handle">
@@ -233,7 +261,7 @@
 </div>
 
 
-<div class="modal fade draggable" id="reject_document_modal" tabindex="-1" role="dialog" aria-labelledby="reject_document_modal_title" aria-hidden="true">
+<div class="modal fade draggable modal-shared" id="reject_document_modal" tabindex="-1" role="dialog" aria-labelledby="reject_document_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header draggable-handle">

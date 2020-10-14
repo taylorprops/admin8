@@ -2,6 +2,9 @@
 @section('title', 'Document Review')
 
 @section('content')
+
+<input type="hidden" id="review_contract_id" value="{{ $Contract_ID }}">
+
 <div class="container-fluid page-document-review px-0">
 
     <div class="row no-gutters">
@@ -10,7 +13,7 @@
 
             <div class="transactions-container border-right h-100">
 
-                <div class="properties-container disable-scrollbars w-100 pb-5" data-simplebar data-simplebar-auto-hide="true">
+                <div class="properties-container w-100 pb-5">
 
                     <div class="row">
                         <div class="col-12">
@@ -191,8 +194,8 @@
                                 $address = ucwords(strtolower($cancel_request -> FullStreetAddress.' '.$cancel_request -> City)).', '.$cancel_request -> StateOrProvince.', '.$cancel_request -> PostalCode;
                                 @endphp
 
-                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item border-right-0" data-id="{{ $cancel_request -> Contract_ID }}" data-type="contract" data-cat="cancels">
-                                    <div class="d-flex justify-content-between align-items-center">
+                                <a href="javascript: void(0)" class="list-group-item list-group-item-action property-item cancellation border-right-0" data-id="{{ $cancel_request -> Contract_ID }}" data-type="contract" data-cat="cancels">
+                                    <div class="d-flex justify-content-between align-items-center property-item-div">
                                         <div class="address-div">
                                             {{ $address }}
                                         </div>
@@ -206,7 +209,7 @@
                     <div class="py-5"></div>
                 </div>
 
-                <div class="checklist-items-container w-100 disable-scrollbars">
+                <div class="checklist-items-container w-100">
 
                     <div class="sticky bg-white py-2 border-bottom">
                         <div class="d-flex justify-content-between align-items-center">
@@ -245,7 +248,7 @@
 
             <div class="details-container border-left">
 
-                <div class="details-div pl-1"> </div>
+                <div class="details-div"> </div>
 
             </div>
 

@@ -31,44 +31,38 @@
             @endif
         </div>
 
-        <div class="details-content disable-scrollbars">
+        <div class="details-content">
 
             @if($transaction_type == 'referral')
                 <span class="text-gray">Agent:</span> <span class="font-weight-bold pl-2">{{ $agent_details -> first_name. ' ' . $agent_details -> last_name }}</span>
             @else
 
-                {{-- <div class="row">
+                <div class="row">
                     <div class="col-12">
 
-                        @if($property -> Status == $canceled_status_id)
+                        @if($property -> Status == $cancel_pending_status_id)
                             <div class="divider"></div>
-                            <div class="m-1 p-3 bg-danger rounded animated shake delay-2s">
+                            <div class="m-1 p-3 bg-danger rounded animated shake delay-2s cancel-status">
                                 <div class="h4-responsive text-white d-flex justify-content-start align-items-center">
                                     <i class="fad fa-exclamation-circle mr-2"></i>
                                     <span>
                                         Cancellation Pending
                                     </span>
                                 </div>
-                                <div class="mt-3 bg-white rounded p-2">
-                                    <div class="d-flex justify-content-around align-items-center">
-                                        <button type="button" class="btn btn-success cancellation-options" id="approve_cancellation_button"><i class="fad fa-check mr-2"></i> Approve</button>
-                                        <button type="button" class="btn btn-danger cancellation-options" id="reject_cancellation_button" data-toggle="collapse" data-target="#reject_cancellation_section" aria-expanded="false" aria-controls="reject_cancellation_section"><i class="fad fa-minus-circle mr-2"></i> Reject</button>
-                                    </div>
-                                    <div class="collapse border-top" id="reject_cancellation_section">
-                                        <div class="p-2 mt-3">
-                                            <textarea class="custom-form-element form-textarea" data-label="Enter Rejection Reason"></textarea>
-                                            <div class="d-flex justify-content-around">
-                                                <button type="button" class="btn btn-success" id="save_reject_cancellation_button"><i class="fad fa-check mr-2"></i> Submit</button>
-                                                <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#reject_cancellation_section" aria-expanded="false" aria-controls="reject_cancellation_section"><i class="fad fa-minus-circle mr-2"></i> Don't Submit</button>
-                                            </div>
-                                        </p-2>
-                                    </div>
+                            </div>
+                        @elseif($property -> Status == $canceled_status_id)
+                            <div class="divider"></div>
+                            <div class="m-1 p-3 bg-success rounded animated cancel-status">
+                                <div class="h4-responsive text-white d-flex justify-content-start align-items-center">
+                                    <i class="fad fa-check-circle mr-2"></i>
+                                    <span>
+                                        Cancellation Complete
+                                    </span>
                                 </div>
                             </div>
-
                         @endif
                     </div>
-                </div> --}}
+                </div>
 
                 <table class="table property-details-table">
                     <tbody>

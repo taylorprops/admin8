@@ -135,13 +135,13 @@ if (document.URL.match(/transaction_details/)) {
             // fill add member div with form
             $('#add_member_div').html(response.data);
             global_tooltip();
-            load_details_header();
+            //load_details_header();
 
             $('.cancel-add-member-button').off('click').on('click', function() {
                 $('#add_member_group').hide();
                 $('.list-group-item-member').eq(0).trigger('click');
             });
-            $('.list-group-item-member').click(function() {
+            $('.list-group-item-member').on('click', function() {
                 $('#add_member_group').hide();
             });
 

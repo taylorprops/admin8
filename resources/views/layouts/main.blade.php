@@ -32,6 +32,9 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.12.1/plugins/CSSRulePlugin.min.js"></script>
 
+        {{-- text editor --}}
+        <script src="https://cdn.tiny.cloud/1/t3u7alod16y8nsqt07h4m5kwfw8ob9sxbvy2rlmrqo94zrui/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
         {{-- google address search --}}
         <script src="https://maps.googleapis.com/maps/api/js?key={{ config('global.vars.google_api_key') }}&libraries=places&outputFormat=json"></script>
 

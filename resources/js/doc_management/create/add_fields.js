@@ -14,7 +14,7 @@ if (document.URL.match(/create\/add_fields/)) {
         }, 500);
 
         // Show active field
-        $('.field-wrapper').click(function () {
+        $('.field-wrapper').on('click', function () {
             $('.field-wrapper').removeClass('active');
             $(this).addClass('active');
             $('#active_field').val($(this).data('type'));
@@ -222,7 +222,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 aspect_ratio = '4 / 4';
             }
 
-            ele.click(function (e) {
+            ele.on('click', function (e) {
 
                 if (e.target === this) {
                     e.stopPropagation();
@@ -298,7 +298,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
 
             // hide all handles and buttons when another container is selected
-            $('.field-select-container').click(function (e) {
+            $('.field-select-container').on('click', function (e) {
                 $('.focused').hide();
                 $('.field-div').removeClass('active');
             });
@@ -478,7 +478,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 let inputs_container = edit_div.find('.field-data-inputs-container');
 
                 // remove common name when custom name is type in
-                edit_div.find('.form-input.field-data-name').change(function () {
+                edit_div.find('.form-input.field-data-name').on('change', function () {
                     if ($(this).val() != '') {
                         select.val('');
                         select_refresh();
@@ -489,7 +489,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 // auto populate helper text for address fields - they will always be the same as the address type
                 if (field_type == 'address') {
 
-                    edit_div.find('.field-data-address-type').change(function () {
+                    edit_div.find('.field-data-address-type').on('change', function () {
                         let helper_text = $(this).find('option:selected').text();
                         let helper_text_input = edit_div.find('.field-data-helper-text');
                         helper_text_input.val(helper_text).trigger('change');
@@ -550,7 +550,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 } else if (field_type == 'number') {
 
-                    edit_div.find('.form-select.field-data-name').change(function () {
+                    edit_div.find('.form-select.field-data-name').on('change', function () {
                         let helper_text = $(this).find('option:selected').text();
                         let helper_text_input = edit_div.find('.field-data-helper-text');
                         if(helper_text_input.val() == '') {
@@ -1422,7 +1422,7 @@ if (document.URL.match(/create\/add_fields/)) {
         }
 
         // highlight active thumb when clicked and scroll into view
-        $('.file-view-thumb-container').click(function () {
+        $('.file-view-thumb-container').on('click', function () {
             $('.file-view-thumb-container').removeClass('active');
             $(this).addClass('active');
             let id = $(this).data('id');

@@ -2,6 +2,9 @@
 
 namespace App\Models\DocManagement\Transactions\Checklists;
 
+use App\Models\DocManagement\Create\Upload\Upload;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
+use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,16 +16,40 @@ class TransactionChecklistItems extends Model {
     protected $_primaryKey = 'id';
     protected $guarded = [];
 
+
+    public function ScopeMakeClosingDocsRequired($query, $checklist_id) {
+        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
+        foreach($checklist_items as $checklist_item) {
+            if(Upload::IsClosingDoc($checklist_item -> checklist_form_id)) {
+                TransactionChecklistItems::find($checklist_item -> id) -> update(['checklist_item_required' => 'yes']);
+            }
+        }
+    }
+
+    public function ScopeChecklistComplete($query, $checklist_id) {
+
+        $complete = true;
+        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> where('checklist_item_required', 'yes') -> get();
+        foreach($checklist_items as $checklist_item) {
+            if(Upload::IsClosingDoc($checklist_item -> checklist_form_id) == false && Upload::IsRelease($checklist_item -> checklist_form_id) == false && Upload::IsWithdraw($checklist_item -> checklist_form_id) == false) {
+                if($checklist_item -> checklist_item_status == 'not_reviewed') {
+                    $complete = false;
+                }
+            }
+        }
+        return $complete;
+
+    }
+
     public function ScopeGetStatus($query, $checklist_item_id) {
 
         // see if any docs have been added
         $checklist_item = $this -> where('id', $checklist_item_id) -> first();
         $checklist_item_docs = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item_id);
+
         $docs_count = $checklist_item_docs -> count();
         // if doc_status is null for any added doc for this item than a form has been added but has not been reviewed
-        $pending = $checklist_item_docs -> where(function($query) {
-            $query -> where('doc_status', 'pending');
-        }) -> get();
+        $pending = $checklist_item_docs -> where('doc_status', 'pending') -> get();
 
         $show_mark_required = false;
         $show_mark_not_required = false;
@@ -67,6 +94,7 @@ class TransactionChecklistItems extends Model {
             } else {
 
                 if ($checklist_item -> checklist_item_status == 'accepted') {
+
                     $status = 'Complete';
                     $agent_classes = 'bg-success text-white';
                     $admin_classes = 'bg-success text-white';

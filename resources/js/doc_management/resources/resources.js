@@ -271,7 +271,7 @@ function show_add_resource(ele) {
     let appendTo = resource_div.find('.list-group');
 
     add_button.hide();
-    cancel_button.show().click(function () {
+    cancel_button.show().on('click', function () {
         add_resource_div.slideUp('fast');
         add_button.show();
         resource_input.val('').trigger('change');
@@ -418,7 +418,7 @@ function show_edit_resource(ele) {
 
     });
 
-    close.click(function () {
+    close.on('click', function () {
 
         reset_edit_resource_div(list_group_item, resource_div, resource_input, resource_state_select, resource_association_select, resource_addendums_select, resource_form_group_type_select, resource_input_color, resource_county_abbr_input);
 
@@ -554,7 +554,7 @@ function confirm_delete_deactivate_resource(ele) {
     $('.confirm-delete-deactivate-resource-text').text(confirm_text);
     $('#confirm_delete_deactivate_resource_modal_title').text(title_text);
 
-    $('#confirm_delete_deactivate_resource').click(function () {
+    $('#confirm_delete_deactivate_resource').on('click', function () {
         delete_deactivate_resource_resource(ele, action)
     });
 }

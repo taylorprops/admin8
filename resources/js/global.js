@@ -4,11 +4,23 @@ $(document).ready(function () {
 
     /* global_page_transition(); */
 
-    inactivityTime();
+    if(!document.URL.match(/login/)) {
+        inactivityTime();
+    }
 
     toastr.options = {
         "timeOut": 3000
     }
+
+    window.text_editor = function(options) {
+        options.selector = '.text-editor';
+        options.content_css = '/css/tinymce.css';
+        options.force_p_newlines = false;
+        options.forced_root_block = '';
+
+        tinymce.init(options);
+    }
+
 
     // send csrf with every ajax request
     window._token = $('meta[name="csrf-token"]').attr('content');
@@ -40,12 +52,12 @@ $(document).ready(function () {
         return response;
 
     }, function (error) {
-
         console.log('error = '+error);
-
-
     });
 
+    $(document).on('click', '.modal-dismiss', function() {
+        $('.modal-backdrop').remove();
+    });
 
 
     $('.draggable').draggable({
@@ -89,7 +101,6 @@ $(document).ready(function () {
 
     // multiple modal stacking
     $(document).on('show.bs.modal', '.modal', function () {
-        $('.modal').addClass('disable-scrollbars');
         // increase modal and backdrop z-index accordingly
         var zIndex = 1040 + (10 * $('.modal:visible').length);
         $(this).css('z-index', zIndex);
@@ -143,6 +154,20 @@ window.datepicker_custom = function() {
             showAllDates: true,
         });
 
+        // update picker when changed dynamically
+        /* $(this).on('change', function() {
+            if(!$(this).val().match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/)) {
+                let date = $(this).val().split('-');
+                console.log(date);
+                picker.setDate(new Date(date[0], parseInt(date[1]) - 1, date[2]), true);
+                setTimeout(function() {
+                    const isHidden = picker.calendarContainer.classList.contains('qs-hidden');
+                    if(!isHidden) {
+                        picker.hide();
+                    }
+                }, 100);
+            }
+        }); */
 
     });
 
@@ -157,12 +182,42 @@ window.inactivityTime = function () {
     document.onkeypress = resetTimer;
 
     function logout() {
-        location.href = '/'
+
+        $('#confirm_modal').modal().find('.modal-title').html('Session Expired!');
+        $('#confirm_modal').find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><div><i class="fad fa-exclamation-circle fa-2x text-danger mr-3"></i></div><div>Your session has expired due to inactivity.</div></div>');
+        $('#confirm_modal').find('.modal-sm').removeClass('modal-sm').find('.modal-header').addClass('bg-danger');
+
+        let logout = $('#confirm_modal').find('.btn-danger');
+        logout.text('Log Off');
+        let stay = $('#confirm_modal').find('.btn-success');
+        stay.text('Continue Session');
+
+        let force_logout = setTimeout(function() {
+            location.href = '/';
+        }, 1000 * 60);
+
+        logout.on('click', function() {
+            location.href = '/';
+        });
+        stay.on('click', function() {
+            clearTimeout(force_logout);
+            resetTimer();
+            $('#confirm_modal').modal('hide');
+        });
+
+        $('#confirm_modal').on('hide.bs.modal', function () {
+            location.href = '/';
+        });
+
+
+
     }
 
     function resetTimer() {
         clearTimeout(time);
-        time = setTimeout(logout, 1000 * 60 * 60 * 2);
+        let timeout = 1000 * 60 * 60;
+        //let timeout = 1000 * 5;
+        time = setTimeout(logout, timeout);
     }
 };
 
@@ -197,14 +252,14 @@ window.scrollToAnchor = function(id) {
 // Numbers Only
 $(document).on('keydown', '.numbers-only', function (event) {
     // Allow special chars + arrows
-    if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 190 || event.keyCode == 110
-        || event.keyCode == 27 || event.keyCode == 13
-        || ((event.keyCode == 65 || event.keyCode == 86 || event.keyCode == 90) && event.ctrlKey == true)
-        || (event.keyCode >= 35 && event.keyCode <= 39)) {
+    if (event.code == 46 || event.code == 8 || event.code == 9 || event.code == 190 || event.code == 110
+        || event.code == 27 || event.code == 13
+        || ((event.code == 65 || event.code == 86 || event.code == 90) && event.ctrlKey == true)
+        || (event.code >= 35 && event.code <= 39)) {
         return;
     } else {
         // If it's not a number stop the keypress
-        if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+        if (event.shiftKey || (event.code < 48 || event.code > 57) && (event.code < 96 || event.code > 105)) {
             event.preventDefault();
         }
     }

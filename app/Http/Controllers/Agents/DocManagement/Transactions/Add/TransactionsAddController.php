@@ -17,6 +17,7 @@ use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
 use App\Models\DocManagement\Transactions\Members\Members;
+use App\Models\Commission\Commission;
 // use App\Models\DocManagement\Checklists\Checklists;
 // use App\Models\DocManagement\Checklists\ChecklistsItems;
 use App\Models\Employees\Agents;
@@ -76,8 +77,8 @@ class TransactionsAddController extends Controller {
 
         $select_columns_bright = config('global.vars.select_columns_bright');
         $select_columns_db = explode(',', $select_columns_bright);
-        $select_columns_db_closed = 'AssociationFee,AssociationYN,AttachedGarageYN,BasementFinishedPercent,BasementYN,BathroomsTotalInteger,BedroomsTotal,City,CondoYN,County,FireplaceYN,FullStreetAddress,GarageYN,Heating,Latitude,ListingTaxID,ListPictureURL,Longitude,LotSizeAcres,LotSizeSquareFeet,NewConstructionYN,NumAttachedGarageSpaces,NumDetachedGarageSpaces,Pool,PostalCode,PropertySubType,PropertyType,StateOrProvince,StreetDirPrefix,StreetDirSuffix,StreetName,StreetNumber,StreetSuffix,StreetSuffixModifier,StructureDesignType,SubdivisionName,UnitBuildingType,UnitNumber,YearBuilt';
-        $select_columns_db_closed = explode(',', $select_columns_db_closed);
+        /* $select_columns_db_closed = 'AssociationFee,AssociationYN,AttachedGarageYN,BasementFinishedPercent,BasementYN,BathroomsTotalInteger,BedroomsTotal,City,CondoYN,County,FireplaceYN,FullStreetAddress,GarageYN,Heating,Latitude,ListingTaxID,ListPictureURL,Longitude,LotSizeAcres,LotSizeSquareFeet,NewConstructionYN,NumAttachedGarageSpaces,NumDetachedGarageSpaces,Pool,PostalCode,PropertySubType,PropertyType,StateOrProvince,StreetDirPrefix,StreetDirSuffix,StreetName,StreetNumber,StreetSuffix,StreetSuffixModifier,StructureDesignType,SubdivisionName,UnitBuildingType,UnitNumber,YearBuilt';
+        $select_columns_db_closed = explode(',', $select_columns_db_closed); */
 
         if ($bright_type == 'db_active') {
 
@@ -85,11 +86,11 @@ class TransactionsAddController extends Controller {
 
             $mls_verified = 'yes';
 
-        } elseif ($bright_type == 'db_closed') {
+        } /* elseif ($bright_type == 'db_closed') {
 
             $bright_db_search = ListingsRemovedData::select($select_columns_db_closed) -> where('ListingId', $bright_id) -> first() -> toArray();
 
-        } else if ($bright_type == 'bright') {
+        } */ else if ($bright_type == 'bright') {
 
             $rets_config = new \PHRETS\Configuration;
             $rets_config -> setLoginUrl(config('rets.rets.url'))
@@ -121,7 +122,7 @@ class TransactionsAddController extends Controller {
             $bright_db_search = $bright_db_search[0]-> toArray();
 
             // remove all fields that do not apply to current listing
-            if ($bright_db_search['MlsStatus'] == 'CLOSED' && $bright_db_search['CloseDate'] < date("Y-m-d", strtotime("-5 year"))) {
+            //if ($bright_db_search['MlsStatus'] == 'CLOSED' && $bright_db_search['CloseDate'] < date("Y-m-d", strtotime("-1 year"))) {
                 $bright_db_search['MlsStatus'] = '';
                 $bright_db_search['CloseDate'] = '';
                 $bright_db_search['ListingId'] = '';
@@ -169,11 +170,11 @@ class TransactionsAddController extends Controller {
                     $bright_db_search['BuyerOfficeName'] = $office_name;
 
                 }
-            }
+            //}
 
             $rets -> disconnect();
 
-            $mls_verified = 'yes';
+
 
         }
 
@@ -204,7 +205,7 @@ class TransactionsAddController extends Controller {
 
         }
 
-        if(!$bright_db_search || $bright_type == 'db_active' || $bright_type == 'db_closed') {
+        if(!$bright_db_search || $bright_type == 'db_active'/*  || $bright_type == 'db_closed' */) {
             if($transaction_type == 'listing') {
                 $property_details['ListAgentEmail'] = $agent -> email;
                 $property_details['ListAgentFirstName'] = $agent -> first_name;
@@ -495,10 +496,24 @@ class TransactionsAddController extends Controller {
 
         $street_address = ucwords(strtolower($property_details -> FullStreetAddress));
 
+        $Commission_ID = '';
+        if($transaction_type == 'contract' || $transaction_type == 'referral') {
+            // add to commission and get commission id
+            $commission = new Commission();
+            if($transaction_type == 'contract') {
+                $commission -> Contract_ID = $new_transaction -> Contract_ID;
+            } else if($transaction_type == 'referral') {
+                $commission -> Referral_ID = $new_transaction -> Referral_ID;
+            }
+            $commission -> save();
+            $Commission_ID = $commission -> id;
+        }
+
         // add email address
         $address = preg_replace(config('global.vars.bad_characters'), '', $street_address);
         $email = $address.'_'.$code.'@'.config('global.vars.property_email');
 
+        $new_transaction -> Commission_ID = $Commission_ID;
         $new_transaction -> PropertyEmail = $email;
         $new_transaction -> save();
 
@@ -1086,7 +1101,7 @@ class TransactionsAddController extends Controller {
         ///// END BRIGHT SEARCH /////
 
         ///// DATABASE SEARCH FOR OLD PROPERTIES /////
-        if (count($bright_db_search) == 0) {
+        /* if (count($bright_db_search) == 0) {
 
             if ($request -> mls) {
 
@@ -1117,7 +1132,7 @@ class TransactionsAddController extends Controller {
 
             }
 
-        }
+        } */
 
         ///// END DATABASE SEARCH FOR OLD PROPERTIES /////
 

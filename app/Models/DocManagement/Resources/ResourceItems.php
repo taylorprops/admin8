@@ -121,6 +121,22 @@ class ResourceItems extends Model
         return $ids;
     }
 
+    public function scopeGetClosedAndCanceledListingStatuses($query) {
+
+        $statuses = ['Closed', 'Withdrawn', 'Canceled'];
+
+        $ids = $this -> where('resource_type', 'listing_status') -> whereIn('resource_name', $statuses) -> pluck('resource_id');
+        return $ids;
+    }
+
+    public function scopeGetClosedAndCanceledContractStatuses($query) {
+
+        $statuses = ['Closed', 'Released', 'Cancel Pending', 'Canceled'];
+
+        $ids = $this -> where('resource_type', 'listing_status') -> whereIn('resource_name', $statuses) -> pluck('resource_id');
+        return $ids;
+    }
+
     public function scopeGetActiveContractStatuses() {
         $ids = $this -> where('resource_type', 'contract_status') -> where('resource_name', 'Active') -> pluck('resource_id');
         return $ids;

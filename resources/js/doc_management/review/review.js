@@ -24,20 +24,16 @@ if(document.URL.match(/document_review/)) {
         $('#search_properties').keyup(search_properties);
         $('#cancel_search_properties').click(cancel_search_properties);
 
-        /* $('#reject_cancellation_button').click(reject_cancellation);
-        $('#accept_cancellation_button').click(accept_cancellation); */
+        if($('#review_contract_id').val() > 0) {
+            $('.cancellation[data-id="' + $('#review_contract_id').val() +'"]').trigger('click');
+        }
 
         form_elements();
 
+        /* text-editor */
+
     });
 
-    /* function reject_cancellation() {
-
-    }
-
-    function accept_cancellation() {
-
-    } */
 
     function search_properties() {
         if($(this).val() != '') {
@@ -215,7 +211,7 @@ if(document.URL.match(/document_review/)) {
         let item_id = item_div.prop('id');
         $('.checklist-items-container').scrollTop(0);
         $('.checklist-items-container').animate({
-            scrollTop: $('#'+item_id).offset().top - 150
+            scrollTop: $('#'+item_id).offset().top - 210
         },'fast');
     }
 
@@ -245,7 +241,7 @@ if(document.URL.match(/document_review/)) {
             // add documents to checklist item and open it
             if($('.checklist-item-docs-div').length > 0) {
                 $('.list-group-item.checklist-item-div.active').find('.documents-list').show()
-                    .append('<div class="font-weight-bold text-primary border-bottom mb-2">Documents</div>')
+                    .append('<div class="font-weight-bold text-primary border-bottom mb-2 pb-3">Documents</div>')
                     .append($('.checklist-item-docs-div'))
                     .find('.document-link').on('click', function() {
                         let id = $(this).data('document-id');
@@ -273,15 +269,24 @@ if(document.URL.match(/document_review/)) {
                 next_property();
             });
 
-            $('.email-agent-button').off('click').on('click', show_email_agent);
+            $('.email-agent-button').off('click').on('click', function() {
+                reset_email();
+                show_email_agent();
+                let options = {
+                    menubar: false,
+                    statusbar: false,
+                    toolbar: false
+                }
+                text_editor(options);
+            });
 
             $('#zoom').on('input change', zoom);
 
-            $('.zoom-out').click(function() {
+            $('.zoom-out').on('click', function() {
                 $('#zoom').val(parseInt($('#zoom').val()) - 5).trigger('change');
                 $('#thumb span').text($('#zoom').val());
             });
-            $('.zoom-in').click(function() {
+            $('.zoom-in').on('click', function() {
                 $('#zoom').val(parseInt($('#zoom').val()) + 5).trigger('change');
                 $('#thumb span').text($('#zoom').val());
             });

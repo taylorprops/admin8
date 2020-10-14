@@ -25,6 +25,11 @@ if (document.URL.match(/transaction_details/)) {
             load_tabs('earnest');
         });
 
+        $(document).on('click', '.process-cancellation-button', function() {
+            let Contract_ID = $(this).data('contract-id');
+            window.location = '/doc_management/document_review/' + Contract_ID;
+        });
+
         load_details_header();
 
 
@@ -115,34 +120,37 @@ if (document.URL.match(/transaction_details/)) {
     // TODO: remove this and undo_cancel
     // remove confirm_undo_cancel_modal
     // use undo_cancel_contract function in controller
-    function show_undo_cancel() {
+    function show_undo_cancel_contract() {
         let Contract_ID = $(this).data('contract-id');
         $('#confirm_undo_cancel_modal').modal();
         $('#undo_cancel_button').off('click').on('click', function() {
-            undo_cancel(Contract_ID)
+            undo_cancel_contract(Contract_ID)
         });
     }
 
-    function undo_cancel(Contract_ID) {
+    function undo_cancel_listing() {
 
-        let formData = new FormData();
+        let Listing_ID = $('#Listing_ID').val();
         let Agent_ID = $('#Agent_ID').val();
-        formData.append('Contract_ID', Contract_ID);
+        let formData = new FormData();
+        formData.append('Listing_ID', Listing_ID);
         formData.append('Agent_ID', Agent_ID);
-        axios.post('/agents/doc_management/transactions/undo_cancel_contract', formData, axios_options)
+        axios.post('/agents/doc_management/transactions/undo_cancel_listing', formData, axios_options)
         .then(function (response) {
 
-            $('#confirm_undo_cancel_modal').modal('hide');
+            if(response.data.expired == 'expired') {
 
-            if(response.data.error) {
-                if($('#for_sale').val() == 'yes') {
-                    $('#modal_danger').modal().find('.modal-body').html('The Listing is currently under contract with another Contract. You must release the current Contract before Reactivating this one.');
-                } else {
-                    $('#modal_danger').modal().find('.modal-body').html('Another Lease Agreement has already been accepted for this listing. You must cancel the current Lease before Reactivating this one.');
-                }
-                return false;
+                $('#modal_danger').modal('show').find('.modal-body').html(' \
+                <div class="d-flex justify-content-center align-items-center"> \
+                    <div><i class="fad fa-exclamation-circle fa-2x text-danger"></i></div> \
+                    <div class="ml-3 text-center">The Listing has passed it expiration date.<br>Please enter the new expiration date.</div> \
+                </div> \
+                ');
+
             }
 
+            load_tabs('checklist');
+            load_tabs('details');
             load_details_header();
             toastr['success']('Undo Successful');
 
@@ -153,11 +161,104 @@ if (document.URL.match(/transaction_details/)) {
 
     }
 
+    function undo_cancel_contract(Contract_ID) {
+
+        let formData = new FormData();
+        let Agent_ID = $('#Agent_ID').val();
+        formData.append('Contract_ID', Contract_ID);
+        formData.append('Agent_ID', Agent_ID);
+        axios.post('/agents/doc_management/transactions/undo_cancel_contract', formData, axios_options)
+        .then(function (response) {
+
+            if(response.data.error) {
+                if($('#for_sale').val() == 'yes') {
+                    $('#modal_danger').modal().find('.modal-body').html('The Listing is currently under contract with another Contract. You must release the current Contract before Reactivating this one.');
+                } else {
+                    $('#modal_danger').modal().find('.modal-body').html('Another Lease Agreement has already been accepted for this listing. You must cancel the current Lease before Reactivating this one.');
+                }
+                return false;
+            }
+
+            load_tabs('checklist');
+            load_details_header();
+            toastr['success']('Undo Successful');
+            $('#confirm_undo_cancel_modal').modal('hide');
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+    function show_cancel_listing() {
+
+        let Listing_ID = $('#Listing_ID').val();
+
+        // check if listing agreement submitted. If not cancel
+        axios.get('/agents/doc_management/transactions/check_docs_submitted_and_accepted', {
+            params: {
+                Listing_ID: Listing_ID
+            }
+        })
+        .then(function (response) {
+
+            let cancel_listing = false;
+
+            let cancel_success = '<div class="d-flex justify-content-center align-items-center p-3"><div><i class="fad fa-check-circle fa-2x text-success"></i></div><div class="text-center ml-3">Your Listing has been successfully canceled.</div></div>';
+
+            // if listing agreement submitted
+            if(response.data.listing_accepted == true) {
+
+                if(response.data.listing_expired == true) {
+                    // show cancel listing - expired | don't need a withdraw because it is already expired.
+                    $('#modal_success').modal().find('.modal-body').html(cancel_success);
+                    cancel_listing = true;
+                } else {
+                    // check if withdraw is submitted
+                    if(response.data.listing_withdraw_submitted == true) {
+                        // withdraw submitted already so cancel it
+                        $('#modal_success').modal().find('.modal-body').html(cancel_success);
+                        cancel_listing = true;
+                    } else {
+                        // require the withdraw be submitted
+                        $('#modal_danger').modal().find('.modal-body').html(' \
+                            <div class="d-flex justify-content-start align-items-center"> \
+                                <div class="mr-3"><i class="fad fa-exclamation-circle fa-2x text-danger"></i></div> \
+                                <div class="text-center">Your Listing Agreement is still in effect. You must submit a Listing Withdraw on your checklist before you cancel the Listing.</div> \
+                            </div>');
+                        return false;
+                    }
+                }
+            } else {
+                // show cancel listing - not submitted
+                $('#modal_success').modal().find('.modal-body').html(cancel_success);
+                cancel_listing = true;
+            }
+
+            if(cancel_listing == true) {
+                let formData = new FormData();
+                formData.append('Listing_ID', Listing_ID);
+                axios.post('/agents/doc_management/transactions/cancel_listing', formData, axios_options)
+                .then(function (response) {
+                    load_details_header();
+                    load_tabs('details');
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+
+        });
+
+    }
+
+
+
     function show_cancel_contract() {
 
         let cancel = $(this);
         let for_sale = cancel.data('for-sale');
-        let contract_submitted = '';
         let listing_expiration_date = cancel.data('listing-expiration-date') || null;
         let today = new Date();
         let expire = new Date(listing_expiration_date);
@@ -175,6 +276,8 @@ if (document.URL.match(/transaction_details/)) {
         })
         .then(function (response) {
 
+            let hide_modal = false;
+
             if(for_sale == 'yes') {
 
                 if(listing_expiration_date) {
@@ -187,8 +290,23 @@ if (document.URL.match(/transaction_details/)) {
                     $('.cancel-contract.docs-not-submitted').removeClass('d-flex').hide();
                     if(response.data.release_submitted == false) {
                         $('#modal_danger').modal().find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><i class="fa fa-exclamation-circle fa-2x text-danger mr-2"></i> <div class="text-center">You must submit a RELEASE for the Sales Contract on the checklist before you can request a cancellation.</div></div>');
+                        return false;
+                    } else {
+                        // cleared to cancel
+                        hide_modal = true;
+                        let formData = new FormData();
+                        formData.append('Contract_ID', Contract_ID);
+                        formData.append('status', 'Cancel Pending');
+                        axios.post('/agents/doc_management/transactions/update_contract_status', formData, axios_options)
+                        .then(function (response) {
+                            load_details_header();
+                            toastr['success']('Cancellation Successfully Submitted');
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
                     }
-                    return false;
+
                 } else {
                     if(response.data.release_submitted == true) {
                         $('#modal_danger').modal().find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><i class="fa fa-exclamation-circle fa-2x text-danger mr-2"></i> <div class="text-center">You must submit a Sales Contract and it must be reviewed before you can submit a release and request a cancellation.</div></div>');
@@ -223,11 +341,13 @@ if (document.URL.match(/transaction_details/)) {
                 }
             }
 
-            $('#save_cancel_contract_button').off('click').on('click', function() {
-                cancel_contract(for_sale);
-            });
+            if(hide_modal == false) {
+                $('#save_cancel_contract_button').off('click').on('click', function() {
+                    cancel_contract(for_sale);
+                });
+                $('#cancel_contract_modal').modal();
+            }
 
-            $('#cancel_contract_modal').modal();
             load_details_header();
 
         })
@@ -239,7 +359,6 @@ if (document.URL.match(/transaction_details/)) {
 
     function cancel_contract(for_sale) {
 
-        let Listing_ID = $('#Listing_ID').val();
         let Contract_ID = $('#Contract_ID').val();
 
         let type = 'Contract';
@@ -250,7 +369,6 @@ if (document.URL.match(/transaction_details/)) {
         let success = type+' Successfully Canceled';
 
         let formData = new FormData();
-        formData.append('Listing_ID', Listing_ID);
         formData.append('Contract_ID', Contract_ID);
         formData.append('contract_submitted', 'no');
         axios.post('/agents/doc_management/transactions/cancel_contract', formData, axios_options)
@@ -274,7 +392,7 @@ if (document.URL.match(/transaction_details/)) {
             }, 500);
         });
 
-        $('#accept_contract_BuyerRepresentedBy').change(function () {
+        $('#accept_contract_BuyerRepresentedBy').on('change', function () {
 
             $('.agent-details').val('').trigger('change');
             $('.buyer-agent-details, .our-agent-div').hide();
@@ -293,7 +411,7 @@ if (document.URL.match(/transaction_details/)) {
             } else if($(this).val() == 'our_agent') {
                 $('.our-agent-div').show();
                 $('.agent-details-required').addClass('required');
-                $('#accept_contract_our_agent').addClass('required').change(function() {
+                $('#accept_contract_our_agent').addClass('required').on('change', function() {
                     if($(this).val() == '') {
                         $('.agent-details').val('').trigger('change');
                         $('.buyer-agent-details').hide();
@@ -317,7 +435,7 @@ if (document.URL.match(/transaction_details/)) {
             }
         });
 
-        $('#accept_contract_using_heritage').change(function() {
+        $('#accept_contract_using_heritage').on('change', function() {
             if($(this).val() == 'yes') {
                 $('.not-using-heritage').hide();
                 $('#accept_contract_title_company').val('').trigger('change');
@@ -460,17 +578,14 @@ if (document.URL.match(/transaction_details/)) {
                 $('[data-toggle="popover"]').popover({ placement: 'bottom' });
                 $('#accept_contract_button').off('click').on('click', show_accept_contract);
                 $('#cancel_contract_button').off('click').on('click', show_cancel_contract);
-                $('.undo-cancel-button').off('click').on('click', show_undo_cancel);
-                /* $('#disabled_accept_contract_button').click(function () {
-                    $('#modal_danger').modal().find('.modal-body').html('You cannot accept a contract until the current one is released');
-                });
-                $('#disabled_withdraw_listing_button').click(function () {
-                    $('#modal_danger').modal().find('.modal-body').html('You cannot withdraw the listing while it is under contract. Once the contract is released you can withdraw the listing');
-                }); */
+                $('#cancel_listing_button').off('click').on('click', show_cancel_listing);
+                $('.undo-cancel-listing-button').off('click').on('click', undo_cancel_listing);
+                $('.undo-cancel-contract-button').off('click').on('click', show_undo_cancel_contract);
+
             })
             .catch(function (error) {
 
-            });
+        });
     }
 
     window.load_tabs = function (tab, reorder = true) {
@@ -478,6 +593,7 @@ if (document.URL.match(/transaction_details/)) {
         let Contract_ID = $('#Contract_ID').val();
         let Referral_ID = $('#Referral_ID').val();
         let Agent_ID = $('#Agent_ID').val();
+        let Commission_ID = $('#Commission_ID').val();
         let transaction_type = $('#transaction_type').val();
 
         if (tab == '') {
@@ -489,6 +605,7 @@ if (document.URL.match(/transaction_details/)) {
                 Contract_ID: Contract_ID,
                 Referral_ID: Referral_ID,
                 Agent_ID: Agent_ID,
+                Commission_ID: Commission_ID,
                 transaction_type: transaction_type
             },
             headers: axios_headers_html
@@ -510,7 +627,7 @@ if (document.URL.match(/transaction_details/)) {
                         $('.not-using-heritage').show();
                     }
 
-                    $('#UsingHeritage').change(function() {
+                    $('#UsingHeritage').on('change', function() {
                         if($(this).val() == 'yes') {
                             $('.not-using-heritage').hide();
                             $('#TitleCompany').val('').trigger('change');
@@ -615,13 +732,37 @@ if (document.URL.match(/transaction_details/)) {
 
                         $('.add-checklist-item-button').off('click').on('click', show_add_checklist_item);
 
-                        $('.email-agent-button').off('click').on('click', show_email_agent);
+                        $('.email-agent-button').off('click').on('click', function() {
+                            reset_email();
+
+                            show_email_agent();
+                            let options = {
+                                menubar: false,
+                                statusbar: false,
+                                toolbar: false
+                            }
+                            text_editor(options);
+                        });
 
                         $('.notes-div').each(function() {
                             get_notes($(this).data('checklist-item-id'));
                         });
 
-                    }, 500);
+                        /* $('.notes-collapse').on('show.bs.collapse', function () {
+                            let textarea_id = $(this).find('.form-textarea').prop('id');
+                            setTimeout(function() {
+                                let screen_height = window.innerHeight;
+                                let to_scroll = screen_height/3;
+                                document.getElementById(textarea_id).scrollIntoView(false);
+                                window.scrollBy(0,to_scroll);
+                                $('#'+textarea_id).focus();
+                            }, 500);
+                        }); */
+
+                        /* text-editor */
+
+
+                    }, 1);
 
 
                     $('.notes-collapse').on('show.bs.collapse', function () {
@@ -649,7 +790,7 @@ if (document.URL.match(/transaction_details/)) {
                     // search forms
                     $('#form_search').keyup(form_search);
                     // select and show form groups
-                    $('.select-form-group').change(function () {
+                    $('.select-form-group').on('change', function () {
                         // clear search input
                         $('#form_search').val('').trigger('change');
 
@@ -676,6 +817,17 @@ if (document.URL.match(/transaction_details/)) {
                 } else if(tab == 'commission') {
 
                     $('.popout').eq(0).show();
+                    get_checks_in(Commission_ID);
+                    get_commission_notes(Commission_ID);
+
+                    $('.add-check-in-button').off('click').on('click', show_add_check_in);
+
+                    $('#save_add_check_in_button').off('click').on('click', save_add_check_in);
+
+                    $('.add-check-deduction-button').off('click').on('click', show_add_check_deduction);
+
+                    $('#save_add_check_deduction_button').off('click').on('click', save_add_check_deduction);
+
 
                 }
 
@@ -686,7 +838,7 @@ if (document.URL.match(/transaction_details/)) {
                     $('#required_fields_title_company').prop('required', false).removeClass('required');
                 }
 
-                $('#required_fields_using_heritage').change(function() {
+                $('#required_fields_using_heritage').on('change', function() {
                     if($(this).val() == 'yes') {
                         $('.not-using-heritage').hide();
                         $('#required_fields_title_company').val('').trigger('change');
@@ -698,13 +850,19 @@ if (document.URL.match(/transaction_details/)) {
                 });
 
                 $('.money, .money-decimal').each(function() {
-                    if($(this).val() == '') {
-                        //$(this).val('0');
+                    let val = $(this).val();
+                    if(val.match(/[a-zA-Z]+/)) {
+                        $(this).val(val.replace(/[a-zA-Z]+/,''));
                     }
                 });
                 if($('.money').length > 0) {
                     format_money($('.money'));
                     $('.money').keyup(function () {
+                        let val = $(this).val();
+                        if(val.match(/[a-zA-Z]+/)) {
+                            $(this).val(val.replace(/[a-zA-Z]+/,''));
+                        }
+
                         format_money($(this));
                     });
                 }
@@ -713,9 +871,15 @@ if (document.URL.match(/transaction_details/)) {
                         if($(this).val() != '') {
                             format_money_with_decimals($(this));
                         }
-                        $('.money-decimal').change(function () {
+                        $('.money-decimal').on('change', function () {
                             if($(this).val() != '') {
                                 format_money_with_decimals($(this));
+                            }
+                        })
+                        .keyup(function() {
+                            let val = $(this).val();
+                            if(val.match(/[a-zA-Z]+/)) {
+                                $(this).val(val.replace(/[a-zA-Z]+/,''));
                             }
                         });
                     });
@@ -734,7 +898,6 @@ if (document.URL.match(/transaction_details/)) {
                     global_loading_off();
                 }, 200);
 
-                $('.modal-backdrop').remove();
 
             })
             .catch(function (error) {

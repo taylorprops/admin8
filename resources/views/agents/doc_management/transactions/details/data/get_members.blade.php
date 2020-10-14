@@ -220,7 +220,6 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Type</th>
                                     <th>Last</th>
                                     <th>First</th>
                                     <th>Address</th>
@@ -245,7 +244,6 @@
                                         data-contact-zip="{{ $contact -> contact_zip }}"
                                         >Import</a>
                                     </td>
-                                    <td>{{ $resource_items -> getResourceName($contact -> contact_type_id) }}</td>
                                     <td>{{ $contact -> contact_last }}</td>
                                     <td>{{ $contact -> contact_first }}</td>
                                     <td>{{ $contact -> contact_street.' '.$contact -> contact_city.', '.$contact -> contact_state.' '.$contact -> contact_zip }}</td>

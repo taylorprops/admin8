@@ -172,7 +172,7 @@ if (document.URL.match(/create\/fill_fields/)) {
             $('.field-div').removeClass('active');
         }
 
-        $('.field-div').click(function () {
+        $('.field-div').on('click', function () {
 
             var group_id = $(this).data('group-id');
             // checkboxes and radios never get highlighted
@@ -211,11 +211,11 @@ if (document.URL.match(/create\/fill_fields/)) {
 
         });
 
-        $('.field-div').not('.date').click(function () {
+        $('.field-div').not('.date').on('click', function () {
             $(this).find('.modal').modal('show');
         });
 
-        $('.save-fillable-fields').click(function () {
+        $('.save-fillable-fields').on('click', function () {
             var type = $(this).data('type');
             var group_id = $(this).data('group-id');
             var form_div = $(this).parent('div.modal-footer').prev('div.modal-body').find('.form-div');
@@ -476,7 +476,7 @@ if (document.URL.match(/create\/fill_fields/)) {
         }
 
         // highlight active thumb when clicked and scroll into view
-        $('.file-view-thumb-container').click(function () {
+        $('.file-view-thumb-container').on('click', function () {
             $('.file-view-thumb-container').removeClass('active');
             $(this).addClass('active');
             let id = $(this).data('id');

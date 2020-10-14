@@ -131,7 +131,7 @@ if (document.URL.match(/checklists/)) {
             form_elements();
             global_tooltip();
             // highlight selected check rows
-            $('.export-to-form-group').change(function() {
+            $('.export-to-form-group').on('change', function() {
                 if($(this).is(':checked')) {
                     $(this).closest('.list-group-item').addClass('bg-green-light');
                 } else {
@@ -359,7 +359,7 @@ if (document.URL.match(/checklists/)) {
             // search forms
             $('#form_search').keyup(form_search);
             // select and show form groups
-            $('.select-form-group').change(function () {
+            $('.select-form-group').on('change', function () {
                 // clear search input
                 $('#form_search').val('').trigger('change');
                 // if all show everything or just the selected group
@@ -512,7 +512,7 @@ if (document.URL.match(/checklists/)) {
     function delete_checklist_item() {
         let button = $(this);
         $('#confirm_remove_file_modal').modal();
-        $('#confirm_remove_file').click(function () {
+        $('#confirm_remove_file').on('click', function () {
             button.closest('li').remove();
             forms_status();
             fill_empty_groups();

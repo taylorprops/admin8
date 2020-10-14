@@ -77,9 +77,11 @@ window.form_elements = function () {
                     label = '';
                 }
 
+                let small = $(this).hasClass('form-small') ? 'form-small' : '';
+
                 if (form_type == 'form-input' || form_type == 'form-textarea') {
 
-                    element.wrap('<div class="form-ele"></div>').parent('.form-ele').append('<label for="' + id + '" class="' + form_type + '-label ' + active_label + '">' + label + '</label>');
+                    element.wrap('<div class="form-ele '+small+'"></div>').parent('.form-ele').append('<label for="' + id + '" class="' + form_type + '-label ' + active_label + ' '+small+'">' + label + '</label>');
 
                 } else if (form_type == 'form-input-file') {
 
@@ -241,7 +243,7 @@ window.form_elements = function () {
                     // add save button to exit out of multiple select
                     if (multiple) {
                         wrapper.find('.form-select-dropdown').append('<div class="w-100 form-select-save-div"><div class="d-flex d-flex justify-content-center p-0"><a href="javascript: void(0)" class="form-select-multiple-save btn btn-success btn-sm">Close</a></div></div>');
-                        $('.form-select-multiple-save').click(function () {
+                        $('.form-select-multiple-save').on('click', function () {
                             setTimeout(function() {
                                 hide_dropdowns();
                                 reset_select();
@@ -287,7 +289,7 @@ window.form_elements = function () {
 
                     // remove cancel option if class form-select-no-cancel is set
                     if (!element.hasClass('form-select-no-cancel')) {
-                        wrapper.find('.form-select-value-cancel').click(function () {
+                        wrapper.find('.form-select-value-cancel').on('click', function () {
                             element.val('').trigger('change');
                             wrapper.find('.form-select-value-input').val('').trigger('change');
                             wrapper.find('li').removeClass('active');
@@ -309,7 +311,7 @@ window.form_elements = function () {
 
 
                     // when a single li is clicked
-                    wrapper.find('.form-select-li').click(function () {
+                    wrapper.find('.form-select-li').on('click', function () {
 
                         if (!$(this).hasClass('form-check-input-multiple')) {
                             let li = $(this);
@@ -383,11 +385,11 @@ window.form_elements = function () {
             let bg_color = $(this).val();
             $(this).parent('.colorpicker-label').css({ background: bg_color }).parent('.colorpicker-div').css({ border: '1px solid ' + bg_color }).find('.colorpicker-text').css({ color: bg_color });
         });
-        $('input[type=color]').change(function () {
+        $('input[type=color]').on('change', function () {
             let bg_color = $(this).val();
             $(this).parent('.colorpicker-label').css({ background: bg_color }).parent('.colorpicker-div').css({ border: '1px solid ' + bg_color }).find('.colorpicker-text').css({ color: bg_color });
         });
-        $('.colorpicker-text').click(function () {
+        $('.colorpicker-text').on('click', function () {
             $(this).next('label').trigger('click');
         });
     }
@@ -418,7 +420,7 @@ window.show_cancel_date = function(wrapper, element) {
             element.prev('div.data-div').html('');
         }
     } else {
-        wrapper.find('.form-datepicker-cancel').show().click(function () {
+        wrapper.find('.form-datepicker-cancel').show().on('click', function () {
             element.val('').trigger('change');
             wrapper.find('.form-datepicker-cancel').hide();
         });
@@ -632,7 +634,7 @@ window.validate_form = function (form) {
             console.log(required.attr('id'), required.attr('class'));
         }
         // on change if ele has value remove invalid
-        ele.change(function () {
+        ele.on('change', function () {
             if (ele.val() != '') {
                 ele.removeClass(classname);
                 ele.prev('label').removeClass('invalid-label');

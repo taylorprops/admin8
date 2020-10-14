@@ -162,7 +162,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
     function show_checklist_type(form_id, form_name, form_group_id, state) {
         $('#checklist_type_modal').modal();
-        $('#checklist_type_button').click(function() {
+        $('#checklist_type_button').on('click', function() {
             let checklist_type = $('#add_form_checklist_type').val();
             let form = $('#checklist_type_form');
             let form_check = validate_form(form);
@@ -206,7 +206,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 order_checklists();
 
 
-                $('.checklist-item-checkbox').change(function() {
+                $('.checklist-item-checkbox').on('change', function() {
                     show_options($(this));
                 });
 
@@ -664,7 +664,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         select_refresh();
 
-        $('#no_form_form_group_id').change(function () {
+        $('#no_form_form_group_id').on('change', function () {
             $('#no_form_state').val(ele.find('option:selected').data('state'));
             select_refresh();
         });
@@ -755,7 +755,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                 form_name = form_name.replace(/[0-9\.\s_-]+$/, '');
                 $('#file_name_display, #helper_text').val(form_name).trigger('change');
             });
-            $('#form_group_id').change(function () {
+            $('#form_group_id').on('change', function () {
                 $('#state').val(ele.find('option:selected').data('state'));
                 select_refresh();
             });

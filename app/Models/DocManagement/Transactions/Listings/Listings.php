@@ -42,4 +42,5 @@ class Listings extends Model
         return $property;
     }
 
+
 }

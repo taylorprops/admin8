@@ -32,7 +32,7 @@ if($transaction_type == 'listing') {
             @if($property -> ListPictureURL)
                 <div class="d-none d-sm-block ml-2 mr-3">
                     <div class="property-image-div">
-                        <img loading="lazy" src="{{ $property -> ListPictureURL }}" class="img-fluid z-depth-2">
+                        <img loading="lazy" src="{{ str_replace('http:', 'https:', $property -> ListPictureURL) }}" class="img-fluid z-depth-2">
                     </div>
                 </div>
             @endif
@@ -58,26 +58,56 @@ if($transaction_type == 'listing') {
 
         @if($transaction_type == 'listing')
 
-        <div class="d-flex flex-wrap justify-content-end align-items-center">
-            @if(in_array($property -> Status, $resource_items -> GetActiveListingStatuses('no', 'yes', 'yes') -> toArray()))
-                <div>
-                    <a href="javascript: void(0);" class="btn btn-success mt-2 d-block d-sm-inline-block" id="accept_contract_button"><i class="fa fa-plus mr-2"></i> Accept {{ $for_sale ? 'Contract' : 'Lease' }}</a>
-                </div>
-                <div>
-                    <a href="javascript: void(0);" class="btn btn-danger mt-2 d-block d-sm-inline-block" id="withdraw_listing_button"><i class="fa fa-minus mr-2"></i> Withdraw Listing</a>
-                </div>
-            @else
-                <div>
-                    <span class="badge bg-orange text-white mr-2 font-12"><i class="fad fa-check-circle mr-2"></i> {{ $for_sale ? 'Under Contract' : 'Lease Accepted' }}!</span>
-                </div>
-            @endif
-        </div>
+            @php $action = $listing_accepted ? 'Withdraw' : 'Cancel'; @endphp
+
+            <div class="d-flex flex-wrap justify-content-end align-items-center">
+                @if(in_array($property -> Status, $resource_items -> GetActiveListingStatuses('no', 'yes', 'yes') -> toArray()))
+
+                    <div>
+                        <a href="javascript: void(0);" class="btn btn-success mt-2 d-block d-sm-inline-block" id="accept_contract_button"><i class="fa fa-plus mr-2"></i> Accept {{ $for_sale ? 'Contract' : 'Lease' }}</a>
+                    </div>
+                    <div>
+                        <a href="javascript: void(0);" class="btn btn-danger mt-2 d-block d-sm-inline-block" id="cancel_listing_button"><i class="fa fa-minus mr-2"></i> {{ $action }} Listing</a>
+                    </div>
+
+                @else
+
+                    @php
+                    $header_status = $resource_items -> GetResourceName($property -> Status);
+                    if($header_status == 'Under Contract') {
+                        $header_status = $for_sale ? 'Under Contract' : 'Lease Accepted';
+                    }
+                    $header_status_class = 'bg-orange';
+                    $success_statuses = ['Under Contract', 'Lease Accepted', 'Closed'];
+                    $danger_statuses = ['Canceled', 'Withdrawn', 'Expired'];
+                    if(in_array($header_status, $success_statuses)) {
+                        $header_status_class = 'bg-success';
+                        $header_fa = 'fa-check-circle';
+                    } elseif(in_array($header_status, $danger_statuses)) {
+                        $header_status_class = 'bg-danger';
+                        $header_fa = 'fa-ban';
+                    }
+                    @endphp
+                    <div>
+                        <span class="badge {{ $header_status_class }} text-white mr-2 font-12"><i class="fad {{ $header_fa }} mr-2"></i> {{ $header_status }}!</span>
+                    </div>
+
+                    @if($property -> Status == $resource_items -> GetResourceID('Canceled', 'listing_status') || $property -> Status == $resource_items -> GetResourceID('Withdrawn', 'listing_status'))
+
+                        <div class="mx-3 mt-1">
+                            <a href="javascript: void(0)"class="undo-cancel-listing-button" data-listing-id="{{ $property -> Listing_ID }}"><i class="fad fa-undo mr-1"></i> Undo</a>
+                        </div>
+
+                    @endif
+
+                @endif
+            </div>
 
         @elseif($transaction_type == 'contract')
 
             @php
             $status = $resource_items -> GetResourceName($property -> Status);
-            $docs_submitted = $upload -> ContractDocsSubmitted($Contract_ID);
+            $docs_submitted = $upload -> DocsSubmitted('', $Contract_ID);
             $action = $docs_submitted['contract_submitted'] ? 'Release' : 'Cancel';
             @endphp
 
@@ -97,7 +127,7 @@ if($transaction_type == 'listing') {
 
                             <span class="badge bg-orange text-white mr-2 font-12"><i class="fad fa-hourglass-start mr-2 text-white"></i> {{ $status }}</span>
                             <div class="mx-3 mt-1">
-                                <a href="javascript: void(0)"class="undo-cancel-button" data-contract-id="{{ $property -> Contract_ID }}"><i class="fad fa-undo mr-1"></i> Undo</a>
+                                <a href="javascript: void(0)"class="undo-cancel-contract-button" data-contract-id="{{ $property -> Contract_ID }}"><i class="fad fa-undo mr-1"></i> Undo</a>
                             </div>
                             @if(auth() -> user() -> group == 'admin')
                                 <div>
@@ -109,7 +139,7 @@ if($transaction_type == 'listing') {
 
                             <span class="badge bg-danger text-white mr-2 font-13"><i class="fad fa-ban mr-2 text-white"></i> {{ $status }}</span>
                             <div class="mx-3 mt-1">
-                                <a href="javascript: void(0)"class="undo-cancel-button" data-contract-id="{{ $property -> Contract_ID }}"><i class="fad fa-undo mr-1"></i> Undo</a>
+                                <a href="javascript: void(0)"class="undo-cancel-contract-button" data-contract-id="{{ $property -> Contract_ID }}"><i class="fad fa-undo mr-1"></i> Undo</a>
                             </div>
 
                         @else

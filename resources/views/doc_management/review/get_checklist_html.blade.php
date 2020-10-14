@@ -28,6 +28,7 @@
                     }
 
                     $status_details = $transaction_checklist_items_model -> GetStatus($checklist_item -> id);
+
                     $status = $status_details -> status;
                     $admin_classes = $status_details -> admin_classes;
                     $fa = $status_details -> fa;
@@ -94,7 +95,7 @@
                                     {!! $status !!}
                                 </div>
 
-                                <div class="w-100 text-center" data-toggle="tooltip" data-html="true" title="{!! $notes_tooltip !!}">
+                                <div class="w-100 text-center mt-2" data-toggle="tooltip" data-html="true" title="{!! $notes_tooltip !!}">
                                     <a class="notes-toggle" data-toggle="collapse" href="#notes_{{ $checklist_item_id }}" role="button" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}">
                                         <span class="fa-stack fa-2x mt-1">
                                             <i class="fa fa-comment fa-stack-1x @if($notes_unread_count > 0) text-orange @else @if($notes) text-primary @else text-blue-light @endif @endif"></i>
@@ -107,8 +108,8 @@
 
                         </div>
 
-                        <div id="notes_{{ $checklist_item_id }}" class="collapse checklist-item-notes-div bg-white" data-parent="#checklist_list_group">
-                            <div class="mt-1 p-2 bg-white text-gray">
+                        <div id="notes_{{ $checklist_item_id }}" class="collapse checklist-item-notes-div bg-white m-2 rounded" data-parent="#checklist_list_group">
+                            <div class="mt-1 p-2 bg-white text-gray rounded-top">
                                 <div class="d-flex justify-content-between align-items-center border-bottom mb-3 pb-3">
                                     <div class="font-weight-bold text-primary">Comments</div>
                                     <a data-toggle="collapse" href="#notes_{{ $checklist_item_id }}" role="button" aria-expanded="false" aria-controls="notes_{{ $checklist_item_id }}">
@@ -116,13 +117,13 @@
                                     </a>
                                 </div>
 
-                                <div class="notes-div my-2 disable-scrollbars" data-checklist-item-id="{{ $checklist_item_id }}">
+                                <div class="notes-div my-2" data-checklist-item-id="{{ $checklist_item_id }}">
                                     <div class="text-gray">No Comments</div>
                                 </div>
 
                             </div>
                             <div class="container">
-                                <div class="row d-flex align-items-center bg-blue-light">
+                                <div class="row d-flex align-items-center bg-blue-light rounded-bottom">
                                     <div class="col-10">
                                         <input type="text" class="custom-form-element form-input notes-input-{{ $checklist_item_id }}" data-label="Add Comment">
                                     </div>
@@ -134,7 +135,7 @@
                         </div>
 
 
-                        <div class="documents-list bg-white p-2 rounded-bottom"></div>
+                        <div class="documents-list bg-white p-2 m-2 rounded"></div>
 
                     </div>
 

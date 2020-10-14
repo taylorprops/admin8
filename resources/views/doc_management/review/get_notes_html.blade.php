@@ -1,6 +1,6 @@
 @if(count($transaction_checklist_item_notes) > 0)
 
-    <div class="notes-container bg-white px-3">
+    <div class="notes-container bg-white px-1">
 
         @foreach($transaction_checklist_item_notes as $transaction_checklist_item_note)
             @php
@@ -26,12 +26,14 @@
 
             $created_at = $transaction_checklist_item_note -> created_at;
             $date_added = $created_at -> format('n/j/Y g:iA');
-            if($created_at -> format('d') == date('d')) {
-                $date_added = 'Today '.$created_at -> format('g:iA');
+            if($created_at -> format('Y-m-d') == date('Y-m-d')) {
+                $date_added = 'Today at '.$created_at -> format('g:iA');
+            } else if($created_at -> format('Y-m-d') == date('Y-m-d', strtotime('-1 day'))) {
+                $date_added = 'Yesterday at '.$created_at -> format('g:iA');
             }
             @endphp
 
-            <div class="p-2 note-div rounded @if($unread) bg-orange-light animated shake @else bg-blue-light @endif">
+            <div class="p-2 mb-3 note-div rounded @if($unread) bg-orange-light animated shake @else bg-blue-light @endif">
 
                 <div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
                     <div class="d-flex justify-content-start align-items-center">
@@ -51,7 +53,12 @@
                             @if($transaction_checklist_item_note -> note_user_id != auth() -> user() -> id)
                                 <button class="btn btn-success btn-sm mark-read-button mb-0" data-note-id="{{ $transaction_checklist_item_note -> id }}" data-notes-collapse="notes_div_{{ $checklist_item_id }}"><i class="fa fa-check mr-2"></i> Mark Read</button>
                             @else
-                                <span class="text-gray small">Not Read</span>
+                                <div class="d-flex justify-content-end align-items-center">
+                                    <span class="text-gray small">Not Read</span>
+                                    @if($transaction_checklist_item_note -> note_user_id == auth() -> user() -> id)
+                                        <a href="javascript: void(0)" class="delete-note-button ml-2" data-note-id={{ $transaction_checklist_item_note -> id }}"><i class="fa fa-times-circle text-danger"></i></a>
+                                    @endif
+                                </div>
                             @endif
                         @else
                             <span class="text-success small"><i class="fa fa-check"></i> Read</span>
@@ -59,13 +66,15 @@
                     </div>
                 </div>
 
-                <div class="text-gray p-2 rounded">
+                <div class="text-gray bg-white p-2 rounded">
                     {!! $transaction_checklist_item_note -> notes !!}
                 </div>
 
+                <div class="text-gray font-7 mt-1">{{ $date_added }}</div>
+
             </div>
 
-            <div class="text-gray small mt-0 mb-3 ml-2">{{ $date_added }}</div>
+
 
         @endforeach
 

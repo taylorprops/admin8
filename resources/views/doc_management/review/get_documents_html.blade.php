@@ -1,10 +1,13 @@
+@if(count($checklist_item_documents) == 0)
+    @php return false; @endphp
+@endif
 <div class="row animated fadeIn">
 
     <div class="col-12">
 
         <div class="review-container">
 
-            <div class="review-image-container disable-scrollbars">
+            <div class="review-image-container">
 
                 <div class="review-image-div mx-auto">
 

@@ -61,7 +61,9 @@
                     <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
                         <i class="fad fa-envelope-square fa-3x text-primary mb-2"></i>
                         <div class="h5 text-primary mb-3">Email Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Emailing Documents" data-content="body{{-- TODO: needs description --}}"><i class="fad fa-question-circle ml-2"></i></a></div>
-                        <a href="mailto:{{ $property_email }}" class="d-block mt-1 mt-md-5">{{ $property_email }}</a>
+                        <div class="w-100 overflow-hidden">
+                            <a href="mailto:{{ $property_email }}" target="_blank" class="d-block mt-1 mt-md-5">{{ $property_email }}</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -309,6 +311,36 @@
 
 </div>
 
+<div class="modal fade draggable" id="confirm_matches_modal" tabindex="-1" role="dialog" aria-labelledby="matches_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary draggable-handle">
+                <h4 class="modal-title" id="matches_title">Matches Found</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <i class="fal fa-times mt-2"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div><i class="fad fa-check-circle fa-2x mr-3 text-success"></i></div>
+                                <div>We have found <span id="match_count"></span> documents that can be automatically assigned. Would you like for us to add them?</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+                <a class="btn btn-danger" data-dismiss="modal" id="cancel_matches_button"><i class="fa fa-times mr-2"></i> Do Not Add Them</a>
+                <a class="btn btn-success modal-confirm-button" id="confirm_matches_button"><i class="fad fa-check mr-2"></i> Yes, Add Them!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="modal fade draggable" id="send_email_modal" tabindex="-1" role="dialog" aria-labelledby="send_email_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -483,9 +515,14 @@
                     <i class="fal fa-times mt-2"></i>
                 </button>
             </div>
-            <div class="modal-body pt-0">
+            <div class="modal-body py-0 px-2">
                 <div id="split_document_container"></div>
                 <input type="hidden" id="folder_id">
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-around align-items-center w-100">
+                    <button type="button" class="btn btn-lg btn-success modal-dismiss" data-dismiss="modal">Finish and Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -605,6 +642,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="modal fade draggable" id="confirm_delete_documents_modal" tabindex="-1" role="dialog" aria-labelledby="delete_documents_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
@@ -808,12 +846,13 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-around">
                     <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                    <a class="btn btn-success" id="save_add_individual_template_button"><i class="fad fa-check mr-2"></i> Add Documents</a>
+                    <a class="btn btn-success" data-dismiss="modal" id="save_add_individual_template_button"><i class="fad fa-check mr-2"></i> Add Documents</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 
 <div class="modal fade draggable" id="add_checklist_template_modal" tabindex="-1" role="dialog" aria-labelledby="add_checklist_template_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -1026,7 +1065,10 @@
                         <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
                         <a class="btn btn-success" id="save_add_folder_button"><i class="fad fa-check mr-2"></i> Save Folder</a>
                     </div>
+                </div>
             </form>
         </div>
     </div>
 </div>
+
+

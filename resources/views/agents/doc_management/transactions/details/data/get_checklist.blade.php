@@ -5,7 +5,14 @@
 
                 <div class="row">
                     <div class="col-12 col-sm-6">
-                        <div class="h4-responsive text-primary ml-3"><i class="fad fa-tasks mr-3"></i> {{ $checklist_type }} Checklist</div>
+                        <div class="d-flex justify-content-start align-items-center">
+                            <div class="h4-responsive text-primary ml-3"><i class="fad fa-tasks mr-3"></i> {{ $checklist_type }} Checklist</div>
+                            @if(auth() -> user() -> group == 'admin')
+                            <div class="d-flex justify-content-start ml-4">
+                                <button type="button" class="btn btn-sm btn-primary email-agent-button"><i class="fal fa-envelope mr-2"></i> Email Agent</button>
+                            </div>
+                            @endif
+                        </div>
                     </div>
                     @if($transaction_type != 'referral')
                     <div class="col-12 col-sm-6">
@@ -14,15 +21,6 @@
                     @endif
                 </div>
 
-                <div class="row">
-                    @if(auth() -> user() -> group == 'admin')
-                    <div class="col-12">
-                        <div class="d-flex justify-content-start">
-                            <button type="button" class="btn btn-sm btn-primary email-agent-button"><i class="fal fa-envelope mr-2"></i> Email Agent</button>
-                        </div>
-                    </div>
-                    @endif
-                </div>
 
                 <hr class="mx-2 mt-0">
 
@@ -94,7 +92,7 @@
 
                                 $notes_count_unread = $notes -> where('note_status', 'unread');
                                 if(auth() -> user() -> group == 'agent') {
-                                    $notes_count_unread = $notes_count_unread -> where('note_user_id', '!=', auth() -> user() -> user_id) -> count();
+                                    $notes_count_unread = $notes_count_unread -> where('note_user_id', '!=', auth() -> user() -> id) -> count();
                                 } else if(auth() -> user() -> group == 'admin') {
                                     $notes_count_unread = $notes_count_unread -> where('Agent_ID', '>', '0') -> count();
                                 }
@@ -264,7 +262,7 @@
 
                                             <div class="row">
                                                 <div class="col-12 col-lg-8 px-0 px-sm-2 mx-auto">
-                                                    <div class="collapse documents-collapse mx-4 mx-auto bg-white" id="documents_div_{{ $checklist_item_id }}">
+                                                    <div class="collapse documents-collapse mx-4 bg-white" id="documents_div_{{ $checklist_item_id }}">
 
                                                         <div class="p-3 mt-2 mb-4">
 
@@ -315,11 +313,11 @@
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-12 col-lg-8 px-0 px-sm-2 mx-auto">
+                                                <div class="col-12 col-lg-5 px-0 px-sm-2 mx-auto mb-4">
 
                                                     <div class="collapse notes-collapse mx-4 mx-auto bg-white" id="notes_{{ $checklist_item_id }}">
 
-                                                        <div class="p-3  mt-2 mb-4">
+                                                        <div class="p-3 mt-3">
 
                                                             <div class="row">
 
@@ -335,25 +333,24 @@
                                                             <hr>
 
                                                             <div class="row">
-                                                                <div class="col-12 col-md-6 mx-auto">
-
+                                                                <div class="col-12">
                                                                     <div class="notes-div" data-checklist-item-id="{{ $checklist_item_id }}">
                                                                         <div class="text-gray">No Comments</div>
                                                                     </div>
-
-                                                                    <div class="row d-flex align-items-center bg-blue-light">
-                                                                        <div class="col-10">
-                                                                            <input type="text" class="custom-form-element form-input notes-input-{{ $checklist_item_id }}" data-label="Add Comment">
-                                                                        </div>
-                                                                        <div class="col-2 pl-0 mt-1">
-                                                                            <a href="javascript: void(0)" class="btn btn-success btn-block save-notes-button" data-checklist-id="{{ $transaction_checklist_id }}" data-checklist-item-id="{{ $checklist_item_id }}"><i class="fa fa-save"></i></a>
-                                                                        </div>
-                                                                    </div>
-
                                                                 </div>
-
                                                             </div>
 
+                                                        </div>
+
+                                                        <div class="row no-gutters bg-green-light d-flex align-items-center">
+                                                            <div class="col-11">
+                                                                <div>
+                                                                    <textarea class="custom-form-element form-textarea notes-input-{{ $checklist_item_id }}" data-label="Add Comment"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-1">
+                                                                <a href="javascript: void(0)" class="btn btn-success save-notes-button ml-2" data-checklist-id="{{ $transaction_checklist_id }}" data-checklist-item-id="{{ $checklist_item_id }}"><i class="fa fa-save"></i></a>
+                                                            </div>
                                                         </div>
 
                                                     </div>
@@ -471,7 +468,7 @@
     </div>
 </div>
 
-<div class="modal fade draggable disable-scrollbars" id="confirm_change_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="change_checklist_title" aria-hidden="true">
+<div class="modal fade draggable" id="confirm_change_checklist_modal" tabindex="-1" role="dialog" aria-labelledby="change_checklist_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal" role="document">
         <div class="modal-content">
             <div class="modal-header draggable-handle">
@@ -498,7 +495,7 @@
 </div>
 
 
-<div class="modal fade draggable disable-scrollbars" id="add_document_modal" tabindex="-1" role="dialog" aria-labelledby="add_document_modal_title" aria-hidden="true">
+<div class="modal fade draggable" id="add_document_modal" tabindex="-1" role="dialog" aria-labelledby="add_document_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <form id="add_document_form">
@@ -512,23 +509,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                @if(count($documents_available) > 0)
-                                    @foreach($folders as $folder)
-                                        @if(count($documents_available -> where('folder', $folder -> id)) > 0)
-                                            <div class="h5-responsive text-orange">{{ $folder -> folder_name }}</div>
-                                            @foreach($documents_available -> where('folder', $folder -> id) as $document_available)
-                                                <div class="d-flex justify-content-start align-items-center border-bottom">
-                                                    <div>
-                                                        <button type="button" class="btn btn-sm btn-success select-document-button" data-document-id="{{ $document_available -> id }}">Add</button>
-                                                    </div>
-                                                    <div class="ml-2">{{ $document_available -> file_name_display }}</div>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    @endforeach
-                                @else
-                                    <div class="h5-responsive text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> You do not have any available documents yet. Add documents in the "Documents" tab.</div>
-                                @endif
+                                <div id="documents_available_div"></div>
                             </div>
                         </div>
                     </div>
@@ -543,7 +524,7 @@
     </div>
 </div>
 
-<div class="modal fade draggable disable-scrollbars" id="confirm_delete_checklist_item_doc_modal" tabindex="-1" role="dialog" aria-labelledby="delete_checklist_item_doc_title" aria-hidden="true">
+<div class="modal fade draggable" id="confirm_delete_checklist_item_doc_modal" tabindex="-1" role="dialog" aria-labelledby="delete_checklist_item_doc_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header draggable-handle">
