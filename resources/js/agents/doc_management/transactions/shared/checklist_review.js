@@ -269,11 +269,13 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         $('.form-group-div').eq(0).show();
 
         // search forms
-        $('#form_search').keyup(form_search);
+        $('.form-search').on('keyup', function() {
+            form_search($(this))
+        });
         // select and show form groups
         $('.select-form-group').on('change', function () {
             // clear search input
-            $('#form_search').val('').trigger('change');
+            $('.form-search').val('').trigger('change');
 
             // if all show everything or just the selected group
             if ($(this).val() == 'all') {
@@ -371,8 +373,8 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         $('.checked-div').addClass('d-none');
     }
 
-    window.form_search = function () {
-        let v = $('#form_search').val();
+    window.form_search = function (ele) {
+        let v = ele.val();
         if (v.length == 0) {
             // hide all containers with header and name inside
             $('.form-group-div').hide();

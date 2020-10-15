@@ -1740,7 +1740,9 @@ class TransactionsDetailsController extends Controller {
             // add to converted folder
             exec('cp ' . Storage::disk('public') -> path($storage_dir . '/' . $new_file_name) . ' ' . Storage::disk('public') -> path($storage_dir . '/converted/' . $new_file_name));
 
-            Storage::disk('public') -> makeDirectory($storage_dir . '/converted_images');
+            if(!Storage::disk('public') -> exists($storage_dir . '/converted_images')) {
+                Storage::disk('public') -> makeDirectory($storage_dir . '/converted_images');
+            }
             $checklist_item_docs_model = new TransactionChecklistItemsDocs();
             $source = $storage_path . '/' . $storage_dir . '/converted/' . $new_file_name;
             $image_file_name = str_replace('.pdf', '.jpg', $new_file_name);

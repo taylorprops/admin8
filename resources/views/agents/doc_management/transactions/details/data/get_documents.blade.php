@@ -735,7 +735,7 @@
                                 <div class="row">
                                     <div class="col-12 col-lg-6">
                                         <div id="form_search_div">
-                                            <input type="text" class="custom-form-element form-input" id="form_search" data-label="Search All Forms">
+                                            <input type="text" class="custom-form-element form-input form-search" data-label="Search All Forms">
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-6 mt-1 mt-lg-0">

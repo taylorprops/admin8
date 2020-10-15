@@ -841,8 +841,8 @@ if (document.URL.match(/transaction_details/)) {
             }
         }
 
-        function form_search() {
-            let v = $('#form_search').val();
+        /* function form_search() {
+            let v = $('.form-search').val();
             if (v.length == 0) {
                 // hide all containers with header and name inside
                 $('.form-group-div').hide();
@@ -871,7 +871,7 @@ if (document.URL.match(/transaction_details/)) {
                     }
                 });
             }
-        }
+        } */
 
         function save_add_template_documents(type) {
 
@@ -988,7 +988,9 @@ if (document.URL.match(/transaction_details/)) {
         function show_add_individual_template() {
             $('#add_individual_template_modal').modal();
             // search forms
-            $('#form_search').keyup(form_search);
+            $('.form-search').on('keyup', function() {
+                form_search($(this))
+            });
             // search by tag
             $('#form_categories_search').change(tag_search);
             // select and show form groups
@@ -999,7 +1001,7 @@ if (document.URL.match(/transaction_details/)) {
 
         window.select_form_group = function () {
             // clear search input
-            $('#form_search').val('').trigger('change');
+            $('.form-search').val('').trigger('change');
             $('#form_categories_search').val('').trigger('change');
             select_refresh();
             // if all show everything or just the selected group

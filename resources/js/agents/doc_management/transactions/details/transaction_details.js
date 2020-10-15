@@ -788,11 +788,14 @@ if (document.URL.match(/transaction_details/)) {
                     $('.form-group-div').hide();
                     $('.form-group-div').eq(0).show();
                     // search forms
-                    $('#form_search').keyup(form_search);
+                    $('.form-search').on('keyup', function() {
+                        form_search($(this))
+                    });
+
                     // select and show form groups
                     $('.select-form-group').on('change', function () {
                         // clear search input
-                        $('#form_search').val('').trigger('change');
+                        $('.form-search').val('').trigger('change');
 
                         // if all show everything or just the selected group
                         if ($(this).val() == 'all') {

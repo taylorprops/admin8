@@ -181,7 +181,7 @@
 
                                     <div class="row">
                                         <div class="col-12 col-md-6">
-                                            <input type="text" class="custom-form-element form-input" id="form_search" data-label="Search">
+                                            <input type="text" class="custom-form-element form-input form-search" data-label="Search">
                                         </div>
                                         <div class="col-12 col-md-6">
                                             <select class="custom-form-element form-select form-select-no-cancel form-select-no-search select-form-group mt-3" data-label="Select Form Group">
@@ -212,7 +212,7 @@
 
                                                         @foreach($forms as $form)
 
-                                                            <li class="list-group-item list-group-item-action form-name" data-form-id="{{ $form -> file_id }}" data-form-name="{{ $form -> file_name_display }}">
+                                                            <li class="list-group-item list-group-item-action form-name" data-form-id="{{ $form -> file_id }}" data-form-name="{{ $form -> file_name_display }}" data-text="{{ $form -> file_name_display }}">
                                                                 <div class="d-flex justify-content-between">
 
                                                                     <div title="{{ $form -> file_name_display }}">

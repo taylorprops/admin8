@@ -47,6 +47,7 @@ class TransactionChecklistItemsDocs extends Model
         $remove = TransactionDocumentsImages::where('document_id', $document_id) -> delete();
         // create images from converted file and put in converted_images directory
         $create_images = exec('convert -density 300 -quality 100 '.$source.' -background white -alpha remove -strip '.$destination.'/'.$filename, $output, $return);
+        dd($output, $return);
 
         // add the new images to db
         $c = 0;
