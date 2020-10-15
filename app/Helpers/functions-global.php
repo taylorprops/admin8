@@ -37,6 +37,11 @@ function directory($directory) {
     return $results;
 }
 
+function is_dir_empty($dir) {
+    if (!is_readable($dir)) return NULL;
+    return (count(scandir($dir)) == 2);
+}
+
 function shorten_text($text, $length) {
 
     if (strlen($text) > $length) {
