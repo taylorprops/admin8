@@ -42,12 +42,14 @@ class TransactionChecklistItemsDocs extends Model
     public function convert_doc_to_images($source, $destination, $filename, $document_id) {
 
         // clear directory
-        exec('rm -r '.$destination.'/*');
+        if(!is_dir_empty($destination)) {
+            exec('rm -r '.$destination.'/*');
+        }
         // delete current images in db
         $remove = TransactionDocumentsImages::where('document_id', $document_id) -> delete();
         // create images from converted file and put in converted_images directory
         $create_images = exec('convert -density 300 -quality 100 '.$source.' -background white -alpha remove -strip '.$destination.'/'.$filename, $output, $return);
-        dd($output, $return);
+
 
         // add the new images to db
         $c = 0;
