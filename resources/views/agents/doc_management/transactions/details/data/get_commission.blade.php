@@ -1,13 +1,14 @@
-<div class="container-1200 commission-container mx-auto p-1 p-md-4">
+<div class="container commission-container mx-auto p-1 pb-5 mb-5">
 
 
     <form id="commission_form">
 
         <div class="row">
-            <div class="col-12 col-lg-5 pr-3 pr-lg-0">
+            <div class="col-5">
                 <div class="row">
-                    <div class="col-5">
-                        <div class="h4-responsive text-orange text-right mb-2">Income</div>
+                    <div class="col-5"></div>
+                    <div class="col-7">
+                        <div class="h5-responsive text-orange mb-2 w-100 border-bottom">Income</div>
                     </div>
                 </div>
             </div>
@@ -35,6 +36,7 @@
                                 <div class="badge badge-pill badge-primary py-1" id="checks_in_count"></div>
                                 <div class="mr-2 font-10 text-success">
                                     <span id="checks_in_total"></span>
+                                    <input type="hidden" id="checks_in_total_value" name="checks_in_total_value" class="total income">
                                 </div>
                             </div>
 
@@ -43,9 +45,9 @@
                 </div>
             </div>
 
-            <div class="col-12 col-lg-7 p-3 p-lg-0">
+            <div class="col-12 col-lg-7 p-lg-0">
 
-                <div class="popout-div">
+                <div class="popout-div mr-3">
 
                     <div class="popout top animated fast flipInX w-100 bg-blue-light active">
 
@@ -58,7 +60,7 @@
                                 </div>
                             </div>
 
-                            <div class="view-add-div checks-in-div">
+                            <div class="view-add-div checks-in-div p-1 p-sm-2 p-md-4">
 
                             </div>
 
@@ -84,7 +86,7 @@
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2 total income required" name="money_in_escrow" id="money_in_escrow">
                         </div>
                     </div>
                 </div>
@@ -105,7 +107,7 @@
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2 total income required" name="admin_fee_from_title" id="admin_fee_from_title">
                         </div>
                     </div>
                 </div>
@@ -133,9 +135,10 @@
                                 <div>
                                     <a href="javascript: void(0)" class="btn btn-sm btn-primary show-view-add-button">View/Add</a>
                                 </div>
-                                <div class="badge badge-pill badge-primary py-1">2</div>
+                                <div class="badge badge-pill badge-primary py-1" id="deductions_count"></div>
                                 <div class="mr-2 font-10 text-danger">
-                                    $1,200.00
+                                    <span id="deductions_total"></span>
+                                    <input type="hidden" id="deductions_total_value" class="total deduction">
                                 </div>
                             </div>
 
@@ -146,22 +149,42 @@
 
             </div>
 
-            <div class="col-12 col-lg-7 p-3 p-lg-0">
+            <div class="col-12 col-lg-7 p-lg-0">
 
-                <div class="popout-div">
+                <div class="popout-div mr-3">
 
                     <div class="popout middle animated fast flipInX w-100">
 
-                        <div class="p-3">
+                        <div class="px-1 px-sm-3 pb-3 pt-1">
 
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="h4 ml-4 mt-1 text-primary">Check Deductions</div>
+                                <div class="h4 mt-2 text-primary">Check Deductions</div>
                                 <div>
-                                    <a href="javascript: void(0)" class="btn btn-sm btn-success add-check-deduction-button"><i class="fa fa-plus mr-2"></i> Add</a>
+                                    <a class="btn btn-sm btn-success" data-toggle="collapse" href="#add_check_deduction_div" role="button" aria-expanded="false" aria-controls="add_check_deduction_div"><i class="fa fa-plus mr-2"></i> Add</a>
                                 </div>
                             </div>
 
-                            <div class="view-add-div check-deductions-div">
+                            <div class="view-add-div">
+
+                                <div class="collapse" id="add_check_deduction_div">
+
+                                    <div class="d-flex flex-wrap justify-content-start align-items-center">
+                                        <div class="mr-2">
+                                            <input type="text" class="custom-form-element form-input required" name="check_deduction_description" id="check_deduction_description" data-label="Enter Description">
+                                        </div>
+                                        <div class="mr-2">
+                                            <input type="text" class="custom-form-element form-input money-decimal numbers-only required" name="check_deduction_amount" id="check_deduction_amount" data-label="Enter Amount">
+                                        </div>
+                                        <div>
+                                            <div class="d-flex justify-content-start align-items-center h-100">
+                                                <a href="javascript: void(0);" class="btn btn-sm btn-success" id="save_add_check_deduction_button"><i class="fad fa-save mr-2"></i> Save</a>
+                                                <a class="btn btn-sm btn-danger" data-toggle="collapse" href="#add_check_deduction_div" role="button" aria-expanded="false" aria-controls="add_check_deduction_div"><i class="fad fa-ban"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="list-group check-deductions-div mt-3"></div>
 
                             </div>
 
@@ -187,7 +210,7 @@
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-right pr-2">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-right pr-2 total income required" name="admin_fee_from_client" id="admin_fee_from_client">
                         </div>
                     </div>
                 </div>
@@ -195,7 +218,51 @@
 
         </div>
 
+        {{-- Total Income --}}
+        <div class="row no-gutters">
+
+            <div class="col-12 col-lg-5 border-top border-bottom py-2">
+
+                <div class="row">
+                    <div class="col-5">
+                        <div class="h-100 font-10 d-flex text-success justify-content-end align-items-center">
+                            Total Income
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="bg-green-light text-white p-2 mr-4">
+                            <div class="d-flex justify-content-end">
+                                <div class="mr-1 font-10 text-success">
+                                    <span id="total_income">$14,789</span>
+                                    <input type="hidden" id="total_income_value" name="total_income_value">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+        {{-- Commission Deductions --}}
+        <div class="row">
+            <div class="col-5">
+                <div class="row">
+                    <div class="col-5"></div>
+                    <div class="col-7">
+                        <div class="h5-responsive text-orange mb-2 mt-3 w-100 border-bottom">Commission Deductions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
+
+
 
     <div class="modal fade draggable" id="edit_check_in_modal" tabindex="-1" role="dialog" aria-labelledby="edit_check_in_modal_title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -241,12 +308,12 @@
                                 <input type="text" class="custom-form-element form-input datepicker" name="edit_date_deposited" id="edit_date_deposited" data-label="Date Deposited">
                             </div>
                         </div>
-                        <input type="hidden" name="check_id" id="check_id">
+                        <input type="hidden" name="edit_check_id" id="edit_check_id">
                     </form>
                 </div>
                 <div class="modal-footer d-flex justify-content-around">
                     <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                    <a class="btn btn-success" id="save_edit_check_in_button"><i class="fad fa-check mr-2"></i> Save</a>
+                    <a class="btn btn-success" id="save_edit_check_in_button" data-dismiss="modal"><i class="fad fa-check mr-2"></i> Save</a>
                 </div>
             </div>
         </div>

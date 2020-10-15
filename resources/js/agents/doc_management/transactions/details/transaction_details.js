@@ -767,17 +767,17 @@ if (document.URL.match(/transaction_details/)) {
 
                     $('.notes-collapse').on('show.bs.collapse', function () {
                         $('.documents-collapse.show').collapse('hide');
-                        //$('.checklist-item-div').removeClass('bg-green-light');
-                        $(this).closest('.checklist-item-div').addClass('bg-green-light');
+                        //$('.checklist-item-div').removeClass('bg-blue-light');
+                        $(this).closest('.checklist-item-div').addClass('bg-blue-light');
                     });
                     $('.documents-collapse').on('show.bs.collapse', function () {
                         $('.notes-collapse.show').collapse('hide');
-                        //$('.checklist-item-div').removeClass('bg-green-light');
-                        $(this).closest('.checklist-item-div').addClass('bg-green-light');
+                        //$('.checklist-item-div').removeClass('bg-blue-light');
+                        $(this).closest('.checklist-item-div').addClass('bg-blue-light');
                     });
 
                     $('.collapse').on('hide.bs.collapse', function () {
-                        $(this).closest('.checklist-item-div').removeClass('bg-green-light');
+                        $(this).closest('.checklist-item-div').removeClass('bg-blue-light');
                     });
 
                     $('.transaction-option-trigger').off('change').on('change', listing_options);
@@ -819,15 +819,28 @@ if (document.URL.match(/transaction_details/)) {
                     $('.popout').eq(0).show();
                     get_checks_in(Commission_ID);
                     get_commission_notes(Commission_ID);
+                    get_check_deductions(Commission_ID);
 
                     $('.add-check-in-button').off('click').on('click', show_add_check_in);
 
                     $('#save_add_check_in_button').off('click').on('click', save_add_check_in);
 
-                    $('.add-check-deduction-button').off('click').on('click', show_add_check_deduction);
+                    $('#save_add_check_deduction_button').off('click').on('click', function() {
+                        save_add_check_deduction();
+                    });
 
-                    $('#save_add_check_deduction_button').off('click').on('click', save_add_check_deduction);
+                    $('#add_check_deduction_div').on('hidden.bs.collapse', function () {
+                        $('#check_deduction_description, #check_deduction_amount').val('').trigger('change');
+                    });
 
+                    $('.total').each(function() {
+                        if($(this).val() == '') {
+                            $(this).val('0').trigger('change');
+                        }
+                        $(this).on('focus', function () {
+                            $(this).select();
+                        });
+                    });
 
                 }
 

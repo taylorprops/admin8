@@ -124,6 +124,17 @@
     Route::post('/agents/doc_management/transactions/save_add_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_check_in');
     // delete check in
     Route::post('/agents/doc_management/transactions/save_delete_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_delete_check_in');
+    // undo delete check in
+    Route::post('/agents/doc_management/transactions/undo_delete_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@undo_delete_check_in');
+    // save edit check in
+    Route::post('/agents/doc_management/transactions/save_edit_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_edit_check_in');
+    // get check deductions
+    Route::get('/agents/doc_management/transactions/get_check_deductions', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_check_deductions');
+    // save add check deduction
+    Route::post('/agents/doc_management/transactions/save_add_check_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_check_deduction');
+    // delete check deduction
+    Route::post('/agents/doc_management/transactions/delete_check_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@delete_check_deduction');
+
 
 
 

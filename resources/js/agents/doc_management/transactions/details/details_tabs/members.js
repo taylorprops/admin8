@@ -1,6 +1,6 @@
 if (document.URL.match(/transaction_details/)) {
 
-    $(document).ready(function() {
+    $(function() {
         $(document).on('click', '.save-member-button', save_add_member);
     });
 

@@ -582,7 +582,7 @@
                 </div>
                 <div class="modal-footer save-add-to-checklist-footer d-flex justify-content-around">
                     <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                    <a class="btn btn-success" id="save_add_to_checklist_button" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-check mr-2"></i> Save</a>
+                    <a class="btn btn-success" id="save_add_to_checklist_button" data-dismiss="modal" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-check mr-2"></i> Save</a>
                 </div>
             </form>
         </div>
@@ -611,7 +611,7 @@
             </div>
             <div class="modal-footer d-flex justify-content-around">
                 <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success modal-confirm-button" id="confirm_delete_document_button"><i class="fad fa-check mr-2"></i> Confirm</a>
+                <a class="btn btn-success modal-confirm-button" data-dismiss="modal" id="confirm_delete_document_button"><i class="fad fa-check mr-2"></i> Confirm</a>
             </div>
         </div>
     </div>
@@ -846,7 +846,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-around">
                     <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                    <a class="btn btn-success" data-dismiss="modal" id="save_add_individual_template_button"><i class="fad fa-check mr-2"></i> Add Documents</a>
+                    <a class="btn btn-success" id="save_add_individual_template_button"><i class="fad fa-check mr-2"></i> Add Documents</a>
                 </div>
             </form>
         </div>

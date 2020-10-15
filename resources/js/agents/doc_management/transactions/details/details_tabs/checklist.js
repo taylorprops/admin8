@@ -2,7 +2,7 @@
 
 if (document.URL.match(/transaction_details/)) {
 
-    $(document).ready(function() {
+    $(function() {
 
 
 

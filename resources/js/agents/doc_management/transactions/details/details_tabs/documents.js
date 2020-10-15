@@ -19,8 +19,12 @@ if (document.URL.match(/transaction_details/)) {
         $(document).on('click', '#add_individual_template_button', show_add_individual_template);
 
         $(document).on('click', '#save_add_individual_template_button', function () {
-            $('#save_add_individual_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
-            save_add_template_documents('individual');
+            if($('.individual-template-form:checked').length > 0) {
+                $('#save_add_individual_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
+                save_add_template_documents('individual');
+            } else {
+                $('#modal_danger').modal().find('.modal-body').html('You must select at least one form to add');
+            }
         });
 
         $(document).on('click', '.check-all', check_all);
@@ -870,6 +874,8 @@ if (document.URL.match(/transaction_details/)) {
         }
 
         function save_add_template_documents(type) {
+
+            $('[data-dismiss="modal"]').trigger('click');
 
             let Agent_ID = $('#Agent_ID').val();
             let Listing_ID = $('#Listing_ID').val();

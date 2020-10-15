@@ -3,7 +3,6 @@ jQuery(($) => {
   $(document).on('change', '.file-field input[type="file"]',  function () {
 
     const $this = $(this);
-    console.log($this);
     const $fileField = $this.closest('.file-field');
     const $pathInput = $fileField.find('input.file-path');
     const files = $this.get(0).files;

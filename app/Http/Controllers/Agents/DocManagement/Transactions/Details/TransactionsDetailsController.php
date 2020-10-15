@@ -38,6 +38,7 @@ use App\Models\DocManagement\Transactions\Data\ListingsData;
 use App\Models\Commission\Commission;
 use App\Models\Commission\CommissionChecksIn;
 use App\Models\Commission\CommissionNotes;
+use App\Models\Commission\CommissionCheckDeductions;
 use App\Models\Employees\Agents;
 use App\Models\Employees\Teams;
 use App\Models\Resources\LocationData;
@@ -2422,8 +2423,9 @@ class TransactionsDetailsController extends Controller {
     }
 
     public function get_checks_in(Request $request) {
-        $checks_in = CommissionChecksIn::where('Commission_ID', $request -> Commission_ID) -> where('active', 'yes') -> orderBy('created_at', 'DESC') -> get();
-        return compact('checks_in');
+        $checks_in = CommissionChecksIn::where('Commission_ID', $request -> Commission_ID) -> orderBy('active', 'DESC') -> orderBy('created_at', 'DESC') -> get();
+
+        return view('/agents/doc_management/transactions/details/data/get_checks_in_html', compact('checks_in'));
     }
 
     public function get_check_in_details(Request $request) {
@@ -2522,12 +2524,64 @@ class TransactionsDetailsController extends Controller {
         $add_check -> save();
     }
 
+    public function save_edit_check_in(Request $request) {
+
+        $check_id = $request -> edit_check_id;
+
+        $check = CommissionChecksIn::find($check_id);
+
+        $check -> check_date = $request -> edit_check_date;
+        $check -> check_amount = preg_replace('/[\$,]+/', '', $request -> edit_check_amount);
+        $check -> check_number = $request -> edit_check_number;
+        $check -> date_received = $request -> edit_date_received;
+        $check -> date_deposited = $request -> edit_date_deposited;
+        $check -> save();
+
+        return response() -> json(['success' => true]);
+
+    }
+
     public function save_delete_check_in(Request $request) {
 
         $check = CommissionChecksIn::find($request -> check_id) -> update(['active' => 'no']);
 
         return response() -> json(['response' => 'success']);
 
+    }
+
+    public function undo_delete_check_in(Request $request) {
+
+        $check = CommissionChecksIn::find($request -> check_id) -> update(['active' => 'yes']);
+
+        return response() -> json(['response' => 'success']);
+
+    }
+
+    public function get_check_deductions(Request $request) {
+
+        $Commission_ID = $request -> Commission_ID;
+        $deductions = CommissionCheckDeductions::where('Commission_ID', $Commission_ID) -> orderBy('created_at', 'DESC') -> get();
+
+        return compact('deductions');
+
+    }
+
+    public function delete_check_deduction(Request $request) {
+        $deduction_id = $request -> deduction_id;
+        $delete = CommissionCheckDeductions::find($deduction_id) -> delete();
+
+        return response() -> json(['success' => true]);
+    }
+
+    public function save_add_check_deduction(Request $request) {
+
+        $deduction = new CommissionCheckDeductions();
+        $deduction -> Commission_ID = $request -> Commission_ID;
+        $deduction -> amount = preg_replace('/[\$,]+/', '', $request -> amount);
+        $deduction -> description = $request -> description;
+        $deduction -> save();
+
+        return response() -> json(['success' => true]);
     }
 
     // End Commission Tab

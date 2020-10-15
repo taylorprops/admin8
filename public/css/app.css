@@ -1560,7 +1560,7 @@ a.ui-button:active,
 }
 
 .text-blue-light {
-  color: #ebf1f7;
+  color: #f8fcff;
 }
 
 .text-yellow {
@@ -1631,8 +1631,8 @@ a.text-green:hover {
 }
 
 .bg-blue-light {
-  background: #ebf1f7 !important;
-  background-color: #ebf1f7 !important;
+  background: #f8fcff !important;
+  background-color: #f8fcff !important;
 }
 
 .bg-blue-med {
@@ -1691,7 +1691,7 @@ a.text-green:hover {
 }
 
 .badge.bg-blue-light {
-  background-image: linear-gradient(122deg, #e9ecf0 29.17%, #ebf1f7 29.17%, #ebf1f7 50%, #e9ecf0 50%, #e9ecf0 0.17%, #ebf1f7 79.17%, #ebf1f7 100%) !important;
+  background-image: linear-gradient(122deg, #e9ecf0 29.17%, #f8fcff 29.17%, #f8fcff 50%, #e9ecf0 50%, #e9ecf0 0.17%, #f8fcff 79.17%, #f8fcff 100%) !important;
   background-size: 14.15px 22.64px !important;
 }
 
@@ -13215,7 +13215,7 @@ ul {
 }
 
 .ck.ck-toolbar {
-  background: #ebf1f7 !important;
+  background: #f8fcff !important;
 }
 
 .ck.ck-button,
@@ -13319,7 +13319,7 @@ body.modal-open {
 }
 
 .list-group-item-action:not(.active):hover {
-  background-color: rgba(235, 241, 247, 0.2);
+  background-color: rgba(248, 252, 255, 0.2);
 }
 
 @media (min-width: 1200px) {
@@ -13369,7 +13369,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 
 .table th {
   background: #4c9bdb;
-  color: #ebf1f7;
+  color: #f8fcff;
 }
 
 @media (max-width: 1200px) {
@@ -13944,7 +13944,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 }
 
 .form-ele .form-select-save-div {
-  background: #ebf1f7;
+  background: #f8fcff;
 }
 
 .form-ele .form-select-search-div {
@@ -14025,7 +14025,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 }
 
 .form-ele .form-select-matched-option {
-  background: #ebf1f7;
+  background: #f8fcff;
   color: #4c9bdb;
   font-weight: bold;
   border-radius: 5px;
@@ -14446,7 +14446,7 @@ header .header-logo-link {
 }
 
 .page-files .list-group-header {
-  background: #ebf1f7;
+  background: #f8fcff;
   color: #4c9bdb;
   padding: 5px;
 }
@@ -14965,7 +14965,7 @@ header .header-logo-link {
 }
 
 .page-checklists .list-group-header {
-  background: #ebf1f7;
+  background: #f8fcff;
   color: #4c9bdb;
   padding: 5px;
 }
@@ -15012,7 +15012,7 @@ header .header-logo-link {
 }
 
 .page-checklists .list-group-header {
-  background: #ebf1f7 !important;
+  background: #f8fcff !important;
   color: #4c9bdb !important;
 }
 
@@ -15408,7 +15408,7 @@ header .header-logo-link {
 }
 
 .page-transaction-details .document-div:hover {
-  background: #ebf1f7;
+  background: #f8fcff;
 }
 
 .page-transaction-details #upload_documents_modal .form-ele {
@@ -15717,7 +15717,6 @@ header .header-logo-link {
 .page-transaction-details .commission-container .popout {
   display: none;
   position: absolute;
-  padding: 15px;
   padding-top: 0px;
   z-index: -1;
 }
@@ -15730,6 +15729,10 @@ header .header-logo-link {
   max-height: 350px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.page-transaction-details .commission-container .popout .check-image-container.inactive {
+  opacity: 0.7;
 }
 
 .page-transaction-details .commission-container .popout .check-image-div {
@@ -16182,7 +16185,7 @@ header .header-logo-link {
 }
 
 .page-fill-fields .navbar-edit-file-options li:hover {
-  background: #ebf1f7;
+  background: #f8fcff;
 }
 
 .page-document-review .transactions-container {

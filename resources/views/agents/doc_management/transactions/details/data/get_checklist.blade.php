@@ -342,7 +342,7 @@
 
                                                         </div>
 
-                                                        <div class="row no-gutters bg-green-light d-flex align-items-center">
+                                                        <div class="row no-gutters bg-blue-light d-flex align-items-center">
                                                             <div class="col-11">
                                                                 <div>
                                                                     <textarea class="custom-form-element form-textarea notes-input-{{ $checklist_item_id }}" data-label="Add Comment"></textarea>

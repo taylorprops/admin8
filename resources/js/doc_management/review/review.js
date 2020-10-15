@@ -1,6 +1,6 @@
 if(document.URL.match(/document_review/)) {
 
-    $(document).ready(function() {
+    $(function() {
 
 
         $('.property-item').off('click').on('click', function() {

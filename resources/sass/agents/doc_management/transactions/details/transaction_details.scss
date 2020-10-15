@@ -538,7 +538,6 @@
         .popout {
             display: none;
             position: absolute;
-            padding: 15px;
             padding-top: 0px;
             z-index: -1;
 
@@ -552,10 +551,15 @@
                 overflow-x: hidden;
             }
 
+            .check-image-container.inactive {
+                opacity: 0.7;
+            }
+
             .check-image-div {
                 max-height: 95px;
                 overflow: hidden;
             }
+
         }
 
         .popout.top {
