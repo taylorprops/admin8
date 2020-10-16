@@ -31,7 +31,7 @@
                 <input class="main-search-input bottom" type="text" placeholder="Search" aria-label="Search">
             </div>
 
-            <ul class="navbar-nav">
+            <ul class="navbar-nav w-100">
                 <li class="w-100">
                     <div class="d-flex justify-content-end align-items-center">
                         <div class="mr-5">
