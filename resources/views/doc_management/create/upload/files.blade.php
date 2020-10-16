@@ -5,9 +5,9 @@
     <h2>Forms</h2>
     <div class="row">
         <div class="col-4">
-            <div class="border-top border-bottom border-gray">
-                <div class="list-group-container" data-simplebar data-simplebar-auto-hide="false">
-                    <div class="list-group" role="tablist">
+            <div class="">
+                <div class="list-group-container">
+                    <div class="list-group pr-1 pb-5" role="tablist">
                         @foreach ($form_groups as $form_group)
                             @php
                                 $form_count = $upload -> GetFormCount($form_group -> resource_id);
@@ -63,14 +63,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="border border-gray">
-                            <div class="list-group-divs pt-4" data-simplebar data-simplebar-auto-hide="false">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-12 forms-data" id="list_div_{{ $form_group -> resource_id }}_files" data-form-group-id="{{ $form_group -> resource_id }}" data-state="{{ $form_group -> resource_state }}">
-                                        </div>
-                                    </div><!-- ./ .row -->
-                                </div>
+                        <div class="list-group-divs pt-2 pb-5">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12 forms-data" id="list_div_{{ $form_group -> resource_id }}_files" data-form-group-id="{{ $form_group -> resource_id }}" data-state="{{ $form_group -> resource_state }}">
+                                    </div>
+                                </div><!-- ./ .row -->
                             </div>
                         </div>
                     </div>
@@ -123,7 +121,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div id="add_form_to_checklists_div" data-simplebar data-simplebar-auto-hide="false"> </div>
+                        <div id="add_form_to_checklists_div"> </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-around">
                         <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>

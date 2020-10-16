@@ -10,7 +10,7 @@
             <div class="col-3">
                 <h4 class="text-orange mt-0 mb-1">Form Groups</h4>
                 <div class="border-top border-bottom border-gray">
-                    <div class="list-group-container" data-simplebar data-simplebar-auto-hide="false">
+                    <div class="list-group-container">
                         <div class="list-group" role="tablist">
 
                             @foreach ($locations as $location)
@@ -69,7 +69,7 @@
                             </div>
 
                             <div class="border border-gray">
-                                <div class="list-group-divs p-3" data-simplebar data-simplebar-auto-hide="false">
+                                <div class="list-group-divs p-3">
 
                                     <div class="container">
                                         <div class="row">

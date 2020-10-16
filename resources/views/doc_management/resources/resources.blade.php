@@ -88,7 +88,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card-body" data-simplebar data-simplebar-auto-hide="false">
+                    <div class="card-body">
                         <ul class="sortable list-group">
                         @foreach($resources_items as $resources_item)
                             @if($resource -> resource_type == $resources_item -> resource_type)

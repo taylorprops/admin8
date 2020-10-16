@@ -30,16 +30,17 @@ body, body.modal-open {
     }
 } */
 *::-webkit-scrollbar {
-    width: .6em;
+    width: .4em;
 }
 
 *::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(99, 128, 153, 0.3);
+    display: none;
+    //box-shadow: inset 0 0 6px rgba(99, 128, 153, 0.3);
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: $primary;
-    outline: 1px solid $blue-dark;
+    background-color: rgba($primary, 0.4);
+    border-radius: 15px;
 }
 * {
     scrollbar-width: thin;          /* "auto" or "thin"  */
@@ -112,6 +113,9 @@ body, body.modal-open {
 
 .badge {
     padding: 0.25em 0.45em 0.32rem;
+}
+.badge-pill {
+    padding: 0.45em 0.55em 0.32rem 0.55em !important;
 }
 
 .border-2 {

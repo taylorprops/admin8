@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-6">
             <h5 class="text-orange">Select which <span class="font-weight-bold text-uppercase">{{ $checklist_type }}</span> checklists to export</h5>
-            <div class="checklists-to-export-div" data-simplebar data-simplebar-auto-hide="false">
+            <div class="checklists-to-export-div">
                 @foreach($property_types as $property_type)
                 <h5 class="text-primary mt-3">{{ $property_type -> resource_name }}</h5>
                     <div class="list-group">
@@ -43,7 +43,7 @@
         </div>
         <div class="col-6">
             <h5 class="text-orange">Select which regions to export to</h5>
-            <div class="export-to-form-groups-div" data-simplebar data-simplebar-auto-hide="false">
+            <div class="export-to-form-groups-div">
 
                 <div class="row list-group-columns bg-white sticky-top mb-1 h5 text-primary">
                     <div class="col-1"></div>

@@ -37,7 +37,7 @@
                             </a>
                         </h5>
                         <h5 class="text-primary">Select form to replace <span class="text-orange font-italic">{{ $uploaded_file -> file_name_display }}</span></h5>
-                        <div class="manage-form-options" data-simplebar data-simplebar-auto-hide="false">
+                        <div class="manage-form-options">
                             <ul class="list-group">
                                 @foreach($uploads as $upload)
                                 <li class="list-group-item list-group-item-action" title="{{ $upload -> file_name_display }}">
@@ -54,7 +54,7 @@
                 <div class="col-5">
                     <h5 class="text-primary mb-3">Current Checklists</h5>
                     <div class="border">
-                        <div class="manage-current-checklists" data-simplebar data-simplebar-auto-hide="false">
+                        <div class="manage-current-checklists">
                             <table class="table table-hover table-sm">
                                 @foreach($checklists as $checklist)
                                 <tr>

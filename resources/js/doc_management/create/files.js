@@ -40,11 +40,6 @@ if (document.URL.match(/create\/upload\/files/)) {
             .then(function (response) {
 
                 form_group.html($(response.data));
-                let ele = form_group.find('.activate-upload');
-
-                filter_uploads(ele);
-
-                form_elements();
 
                 // Add file modal
                 $('.upload-file-button').off('click').on('click', function () {
@@ -61,6 +56,12 @@ if (document.URL.match(/create\/upload\/files/)) {
                 //$('.add-non-form-item-button').hide();
 
                 global_loading_off();
+
+                form_elements();
+
+                let ele = form_group.find('.activate-upload');
+
+                filter_uploads(ele);
 
             })
             .catch(function (error) {

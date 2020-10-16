@@ -9,7 +9,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                 <h4>Checklist Items</h4>
             </div>
         </div>
-        <div class="checklist-items-selected border border-primary" data-simplebar data-simplebar-auto-hide="false">
+        <div class="checklist-items-selected border border-primary">
 
             @foreach($checklist_groups as $checklist_group)
 
@@ -97,7 +97,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
             </div>
         </div>
 
-        <div class="form-groups-container mt-3" data-simplebar data-simplebar-auto-hide="false">
+        <div class="form-groups-container mt-3">
 
             @foreach($form_groups as $form_group)
 

@@ -166,7 +166,7 @@ if($transaction_type == 'listing') {
 </div>
 
 @if($transaction_type != 'referral')
-<div class="row my-2 my-md-4 py-2 border-top border-bottom listing-header-details">
+<div class="row mt-1 mb-2 listing-header-details">
 
     <div class="col-12">
         <div class="d-block d-sm-flex justify-content-start flex-wrap">

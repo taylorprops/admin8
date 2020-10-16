@@ -747,7 +747,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-groups-container border p-1 p-md-3 p-lg-4 mt-2" data-simplebar data-simplebar-auto-hide="false">
+                                <div class="form-groups-container border p-1 p-md-3 p-lg-4 mt-2">
 
                                     @foreach($form_groups as $form_group)
 

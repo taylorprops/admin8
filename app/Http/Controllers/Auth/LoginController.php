@@ -33,7 +33,7 @@ class LoginController extends Controller
 
         if(auth() -> user() -> group == 'admin') {
 
-            session(['header_logo_src' => '/images/logo/logo_tp.png']);
+            session(['header_logo_src' => '/images/logo/logos.png']);
             session(['email_logo_src' => '/images/emails/TP-flat-white.png']);
 
             $user_id = auth() -> user() -> user_id;

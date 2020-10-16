@@ -16,6 +16,7 @@ Route::get('/', function () {
     return view('/auth/login');
 }) -> name('login');
 
+
 Route::get('/dashboard_admin', 'Dashboard\DashboardAdminController@dashboard_admin');
 Route::get('/dashboard_agent', 'Dashboard\DashboardAgentController@dashboard_agent');
 

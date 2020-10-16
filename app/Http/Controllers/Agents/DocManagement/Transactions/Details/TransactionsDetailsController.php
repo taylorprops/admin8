@@ -173,6 +173,7 @@ class TransactionsDetailsController extends Controller {
 
     public function get_details(Request $request) {
 
+
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
         $Referral_ID = $request -> Referral_ID ?? 0;

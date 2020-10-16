@@ -39,30 +39,12 @@
         <script src="https://maps.googleapis.com/maps/api/js?key={{ config('global.vars.google_api_key') }}&libraries=places&outputFormat=json"></script>
 
 
-        <noscript>
-            <style>
-              /* simplebar Reinstate scrolling for non-JS clients */
-                .simplebar-content-wrapper {
-                    overflow: auto;
-                }
-            </style>
-        </noscript>
-
     </head>
 
-    <body class="hidden-sn @if(Request::is('*/edit_files/*')) y-scroll-none @endif @if(Request::is('*/document_review')) overflow-y-hidden @endif">
+    <body class="{{-- NAVBAR: OLD hidden-sn --}} @if(Request::is('*/edit_files/*')) y-scroll-none @endif @if(Request::is('*/document_review')) overflow-y-hidden @endif">
 
         @include('layouts.includes.header')
 
-        {{-- page transitions --}}
-        {{-- <div class="loader">
-            <div class="bar1"></div>
-            <div class="bar2"></div>
-            <div class="bar3"></div>
-            <div class="bar4"></div>
-            <div class="bar5"></div>
-            <div class="bar6"></div>
-        </div> --}}
 
         <main>
         @yield('content')

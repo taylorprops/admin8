@@ -1,4 +1,3 @@
-import SimpleBar from 'simplebar';
 import $ from 'jquery';
 window.$ = window.jQuery = $;
 const axios = require('axios');

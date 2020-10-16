@@ -1549,7 +1549,7 @@ a.ui-button:active,
 	filter: alpha(opacity= 0);
 	cursor: pointer;
 }
-.gu-mirror{position:fixed!important;margin:0!important;z-index:9999!important;opacity:.8;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";filter:alpha(opacity=80)}.gu-hide{display:none!important}.gu-unselectable{-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;user-select:none!important}.gu-transit{opacity:.2;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";filter:alpha(opacity=20)}@charset "UTF-8";
+.gu-mirror{position:fixed!important;margin:0!important;z-index:9999!important;opacity:.8}.gu-hide{display:none!important}.gu-unselectable{-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;user-select:none!important}.gu-transit{opacity:.2}@charset "UTF-8";
 
 .text-primary-dark {
   color: #1972bb;
@@ -1701,7 +1701,7 @@ a.text-green:hover {
 }
 
 /*!
- * Bootstrap v4.5.2 (https://getbootstrap.com/)
+ * Bootstrap v4.5.3 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
  * Copyright 2011-2020 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
@@ -1935,6 +1935,7 @@ caption {
 
 th {
   text-align: inherit;
+  text-align: -webkit-match-parent;
 }
 
 label {
@@ -5839,6 +5840,8 @@ input[type=button].btn-block {
   display: block;
   min-height: 1.44rem;
   padding-left: 1.5rem;
+  -webkit-print-color-adjust: exact;
+          color-adjust: exact;
 }
 
 .custom-control-inline {
@@ -7452,6 +7455,7 @@ a.badge-primary-dark.focus {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 2;
   padding: 0.75rem 1.25rem;
   color: inherit;
 }
@@ -12830,7 +12834,7 @@ a.text-primary-dark:focus {
 
 .text-break {
   word-break: break-word !important;
-  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
 }
 
 .text-reset {
@@ -12979,9 +12983,9 @@ body {
   padding-top: 50px;
 }
 
-.hidden-sn main {
-  padding-top: 1rem !important;
-}
+/* NAVBAR: OLD .hidden-sn main {
+    padding-top: 1rem !important;
+} */
 
 /* body:not(.y-scroll-none) {
     overflow-y: scroll;
@@ -13000,7 +13004,7 @@ h5 {
 }
 
 h2 {
-  margin: 2.5rem 0 2rem 0;
+  margin: 1.5rem 0;
 }
 
 *,
@@ -13166,10 +13170,6 @@ input {
   }
 }
 
-.simplebar-content-wrapper {
-  overflow-y: scroll !important;
-}
-
 .loading-bg {
   position: fixed;
   top: 0;
@@ -13267,16 +13267,16 @@ body.modal-open {
 } */
 
 *::-webkit-scrollbar {
-  width: 0.6em;
+  width: 0.4em;
 }
 
 *::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(99, 128, 153, 0.3);
+  display: none;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #4c9bdb;
-  outline: 1px solid #1972bb;
+  background-color: rgba(76, 155, 219, 0.4);
+  border-radius: 15px;
 }
 
 * {
@@ -13344,6 +13344,10 @@ body.modal-open {
 
 .badge {
   padding: 0.25em 0.45em 0.32rem;
+}
+
+.badge-pill {
+  padding: 0.45em 0.55em 0.32rem 0.55em !important;
 }
 
 .border-2 {
@@ -14140,231 +14144,82 @@ table.dataTable thead .sorting_desc_disabled:before {
   opacity: 0.8;
 }
 
-[data-simplebar] {
-  position: relative;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  align-items: flex-start;
+header {
+  /* hover dropdown menus */
 }
 
-.simplebar-wrapper {
-  overflow: hidden;
-  width: inherit;
-  height: inherit;
-  max-width: inherit;
-  max-height: inherit;
+header .navbar {
+  padding: 0.2rem 1rem !important;
 }
 
-.simplebar-mask {
-  direction: inherit;
-  position: absolute;
-  overflow: hidden;
-  padding: 0;
-  margin: 0;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  width: auto !important;
-  height: auto !important;
-  z-index: 0;
+header .header-logo {
+  max-height: 50px !important;
+  max-width: 190px !important;
 }
 
-.simplebar-offset {
-  direction: inherit !important;
-  box-sizing: inherit !important;
-  resize: none !important;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  padding: 0;
-  margin: 0;
-  -webkit-overflow-scrolling: touch;
+header .main-search-input.top {
+  display: none;
 }
 
-.simplebar-content-wrapper {
-  direction: inherit;
-  box-sizing: border-box !important;
-  position: relative;
+header .main-search-input.bottom {
   display: block;
-  height: 100%;
-  /* Required for horizontal native scrollbar to not appear if parent is taller than natural height */
-  width: auto;
-  visibility: visible;
-  max-width: 100%;
-  /* Not required for horizontal scroll to trigger */
-  max-height: 100%;
-  /* Needed for vertical scroll to trigger */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
-.simplebar-content-wrapper::-webkit-scrollbar,
-.simplebar-hide-scrollbar::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+@media only screen and (max-width: 1499px) {
+  header .header-logo-link {
+    display: none;
+  }
+
+  header .navbar-hover .show > .dropdown-toggle::after {
+    transform: rotate(-90deg);
+  }
+
+  header .main-search-input.top {
+    display: block;
+  }
+
+  header .main-search-input.bottom {
+    display: none;
+  }
+
+  header .nav-link {
+    display: inline;
+    padding: 8px 0px;
+  }
 }
 
-.simplebar-content:before,
-.simplebar-content:after {
-  content: " ";
-  display: table;
+@media only screen and (min-width: 1500px) {
+  header {
+    /*.navbar-hover .collapse ul ul ul ul{position:absolute;top:0;left:-100%;min-width:250px;display:none;z-index:1}*/
+  }
+
+  header .navbar-hover .collapse ul li {
+    position: relative;
+  }
+
+  header .navbar-hover .collapse ul li:hover > ul {
+    display: block;
+  }
+
+  header .navbar-hover .collapse ul ul {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 250px;
+    display: none;
+  }
+
+  header .navbar-hover .collapse ul ul ul {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    min-width: 250px;
+    display: none;
+  }
 }
 
-.simplebar-placeholder {
-  max-height: 100%;
-  max-width: 100%;
-  width: 100%;
-  pointer-events: none;
-}
-
-.simplebar-height-auto-observer-wrapper {
-  box-sizing: inherit !important;
-  height: 100%;
-  width: 100%;
-  max-width: 1px;
-  position: relative;
-  float: left;
-  max-height: 1px;
-  overflow: hidden;
-  z-index: -1;
-  padding: 0;
-  margin: 0;
-  pointer-events: none;
-  flex-grow: inherit;
-  flex-shrink: 0;
-  flex-basis: 0;
-}
-
-.simplebar-height-auto-observer {
-  box-sizing: inherit;
-  display: block;
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 1000%;
-  width: 1000%;
-  min-height: 1px;
-  min-width: 1px;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.simplebar-track {
-  z-index: 1;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-[data-simplebar].simplebar-dragging .simplebar-content {
-  pointer-events: none;
-  -moz-user-select: none;
-   -ms-user-select: none;
-       user-select: none;
-  -webkit-user-select: none;
-}
-
-[data-simplebar].simplebar-dragging .simplebar-track {
-  pointer-events: all;
-}
-
-.simplebar-scrollbar {
-  position: absolute;
-  left: 0;
-  right: 0;
-  min-height: 10px;
-}
-
-.simplebar-scrollbar:before {
-  position: absolute;
-  content: "";
-  background: #6cb2eb;
-  border-radius: 7px;
-  left: 2px;
-  right: 2px;
-  opacity: 0;
-  transition: opacity 0.2s linear;
-}
-
-.simplebar-scrollbar.simplebar-visible:before {
-  /* When hovered, remove all transitions from drag handle */
-  opacity: 0.5;
-  transition: opacity 0s linear;
-}
-
-.simplebar-track.simplebar-vertical {
-  top: 0;
-  width: 11px;
-}
-
-.simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
-  top: 2px;
-  bottom: 2px;
-}
-
-.simplebar-track.simplebar-horizontal {
-  left: 0;
-  height: 11px;
-}
-
-.simplebar-track.simplebar-horizontal .simplebar-scrollbar:before {
-  height: 100%;
-  left: 2px;
-  right: 2px;
-}
-
-.simplebar-track.simplebar-horizontal .simplebar-scrollbar {
-  right: auto;
-  left: 0;
-  top: 2px;
-  height: 7px;
-  min-height: 0;
-  min-width: 10px;
-  width: auto;
-}
-
-/* Rtl support */
-
-[data-simplebar-direction=rtl] .simplebar-track.simplebar-vertical {
-  right: auto;
-  left: 0;
-}
-
-.hs-dummy-scrollbar-size {
-  direction: rtl;
-  position: fixed;
-  opacity: 0;
-  visibility: hidden;
-  height: 500px;
-  width: 500px;
-  overflow-y: hidden;
-  overflow-x: scroll;
-}
-
-.simplebar-hide-scrollbar {
-  position: fixed;
-  left: 0;
-  visibility: hidden;
-  overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-header .main-search-div {
-  width: 400px;
-}
-
-header #main_search_input {
-  width: 100%;
+header .main-search-input {
+  width: 250px;
   background: transparent;
   color: #fff;
   padding: 5px;
@@ -14372,54 +14227,23 @@ header #main_search_input {
   border-bottom: 1px solid #fff;
 }
 
-header #main_search_input::-moz-placeholder {
+header .main-search-input::-moz-placeholder {
   color: white;
 }
 
-header #main_search_input:-ms-input-placeholder {
+header .main-search-input:-ms-input-placeholder {
   color: white;
 }
 
-header #main_search_input::placeholder {
+header .main-search-input::placeholder {
   color: white;
 }
 
-header .side-nav .side-nav-link {
-  height: 3rem;
-  font-size: 1.3rem !important;
-  line-height: 3rem;
+header .nav-link {
+  white-space: nowrap;
 }
 
-@media (max-width: 768px) {
-  header .main-search-div {
-    max-width: 170px;
-  }
-}
-
-header .navbar {
-  z-index: 1031;
-}
-
-header #slide-out {
-  z-index: 1030 !important;
-}
-
-header .side-nav {
-  width: 100VW !important;
-}
-
-header .menu-ul {
-  max-width: 250px;
-}
-
-header .header-logo {
-  height: 80px !important;
-}
-
-header .header-logo-link {
-  height: 80px;
-  padding-left: 0px !important;
-}
+/* @import 'nav/mdbootstrap_nav.scss'; */
 
 .page-files {
   overflow: hidden;
@@ -14464,6 +14288,10 @@ header .header-logo-link {
 .page-files .uploads-filter-published,
 .page-files .uploads-filter-active {
   width: 100px;
+}
+
+.page-files .uploads-list {
+  border-radius: 5px;
 }
 
 .page-files .published {
