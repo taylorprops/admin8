@@ -27,7 +27,7 @@
 
             </ul>
 
-            <div class="mr-5">
+            <div class="ml-5">
                 <input class="main-search-input bottom" type="text" placeholder="Search" aria-label="Search">
             </div>
 
