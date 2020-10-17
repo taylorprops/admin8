@@ -1,60 +1,59 @@
 <li class="nav-item">
-    <a class="nav-link mx-0 mx-lg-2" href="/dashboard_admin"> Dashboard</a>
+    <a href="/dashboard_admin" class="nav-link"> Dashboard</a>
 </li>
 
 <li class="nav-item dropdown">
-    <a class="nav-link mx-0 mx-lg-2 dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+    <a href="javascript:void(0)" id="management_dropdown" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Management
     </a>
-    <ul class="dropdown-menu">
-        <li class="dropdown">
-            <a class="dropdown-item mx-0 mx-lg-2 dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Resources
-            </a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a class="dropdown-item" href="/doc_management/resources/resources"> Site Resources</a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="/admin/resources/resources_admin"> Admin Resources</a>
-                </li>
-            </ul>
+
+    <div class="dropdown-menu" aria-labelledby="management_dropdown">
+
+        <a href="javascript:void(0)" id="resource_dropdown" class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Resources
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="resource_dropdown">
+            <a href="/doc_management/resources/resources" class="dropdown-item"> Site Resources</a>
+            <a href="/admin/resources/resources_admin" class="dropdown-item"> Admin Resources</a>
+        </div>
+
+        <li class="nav-item">
+            <a href="/doc_management/create/upload/files" class="dropdown-item"> Files</a>
         </li>
         <li class="nav-item">
-            <a class="dropdown-item mx-0 mx-lg-2" href="/doc_management/create/upload/files"> Files</a>
+            <a href="/doc_management/checklists" class="dropdown-item"> Checklists</a>
         </li>
-        <li class="nav-item">
-            <a class="dropdown-item mx-0 mx-lg-2" href="/doc_management/checklists"> Checklists</a>
-        </li>
-    </ul>
+    </div>
 </li>
 
 <li class="nav-item dropdown">
-    <a class="nav-link mx-0 mx-lg-2 dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <a href="javascript:void(0)" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Transactions
     </a>
     <ul class="dropdown-menu">
         <li>
-            <a class="dropdown-item" href="/agents/doc_management/transactions">Transactions</a>
+            <a href="/agents/doc_management/transactions" class="dropdown-item">Transactions</a>
         </li>
         <li>
-            <a class="dropdown-item dropdown-toggle" href="#">Add Transaction</a>
+            <a href="javascript:void(0)" class="dropdown-item dropdown-toggle">Add Transaction</a>
             <ul class="dropdown-menu">
                 <li>
-                    <a class="dropdown-item" href="/agents/doc_management/transactions/add/listing">Add Listing</a>
+                    <a href="/agents/doc_management/transactions/add/listing" class="dropdown-item">Add Listing</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="/agents/doc_management/transactions/add/contract">Add Contract</a>
+                    <a href="/agents/doc_management/transactions/add/contract" class="dropdown-item">Add Contract</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="/agents/doc_management/transactions/add/referral">Add Referral</a>
+                    <a href="/agents/doc_management/transactions/add/referral" class="dropdown-item">Add Referral</a>
                 </li>
             </ul>
         </li>
     </ul>
 </li>
 <li class="nav-item">
-    <a class="nav-link mx-0 mx-lg-2" href="/doc_management/document_review">Review Documents</a>
+    <a class=" href="/doc_management/document_review"nav-link">Review Documents</a>
 </li>
 
 

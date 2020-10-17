@@ -8,6 +8,8 @@ $(document).ready(function () {
         inactivityTime();
     }
 
+    $('#main_nav_bar').bootnavbar({});
+
     toastr.options = {
         "timeOut": 3000
     }

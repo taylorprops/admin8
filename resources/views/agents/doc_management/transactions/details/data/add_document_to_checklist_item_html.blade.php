@@ -15,7 +15,17 @@
 
                 <div class="row">
 
-                    <div class="col-12 col-md-10">
+                    <div class="d-none d-md-block col-md-2 pr-0">
+
+                        <div class="doc-list-arrows-div ml-2">
+                            <button type="button" class="btn btn-primary doc-list-arrow mb-2" data-dir="up"><i class="fa fa-arrow-up fa-2x"></i></button>
+                            <br>
+                            <button type="button" class="btn btn-primary doc-list-arrow mt-2" data-dir="down"><i class="fa fa-arrow-down fa-2x"></i></button>
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-md-10 pl-0">
 
                         <div id="add_to_checklist_documents_wrapper" class="list-group">
 
@@ -30,34 +40,6 @@
                             @endforeach
 
 
-                            {{-- <div id="add_to_checklist_documents_div" class="list-group">
-
-                                @foreach($documents as $document)
-                                    <div class="add-to-checklist-document-div list-group-item my-1 border rounded" data-document-id="{{ $document -> id}}" data-file-name="{{ $document -> file_name_display }}">
-                                        <div class="d-flex justify-content-start align-items-center text-gray">
-                                            <div>
-                                                <i class="fal fa-bars fa-lg mr-3"></i>
-                                            </div>
-                                            <div>
-                                                {{ $document -> file_name_display }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-
-                            </div> --}}
-
-
-                        </div>
-
-                    </div>
-
-                    <div class="d-none d-md-block col-md-2">
-
-                        <div class="doc-list-arrows-div">
-                            <button type="button" class="btn btn-primary doc-list-arrow mb-2" data-dir="up"><i class="fa fa-arrow-up fa-2x"></i></button>
-                            <br>
-                            <button type="button" class="btn btn-primary doc-list-arrow mt-2" data-dir="down"><i class="fa fa-arrow-down fa-2x"></i></button>
                         </div>
 
                     </div>

@@ -1,6 +1,6 @@
 <header>
 
-    <nav class="navbar navbar-expand-xl fixed-top navbar-sticky navbar-dark bg-primary navbar-hover">
+    <nav class="navbar navbar-expand-xl fixed-top navbar-sticky navbar-dark bg-primary navbar-hover" id="main_nav_bar">
 
         <a class="header-logo-link text-center" href="javascript: void(0)"><img src="{{ \Session::get('header_logo_src') }}" class="header-logo"></a>
 
@@ -17,7 +17,46 @@
 
                 @if(auth() -> user() -> group == 'admin')
 
-                @include('layouts.includes/menus/admin')
+                {{-- @include('layouts.includes/menus/admin') --}}
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript: void(0)">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="javascript: void(0)" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="javascript: void(0)">Action</a></li>
+                        <li><a class="dropdown-item" href="javascript: void(0)">Another action</a></li>
+                        <div class="dropdown-divider"></div>
+                        <li></li><a class="dropdown-item" href="javascript: void(0)">Something else here</a></li>
+                        <li class="nav-item dropdown">
+                                <a class="dropdown-item dropdown-toggle" href="javascript: void(0)" id="navbarDropdown1" role="button" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    Dropdown
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                                    <li><a class="dropdown-item" href="javascript: void(0)">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript: void(0)">Another action</a></li>
+                                    <div class="dropdown-divider"></div>
+                                    <li></li><a class="dropdown-item" href="javascript: void(0)">Something else here</a></li>
+                                    <li class="nav-item dropdown">
+                                        <a class="dropdown-item dropdown-toggle" href="javascript: void(0)" id="navbarDropdown2" role="button" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                            Left Dropdown
+                                        </a>
+                                        <ul class="dropdown-menu left" aria-labelledby="navbarDropdown2">
+                                            <li><a class="dropdown-item" href="javascript: void(0)">Action</a></li>
+                                            <li><a class="dropdown-item" href="javascript: void(0)">Another action</a></li>
+                                            <div class="dropdown-divider"></div>
+                                            <li></li><a class="dropdown-item" href="javascript: void(0)">Something else here</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                    </ul>
+                </li>
 
                 @elseif(auth() -> user() -> group == 'agent')
 
@@ -133,7 +172,7 @@
 
         <!-- SideNav slide-out button -->
         <div>
-            <a href="#" data-activates="slide-out" class="button-collapse"><i class="fas fa-bars fa-lg"></i></a>
+            <a href="javascript: void(0)" data-activates="slide-out" class="button-collapse"><i class="fas fa-bars fa-lg"></i></a>
         </div>
 
         <div class="main-search-div">

@@ -704,7 +704,7 @@ if (document.URL.match(/transaction_details/)) {
 
             docs_div.closest('.submitted-docs-div').show();
 
-            docs_div.prepend('<div class="added-document d-flex justify-content-start align-items-center docs" data-document-id="'+document_id+'" data-checklist-id="'+checklist_id+'" data-checklist-item-id="'+checklist_item_id+'"><div><a href="javascript: void(0)" class="delete-doc" data-document-id="'+document_id+'"><i class="fad fa-times-circle text-danger mr-2"></i></a></div><div class="text-orange">'+file_name.substring(0, 70)+'</div></div>');
+            docs_div.prepend('<div class="added-document d-flex justify-content-start align-items-center docs" data-document-id="'+document_id+'" data-checklist-id="'+checklist_id+'" data-checklist-item-id="'+checklist_item_id+'"><div><a href="javascript: void(0)" class="delete-doc" data-document-id="'+document_id+'"><i class="fad fa-times-circle text-danger mr-2"></i></a></div><div class="text-success">'+file_name.substring(0, 70)+'</div></div>');
 
             active_div.addClass('assigned');
             if(active_div.nextAll('.add-to-checklist-document-div').not('.assigned').length > 0) {
