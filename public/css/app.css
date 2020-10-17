@@ -14145,7 +14145,6 @@ table.dataTable thead .sorting_desc_disabled:before {
 }
 
 header {
-  /* hover dropdown menus */
   /* .dropdown-menu > li a:hover,
   .dropdown-menu > li.show {
       background: #007bff;
@@ -14153,6 +14152,12 @@ header {
   }
   .dropdown-menu > li.show > a{
       color: white;
+  } */
+  /* @media (min-width: 768px) {
+      .dropdown-menu .dropdown .dropdown-menu {
+          margin:0;
+          border-width: 1px;
+      }
   } */
 }
 
@@ -14171,50 +14176,6 @@ header .main-search-input.top {
 
 header .main-search-input.bottom {
   display: block;
-}
-
-@media only screen and (max-width: 1499px) {
-  header .header-logo-link {
-    display: none;
-  }
-
-  header .main-search-input.top {
-    display: block;
-  }
-
-  header .main-search-input.bottom {
-    display: none;
-  }
-}
-
-header .dropdown-menu {
-  margin-top: 0;
-}
-
-header .dropdown-menu .dropdown-toggle::after {
-  vertical-align: middle;
-  border-left: 4px solid;
-  border-bottom: 4px solid transparent;
-  border-top: 4px solid transparent;
-}
-
-header .dropdown-menu .dropdown .dropdown-menu {
-  left: 100%;
-  top: 0%;
-  margin: 0 20px;
-  border-width: 0;
-}
-
-header .dropdown-menu .dropdown .dropdown-menu.left {
-  right: 100%;
-  left: auto;
-}
-
-@media (min-width: 768px) {
-  header .dropdown-menu .dropdown .dropdown-menu {
-    margin: 0;
-    border-width: 1px;
-  }
 }
 
 header .main-search-input {
@@ -14238,8 +14199,53 @@ header .main-search-input::placeholder {
   color: white;
 }
 
+@media only screen and (max-width: 1499px) {
+  header .header-logo-link {
+    display: none;
+  }
+
+  header .main-search-input.top {
+    display: block;
+  }
+
+  header .main-search-input.bottom {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  header .main-search-input {
+    width: 150px;
+  }
+}
+
 header .nav-link {
   white-space: nowrap;
+}
+
+header .dropdown-menu {
+  margin-top: 0;
+}
+
+header .dropdown-menu .dropdown-toggle::after {
+  vertical-align: middle;
+  border-left: 4px solid;
+  border-bottom: 4px solid transparent;
+  border-top: 4px solid transparent;
+}
+
+header .dropdown-menu .dropdown .dropdown-menu {
+  left: 100%;
+  top: 0%;
+  /* margin:0 20px;
+  border-width: 0; */
+  margin: 0;
+  border-width: 1px;
+}
+
+header .dropdown-menu .dropdown .dropdown-menu.left {
+  right: 100%;
+  left: auto;
 }
 
 /* @import 'nav/mdbootstrap_nav.scss'; */
