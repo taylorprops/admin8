@@ -279,14 +279,14 @@ if (document.URL.match(/create\/add_fields/)) {
                     let dragged_group_id = dragged_ele.data('group-id');
 
                     // align checkboxes if grouped
-                    if (field_type == 'checkbox') {
+                    /* if (field_type == 'checkbox') {
                         if ($('.group_' + dragged_group_id).length > 1) {
                             $('.group_' + dragged_group_id).each(function () {
                                 $(this).css({ left: dragged_x });
                                 set_hwxy($(this), '', field_type);
                             });
                         }
-                    }
+                    } */
 
                     setTimeout(function() {
                         set_hwxy(dragged_ele, '', field_type);
