@@ -767,7 +767,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                     .then(function (response) {
 
                         /* $('#upload_preview').html('<img src="'+response.data.upload_location+'" width="100%">'); */
-                        $('#upload_preview').html('<embed src="'+response.data.upload_location+'#view=FitH" width="100%" height="100%">');
+                        $('#upload_preview').html('<embed src="'+response.data.upload_location+'#view=FitW" width="100%" height="100%">');
 
                         $('.form-names').fadeIn('slow');
                         $('#form_names_div').collapse('show');
