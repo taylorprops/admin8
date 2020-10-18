@@ -30,7 +30,7 @@
             <div class="tab-content">
                 @foreach ($form_groups as $form_group)
                     <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $form_group -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $form_group -> resource_id }}">
-                        <div class="h3-responsive text-primary">{{ $form_group -> resource_name }}</div>
+                        <div class="h3-responsive text-orange">{{ $form_group -> resource_name }}</div>
                         <div class="row">
                             <div class="col-7">
                                 <div class="row">
@@ -372,9 +372,10 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade draggable" id="add_upload_modal" tabindex="-1" role="dialog" aria-labelledby="add_upload_modal_title" aria-hidden="true">
         <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <form id="upload_file_form" enctype="multipart/form-data">
                     <div class="modal-header draggable-handle">
@@ -386,75 +387,125 @@
                     <div class="modal-body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-12">
-                                    <input type="file" class="custom-form-element form-input-file  required" name="file_upload" id="file_upload" data-label="Select File">
+                                <div class="col-12 col-md-6">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input type="file" class="custom-form-element form-input-file required" name="file_upload" id="file_upload" data-label="Select File">
+                                        </div>
+                                    </div>
+                                    <div class="row form-names hidden mt-2">
+                                        <div class="col-12">
+                                            <div class="p-2">
+                                                <a class="btn btn-primary show-forms-button" data-toggle="collapse" href="#form_names_div" role="button" aria-expanded="false" aria-controls="form_names_div">
+                                                    Show Form Names
+                                                </a>
+                                                <div id="form_names_div" class="collapse">
+                                                    <div id="form_names" class="border-orange rounded p-2"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-11">
+                                            <input type="text" class="custom-form-element form-input required" name="file_name_display" id="file_name_display" data-label="Form Name">
+                                        </div>
+                                        <div class="col-1">
+                                            <div class="d-flex align-items-center h-100">
+                                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Form Name" data-content="This is how the form will be labeled"><i class="fad fa-question-circle fa-lg"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <select name="form_categories[]" id="form_categories" class="custom-form-element form-select form-select-no-search form-select-no-cancel form-select-no-search required" data-label="Form Categories" multiple>
+                                                <option value=""></option>
+                                                @foreach($resources -> where('resource_type', 'form_categories') as $resource)
+                                                    <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-1">
+                                            <div class="d-flex align-items-center h-100">
+                                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Form Categories" data-content="Categories are used when searching for forms. A user can select the category and get a list of all forms in that category."><i class="fad fa-question-circle fa-lg"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <select name="form_tags" id="form_tags" class="custom-form-element form-select form-select-no-cancel form-select-no-search form-select-no-search" data-label="Form Tags">
+                                                <option value=""></option>
+                                                @foreach($resources -> where('resource_type', 'form_tags') as $resource)
+                                                    <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-1">
+                                            <div class="d-flex align-items-center h-100">
+                                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Form Tags" data-content="Form tags are like categories except they are not known to the user. Their purpose is to make a form in a checklist either required or remove the form. For instance, if the property has an HOA assoication all forms with the tag hoa would be required on the checklist."><i class="fad fa-question-circle fa-lg"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <select name="checklist_group_id" id="checklist_group_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search form-select-no-search required" data-label="Checklist Group">
+                                                <option value=""></option>
+                                                @foreach($checklist_groups as $checklist_group)
+                                                    <option value="{{ $checklist_group -> resource_id }}">{{ $checklist_group -> resource_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-1">
+                                            <div class="d-flex align-items-center h-100">
+                                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Checklist Groups" data-content="On each checklist forms are divided by Checklist Groups. Every form will go into one of the groups"><i class="fad fa-question-circle fa-lg"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <select name="form_group_id" id="form_group_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Form Group">
+                                                <option value=""></option>
+                                                @foreach($resources as $resource)
+                                                    @if($resource -> resource_type == 'form_groups')
+                                                    <option value="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">{{ $resource -> resource_name }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-1">
+                                            <div class="d-flex align-items-center h-100">
+                                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Form Groups" data-content="Form Groups are the Association or Other Custom groups the form originated from."><i class="fad fa-question-circle fa-lg"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <select name="state" id="state" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="State">
+                                                <option value=""></option>
+                                                <option value="All">All</option>
+                                                @foreach($states as $state)
+                                                <option value="{{ $state }}">{{ $state }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <textarea name="helper_text" id="helper_text" class="custom-form-element form-textarea" data-label="Helper Text"></textarea>
+                                        </div>
+                                        <div class="col-1">
+                                            <div class="d-flex align-items-center h-100">
+                                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Form Groups" data-content="This is diplayed on each checklist item. This description along with a link to view/download the form will be provided (if there is a form associated with the checklist item. Checklist items without forms such as an ALTA will include instructions such as 'Signed, combined ALTA from the Title Company'."><i class="fad fa-question-circle fa-lg"></i></a>
+                                        </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <input type="text" class="custom-form-element form-input required" name="file_name_display" id="file_name_display" data-label="Form Name">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <select name="form_categories[]" id="form_categories" class="custom-form-element form-select form-select-no-search form-select-no-cancel form-select-no-search required" data-label="Form Categories" multiple>
-                                        <option value=""></option>
-                                        @foreach($resources -> where('resource_type', 'form_categories') as $resource)
-                                            <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <select name="form_tags" id="form_tags" class="custom-form-element form-select form-select-no-cancel form-select-no-search form-select-no-search" data-label="Form Tags">
-                                        <option value=""></option>
-                                        @foreach($resources -> where('resource_type', 'form_tags') as $resource)
-                                            <option value="{{ $resource -> resource_id }}">{{ $resource -> resource_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <select name="checklist_group_id" id="checklist_group_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search form-select-no-search required" data-label="Checklist Group">
-                                        <option value=""></option>
-                                        @foreach($checklist_groups as $checklist_group)
-                                            <option value="{{ $checklist_group -> resource_id }}">{{ $checklist_group -> resource_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <select name="form_group_id" id="form_group_id" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="Form Group">
-                                        <option value=""></option>
-                                        @foreach($resources as $resource)
-                                            @if($resource -> resource_type == 'form_groups')
-                                            <option value="{{ $resource -> resource_id }}" data-state="{{ $resource -> resource_state }}">{{ $resource -> resource_name }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <select name="state" id="state" class="custom-form-element form-select form-select-no-cancel form-select-no-search required" data-label="State">
-                                        <option value=""></option>
-                                        <option value="All">All</option>
-                                        @foreach($states as $state)
-                                        <option value="{{ $state }}">{{ $state }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <textarea name="helper_text" id="helper_text" class="custom-form-element form-textarea" data-label="Helper Text"></textarea>
+                                <div class="col-12 col-md-6">
+                                    <div id="upload_preview" class="w-100"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="modal-footer d-flex justify-content-center">
                         <a class="btn btn-primary" id="upload_file_button"><i class="fad fa-upload mr-2"></i> Upload Form</a>
                     </div>
@@ -462,6 +513,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade modal-confirm" id="confirm_publish_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_publish_modal_title"
         aria-hidden="true">
         <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
@@ -484,6 +536,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade modal-confirm" id="confirm_delete_modal" tabindex="-1" role="dialog" aria-labelledby="confirm_delete_modal_title"
         aria-hidden="true">
         <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
@@ -505,5 +558,6 @@
             </div>
         </div>
     </div>
+
 </div><!-- ./ .container -->
 @endsection

@@ -1,6 +1,6 @@
 if (document.URL.match(/transaction_add_details_/)) {
 
-    $(document).ready(function () {
+    $(function() {
 
         // format list and contract price
         if($('#list_price').length > 0) {

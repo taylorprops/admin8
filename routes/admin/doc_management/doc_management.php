@@ -46,6 +46,8 @@ Route::middleware('admin') -> group(function () {
     Route::post('/doc_management/replace_upload', 'DocManagement\Create\UploadController@replace_upload');
     // Remove uploaded files in checklists
     Route::post('/doc_management/remove_upload', 'DocManagement\Create\UploadController@remove_upload');
+    // get upload text
+    Route::post('/doc_management/get_upload_text', 'DocManagement\Create\UploadController@get_upload_text');
 
     /* Add Resource  */
     Route::post('/doc_management/resources/add', 'DocManagement\Resources\ResourcesController@resources_add');

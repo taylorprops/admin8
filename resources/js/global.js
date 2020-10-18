@@ -1,6 +1,6 @@
 import datepicker from 'js-datepicker';
 
-$(document).ready(function () {
+$(function() {
 
     /* global_page_transition(); */
 

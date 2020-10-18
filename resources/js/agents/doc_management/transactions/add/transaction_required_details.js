@@ -1,6 +1,6 @@
 if (document.URL.match(/transaction_required_details/)) {
 // TODO: need to add company, bank, LLC  as seller
-    $(document).ready(function () {
+    $(function() {
 
         form_elements();
 

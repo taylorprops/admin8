@@ -4,7 +4,7 @@ const writtenNumber = require('written-number');
 
 if (document.URL.match(/edit_files/)) {
 
-    $(document).ready(function () {
+    $(function() {
 
 
 

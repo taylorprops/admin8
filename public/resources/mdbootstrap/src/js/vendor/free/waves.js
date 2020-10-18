@@ -595,7 +595,7 @@
 
   return Waves;
 });
-$(document).ready(function () {
+$(function() {
   //Initialization
   Waves.attach('.btn:not(.btn-flat), .btn-floating', ['waves-light']);
   Waves.attach('.btn-flat');

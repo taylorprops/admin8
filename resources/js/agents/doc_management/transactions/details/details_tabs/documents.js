@@ -3,7 +3,7 @@ import Sortable from 'sortablejs';
 if (document.URL.match(/transaction_details/)) {
 
 
-    $(document).ready(function () {
+    $(function() {
 
         $(document).on('click', '.add-folder-button', show_add_folder);
 

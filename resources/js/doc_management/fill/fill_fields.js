@@ -4,7 +4,7 @@ import datepicker from 'js-datepicker';
 
 if (document.URL.match(/create\/fill_fields/)) {
 
-    $(document).ready(function () {
+    $(function() {
 
         form_elements();
 

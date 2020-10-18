@@ -394,8 +394,6 @@ window.form_elements = function () {
         });
     }
 
-
-
     // show dropdown on focus or click
 
     $('.form-select-value-input').on('focus', function (e) {
@@ -407,7 +405,6 @@ window.form_elements = function () {
         $(this).addClass('form-select-value-input-focus');
         show_dropdown($(this));
     });
-
 
 
 }
@@ -461,7 +458,7 @@ function hide_dropdowns() {
     $('.form-select-value-input').removeClass('form-select-value-input-focus');
 }
 
-$(document).mouseup(function (e) {
+$(document).on('mouseup', function (e) {
     let container = $('.form-select-wrapper');
     if (!container.is(e.target) && container.has(e.target).length === 0) {
         container.find('.form-select-dropdown').removeClass('active').hide();

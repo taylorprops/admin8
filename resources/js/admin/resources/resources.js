@@ -1,7 +1,7 @@
 
 if (document.URL.match('/resources_admin')) {
 
-    $(document).ready(function () {
+    $(function() {
 
 
         $('.sortable').sortable({

@@ -1,6 +1,6 @@
 if (document.URL.match(/create\/upload\/files/)) {
 
-    $(document).ready(function () {
+    $(function() {
 
         init();
 
@@ -26,7 +26,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         global_loading_on('', '<div class="h3-responsive text-white">Loading...</div>');
 
-        form_group = $('#list_div_'+form_group_id+'_files');
+        let form_group = $('#list_div_'+form_group_id+'_files');
         let options = {
             params: {
                 form_group_id: form_group_id,
@@ -154,6 +154,7 @@ if (document.URL.match(/create\/upload\/files/)) {
             });
 
             global_tooltip();
+            select_refresh();
 
         })
         .catch(function (error) {
@@ -736,6 +737,8 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         $('#add_upload_modal').modal();
 
+        $('#form_name').html('');
+
         let state = ele.data('state');
         let form_group_id = ele.data('form-group-id');
         $('#form_group_id').val(form_group_id);
@@ -745,22 +748,70 @@ if (document.URL.match(/create\/upload\/files/)) {
         $('#form_tags').val('');
         $('#checklist_group_id').val('');
 
+        $('.show-forms-button').hide();
+
         select_refresh();
 
         setTimeout(function () {
-            $('.file-path').bind('change', function () {
-                let form_name = $('.file-path').val().replace(/\.pdf/, '');
+
+            $('#file_upload').on('change', function () {
+
+                if($(this).val() != '') {
+
+                    global_loading_on('', '<div class="h5 text-white">Scanning Upload</div>');
+
+                    let form = $('#upload_file_form');
+                    let formData = new FormData(form[0]);
+
+                    axios.post('/doc_management/get_upload_text', formData, axios_options)
+                    .then(function (response) {
+
+                        /* $('#upload_preview').html('<img src="'+response.data.upload_location+'" width="100%">'); */
+                        $('#upload_preview').html('<embed src="'+response.data.upload_location+'#view=FitH" width="100%" height="100%">');
+
+                        $('.form-names').fadeIn('slow');
+                        $('#form_names_div').collapse('show');
+                        $('#form_name').html('<h5 class="text-orange">Select and/or Edit Form Name</h5>');
+
+                        response.data.titles.forEach(function(title) {
+                            let row = ' \
+                            <div class="d-flex justify-content-start align-items-center title-option w-100"> \
+                                <div><a href="javascript: void(0)" class="btn btn-success add-title">Select</a></div> \
+                                <div class="w-100"><input type="text" class="custom-form-element form-input" value="' + title + '"></div> \
+                            </div> \
+                            ';
+                            $('#form_names').append(row);
+                        });
+                        select_refresh();
+                        global_loading_off();
+
+                        $('.add-title').on('click', function() {
+                            $('.show-forms-button').show();
+                            let title = $(this).closest('.title-option').find('input').val();
+                            $('#file_name_display, #helper_text').val(title).trigger('change');
+                            $('#form_names_div').collapse('hide');
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
+
+
+                /* let form_name = $('.file-path').val().replace(/\.pdf/, '');
                 form_name = form_name.replace(/^[0-9\.\s-]+/, '');
                 form_name = form_name.replace(/^\([a-zA-Z\s]+\)/, '');
                 form_name = form_name.replace(/^[-\s]{1}/, '');
                 form_name = form_name.replace(/[0-9\.\s_-]+$/, '');
-                $('#file_name_display, #helper_text').val(form_name).trigger('change');
+                $('#file_name_display, #helper_text').val(form_name).trigger('change'); */
             });
             $('#form_group_id').on('change', function () {
                 $('#state').val(ele.find('option:selected').data('state'));
                 select_refresh();
             });
         }, 500);
+
     }
 
     function upload_file() {

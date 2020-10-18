@@ -6,7 +6,7 @@
 
 if (document.URL.match('/resources$')) {
 
-    $(document).ready(function () {
+    $(function() {
 
 
         $('.sortable').sortable({

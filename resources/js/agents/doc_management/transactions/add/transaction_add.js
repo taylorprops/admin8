@@ -2,7 +2,7 @@
 
 if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
 
-    $(document).ready(function () {
+    $(function() {
 
         form_elements();
 

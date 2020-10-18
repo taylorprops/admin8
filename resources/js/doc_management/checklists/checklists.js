@@ -1,6 +1,6 @@
 if (document.URL.match(/checklists/)) {
 
-    $(document).ready(function () {
+    $(function() {
 
         load_checklists();
 
@@ -57,7 +57,7 @@ if (document.URL.match(/checklists/)) {
 
         // toggle listing and contract checklists
         checklist_type();
-        $('.checklist-type-option').unbind('change').bind('change', function () {
+        $('.checklist-type-option').unbind('change').on('change', function () {
             checklist_type();
         });
 
@@ -572,7 +572,7 @@ if (document.URL.match(/checklists/)) {
 
         show_hide_options();
 
-        $('#checklist_type, #checklist_property_type_id, #checklist_sale_rent, #checklist_property_sub_type_id, #checklist_represent').unbind('change').bind('change', show_hide_options);
+        $('#checklist_type, #checklist_property_type_id, #checklist_sale_rent, #checklist_property_sub_type_id, #checklist_represent').unbind('change').on('change', show_hide_options);
 
 
         $('#save_checklist_button').off('click').on('click', save_checklist);

@@ -1,6 +1,6 @@
 if (document.URL.match(/create\/add_fields/)) {
 
-    $(document).ready(function () {
+    $(function() {
 
 
         // TODO run field_status() after any add or remove
@@ -499,7 +499,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
 
                     //auto populate helper text from field name
-                    select.unbind('change').bind('change', function () {
+                    select.unbind('change').on('change', function () {
 
                         if (select.val() != '') {
                             edit_div.find('.form-input.field-data-name').val('').trigger('change');

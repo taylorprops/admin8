@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use File;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use thiagoalessio\TesseractOCR\TesseractOCR;
 
 class UploadController extends Controller {
 
@@ -349,6 +350,62 @@ class UploadController extends Controller {
         $upload -> checklist_group_id = $checklist_group_id;
         $upload -> form_group_id = $form_group_id;
         $upload -> save();
+    }
+
+    public function get_upload_text(Request $request) {
+
+        $upload = $request -> file('file_upload');
+
+        $new_file_name = str_replace('.pdf', '', $upload -> getClientOriginalName());
+        $new_file_name_pdf = date('YmdHis').'_'.sanitize($new_file_name).'.pdf';
+        $new_file_name_image = date('YmdHis').'_'.sanitize($new_file_name).'.png';
+
+        Storage::disk('public') -> put('tmp/'.$new_file_name_pdf, file_get_contents($upload));
+
+        exec('convert -density 300 -quality 100 -flatten '.$upload.'[0] '.Storage::disk('public') -> path('tmp/'.$new_file_name_image));
+
+        $text = (new TesseractOCR(Storage::disk('public') -> path('tmp/'.$new_file_name_image)))
+            -> whitelist(range('a', 'z'), '-_ \'')
+            -> run();
+
+        $temp_text_file =  '/tmp/'.date('YmdHis').'.txt';
+        Storage::disk('public') -> put($temp_text_file, $text);
+
+        $fn = fopen(Storage::disk('public') -> path($temp_text_file), 'r');
+        $lines = [];
+        while(! feof($fn))  {
+            $lines[] = fgets($fn);
+        }
+        fclose($fn);
+
+        $titles = [];
+        foreach($lines as $line) {
+            $line = trim(urldecode($line));
+            $line = iconv('UTF-8', 'ASCII//IGNORE//TRANSLIT', $line);
+
+            // get words
+            if(preg_match('/^[a-zA-Z\s-_]+/', $line, $matches)) {
+                // remove non form names
+                if(!preg_match('/(realtor|association|commission)/i', $matches[0])) {
+                    // if more than one word in name
+                    preg_match_all('/\S+/', $matches[0], $words);
+                    if(count($words[0]) > 1) {
+                        $titles[] = ucwords(strtolower($matches[0]));
+                    }
+                }
+            }
+        }
+
+        $titles = array_slice($titles, 0, 15);
+
+        $upload_location = '/storage/tmp/'.$new_file_name_pdf;
+
+        return response() -> json([
+            'upload_location' => $upload_location,
+            'titles' => $titles
+        ]);
+
+
     }
 
     public function upload_file(Request $request) {
