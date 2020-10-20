@@ -18,7 +18,7 @@ function get_value_radio_checkbox($values, $id) {
 
         if ($value['input_id'] == $id) {
 
-            if ($value['input_value'] != '') {
+            if ($value['input_value'] == 'checked') {
                 return 'checked="checked"';
             } else {
                 return '';

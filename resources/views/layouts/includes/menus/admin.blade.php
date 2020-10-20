@@ -1,8 +1,8 @@
-<li class="nav-item">
+<li class="nav-item mx-2">
     <a href="/dashboard_admin" class="nav-link"> Dashboard</a>
 </li>
 
-<li class="nav-item dropdown">
+<li class="nav-item dropdown mx-2">
 
     <a class="nav-link dropdown-toggle" href="javascript: void(0)" id="management_dropdown" role="button" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
@@ -29,7 +29,7 @@
 
 </li>
 
-<li class="nav-item dropdown">
+<li class="nav-item dropdown mx-2">
 
     <a class="nav-link dropdown-toggle" href="javascript: void(0)" id="transactions_dropdown" role="button" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
@@ -61,7 +61,7 @@
 
 </li>
 
-<li class="nav-item">
+<li class="nav-item mx-2">
     <a href="/doc_management/document_review" class="nav-link">Review Documents</a>
 </li>
 

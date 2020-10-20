@@ -125,6 +125,8 @@ class TransactionsEditFilesController extends Controller
 
     public function convert_to_pdf(Request $request) {
 
+        $time = [];
+
         $Listing_ID = $request -> Listing_ID ?? 0;
         $Contract_ID = $request -> Contract_ID ?? 0;
         $Referral_ID = $request -> Referral_ID ?? 0;
@@ -132,13 +134,11 @@ class TransactionsEditFilesController extends Controller
         $file_id = $request -> file_id;
         $file_type = $request -> file_type;
 
-        if($transaction_type == 'listing') {
-            $path = 'listings/'.$Listing_ID;
-        } else if($transaction_type == 'contract') {
-            $path = 'contracts/'.$Contract_ID;
-        } else if($transaction_type == 'referral') {
-            $path = 'referrals/'.$Referral_ID;
-        }
+        $path = [
+            'listing' => 'listings/'.$Listing_ID,
+            'contract' => 'contracts/'.$Contract_ID,
+            'referral' => 'referrals/'.$Referral_ID
+        ][$transaction_type];
 
         $upload_dir = 'doc_management/transactions/' . $path . '/' . $file_id . '_'.$file_type;
 
@@ -211,6 +211,7 @@ class TransactionsEditFilesController extends Controller
         $destination = $full_path_dir.'/converted_images';
         $checklist_item_docs_model -> convert_doc_to_images($source, $destination, $image_filename, $file_id);
 
+
     }
 
     public function rotate_document(Request $request) {
@@ -221,13 +222,11 @@ class TransactionsEditFilesController extends Controller
         $Referral_ID = $request -> Referral_ID ?? 0;
         $transaction_type = $request -> transaction_type;
 
-        if($transaction_type == 'listing') {
-            $path = 'listings/'.$Listing_ID;
-        } else if($transaction_type == 'contract') {
-            $path = 'contracts/'.$Contract_ID;
-        } else if($transaction_type == 'referral') {
-            $path = 'referrals/'.$Referral_ID;
-        }
+        $path = [
+            'listing' => 'listings/'.$Listing_ID,
+            'contract' => 'contracts/'.$Contract_ID,
+            'referral' => 'referrals/'.$Referral_ID
+        ][$transaction_type];
 
         $folder = 'public/doc_management/transactions/' . $path . '/' . $file_id.'_'.$file_type.'/';
         $files = Storage::allFiles($folder);

@@ -2,7 +2,7 @@
 
     <nav class="navbar navbar-expand-xl fixed-top navbar-sticky navbar-dark bg-primary navbar-hover" id="main_nav_bar">
 
-        <a class="header-logo-link text-center" href="javascript: void(0)"><img src="{{ \Session::get('header_logo_src') }}" class="header-logo"></a>
+        <a class="header-logo-link text-center mr-5" href="javascript: void(0)"><img src="{{ \Session::get('header_logo_src') }}" class="header-logo"></a>
 
         <div class="mr-5">
             <input class="main-search-input top" type="text" placeholder="Search" aria-label="Search">
@@ -13,7 +13,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="main_nav_collapse">
-            <ul class="navbar-nav mt-4 mt-xl-auto">
+            <ul class="navbar-nav mr-5 mt-4 mt-xl-auto">
 
                 @if(auth() -> user() -> group == 'admin')
 

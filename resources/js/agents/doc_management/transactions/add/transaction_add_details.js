@@ -5,12 +5,12 @@ if (document.URL.match(/transaction_add_details_/)) {
         // format list and contract price
         if($('#list_price').length > 0) {
             format_money($('#list_price'));
-            $('#list_price').keyup(function() {
+            $('#list_price').on('keyup', function() {
                 format_money($(this));
             });
         } else {
             format_money($('#contract_price'));
-            $('#contract_price').keyup(function() {
+            $('#contract_price').on('keyup', function() {
                 format_money($(this));
             });
         }

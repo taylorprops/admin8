@@ -14422,6 +14422,9 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 .page-add-fields {
   overflow-x: hidden;
   border: 1px solid #dee2e6;
+  /* .form-div h5 {
+      padding-bottom: 5px;
+  } */
 }
 
 .page-add-fields .file-viewer-container {
@@ -14668,8 +14671,14 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   z-index: 5;
 }
 
-.page-add-fields .form-div h5 {
-  padding-bottom: 5px;
+.page-add-fields #edit_properties_modal h5 {
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+.page-add-fields #edit_properties_modal .form-ele {
+  margin-top: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 @media (max-width: 1500px) {
@@ -15984,11 +15993,18 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   line-height: 80%;
 }
 
-.page-fill-fields .field-div:not(.user-field-div) {
+.page-fill-fields .field-div:not(.user-field-div):not(.radio) {
   background: rgba(223, 121, 53, 0.1);
   cursor: pointer;
   color: #000;
   box-shadow: none;
+}
+
+.page-fill-fields .field-div.radio {
+  background: transparent;
+  cursor: pointer;
+  color: #000;
+  border-color: black;
 }
 
 .page-fill-fields .user-field-div {

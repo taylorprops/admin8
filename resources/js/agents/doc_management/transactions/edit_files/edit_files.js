@@ -1,5 +1,5 @@
 const writtenNumber = require('written-number');
-/* import datepicker from 'js-datepicker'; */
+import datepicker from 'js-datepicker';
 
 
 if (document.URL.match(/edit_files/)) {
@@ -757,49 +757,59 @@ if (document.URL.match(/edit_files/)) {
     }
 
     function save_field_input_values(on_load) {
+
         let field_data = [];
 
-        $('.fillable-field-input').not('div.fillable-field-input').each(function () {
-            let input_value = '';
-            let input_id = $(this).attr('id');
-            let file_id = $('#file_id').val();
-            let file_type = $('#file_type').val();
-            let common_name = $(this).data('common-name');
-            let Listing_ID = $('#Listing_ID').val();
-            let Contract_ID = $('#Contract_ID').val();
-            let Referral_ID = $('#Referral_ID').val();
-            let transaction_type = $('#transaction_type').val();
-            let Agent_ID = $('#Agent_ID').val();
-            if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
-                if ($(this).is(':checked')) {
+        if($('.fillable-field-input').not('div.fillable-field-input').length > 0) {
+
+            $('.fillable-field-input').not('div.fillable-field-input').each(function () {
+                let input_value = '';
+                let input_id = $(this).attr('id');
+                let file_id = $('#file_id').val();
+                let file_type = $('#file_type').val();
+                let common_name = $(this).data('common-name');
+                let Listing_ID = $('#Listing_ID').val();
+                let Contract_ID = $('#Contract_ID').val();
+                let Referral_ID = $('#Referral_ID').val();
+                let transaction_type = $('#transaction_type').val();
+                let Agent_ID = $('#Agent_ID').val();
+                if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
+                    if ($(this).is(':checked')) {
+                        input_value = 'checked';
+                    }
+                } else {
                     input_value = $(this).val();
                 }
-            } else {
-                input_value = $(this).val();
-            }
 
-            field_data.push({
-                input_id: input_id,
-                input_value: input_value,
-                file_id: file_id,
-                file_type: file_type,
-                common_name: common_name,
-                Listing_ID: Listing_ID,
-                Contract_ID: Contract_ID,
-                Referral_ID: Referral_ID,
-                transaction_type: transaction_type,
-                Agent_ID: Agent_ID
+                field_data.push({
+                    input_id: input_id,
+                    input_value: input_value,
+                    file_id: file_id,
+                    file_type: file_type,
+                    common_name: common_name,
+                    Listing_ID: Listing_ID,
+                    Contract_ID: Contract_ID,
+                    Referral_ID: Referral_ID,
+                    transaction_type: transaction_type,
+                    Agent_ID: Agent_ID
+                });
             });
-        });
-        axios.post('/agents/doc_management/transactions/edit_files/save_field_input_values', field_data, axios_options)
-            .then(function (response) {
-                if(on_load == 'no') {
-                    to_pdf();
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+            axios.post('/agents/doc_management/transactions/edit_files/save_field_input_values', field_data, axios_options)
+                .then(function (response) {
+                    if(on_load == 'no') {
+                        to_pdf();
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+        } else {
+
+            toastr['warning']('Nothing to save');
+
+        }
+
     }
 
     function fill_fields(type, group_id, form_div, fill_type) {

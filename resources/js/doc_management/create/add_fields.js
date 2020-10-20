@@ -166,16 +166,16 @@ if (document.URL.match(/create\/add_fields/)) {
 
         });
 
-        $(document).on('keyup', '[data-field-type="custom"]', function() {
+        /* $(document).on('keyup', '[data-field-type="custom"]', function() {
             let helper_text_input = $(this).closest('.form-div').find('.field-data-helper-text');
             if(helper_text_input.val() == '') {
                 $(this).bind('keyup change', function() {
                     helper_text_input.val($(this).val()).trigger('change');
                 });
             }
-        });
+        }); */
 
-        $('.delete-page-button').click(delete_page);
+        $('.delete-page-button').on('click', delete_page);
 
         function delete_page() {
             let page = $(this).data('page-number');
@@ -452,7 +452,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     // set new h,w,x,y after moving up and down
                     set_hwxy(field_div, '', field_type);
                 });
-                $(document).mouseup(function (e) {
+                $(document).on('mouseup', function (e) {
                     if (!minislider.is(e.target) && minislider.has(e.target).length === 0) {
                         minislider.hide();
                     }
@@ -460,7 +460,7 @@ if (document.URL.match(/create\/add_fields/)) {
             });
 
             // add properties
-            $('.field-properties').unbind('click').bind('click', function () {
+            $('.field-properties').off('click').on('click', function () {
                 let field_type = $(this).data('field-type');
                 let edit_div = $(this).closest('.field-options-holder').siblings('.edit-properties-div');
 
@@ -470,7 +470,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 $('.modal-backdrop').appendTo(edit_div.closest('.field-div'));
 
                 // prevent new field being created
-                $('.edit-properties-div *').dblclick(function (event) {
+                $('.edit-properties-div *').on('dblclick', function (event) {
                     event.stopPropagation();
                 });
 
@@ -489,26 +489,26 @@ if (document.URL.match(/create\/add_fields/)) {
                 // auto populate helper text for address fields - they will always be the same as the address type
                 if (field_type == 'address') {
 
-                    edit_div.find('.field-data-address-type').on('change', function () {
+                    /* edit_div.find('.field-data-address-type').on('change', function () {
                         let helper_text = $(this).find('option:selected').text();
                         let helper_text_input = edit_div.find('.field-data-helper-text');
                         helper_text_input.val(helper_text).trigger('change');
-                    });
+                    }); */
 
                 } else if (field_type == 'name' || field_type == 'date' || field_type == 'textline') {
 
 
                     //auto populate helper text from field name
-                    select.unbind('change').on('change', function () {
+                    select.off('change').on('change', function () {
 
                         if (select.val() != '') {
                             edit_div.find('.form-input.field-data-name').val('').trigger('change');
                         }
 
-                        let helper_text = select.find('option:selected').text();
+                        /* let helper_text = select.find('option:selected').text();
 
                         let helper_text_input = edit_div.find('.field-data-helper-text');
-                        helper_text_input.val(helper_text).trigger('change');
+                        helper_text_input.val(helper_text).trigger('change'); */
 
 
                         inputs_container.html('');
@@ -550,13 +550,13 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 } else if (field_type == 'number') {
 
-                    edit_div.find('.form-select.field-data-name').on('change', function () {
+                    /* edit_div.find('.form-select.field-data-name').on('change', function () {
                         let helper_text = $(this).find('option:selected').text();
                         let helper_text_input = edit_div.find('.field-data-helper-text');
                         if(helper_text_input.val() == '') {
                             helper_text_input.val(helper_text).data('default-value', helper_text).trigger('change');
                         }
-                    });
+                    }); */
 
                 }
 
@@ -621,7 +621,12 @@ if (document.URL.match(/create\/add_fields/)) {
                         let checkbox = form.find('input.field-data-checkbox-value');
                         let checkbox_value = checkbox.val();
                         checkbox.data('default-value', checkbox_value);
-                        form.find('.form-input.field-data-name').data('default-value', custom_name);
+                        $('.group_' + group_id).each(function () {
+                            $(this).data('commonname', common_name).data('customname', custom_name);
+                            $(this).find('.form-div').each(function () {
+                                $(this).find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
+                            });
+                        });
 
                     } else if (type == 'radio') {
 
@@ -740,7 +745,7 @@ if (document.URL.match(/create\/add_fields/)) {
             let input_id = Date.now();
             let custom_name_heading;
             if (type == 'radio') {
-                custom_name_heading = 'Radio Group Name';
+                custom_name_heading = 'Radio Button Group Name';
             } else {
                 custom_name_heading = 'Custom Name';
             }
@@ -753,16 +758,13 @@ if (document.URL.match(/create\/add_fields/)) {
                     </button> \
                 </div> \
                 <div class="modal-body"> \
-                    <h5 class="text-primary mt-4 mb-2">Type -'+ type.toUpperCase() + '</h5> \
+                    <div class="h5-responsive text-orange my-2">'+ type.toUpperCase() + '</div> \
                     <div class="form-div"> \
                         <div class="container"> \
                             <div class="row"> \
-                                <div class="col-12"> \
-                                    <h5 class="text-primary mt-4 mb-2">Field Name</h5> \
-                                </div> \
             ';
             if (type != 'checkbox' && type != 'radio') {
-                properties = properties + ' \
+                properties += ' \
                                 <div class="col-12"> \
                                     <select class="custom-form-element form-select field-data-name" id="name_select_'+ field_id + '" data-field-type="common" data-label="Select Common Name (Shared)"> \
                                         <option value="">&nbsp;</option> \
@@ -772,18 +774,18 @@ if (document.URL.match(/create\/add_fields/)) {
                                 <div class="text-primary text-center w-100">OR</div> \
                 ';
             }
-            properties = properties + ' \
+            properties += ' \
                                 <div class="col-12"> \
                                     <input type="text" class="custom-form-element form-input field-data-name" id="name_input_'+ field_id + '" data-field-type="custom" data-label="' + custom_name_heading + '"> \
                                 </div> \
                             </div> \
             ';
+            if (type != 'checkbox' && type != 'radio') {
+                properties += '<div class="row"><div class="col-12"><hr></div></div>';
+            }
             if (type == 'number') {
-                properties = properties + ' \
+                properties += ' \
                             <div class="row"> \
-                                <div class="col-12"> \
-                                    <h5 class="text-primary mt-4 mb-2">Number Type</h5> \
-                                </div> \
                                 <div class="col-12"> \
                                     <select class="custom-form-element form-select field-data-number-type" id="number_select_'+ field_id + '" data-field-type="number-type" data-label="Number Type"> \
                                         <option value="">&nbsp;</option> \
@@ -794,13 +796,10 @@ if (document.URL.match(/create\/add_fields/)) {
                             </div> \
                 ';
             } else if (type == 'textline') {
-                properties = properties + ' \
+                properties += ' \
                             <div class="row"> \
                                 <div class="col-12"> \
-                                    <h5 class="text-primary mt-4 mb-2">Text Type <small>(Optional - Use to format the value)</small></h5> \
-                                </div> \
-                                <div class="col-12"> \
-                                    <select class="custom-form-element form-select field-data-textline-type" id="textline_select_'+ field_id + '" data-field-type="textline-type" data-label="Text Type"> \
+                                    <select class="custom-form-element form-select field-data-textline-type" id="textline_select_'+ field_id + '" data-field-type="textline-type" data-label="Format Type - Optional"> \
                                         <option value="">&nbsp;</option> \
                                         <option value="number numbers-only">Number</option> \
                                         <option value="phone numbers-only">Phone Number</option> \
@@ -809,11 +808,8 @@ if (document.URL.match(/create\/add_fields/)) {
                             </div> \
                 ';
             } else if (type == 'address') {
-                properties = properties + ' \
+                properties += ' \
                             <div class="row"> \
-                                <div class="col-12"> \
-                                    <h5 class="text-primary mt-4 mb-2">Address Type</h5> \
-                                </div> \
                                 <div class="col-12"> \
                                     <select class="custom-form-element form-select field-data-address-type" id="address_select_'+ field_id + '" data-field-type="address-type" data-label="Address Type"> \
                                         <option value="">&nbsp;</option> \
@@ -827,50 +823,43 @@ if (document.URL.match(/create\/add_fields/)) {
                                 </div> \
                             </div> \
                 ';
-            } else if (type == 'radio') {
-                properties = properties + ' \
+            } /* else if (type == 'radio') {
+                properties += ' \
                             <div class="row"> \
-                                <div class="col-12"> \
-                                    <h5 class="text-primary mt-4 mb-2">Radio Input Value</h5> \
-                                </div> \
                                 <div class="col-12"> \
                                     <input type="text" class="custom-form-element form-input field-data-radio-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
                                 </div> \
                             </div> \
                 ';
             } else if (type == 'checkbox') {
-                properties = properties + ' \
+                properties += ' \
                             <div class="row"> \
-                                <div class="col-12"> \
-                                    <h5 class="text-primary mt-4 mb-2">Checkbox Value</h5> \
-                                </div> \
                                 <div class="col-12"> \
                                     <input type="text" class="custom-form-element form-input field-data-checkbox-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
                                 </div> \
                             </div> \
                 ';
+            } */
+            if (type != 'checkbox' && type != 'radio') {
+                properties += ' \
+                                <div class="row"> \
+                                    <div class="col-12"> \
+                                        <input type="text" class="custom-form-element form-input field-data-helper-text" id="helper_text_input_'+ field_id + '" data-label="Helper Text - Optional"> \
+                                    </div> \
+                                </div> \
+                ';
             }
-            properties = properties + ' \
-                            <div class="row"> \
-                                <div class="col-12"> \
-                                    <h5 class="text-primary mt-4 mb-2">Helper Text</h5> \
-                                </div> \
-                                <div class="col-12"> \
-                                    <input type="text" class="custom-form-element form-input field-data-helper-text" id="helper_text_input_'+ field_id + '" data-label="Helper Text"> \
-                                </div> \
-                            </div> \
-            ';
             if (type == 'address' || type == 'name') {
-                properties = properties + ' \
+                properties += ' \
                             <div class="row"> \
                                 <div class="col-12"> \
-                                    <h5 class="text-primary mt-4 mb-2">Inputs</h5> \
+                                    <div class="text-gray font-weight-bold mt-3">Inputs</div> \
                                 </div> \
                                 <div class="col-12"> \
                                     <div class="container field-data-inputs-container"> \
                 ';
                 if (type == 'name') {
-                    properties = properties + ' \
+                    properties += ' \
                                         <div class="row field-data-inputs-div"> \
                                             <div class="col-12"> \
                                                 <div class="border border-primary p-2 mb-4"> \
@@ -919,7 +908,7 @@ if (document.URL.match(/create\/add_fields/)) {
                         let input_helper_text = inputs[key]['helper'];
                         let inputs_ids = input_id + c;
 
-                        properties = properties + ' \
+                        properties += ' \
                                         <div class="row field-data-inputs-div"> \
                                             <div class="col-12"> \
                                                 <div class="border border-primary p-2 mb-4"> \
@@ -938,22 +927,22 @@ if (document.URL.match(/create\/add_fields/)) {
                         ';
                     }
                 }
-                properties = properties + ' \
+                properties += ' \
                                     </div> \
                                     <a href="javascript: void(0);" class="text-green add-input" data-field-id="'+ field_id + '"><i class="fa fa-plus"></i> Add Input</a> \
                                 </div> \
                             </div> \
                 ';
             }
-            properties = properties + ' \
+            properties += ' \
                         </div> \
                     </div > \
                 </div > \
             ';
-            properties = properties + ' \
-                <div class="modal-footer"> \
-                    <a href="javascript: void(0);" class="btn btn-success btn-sm shadow field-save-properties" data-group-id="'+ group_id + '" data-type="' + type + '">Save</a> \
-                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</a> \
+            properties += ' \
+                <div class="modal-footer d-flex justify-content-around"> \
+                    <a href="javascript:void(0);" class="btn btn-danger" data-dismiss="modal"><i class="fad fa-ban mr-2"></i> Cancel</a> \
+                    <a href="javascript: void(0);" class="btn btn-success field-save-properties" data-group-id="'+ group_id + '" data-type="' + type + '"><i class="fad fa-save mr-2"></i> Save</a> \
                 </div> \
             ';
 
@@ -988,7 +977,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 hide_add_option = 'hidden';
             }
 
-            return ' \
+            let field_div_html = ' \
             <div class="field-div '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;" id="field_' + id + '" data-field-id="' + id + '" data-group-id="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
                 <div class="field-status-div d-flex justify-content-left"> \
                     <div class="field-status-name-div"></div> \
@@ -998,8 +987,13 @@ if (document.URL.match(/create\/add_fields/)) {
                     <div class="btn-group" role="group" aria-label="Field Options"> \
                         <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
                         <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
+                ';
+                if(type != 'checkbox') {
+                        field_div_html += ' \
                         <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
-                        <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a> \
+                        <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
+                }
+                        field_div_html += ' \
                         <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
                     </div> \
                 </div> \
@@ -1019,6 +1013,8 @@ if (document.URL.match(/create\/add_fields/)) {
                 '+ field_html + ' \
             </div> \
             ';
+
+            return field_div_html;
         }
 
         function field_status() {
@@ -1200,7 +1196,6 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 let page_number = $(this).data('id');
 
-
                 $('.field-list-container').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
 
                 // get unique group ids
@@ -1213,11 +1208,18 @@ if (document.URL.match(/create\/add_fields/)) {
                 // get all field names and add to field list
                 $.each(group_ids, function (index, group_id) {
                     let name = $('.group_' + group_id).data('customname');
+                    if($('.group_' + group_id).data('type') == 'radio') {
+                        name = 'Radio - ' + name;
+                    }
                     if ($('.group_' + group_id).data('commonname') != undefined && $('.group_' + group_id).data('commonname') != '') {
                         name = $('.group_' + group_id).data('commonname');
                     }
                     if (name == undefined || name == '') {
-                        name = '<span class="text-danger">Not Named</span>';
+                        if($('.group_' + group_id).data('type') == 'checkbox') {
+                            name = 'Checkbox';
+                        } else {
+                            name = '<span class="text-danger">Not Named</span>';
+                        }
                     }
                     $('.field-list-container').append('<div class="mb-1 border-bottom border-primary"><a href="javascript: void(0)" class="field-list-link" data-group-id="' + group_id + '">' + name + '</a></div>');
                 });
@@ -1259,56 +1261,62 @@ if (document.URL.match(/create\/add_fields/)) {
             let errors = 'no';
 
             $('.field-div').each(function () {
-                // add error divs
-                $('<div class="field-error-div"></div>').insertBefore($(this).find('.form-div'));
 
                 let type = $(this).data('type');
-                let errors_found = 'no';
 
-                let field_name = null;
-                $(this).find('.field-data-name').each(function () {
-                    if ($(this).val() != '') {
-                        field_name = $(this).val();
-                    }
-                });
-                if (field_name == null) {
-                    $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must name the field</div>');
-                    errors = 'yes';
-                    errors_found = 'yes';
-                }
+                if(type != 'checkbox') {
 
-                if ($(this).find('input.field-data-helper-text').val() == '') {
-                    $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the helper text</div>');
-                    errors = 'yes';
-                    errors_found = 'yes';
-                }
+                    // add error divs
+                    $('<div class="field-error-div"></div>').insertAfter($(this).find('.form-div'));
 
-                if (type == 'number') {
-                    if ($(this).find('select.field-data-number-type').val() == '') {
-                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the number type</div>');
+                    let errors_found = 'no';
+
+                    let field_name = null;
+                    $(this).find('.field-data-name').each(function () {
+                        if ($(this).val() != '') {
+                            field_name = $(this).val();
+                        }
+                    });
+                    if (field_name == null) {
+                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must name the field</div>');
                         errors = 'yes';
                         errors_found = 'yes';
                     }
-                }
 
-                if (type == 'address') {
-                    if ($(this).find('select.field-data-address-type').val() == '') {
-                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the address type</div>');
+                    /* if ($(this).find('input.field-data-helper-text').val() == '') {
+                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the helper text</div>');
                         errors = 'yes';
                         errors_found = 'yes';
-                    }
-                }
+                    } */
 
-                if (type == 'radio') {
-                    if ($(this).find('.field-data-radio-value').val() == '') {
-                        $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the value</div>');
-                        errors = 'yes';
-                        errors_found = 'yes';
+                    if (type == 'number') {
+                        if ($(this).find('select.field-data-number-type').val() == '') {
+                            $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the number type</div>');
+                            errors = 'yes';
+                            errors_found = 'yes';
+                        }
                     }
-                }
 
-                if (errors_found == 'yes') {
-                    $('.field-list-link[data-group-id="' +$(this).data('group-id')+'"]').addClass('text-danger');
+                    if (type == 'address') {
+                        if ($(this).find('select.field-data-address-type').val() == '') {
+                            $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the address type</div>');
+                            errors = 'yes';
+                            errors_found = 'yes';
+                        }
+                    }
+
+                    /* if (type == 'radio') {
+                        if ($(this).find('.field-data-radio-value').val() == '') {
+                            $(this).addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the value</div>');
+                            errors = 'yes';
+                            errors_found = 'yes';
+                        }
+                    } */
+
+                    if (errors_found == 'yes') {
+                        $('.field-list-link[data-group-id="' +$(this).data('group-id')+'"]').addClass('text-danger');
+                    }
+
                 }
 
             });
@@ -1321,7 +1329,7 @@ if (document.URL.match(/create\/add_fields/)) {
         }
 
         /////////////////// Save data ///////////////////////
-        $('#save_add_fields').click(save_add_fields);
+        $('#save_add_fields').on('click', save_add_fields);
 
         function save_add_fields() {
 

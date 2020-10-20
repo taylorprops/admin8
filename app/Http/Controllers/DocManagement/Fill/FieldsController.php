@@ -103,7 +103,7 @@ class FieldsController extends Controller
                         $input_ids = $field['field_data_input_id'];
                         $input_names = $field['field_data_input'];
                         $input_names_helper_text = $field['field_data_input_helper_text'];
-                        $field_type = $field['field_name_type'];
+                        $field_type = $field['field_name_type'] ?? 'custom';
 
                         for($i = 0; $i < count($input_names); $i++) {
                             $field_inputs = new FieldInputs;

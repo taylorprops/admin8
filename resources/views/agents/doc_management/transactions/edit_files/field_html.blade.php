@@ -160,7 +160,7 @@ if($transaction_type == 'listing') {
         $value = get_value($field_values, $input_id);
 
         if(!$value) {
-            $value = $common_fields -> GetCommonNameValue($common_name, $field_user -> field_id, 'system', $Contract_ID, $Referral_ID, $transaction_type,  $Agent_ID);
+            $value = $common_fields -> GetCommonNameValue($common_name, $field_user -> field_id, 'system', $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type,  $Agent_ID);
         }
         if($value != '') {
             $value = date('n/j/Y', strtotime($value));

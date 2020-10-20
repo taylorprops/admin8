@@ -222,11 +222,17 @@
 
 
     // Fields
-    .field-div:not(.user-field-div) {
+    .field-div:not(.user-field-div):not(.radio) {
         background: rgba($orange, .1);
         cursor: pointer;
         color: #000;
         box-shadow: none;
+    }
+    .field-div.radio {
+        background: transparent;
+        cursor: pointer;
+        color: #000;
+        border-color: black;
     }
 
     // user fields

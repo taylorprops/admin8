@@ -61,6 +61,9 @@ $(function() {
         $('.modal-backdrop').remove();
     });
 
+    $(document).on('focus', '.numbers-only', function () {
+        $(this).select();
+    });
 
     $('.draggable').draggable({
         handle: '.draggable-handle'
