@@ -390,7 +390,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="row">
                                         <div class="col-12">
-                                            <input type="file" class="custom-form-element form-input-file required" name="file_upload" id="file_upload" data-label="Select File">
+                                            <input type="file" class="custom-form-element form-input-file required" accept="application/pdf" name="file_upload" id="file_upload" data-label="Select File">
                                         </div>
                                     </div>
                                     <div class="row form-names hidden mt-2">
