@@ -53,7 +53,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
             $('.focused').hide();
 
-            //field_status();
+            field_status();
             setTimeout(function () {
                 $('.add-input').off('click').on('click', add_input);
                 $('.delete-input').off('click').on('click', delete_input);
