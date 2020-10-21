@@ -362,10 +362,10 @@ class UploadController extends Controller {
 
         Storage::disk('public') -> put('tmp/'.$new_file_name_pdf, file_get_contents($upload));
 
-        exec('convert '.$upload.'[0] -density 300 -quality 90 -flatten -colorspace RGB '.Storage::disk('public') -> path('tmp/'.$new_file_name_image));
+        exec('convert '.$upload.'[0] -density 300 -flatten -trim -quality 100% -background white '.Storage::disk('public') -> path('tmp/'.$new_file_name_image));
 
         $text = (new TesseractOCR(Storage::disk('public') -> path('tmp/'.$new_file_name_image)))
-            -> whitelist(range('a', 'z'), '-_ \'')
+            -> whitelist(range('a', 'z'), range('A', 'Z'), '-_/\'/')
             -> run();
 
         $temp_text_file =  '/tmp/'.date('YmdHis').'.txt';
@@ -384,14 +384,14 @@ class UploadController extends Controller {
             $line = iconv('UTF-8', 'ASCII//IGNORE//TRANSLIT', $line);
 
             // get words
-            if(preg_match('/^[a-zA-Z\s-_]+/', $line, $matches)) {
+            if(preg_match('/^[a-zA-Z\s-_\/]+/', $line, $matches)) {
                 // remove non form names
                 if(!preg_match('/(realtor|association|commission)/i', $matches[0])) {
                     // if more than one word in name
                     preg_match_all('/\S+/', $matches[0], $words);
-                    if(count($words[0]) > 1) {
+                    //if(count($words[0]) > 1) {
                         $titles[] = ucwords(strtolower($matches[0]));
-                    }
+                    //}
                 }
             }
         }
