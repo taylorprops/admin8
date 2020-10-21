@@ -1221,7 +1221,7 @@ if (document.URL.match(/create\/add_fields/)) {
                             name = '<span class="text-danger">Not Named</span>';
                         }
                     }
-                    $('.field-list-container').append('<div class="mb-1 border-bottom border-primary"><a href="javascript: void(0)" class="field-list-link" data-group-id="' + group_id + '">' + name + '</a></div>');
+                    $('.field-list-container').append('<div class="mb-1 border-bottom border-primary"><a href="javascript: void(0)" class="field-list-link pl-2" data-group-id="' + group_id + '">' + name + '</a></div>');
                 });
                 $('.field-list-link').off('click').on('click', function () {
                     let group_id = $(this).data('group-id');
