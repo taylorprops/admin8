@@ -770,7 +770,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                         $('#upload_preview').html('<embed src="'+response.data.upload_location+'#view=FitW" width="100%" height="100%">');
 
                         $('.form-names').fadeIn('slow');
-                        $('#form_names_div').collapse('show');
+                        $('#form_names_div').html('').collapse('show');
                         $('#form_name').html('<h5 class="text-orange">Select and/or Edit Form Name</h5>');
 
                         response.data.titles.forEach(function(title) {
