@@ -362,7 +362,7 @@ class UploadController extends Controller {
 
         Storage::disk('public') -> put('tmp/'.$new_file_name_pdf, file_get_contents($upload));
 
-        exec('convert '.$upload.'[0] -density 300 -quality 80 -flatten -colorspace RGB '.Storage::disk('public') -> path('tmp/'.$new_file_name_image));
+        exec('convert '.$upload.'[0] -density 300 -quality 90 -flatten -colorspace RGB '.Storage::disk('public') -> path('tmp/'.$new_file_name_image));
 
         $text = (new TesseractOCR(Storage::disk('public') -> path('tmp/'.$new_file_name_image)))
             -> whitelist(range('a', 'z'), '-_ \'')
