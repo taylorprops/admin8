@@ -360,17 +360,20 @@ class UploadController extends Controller {
         $new_file_name_pdf = date('YmdHis').'_'.sanitize($new_file_name).'.pdf';
         $new_file_name_image = date('YmdHis').'_'.sanitize($new_file_name).'.png';
 
+        // put original file
         Storage::disk('public') -> put('tmp/'.$new_file_name_pdf, file_get_contents($upload));
-
-        exec('convert '.$upload.'[0] -density 300 -flatten -trim -quality 100% -background white '.Storage::disk('public') -> path('tmp/'.$new_file_name_image));
-
+        // remove images from pdf so easier to scan text
+        exec('gs -o '.Storage::disk('public') -> path('tmp/tmp_'.$new_file_name_pdf).' -sDEVICE=pdfwrite -dFILTERIMAGE '.$upload);
+        // convert to image
+        exec('convert '.Storage::disk('public') -> path('tmp/tmp_'.$new_file_name_pdf).'[0] -density 300 -flatten -trim -quality 100% -background white -font Arial '.Storage::disk('public') -> path('tmp/'.$new_file_name_image));
+        // scan text
         $text = (new TesseractOCR(Storage::disk('public') -> path('tmp/'.$new_file_name_image)))
             -> whitelist(range('a', 'z'), range('A', 'Z'), '-_/\'/')
             -> run();
-
+        // store results to text file so we can loop through the lines
         $temp_text_file =  '/tmp/'.date('YmdHis').'.txt';
         Storage::disk('public') -> put($temp_text_file, $text);
-
+        // open saved text file with titles and get lines
         $fn = fopen(Storage::disk('public') -> path($temp_text_file), 'r');
         $lines = [];
         while(! feof($fn))  {
@@ -380,6 +383,7 @@ class UploadController extends Controller {
 
         $titles = [];
         foreach($lines as $line) {
+            // clean lines
             $line = trim(urldecode($line));
             $line = iconv('UTF-8', 'ASCII//IGNORE//TRANSLIT', $line);
 
