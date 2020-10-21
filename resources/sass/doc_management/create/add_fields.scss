@@ -213,11 +213,12 @@
         .field-status-div {
             display: none;
             position: absolute;
-            bottom: -17px;
-            background: rgba(255, 255, 255, .9);
+            bottom: 3px;
+            left: 2px;
+            //background: rgba(255, 255, 255, .9);
             color: $primary-color;
-            font-size: .7rem;
-            line-height: 1.0;
+            font-size: .6rem;
+            //line-height: 1.0;
             z-index: 0;
         }
 
