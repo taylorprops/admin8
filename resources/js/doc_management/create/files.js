@@ -754,7 +754,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         setTimeout(function () {
 
-            $('#file_upload').on('change', function () {
+            $('#file_upload').off('change').on('change', function () {
 
                 if($(this).val() != '') {
 
