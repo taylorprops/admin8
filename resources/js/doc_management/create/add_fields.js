@@ -170,7 +170,49 @@ if (document.URL.match(/create\/add_fields/)) {
 
         $('.delete-page-button').on('click', delete_page);
 
+        // highlight active thumb when clicked and scroll into view
+        $('.file-view-thumb-container').on('click', function () {
+            $('.file-view-thumb-container').removeClass('active');
+            $(this).addClass('active');
+            let id = $(this).data('id');
+            $('#active_page').val(id);
+            document.getElementById('page_' + id).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+        });
+
+        // change highlighted thumb on scroll when doc is over half way in view
+        $('#file_viewer').scroll(function () {
+
+            // Stop the loop once the first is found
+            let cont = 'yes';
+
+            $('.file-view-page-container').each(function () {
+                if (cont == 'yes') {
+                    let id, center, start, end;
+                    id = $(this).data('id');
+                    // see if scrolled past half way
+                    center = $(window).height() / 2;
+                    start = $(this).offset().top;
+                    end = start + $(this).height();
+                    if (start < center && end > center) {
+                        // set opacity to 1 for active and .2 for not active
+                        $('.file-view-page-container').removeClass('active');
+                        $(this).addClass('active');
+                        $('#active_page').val(id);
+                        // add border to thumb and scroll into view
+                        $('.file-view-thumb-container').removeClass('active');
+                        $('#thumb_' + id).addClass('active');
+                        document.getElementById('thumb_' + id).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+                        cont = 'no';
+                    }
+                }
+            });
+
+        });
+
+
     });
+
+
 
     function delete_page() {
         let page = $(this).data('page-number');
@@ -1422,46 +1464,6 @@ console.log(check)
 
 
     }
-
-    // highlight active thumb when clicked and scroll into view
-    $('.file-view-thumb-container').on('click', function () {
-        $('.file-view-thumb-container').removeClass('active');
-        $(this).addClass('active');
-        let id = $(this).data('id');
-        $('#active_page').val(id);
-        document.getElementById('page_' + id).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-    });
-
-    // change highlighted thumb on scroll when doc is over half way in view
-    $('#file_viewer').scroll(function () {
-
-        // Stop the loop once the first is found
-        let cont = 'yes';
-
-        $('.file-view-page-container').each(function () {
-            if (cont == 'yes') {
-                let id, center, start, end;
-                id = $(this).data('id');
-                // see if scrolled past half way
-                center = $(window).height() / 2;
-                start = $(this).offset().top;
-                end = start + $(this).height();
-                if (start < center && end > center) {
-                    // set opacity to 1 for active and .2 for not active
-                    $('.file-view-page-container').removeClass('active');
-                    $(this).addClass('active');
-                    $('#active_page').val(id);
-                    // add border to thumb and scroll into view
-                    $('.file-view-thumb-container').removeClass('active');
-                    $('#thumb_' + id).addClass('active');
-                    document.getElementById('thumb_' + id).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-                    cont = 'no';
-                }
-            }
-        });
-
-    });
-
 
 
 
