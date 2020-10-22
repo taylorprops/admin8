@@ -4,7 +4,7 @@
 <div class="container page-files">
     <h2>Forms</h2>
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
             <div class="">
                 <div class="list-group-container">
                     <div class="list-group pr-1 pb-5" role="tablist">
@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-8">
+        <div class="col-9">
             <div class="tab-content">
                 @foreach ($form_groups as $form_group)
                     <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $form_group -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $form_group -> resource_id }}">

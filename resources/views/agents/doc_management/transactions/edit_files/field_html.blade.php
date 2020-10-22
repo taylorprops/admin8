@@ -112,10 +112,10 @@ if($transaction_type == 'listing') {
 
     @if($field_type == 'user_text')
 
-        <div class="modal fade" id="fill_fields_div_modal_{{$field_user -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field_user -> field_id}}_title" aria-hidden="true">
+        <div class="modal fade draggable" id="fill_fields_div_modal_{{$field_user -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field_user -> field_id}}_title" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="fill_fields_div_modal_{{$field_user -> field_id}}_title">{{ strtoupper($field_user -> field_name_display) }}</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">&times;</span>
@@ -188,10 +188,10 @@ if($transaction_type == 'listing') {
 
     @elseif($field_type != 'highlight' && $field_type != 'strikeout')
 
-        <div class="modal fade" id="fill_fields_div_modal_{{$field_user -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field_user -> field_id}}_title" aria-hidden="true">
+        <div class="modal fade draggable" id="fill_fields_div_modal_{{$field_user -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field_user -> field_id}}_title" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="fill_fields_div_modal_{{$field_user -> field_id}}_title">{{ strtoupper($field_user -> field_name_display) }}</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">&times;</span>

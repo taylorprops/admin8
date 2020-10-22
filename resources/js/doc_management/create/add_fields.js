@@ -132,6 +132,10 @@ if (document.URL.match(/create\/add_fields/)) {
                 // append new field
                 $(container).append(field);
 
+                $('.draggable').draggable({
+                    handle: '.draggable-handle'
+                });
+
                 $('.add-input').off('click').on('click', add_input);
                 $('.delete-input').off('click').on('click', delete_input);
                 field_list();
@@ -801,7 +805,7 @@ if (document.URL.match(/create\/add_fields/)) {
         }
 
         let properties = ' \
-            <div class="modal-header"> \
+            <div class="modal-header draggable-handle"> \
                 <h4 class="modal-title" id="edit_properties_modal_title">Field Properties</h4> \
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
                     <span aria-hidden="true" class="text-white">&times;</span> \

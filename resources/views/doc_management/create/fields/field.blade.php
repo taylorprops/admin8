@@ -85,11 +85,11 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
             <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li>
         </ul>
     </div>
-    <div class="modal fade edit-properties-div" id="edit_properties_modal_{{$field['field_id']}}" tabindex="-1" role="dialog" aria-labelledby="edit_properties_modal_{{$field['field_id']}}_title" aria-hidden="true">
+    <div class="modal fade edit-properties-div draggable" id="edit_properties_modal_{{$field['field_id']}}" tabindex="-1" role="dialog" aria-labelledby="edit_properties_modal_{{$field['field_id']}}_title" aria-hidden="true">
         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header draggable-handle">
                         <h4 class="modal-title" id="edit_properties_modal_{{$field['field_id']}}_title">Field Properties</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">&times;</span>
@@ -202,7 +202,7 @@ if($field['field_type'] == 'textline' || $field['field_type'] == 'address' || $f
                     </div>
                     <div class="modal-footer d-flex justify-content-around">
                         <button href="javascript:void(0);" class="btn btn-danger" data-dismiss="modal"><i class="fad fa-ban mr-2"></i> Cancel</button>
-                        <button href="javascript: void(0);" class="btn btn-success field-save-properties" data-group-id="{{ $field['group_id'] }}" data-type="{{ $field['field_type'] }}"><i class="fad fa-save mr-2"></i> Save</button>
+                        @if($published == 'no')<button href="javascript: void(0);" class="btn btn-success field-save-properties" data-group-id="{{ $field['group_id'] }}" data-type="{{ $field['field_type'] }}"><i class="fad fa-save mr-2"></i> Save</button>@endif
                     </div>
                 </div>
             </div>
