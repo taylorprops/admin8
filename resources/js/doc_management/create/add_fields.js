@@ -78,8 +78,9 @@ if (document.URL.match(/create\/add_fields/)) {
 
 
         // on page double click add field
-        $('.file-view-page-container.active .file-image').on('dblclick', function (e) {
-        //$('#file_viewer').on('dblclick', '.file-view-page-container.active .file-image', function (e) { // changed from just .file-view-page-container.active - adding .file-image prevents new field being created when double clicking in edit properties div
+        // changed from just .file-view-page-container.active - adding .file-image prevents new field being created when double clicking in edit properties div
+        //$('.file-view-page-container.active .file-image').on('dblclick', function (e) {
+        $('#file_viewer').off('dblclick').on('dblclick', '.file-view-page-container.active .file-image', function (e) {
 
             // get container so easier to find elements
             let container = $(e.target.parentNode);
