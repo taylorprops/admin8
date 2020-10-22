@@ -532,7 +532,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
             // remove common name when custom name is type in
             edit_div.find('.form-input.field-data-name').on('change', function () {
-                console.log('changed')
+
                 if ($(this).val() != '') {
                     select.val('');
                     setTimeout(select_refresh, 500);
