@@ -299,6 +299,8 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 }
             });
+
+            $('.focused').hide();
         }
 
         ele.draggable({
@@ -483,7 +485,7 @@ if (document.URL.match(/create\/add_fields/)) {
             setTimeout(function() {
                 $('.focused').hide();
             $('.field-div').removeClass('active');
-            }, 200);
+            }, 50);
         });
 
         // mini-slider
@@ -1011,6 +1013,7 @@ if (document.URL.match(/create\/add_fields/)) {
         if (type == 'textline' || type == 'name' || type == 'address' || type == 'number') {
             field_class = 'textline-div standard';
             field_html = '<div class="textline-html"></div>';
+            w_perc = 10;
         } else if (type == 'radio') {
             handles = '';
             field_class = type + '-div standard';
@@ -1033,7 +1036,7 @@ if (document.URL.match(/create\/add_fields/)) {
             </div> \
             <div class="field-options-holder focused"> \
                 <div class="ml-3"> \
-                    <a href="javascript: void(0)" class="close-field-options"><i class="fa fa-times text-danger fa-lg"></i></a> \
+                    <a href="javascript: void(0)" class="close-field-options"><i class="fa fa-times text-danger fa-2x"></i></a> \
                 </div> \
                 <div class="btn-group" role="group" aria-label="Field Options"> \
                     <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
