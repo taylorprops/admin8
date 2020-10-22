@@ -51,7 +51,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
             });
 
-            $('.focused').hide();
+            //$('.focused').hide();
 
             field_status();
             setTimeout(function () {
@@ -150,6 +150,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 keep_in_view($('#field_' + id), w_perc, x_perc, y_perc, field_type);
 
                 set_field_options(field_type, $('#field_' + id), id, rect, container);
+                $('#field_' + id).find('.focused').show();
 
                 field_status();
 
@@ -270,7 +271,7 @@ if (document.URL.match(/create\/add_fields/)) {
             $('.field-div').removeClass('active');
             ele.addClass('active');
             let group_id = ele.data('group-id');
-            let x_pos = ele.position().left;
+            /* let x_pos = ele.position().left;
             let doc_width = $('#file_viewer').width();
             let ele_pos = {
                 left: '0px'
@@ -280,7 +281,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     right: '0px'
                 }
             }
-            ele.find('.field-options-holder').css(ele_pos);
+            ele.find('.field-options-holder').css(ele_pos); */
             set_hwxy(ele, group_id, field_type);
 
         });
@@ -1031,22 +1032,20 @@ if (document.URL.match(/create\/add_fields/)) {
                 <div class="field-status-group-div float-right"></div> \
             </div> \
             <div class="field-options-holder focused"> \
-                <div class="d-flex justify-content-start"> \
-                    <div class="mt-3 mr-2"> \
-                        <a href="javascript: void(0)" class="close-field-options"><i class="fa fa-times text-danger fa-lg"></i></a> \
-                    </div> \
-                    <div class="btn-group" role="group" aria-label="Field Options"> \
-                        <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
-                        <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
-                ';
-                if(type != 'checkbox') {
-                        field_div_html += ' \
-                        <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
-                        <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
-                }
-                        field_div_html += ' \
-                        <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
-                    </div> \
+                <div class="ml-3"> \
+                    <a href="javascript: void(0)" class="close-field-options"><i class="fa fa-times text-danger fa-lg"></i></a> \
+                </div> \
+                <div class="btn-group" role="group" aria-label="Field Options"> \
+                    <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
+            ';
+            if(type != 'checkbox') {
+                    field_div_html += ' \
+                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
+            }
+                    field_div_html += ' \
+                    <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
                 </div> \
             </div> \
             <div class="mini-slider-div"> \
@@ -1194,14 +1193,14 @@ if (document.URL.match(/create\/add_fields/)) {
             cd_adjusted = cw - 4;
         }
 
-        let x_pos = ele.position().left;
+        /* let x_pos = ele.position().left;
         let doc_width = $('#file_viewer').width();
 
-        if(x_pos > (doc_width / 2)) {
+        if(x_pos > (doc_width * .75)) {
             ele.find('.field-options-holder').css({ left: '' }).animate({ right: '0px' });
         } else {
             ele.find('.field-options-holder').css({ right: '' }).animate({ left: '0px' });
-        }
+        } */
 
         if (x_perc < dist) {
             ele.animate({ left: dist + '%' });

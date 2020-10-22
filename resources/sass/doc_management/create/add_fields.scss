@@ -49,6 +49,10 @@
     // FIELDS
     // fields toolbar
 
+    .focused {
+        display: none;
+    }
+
     .field-wrapper {
         padding: 5px;
         border: 2px solid transparent;
@@ -141,9 +145,9 @@
 
         .field-options-holder {
             position: absolute;
-            top: -50px;
-            //left:50%;
-            //transform: translate(-50%, 0%);
+            top: -70px;
+            left:50%;
+            transform: translate(-50%, 0%);
             width: auto;
             background: transparent;
         }
@@ -213,7 +217,7 @@
         .field-status-div {
             display: none;
             position: absolute;
-            bottom: 0px;
+            bottom: -2px;
             left: 2px;
             //background: rgba(255, 255, 255, .9);
             color: $primary-color;
