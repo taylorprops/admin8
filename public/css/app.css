@@ -14568,7 +14568,7 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .page-add-fields .field-div .field-options-holder {
   position: absolute;
-  top: -70px;
+  top: -80px;
   left: 50%;
   transform: translate(-50%, 0%);
   width: auto;
