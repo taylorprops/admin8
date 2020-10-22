@@ -477,6 +477,14 @@ if (document.URL.match(/create\/add_fields/)) {
             });
         }
 
+        // close options holder
+        $('.close-field-options').off('click').on('click', function() {
+            setTimeout(function() {
+                $('.focused').hide();
+            $('.field-div').removeClass('active');
+            }, 200);
+        });
+
         // mini-slider
         $('.mini-slider-button').off('click').on('click', function () {
             let minislider = $(this).closest('.field-options-holder').siblings('.mini-slider-div');
@@ -1023,17 +1031,22 @@ if (document.URL.match(/create\/add_fields/)) {
                 <div class="field-status-group-div float-right"></div> \
             </div> \
             <div class="field-options-holder focused"> \
-                <div class="btn-group" role="group" aria-label="Field Options"> \
-                    <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
-                    <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
-            ';
-            if(type != 'checkbox') {
-                    field_div_html += ' \
-                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
-                    <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
-            }
-                    field_div_html += ' \
-                    <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
+                <div class="d-flex justify-content-start"> \
+                    <div class="mt-3 mr-2"> \
+                        <a href="javascript: void(0)" class="close-field-options"><i class="fa fa-times text-danger fa-lg"></i></a> \
+                    </div> \
+                    <div class="btn-group" role="group" aria-label="Field Options"> \
+                        <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
+                        <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
+                ';
+                if(type != 'checkbox') {
+                        field_div_html += ' \
+                        <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
+                        <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
+                }
+                        field_div_html += ' \
+                        <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
+                    </div> \
                 </div> \
             </div> \
             <div class="mini-slider-div"> \
@@ -1371,8 +1384,10 @@ if (document.URL.match(/create\/add_fields/)) {
     function save_add_fields() {
 
         let check = check_fields();
-console.log(check)
+
         if(check == true) {
+
+            $('.field-save-properties').html('<span class="spinner-border spinner-border-sm mr-2"></span> Saving');
 
             let data = [];
 
@@ -1457,6 +1472,8 @@ console.log(check)
                     } else {
                         toastr['success']('Fields Successfully Saved');
                     }
+
+                    $('.field-save-properties').html('<i class="fad fa-save mr-2"></i> Save');
                 }
             });
         } else {
