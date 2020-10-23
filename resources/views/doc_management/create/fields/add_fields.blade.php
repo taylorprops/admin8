@@ -76,17 +76,17 @@
 
                             @foreach($images as $image)
 
-                                <?php $c = $image['page_number']; ?>
+                                <?php $c = $image -> page_number; ?>
 
                                 <div class="file-view-page-info bg-primary text-white p-2" id="page_{{ $c }}">
                                     Page <?php echo $c.' of '.$total_pages; ?>
                                 </div>
                                 <div class="file-view-page-container border border-primary w-100 <?php echo($c == 1) ? 'active' : ''; ?>" id="page_div_{{ $c }}" data-id="{{ $c }}">
                                     <div class="field-container w-100 h-100">
-                                        <img class="w-100 h-100 file-image" src="{{ $image['file_location'] }}">
+                                        <img class="w-100 h-100 file-image" src="{{ $image -> file_location }}">
 
                                         @foreach($fields as $field)
-                                            @if($field['page'] == $c)
+                                            @if($field -> page == $c)
                                                 @php $type = 'existing'; @endphp
                                                 @include('doc_management.create.fields.field', [$field, $common_fields, $c, $type, $published])
                                             @endif
@@ -111,16 +111,16 @@
                 <div class="file-view" id="thumb_viewer">
                     <div class="h5-responsive text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
                     @foreach($images as $image)
-                        <?php $c = $image['page_number']; ?>
+                        <?php $c = $image -> page_number; ?>
                         <div class="file-view-thumb-container  w-50 mx-auto" <?php echo($c == 1) ? 'active' : ''; ?>" id="thumb_{{ $c }}" data-id="{{ $c }}">
                             <div class="file-view-thumb">
-                                <a href="javascript: void(0)"><img class="file-thumb w-100 h-100" src="{{ $image['file_location'] }}"></a>
+                                <a href="javascript: void(0)"><img class="file-thumb w-100 h-100" src="{{ $image -> file_location }}"></a>
                             </div>
                             @if($loop -> last)
                             <div class="file-view-thumb-footer d-flex justify-content-between mb-1">
                                 <span class="ml-1">Page {{ $c }}</span>
                                 <span class="mr-1">
-                                    <a href="javascript:void(0)" class="delete-page-button" data-page-number="{{ $c }}" data-file-id="{{ $image['file_id'] }}">
+                                    <a href="javascript:void(0)" class="delete-page-button" data-page-number="{{ $c }}" data-file-id="{{ $image -> file_id }}">
                                         <i class="fa fa-times text-danger fa-lg"></i>
                                     </a>
                                 </span>
@@ -148,7 +148,7 @@
 @foreach($field_types as $fields)
     @php
 
-    $field = $fields['field_type'];
+    $field = $fields -> field_type;
     $heightp = '1.3';
     $widthp = '15';
     if($field == 'date') {
@@ -170,7 +170,7 @@
 @endforeach
 
 @foreach($field_types as $fields)
-    @php $field = $fields['field_type'] @endphp
+    @php $field = $fields -> field_type @endphp
     <input type="hidden" id="{{$field}}_select_options">
 @endforeach
 

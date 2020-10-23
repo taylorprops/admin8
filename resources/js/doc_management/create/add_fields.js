@@ -515,15 +515,17 @@ if (document.URL.match(/create\/add_fields/)) {
         // add properties
         $('.field-properties').off('click').on('click', function () {
             let field_type = $(this).data('field-type');
+            let field_id = $(this).data('field-id');
             let edit_div = $(this).closest('.field-options-holder').siblings('.edit-properties-div');
 
             //store inputs html in input to be restored on cancel
             $('#inputs_html').val(edit_div.find('.field-data-inputs-container').html());
-            edit_div.modal('show');
+
+            $('#edit_properties_modal_'+field_id).modal();
             $('.modal-backdrop').appendTo(edit_div.closest('.field-div'));
 
             // prevent new field being created
-            $('.edit-properties-div *').on('dblclick', function (event) {
+            $('.edit-properties-div *').off('dblclick').on('dblclick', function (event) {
                 event.stopPropagation();
             });
 
@@ -533,11 +535,50 @@ if (document.URL.match(/create\/add_fields/)) {
             // remove common name when custom name is type in
             edit_div.find('.form-input.field-data-name').on('change', function () {
 
-                if ($(this).val() != '') {
+                if($(this).val() != '') {
                     select.val('');
                     setTimeout(select_refresh, 500);
                     inputs_container.html('').next('.add-input').trigger('click');
                 }
+
+            });
+
+            edit_div.find('.form-input.field-data-name').on('keyup', function () {
+
+                if($(this).val() != '') {
+
+                    axios.get('/doc_management/get_custom_names', {
+                        params: {
+                            val: $(this).val()
+                        }
+                    })
+                    .then(function (response) {
+                        edit_div.find('.custom-name-results').collapse('show');
+                        edit_div.find('.dropdown-results-div').html('');
+                        response.data.custom_names.forEach(function (result) {
+                            edit_div.find('.dropdown-results-div').append('<a href="javascript: void(0)" class="list-group-item list-group-item-action result">'+result['field_name_display']+'</a>');
+                        });
+                        $('.result').add('click').on('click', function() {
+                            edit_div.find('.field-data-name').val($(this).text());
+                            edit_div.find('.custom-name-results').collapse('hide');
+                        });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                } else {
+
+                    edit_div.find('.custom-name-results').collapse('hide');
+
+                }
+
+                $(document).on('click',function(e) {
+                    if (!$(e.target).is(edit_div.find('.custom-name-results *'))) {
+                        $('.collapse').collapse('hide');
+                    }
+                });
+
             });
 
             // auto populate helper text for address fields - they will always be the same as the address type
@@ -806,12 +847,12 @@ if (document.URL.match(/create\/add_fields/)) {
 
         let properties = ' \
             <div class="modal-header draggable-handle"> \
-                <h4 class="modal-title" id="edit_properties_modal_title">Field Properties</h4> \
+                <h4 class="modal-title" id="edit_properties_modal_title_'+field_id+'">Field Properties</h4> \
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
                     <span aria-hidden="true" class="text-white">&times;</span> \
                 </button> \
             </div> \
-            <div class="modal-body"> \
+            <div class="modal-body pb-5"> \
                 <div class="h5-responsive text-orange my-2">'+ type.toUpperCase() + '</div> \
                 <div class="form-div"> \
                     <div class="container"> \
@@ -831,6 +872,7 @@ if (document.URL.match(/create\/add_fields/)) {
         properties += ' \
                             <div class="col-12"> \
                                 <input type="text" class="custom-form-element form-input field-data-name" id="name_input_'+ field_id + '" data-field-type="custom" data-label="' + custom_name_heading + '"> \
+                                <div class="collapse custom-name-results"><div class="list-group list-group-action dropdown-results-div"></div></div> \
                             </div> \
                         </div> \
         ';
@@ -983,7 +1025,7 @@ if (document.URL.match(/create\/add_fields/)) {
             }
             properties += ' \
                                 </div> \
-                                <a href="javascript: void(0);" class="text-green add-input" data-field-id="'+ field_id + '"><i class="fa fa-plus"></i> Add Input</a> \
+                                <div class="my-3"><a href="javascript: void(0);" class="text-green add-input" data-field-id="'+ field_id + '"><i class="fa fa-plus"></i> Add Input</a></div> \
                             </div> \
                         </div> \
             ';
@@ -1008,7 +1050,7 @@ if (document.URL.match(/create\/add_fields/)) {
         let properties_html = field_properties(type, group_id, id);
 
         let field_class = '';
-        let field_html = '';
+        let field_data = '';
         let hide_add_option = '';
         let handles = ' \
         <div class="ui-resizable-handle ui-resizable-e focused"></div> \
@@ -1016,19 +1058,19 @@ if (document.URL.match(/create\/add_fields/)) {
         ';
         if (type == 'textline' || type == 'name' || type == 'address' || type == 'number') {
             field_class = 'textline-div standard';
-            field_html = '<div class="textline-html"></div>';
+            field_data = '<div class="textline-html"></div>';
             w_perc = 10;
         } else if (type == 'radio') {
             handles = '';
             field_class = type + '-div standard';
-            field_html = '<div class="radio-html"></div>';
+            field_data = '<div class="radio-html"></div>';
         } else if (type == 'checkbox') {
             handles = '';
             field_class = type + '-div standard';
-            field_html = '<div class="checkbox-html"></div>';
+            field_data = '<div class="checkbox-html"></div>';
         } else if (type == 'date') {
             field_class = 'textline-div standard';
-            field_html = '<div class="textline-html"></div>';
+            field_data = '<div class="textline-html"></div>';
             hide_add_option = 'hidden';
         }
 
@@ -1049,7 +1091,7 @@ if (document.URL.match(/create\/add_fields/)) {
             if(type != 'checkbox') {
                     field_div_html += ' \
                     <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
-                    <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
+                    <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-id="' + id +'" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
             }
                     field_div_html += ' \
                     <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
@@ -1061,14 +1103,14 @@ if (document.URL.match(/create\/add_fields/)) {
                     <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li> \
                 </ul> \
             </div> \
-            <div class="modal fade edit-properties-div draggable" id="edit_properties_modal" tabindex="-1" role="dialog" aria-labelledby="edit_properties_modal_title" aria-hidden="true"> \
+            <div class="modal fade edit-properties-div draggable" id="edit_properties_modal_'+id+'" tabindex="-1" role="dialog" aria-labelledby="edit_properties_modal_title_'+id+'" aria-hidden="true"> \
                 <div class="modal-dialog modal-md modal-dialog-centered" role="document"> \
                     <div class="modal-content">'+ properties_html + ' \
                     </div> \
                 </div> \
             </div> \
             '+ handles + ' \
-            '+ field_html + ' \
+            '+ field_data + ' \
         </div> \
         ';
 

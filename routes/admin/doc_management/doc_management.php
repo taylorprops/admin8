@@ -118,9 +118,11 @@ Route::middleware('admin') -> group(function () {
     Route::get('/doc_management/get_add_to_checklists_details', 'DocManagement\Create\UploadController@get_add_to_checklists_details');
 
 
+
     Route::get('/doc_management/common_fields', 'DocManagement\Fill\FieldsController@get_common_fields');
 
-
+    // get custom names for autofill when adding a form
+    Route::get('/doc_management/get_custom_names', 'DocManagement\Fill\FieldsController@get_custom_names');
 
     /********* Document Review ************/
     // doc review page

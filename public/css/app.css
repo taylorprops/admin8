@@ -14610,11 +14610,6 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   transform: rotate(180deg);
 }
 
-.page-add-fields .field-div .field-data-inputs-container .col-12 {
-  padding-left: 0px;
-  padding-right: 0px;
-}
-
 .page-add-fields .field-div .mini-slider-option:hover {
   cursor: pointer;
 }
@@ -14676,6 +14671,16 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   z-index: 5;
 }
 
+.page-add-fields .field-data-inputs-container {
+  max-height: 200px;
+  overflow: auto;
+}
+
+.page-add-fields .field-data-inputs-container .col-12 {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 .page-add-fields #edit_properties_modal h5 {
   margin-top: 25px;
   margin-bottom: 10px;
@@ -14690,6 +14695,22 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   .page-add-fields .edit-file-sidebar {
     display: none;
   }
+}
+
+.custom-name-results {
+  position: absolute;
+  top: 60px;
+  width: 60%;
+  border-color: #78c4e7;
+  box-shadow: 0 0 5px #78c4e7;
+  border-radius: 3px;
+  background: #fff;
+  z-index: 1500;
+}
+
+.custom-name-results .dropdown-results-div {
+  max-height: 200px;
+  overflow: auto;
 }
 
 .page-resources .list-item-handle {

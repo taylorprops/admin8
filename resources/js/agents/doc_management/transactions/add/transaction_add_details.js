@@ -26,7 +26,7 @@ if (document.URL.match(/transaction_add_details_/)) {
         hide_year_built();
 
         show_hide();
-        $('.show-hide').change(show_hide);
+        $('.show-hide').on('change', show_hide);
 
         form_elements();
 

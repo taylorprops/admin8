@@ -617,7 +617,7 @@ if (document.URL.match(/transaction_details/)) {
                 if (tab == 'details') {
 
                     // update counties when state is changed
-                    $('#StateOrProvince').change(update_county_select);
+                    $('#StateOrProvince').on('change', update_county_select);
 
                     $('#search_mls_button').off('click').on('click', search_mls);
 
@@ -654,8 +654,8 @@ if (document.URL.match(/transaction_details/)) {
 
                     setTimeout(function () {
                         show_hide_fields();
-                        $('.member-type-id').change(show_hide_fields);
-                        $('.bank-trust').click(show_bank_trust);
+                        $('.member-type-id').on('change', show_hide_fields);
+                        $('.bank-trust').on('click', show_bank_trust);
                     }, 1000);
 
                     $('a[data-toggle="list"]').on('shown.bs.tab', function (e) {

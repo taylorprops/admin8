@@ -22,7 +22,7 @@ if(document.URL.match(/document_review/)) {
         });
 
         $('#search_properties').keyup(search_properties);
-        $('#cancel_search_properties').click(cancel_search_properties);
+        $('#cancel_search_properties').on('click', cancel_search_properties);
 
         if($('#review_contract_id').val() > 0) {
             $('.cancellation[data-id="' + $('#review_contract_id').val() +'"]').trigger('click');

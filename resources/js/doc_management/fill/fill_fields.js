@@ -115,7 +115,7 @@ if (document.URL.match(/create\/fill_fields/)) {
 
         field_list();
 
-        $('#save_fill_fields').click(save_fill_fields);
+        $('#save_fill_fields').on('click', save_fill_fields);
         function save_fill_fields() {
             let field_data = [];
 

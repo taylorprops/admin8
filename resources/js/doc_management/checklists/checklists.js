@@ -374,9 +374,9 @@ if (document.URL.match(/checklists/)) {
 
 
             // delete checklist items
-            $('.delete-checklist-item-button').click(delete_checklist_item);
+            $('.delete-checklist-item-button').on('click', delete_checklist_item);
 
-            $('.add-to-checklist-button').not('disabled').click(add_to_checklist);
+            $('.add-to-checklist-button').not('disabled').on('click', add_to_checklist);
 
             $('#save_checklist_items_button').off('click').on('click', save_checklist_items);
 
@@ -487,7 +487,7 @@ if (document.URL.match(/checklists/)) {
             </li> \
         ';
         $(checklist_item).insertAfter($('[data-form-group-id="' + checklist_group_id + '"]').last());
-        $('.delete-checklist-item-button').click(delete_checklist_item);
+        $('.delete-checklist-item-button').on('click', delete_checklist_item);
 
 
         // if the form is already included in another checklist get the details and add it to this one

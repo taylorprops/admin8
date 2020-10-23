@@ -187,11 +187,6 @@
 
 
 
-        .field-data-inputs-container .col-12 {
-            padding-left: 0px;
-            padding-right: 0px;
-        }
-
 
         .mini-slider-option:hover {
             cursor: pointer;
@@ -235,6 +230,7 @@
         .modal-body {
             max-height: 75VH;
             overflow: auto;
+
         }
 
         .field-data-inputs-div {
@@ -258,6 +254,16 @@
 
     .field-div.active {
         z-index: 5;
+    }
+
+    .field-data-inputs-container {
+        max-height: 200px;
+        overflow: auto;
+    }
+
+    .field-data-inputs-container .col-12 {
+        padding-left: 0px;
+        padding-right: 0px;
     }
 
 
@@ -284,4 +290,20 @@
         }
     }
 
+}
+
+.custom-name-results {
+    position: absolute;
+    top: 60px;
+    width: 60%;
+    border-color: rgb(120, 196, 231);
+    box-shadow: 0 0 5px rgb(120, 196, 231);
+    border-radius: 3px;
+    background: $white;
+    z-index: 1500;
+
+    .dropdown-results-div {
+        max-height: 200px;
+        overflow: auto;
+    }
 }

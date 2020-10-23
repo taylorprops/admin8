@@ -44,6 +44,12 @@ class FieldsController extends Controller
 
     }
 
+    public function get_custom_names(Request $request) {
+        $val = $request -> val;
+        $custom_names = Fields::select('field_name_display') -> where('field_name_display', 'like', '%'.$val.'%') -> groupBy('field_name_display') -> orderBy('field_name_display') -> get();
+        return compact('custom_names');
+    }
+
     public function get_common_fields(Request $request) {
         return CommonFields::getCommonFields();
     }
@@ -52,11 +58,11 @@ class FieldsController extends Controller
 
         $file = Upload::whereFileId($request -> file_id) -> first();
         $published = $file -> published;
-        $images = UploadImages::whereFileId($request -> file_id) -> orderBy('page_number') -> get() -> toArray();
-        $fields = Fields::where('file_id', $request -> file_id) -> orderBy('id') -> get() -> toArray();
+        $images = UploadImages::whereFileId($request -> file_id) -> orderBy('page_number') -> get();
+        $fields = Fields::where('file_id', $request -> file_id) -> orderBy('id') -> get();
         $common_fields = CommonFields::getCommonFields();
-        $field_types = FieldTypes::select('field_type') -> get() -> toArray();
-        $field_inputs = FieldInputs::where('file_id', $request -> file_id) -> orderBy('id') -> get() -> toArray();
+        $field_types = FieldTypes::select('field_type') -> get();
+        $field_inputs = FieldInputs::where('file_id', $request -> file_id) -> orderBy('id') -> get();
         return view('/doc_management/create/fields/add_fields', compact('file', 'published', 'images', 'fields', 'common_fields', 'field_types', 'field_inputs'));
 
     }

@@ -216,10 +216,10 @@ if (document.URL.match(/create\/upload\/files/)) {
                     save_add_to_checklists(state, form_id, form_group_id);
                 });
 
-                $('.checklist-filter').change(checklist_filter);
-                $('#filter_selected').change(filter_selected);
+                $('.checklist-filter').on('change', checklist_filter);
+                $('#filter_selected').on('change', filter_selected);
 
-                $('#select_all_checklists').click(check_all);
+                $('#select_all_checklists').on('click', check_all);
             }, 2000);
 
         })

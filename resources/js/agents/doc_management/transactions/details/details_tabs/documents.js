@@ -106,7 +106,7 @@ if (document.URL.match(/transaction_details/)) {
                         a.href = file_location;
                         a.download = filename;
                         document.body.appendChild(a);
-                        a.click();
+                        a.on('click', );
                         document.body.removeChild(a);
                     }
                 })
@@ -992,7 +992,7 @@ if (document.URL.match(/transaction_details/)) {
                 form_search($(this))
             });
             // search by tag
-            $('#form_categories_search').change(tag_search);
+            $('#form_categories_search').on('change', tag_search);
             // select and show form groups
             $('.select-form-group').on('change', function () {
                 select_form_group();
@@ -1033,7 +1033,7 @@ if (document.URL.match(/transaction_details/)) {
             setTimeout(function () {
                 $('#new_folder_name').focus();
             }, 500);
-            $('#save_add_folder_button').click(add_folder);
+            $('#save_add_folder_button').on('click', add_folder);
         }
 
         function add_folder() {
@@ -1093,7 +1093,7 @@ if (document.URL.match(/transaction_details/)) {
 
         function show_move_documents() {
             $('#move_documents_modal').modal();
-            $('#save_move_documents_button').click(move_documents);
+            $('#save_move_documents_button').on('click', move_documents);
         }
 
         function move_documents() {
@@ -1163,7 +1163,7 @@ if (document.URL.match(/transaction_details/)) {
 
         function show_delete_documents() {
             $('#confirm_delete_documents_modal').modal();
-            $('#confirm_delete_documents_button').click(delete_documents);
+            $('#confirm_delete_documents_button').on('click', delete_documents);
         }
 
         function delete_documents() {

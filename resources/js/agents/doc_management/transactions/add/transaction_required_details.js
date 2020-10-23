@@ -4,9 +4,9 @@ if (document.URL.match(/transaction_required_details/)) {
 
         form_elements();
 
-        $('.add-member-button').click(add_member);
+        $('.add-member-button').on('click', add_member);
 
-        $('.member-delete').click(delete_member);
+        $('.member-delete').on('click', delete_member);
 
         $('#MLSListDate').focus(function() {
             $('.custom-picker-header').remove();
@@ -50,7 +50,7 @@ if (document.URL.match(/transaction_required_details/)) {
         });
 
         $('[name$=_entity_name]').removeClass('required');
-        $('.bank-trust').change(show_bank_trust);
+        $('.bank-trust').on('change', show_bank_trust);
 
 
         $('#import_property_address_button').on('click', function() {
@@ -67,7 +67,7 @@ if (document.URL.match(/transaction_required_details/)) {
 
         $('#ReferralPercentage, #CommissionAmount').keyup(total_commission);
 
-        $('#save_details_button').click(save_details);
+        $('#save_details_button').on('click', save_details);
 
         let agent_search_request = null;
 
@@ -441,7 +441,7 @@ if (document.URL.match(/transaction_required_details/)) {
             $('.add-member-button[data-member="'+member+'"]').show();
         }
 
-        $('.member-delete').click(delete_member);
+        $('.member-delete').on('click', delete_member);
 
         $('.street-autocomplete').focus(function() {
             let step = $(this).closest('.'+member+'-div');

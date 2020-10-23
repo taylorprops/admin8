@@ -167,8 +167,8 @@ if (document.URL.match(/transaction_details/)) {
             });
 
             setTimeout(function() {
-                $('.member-type-id').change(show_hide_fields);
-                $('.bank-trust').click(show_bank_trust);
+                $('.member-type-id').on('change', show_hide_fields);
+                $('.bank-trust').on('click', show_bank_trust);
                 form_elements();
             }, 500);
 
