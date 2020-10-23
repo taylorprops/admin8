@@ -617,7 +617,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                             if (select.val() == 'Seller or Landlord Name' || select.val() == 'Buyer or Renter Name') {
                                 // force click to add inputs
-                                inputs_container.next('.add-input').trigger('click').trigger('click');
+                                inputs_container.next('div').find('.add-input').trigger('click').trigger('click');
                                 inputs_container.children('.row:eq(0)').find('.field-data-input').val(name_type + ' One Name').trigger('change');
                                 inputs_container.children('.row:eq(0)').find('.field-data-input-helper-text').val('Enter the Full Name of the First ' + name_type).trigger('change');
                                 inputs_container.children('.row:eq(1)').find('.field-data-input').val(name_type + ' Two Name').trigger('change');
@@ -625,7 +625,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                             } else {
 
-                                inputs_container.next('.add-input').trigger('click');
+                                inputs_container.next('div').find('.add-input').trigger('click');
                                 inputs_container.children('.row:eq(0)').find('.field-data-input').val(name_type + ' Name').trigger('change');
                                 inputs_container.children('.row:eq(0)').find('.field-data-input-helper-text').val('Enter the Full Name of the ' + name_type).trigger('change');
 
@@ -635,7 +635,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                         } else {
 
-                            inputs_container.next('.add-input').trigger('click')
+                            inputs_container.next('div').find('.add-input').trigger('click')
 
                         }
                     }
@@ -808,7 +808,7 @@ if (document.URL.match(/create\/add_fields/)) {
     }
 
     function add_input() {
-        let append_to = $(this).prev('.field-data-inputs-container');
+        let append_to = $(this).parent('div').prev('.field-data-inputs-container');
         let input_id = Date.now();
         let field_id = $(this).data('field-id');
 
