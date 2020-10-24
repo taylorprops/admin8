@@ -123,6 +123,8 @@ Route::middleware('admin') -> group(function () {
 
     // get custom names for autofill when adding a form
     Route::get('/doc_management/get_custom_names', 'DocManagement\Fill\FieldsController@get_custom_names');
+    // get edit properties modal
+    Route::get('/doc_management/get_edit_properties_modal', 'DocManagement\Fill\FieldsController@get_edit_properties_modal');
 
     /********* Document Review ************/
     // doc review page

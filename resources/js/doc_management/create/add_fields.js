@@ -136,10 +136,6 @@ if (document.URL.match(/create\/add_fields/)) {
                     handle: '.draggable-handle'
                 });
 
-                $('.add-input').off('click').on('click', add_input);
-                $('.delete-input').off('click').on('click', delete_input);
-                field_list();
-
                 // clear other field when changing name
                 /* if ($('#field_' + id).data('type') != 'checkbox') {
                     clear_fields_on_change(id);
@@ -153,12 +149,12 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 keep_in_view($('#field_' + id), w_perc, x_perc, y_perc, field_type);
 
-                set_field_options(field_type, $('#field_' + id), id, rect, container);
-                $('#field_' + id).find('.focused').show();
+                $('#field_'+id).find('.focused').show();
 
-                field_status();
+                get_edit_modal_html(id, id, field_type, rect, container);
 
-                setTimeout(select_refresh, 200);
+
+
 
             }
         });
@@ -186,7 +182,7 @@ if (document.URL.match(/create\/add_fields/)) {
         });
 
         // change highlighted thumb on scroll when doc is over half way in view
-        $('#file_viewer').scroll(function () {
+        $('#file_viewer').on('scroll', function () {
 
             // Stop the loop once the first is found
             let cont = 'yes';
@@ -265,7 +261,7 @@ if (document.URL.match(/create\/add_fields/)) {
             aspect_ratio = '4 / 4';
         }
 
-        ele.on('click', function (e) {
+        ele.off('click').on('click', function (e) {
 
             if (e.target === this) {
                 e.stopPropagation();
@@ -304,7 +300,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 }
             });
 
-            $('.focused').hide();
+
         }
 
         ele.draggable({
@@ -553,11 +549,12 @@ if (document.URL.match(/create\/add_fields/)) {
                         }
                     })
                     .then(function (response) {
-                        edit_div.find('.custom-name-results').collapse('show');
+
                         edit_div.find('.dropdown-results-div').html('');
                         response.data.custom_names.forEach(function (result) {
                             edit_div.find('.dropdown-results-div').append('<a href="javascript: void(0)" class="list-group-item list-group-item-action result">'+result['field_name_display']+'</a>');
                         });
+                        edit_div.find('.custom-name-results').collapse('show');
                         $('.result').add('click').on('click', function() {
                             edit_div.find('.field-data-name').val($(this).text());
                             edit_div.find('.custom-name-results').collapse('hide');
@@ -808,6 +805,7 @@ if (document.URL.match(/create\/add_fields/)) {
     }
 
     function add_input() {
+
         let append_to = $(this).parent('div').prev('.field-data-inputs-container');
         let input_id = Date.now();
         let field_id = $(this).data('field-id');
@@ -835,7 +833,111 @@ if (document.URL.match(/create\/add_fields/)) {
         form_elements();
     }
 
-    function field_properties(type, group_id, field_id) {
+    function get_edit_modal_html(id, group_id, type, rect, container) {
+        axios.get('/doc_management/get_edit_properties_modal', {
+            params: {
+                file_id: $('#file_id').val(),
+                field_id: id,
+                field_type: type,
+                group_id: group_id
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+            let modal_html = response.data;
+
+            $('#field_' + id).append(modal_html);
+
+            set_field_options(type, $('#field_' + id), id, rect, container);
+
+            $('.add-input').off('click').on('click', add_input);
+            $('.delete-input').off('click').on('click', delete_input);
+
+            field_list();
+
+            field_status();
+
+            setTimeout(select_refresh, 200);
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, page, type) {
+
+
+
+        //let properties_html = field_properties(type, group_id, id);
+
+        let field_class = '';
+        let field_data = '';
+        let hide_add_option = '';
+        let handles = ' \
+        <div class="ui-resizable-handle ui-resizable-e focused"></div> \
+        <div class="ui-resizable-handle ui-resizable-w focused"></div> \
+        ';
+        if (type == 'textline' || type == 'name' || type == 'address' || type == 'number') {
+            field_class = 'textline-div standard';
+            field_data = '<div class="textline-html"></div>';
+            w_perc = 10;
+        } else if (type == 'radio') {
+            handles = '';
+            field_class = type + '-div standard';
+            field_data = '<div class="radio-html"></div>';
+        } else if (type == 'checkbox') {
+            handles = '';
+            field_class = type + '-div standard';
+            field_data = '<div class="checkbox-html"></div>';
+        } else if (type == 'date') {
+            field_class = 'textline-div standard';
+            field_data = '<div class="textline-html"></div>';
+            hide_add_option = 'hidden';
+        }
+
+        let field_div_html = ' \
+        <div class="field-div '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;" id="field_' + id + '" data-field-id="' + id + '" data-group-id="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
+            <div class="field-status-div d-flex justify-content-left"> \
+                <div class="field-status-name-div"></div> \
+                <div class="field-status-group-div float-right"></div> \
+            </div> \
+            <div class="field-options-holder focused"> \
+                <div class="ml-3"> \
+                    <a href="javascript: void(0)" class="close-field-options"><i class="fa fa-times text-danger fa-2x"></i></a> \
+                </div> \
+                <div class="btn-group" role="group" aria-label="Field Options"> \
+                    <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
+            ';
+            if(type != 'checkbox') {
+                    field_div_html += ' \
+                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-id="' + id +'" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
+            }
+                    field_div_html += ' \
+                    <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
+                </div> \
+            </div> \
+            <div class="mini-slider-div"> \
+                <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
+                    <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
+                    <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li> \
+                </ul> \
+            </div> \
+            '+ handles + ' \
+            '+ field_data + ' \
+        </div> \
+        ';
+
+        return field_div_html;
+    }
+
+    /* function field_properties(type, group_id, field_id) {
 
         let input_id = Date.now();
         let custom_name_heading;
@@ -919,23 +1021,8 @@ if (document.URL.match(/create\/add_fields/)) {
                             </div> \
                         </div> \
             ';
-        } /* else if (type == 'radio') {
-            properties += ' \
-                        <div class="row"> \
-                            <div class="col-12"> \
-                                <input type="text" class="custom-form-element form-input field-data-radio-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
-                            </div> \
-                        </div> \
-            ';
-        } else if (type == 'checkbox') {
-            properties += ' \
-                        <div class="row"> \
-                            <div class="col-12"> \
-                                <input type="text" class="custom-form-element form-input field-data-checkbox-value" id="field_value_input_'+ field_id + '" data-label="Field Value"> \
-                            </div> \
-                        </div> \
-            ';
-        } */
+        }
+
         if (type != 'checkbox' && type != 'radio') {
             properties += ' \
                             <div class="row"> \
@@ -1043,79 +1130,9 @@ if (document.URL.match(/create\/add_fields/)) {
         ';
 
         return properties
-    }
+    } */
 
-    function field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, page, type) {
 
-        let properties_html = field_properties(type, group_id, id);
-
-        let field_class = '';
-        let field_data = '';
-        let hide_add_option = '';
-        let handles = ' \
-        <div class="ui-resizable-handle ui-resizable-e focused"></div> \
-        <div class="ui-resizable-handle ui-resizable-w focused"></div> \
-        ';
-        if (type == 'textline' || type == 'name' || type == 'address' || type == 'number') {
-            field_class = 'textline-div standard';
-            field_data = '<div class="textline-html"></div>';
-            w_perc = 10;
-        } else if (type == 'radio') {
-            handles = '';
-            field_class = type + '-div standard';
-            field_data = '<div class="radio-html"></div>';
-        } else if (type == 'checkbox') {
-            handles = '';
-            field_class = type + '-div standard';
-            field_data = '<div class="checkbox-html"></div>';
-        } else if (type == 'date') {
-            field_class = 'textline-div standard';
-            field_data = '<div class="textline-html"></div>';
-            hide_add_option = 'hidden';
-        }
-
-        let field_div_html = ' \
-        <div class="field-div '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;" id="field_' + id + '" data-field-id="' + id + '" data-group-id="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
-            <div class="field-status-div d-flex justify-content-left"> \
-                <div class="field-status-name-div"></div> \
-                <div class="field-status-group-div float-right"></div> \
-            </div> \
-            <div class="field-options-holder focused"> \
-                <div class="ml-3"> \
-                    <a href="javascript: void(0)" class="close-field-options"><i class="fa fa-times text-danger fa-2x"></i></a> \
-                </div> \
-                <div class="btn-group" role="group" aria-label="Field Options"> \
-                    <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
-                    <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
-            ';
-            if(type != 'checkbox') {
-                    field_div_html += ' \
-                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
-                    <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-id="' + id +'" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
-            }
-                    field_div_html += ' \
-                    <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
-                </div> \
-            </div> \
-            <div class="mini-slider-div"> \
-                <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
-                    <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
-                    <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li> \
-                </ul> \
-            </div> \
-            <div class="modal fade edit-properties-div draggable" id="edit_properties_modal_'+id+'" tabindex="-1" role="dialog" aria-labelledby="edit_properties_modal_title_'+id+'" aria-hidden="true"> \
-                <div class="modal-dialog modal-md modal-dialog-centered" role="document"> \
-                    <div class="modal-content">'+ properties_html + ' \
-                    </div> \
-                </div> \
-            </div> \
-            '+ handles + ' \
-            '+ field_data + ' \
-        </div> \
-        ';
-
-        return field_div_html;
-    }
 
     function field_status() {
         let group_ids = [];

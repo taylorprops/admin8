@@ -44,9 +44,31 @@ class FieldsController extends Controller
 
     }
 
+    public function get_edit_properties_modal(Request $request) {
+
+        $field_id = $request -> field_id;
+        $field_type = $request -> field_type;
+        $group_id = $request -> group_id;
+        $field_number_type = '';
+        $field_textline_type = '';
+        $field_address_type = '';
+        $field_helper_text = '';
+        $common_name = '';
+        $custom_name = '';
+        $label = $field_type == 'radio' ? 'Radio Button Group Name' : 'Custom Name';
+
+        $file = Upload::whereFileId($request -> file_id) -> first();
+        $published = $file -> published;
+        $common_fields = CommonFields::getCommonFields();
+        $field_inputs = FieldInputs::where('file_id', $request -> file_id) -> orderBy('id') -> get();
+
+
+        return view('/doc_management/create/fields/edit_properties_modal', compact('field_id', 'field_type', 'group_id', 'field_number_type', 'field_textline_type', 'field_address_type', 'field_helper_text', 'common_name', 'custom_name', 'label', 'common_fields', 'field_inputs', 'published'));
+    }
+
     public function get_custom_names(Request $request) {
         $val = $request -> val;
-        $custom_names = Fields::select('field_name_display') -> where('field_name_display', 'like', '%'.$val.'%') -> groupBy('field_name_display') -> orderBy('field_name_display') -> get();
+        $custom_names = Fields::select('field_name_display') -> where('field_name_display', 'like', '%'.$val.'%') -> where('field_name_type', 'custom') -> groupBy('field_name_display') -> orderBy('field_name_display') -> get();
         return compact('custom_names');
     }
 

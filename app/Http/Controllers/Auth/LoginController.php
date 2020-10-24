@@ -31,6 +31,8 @@ class LoginController extends Controller
      */
     public function redirectTo(){
 
+        $super_user = false;
+
         if(auth() -> user() -> group == 'admin') {
 
             session(['header_logo_src' => '/images/logo/logos.png']);
@@ -41,6 +43,10 @@ class LoginController extends Controller
             // get admin details and add to session
             $admin_details = InHouse::whereId($user_id) -> first();
             session(['admin_details' => $admin_details]);
+
+            if(auth() -> user() -> super_user == 'yes') {
+                session(['super_user' => true]);
+            }
 
         } else if(auth() -> user() -> group == 'agent') {
 
