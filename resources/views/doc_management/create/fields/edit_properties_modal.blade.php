@@ -115,62 +115,13 @@
 
                                     @if($field_input -> field_id == $field_id)
 
-                                        <input type="text" class="field-data-input" id="input_name_{{ $field_id }}_{{ $field_input -> input_id }}" value="{{ $field_input -> input_name }}" data-default-value="{{ $field_input -> input_name }}" data-id="{{ $field_input -> input_id }}">
+                                        <input type="hidden" class="field-data-input" id="input_name_{{ $field_id }}_{{ $field_input -> input_id }}" value="{{ $field_input -> input_name }}" data-default-value="{{ $field_input -> input_name }}" data-id="{{ $field_input -> input_id }}">
 
                                     @endif
 
                                 @endforeach
 
                             </div>
-
-                            {{-- @if($field_type == 'address' || $field_type == 'name')
-
-                                <div class="row">
-
-                                    <div class="col-12">
-
-                                            <div class="p-3 border rounded mt-2">
-
-                                                <h6 class="text-primary">Inputs</h6>
-
-                                                <div class="row field-data-inputs-container">
-
-                                                    @foreach($field_inputs as $field_input)
-
-                                                        @if($field_input -> field_id == $field_id)
-
-                                                            <div class="col-3 field-data-inputs-div">
-
-                                                                <div class="p-2 m-2 border border-primary rounded">
-                                                                    <div class="d-flex justify-content-end">
-                                                                        <a href="javascript: void(0)" class="delete-input mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a>
-                                                                    </div>
-                                                                    <div>
-                                                                        <input type="text" class="custom-form-element form-input field-data-input" id="input_name_{{ $field_id }}_{{ $field_input -> input_id }}" value="{{ $field_input -> input_name }}" data-default-value="{{ $field_input -> input_name }}" data-id="{{ $field_input -> input_id }}" data-label="Input Name">
-                                                                    </div>
-                                                                    <div>
-                                                                        <input type="text" class="custom-form-element form-input field-data-input-helper-text" id="input_helper_text_{{ $field_id }}_{{ $field_input -> input_id }}" value="{{ $field_input -> input_helper_text }}" data-default-value="{{ $field_input -> input_helper_text }}" data-id="{{ $field_input -> input_id }}" data-label="Input Helper Text">
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-
-                                                        @endif
-
-                                                    @endforeach
-
-                                                </div>
-                                                <div class="my-3">
-                                                    <a href="javascript: void(0);" class="text-green add-input" data-field-id="{{ $field_id }}"><i class="fa fa-plus"></i> Add Input</a>
-                                                </div>
-
-                                            </div>
-
-                                    </div>
-
-                                </div>
-
-                            @endif --}}
 
                         </div>
 

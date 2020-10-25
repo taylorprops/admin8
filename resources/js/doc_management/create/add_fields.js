@@ -774,7 +774,7 @@ if (document.URL.match(/create\/add_fields/)) {
             values.forEach(function(value) {
                 c += 1;
                 input_id = input_id + c;
-                inputs_container.append('<input type="text" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="' + value + '" data-default-value="' + value + '" data-id="'+input_id+'">');
+                inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="' + value + '" data-default-value="' + value + '" data-id="'+input_id+'">');
             });
 
         }
@@ -789,67 +789,17 @@ if (document.URL.match(/create\/add_fields/)) {
 
         if (name_type == 'Seller or Landlord' || name_type == 'Buyer or Renter') {
 
-            inputs_container.append('<input type="text" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="' + name_type + ' One Name" data-default-value="' + name_type + ' One Name" data-id="'+input_id+'">');
-            inputs_container.append('<input type="text" class="field-data-input" id="input_name_'+field_id+'_'+input_id2+'" value="' + name_type + ' Two Name" data-default-value="' + name_type + ' Two Name" data-id="'+input_id2+'">');
+            inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="' + name_type + ' One Name" data-default-value="' + name_type + ' One Name" data-id="'+input_id+'">');
+            inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id2+'" value="' + name_type + ' Two Name" data-default-value="' + name_type + ' Two Name" data-id="'+input_id2+'">');
 
         } else {
 
-            inputs_container.append('<input type="text" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="' + name_type + ' Name" data-default-value="' + name_type + ' Name" data-id="'+input_id+'">');
+            inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="' + name_type + ' Name" data-default-value="' + name_type + ' Name" data-id="'+input_id+'">');
 
         }
 
     }
 
-    /* function add_inputs_to_group(group_id, inputs_div) {
-
-        let c = 0;
-        if ($('.group_' + group_id).length > 1) {
-            $('.group_' + group_id).each(function () {
-                // inputs to all fields in a group
-                $(this).find('.field-data-inputs-container').html(inputs_div.html());
-                // rename all ids so they are unique and add data-default-value
-                $(this).find('input, select').each(function () {
-                    c += 1;
-                    $(this).attr('id', 'input_' + group_id + '_' + c);
-                    $(this).data('default-value', $(this).val());
-                    // TODO need to activate form-element
-                });
-            });
-        }
-        $('.add-input').off('click').on('click', add_input);
-        form_elements();
-    } */
-
-    /* function delete_input() {
-        $(this).closest('.field-data-inputs-div').fadeOut('slow');
-    } */
-
-    /* function add_input() {
-
-        let append_to = $(this).parent('div').prev('.field-data-inputs-container');
-        let input_id = Date.now();
-        let field_id = $(this).data('field-id');
-
-        let new_input = ' \
-        <div class="col-3 field-data-inputs-div"> \
-            <div class="p-2 m-2 border border-primary rounded"> \
-                <div class="d-flex justify-content-end"> \
-                    <a href="javascript: void(0)" class="delete-input mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
-                </div> \
-                <div> \
-                    <input type="text" class="custom-form-element form-input field-data-input" id="input_name_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Name"> \
-                </div> \
-                <div> \
-                    <input type="text" class="custom-form-element form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_' + input_id + '" data-id="'+input_id+'" data-label="Input Helper Text"> \
-                </div> \
-            </div> \
-        </div> \
-        ';
-
-        $(new_input).appendTo(append_to);
-        $('.delete-input').off('click').on('click', delete_input);
-        form_elements();
-    } */
 
     function get_edit_modal_html(id, group_id, field_type, rect, container, ele, new_ele) {
 
@@ -894,14 +844,10 @@ if (document.URL.match(/create\/add_fields/)) {
                     }
                 }
 
-                //let inputs_div = ele.find('.field-data-inputs-container');
-                //add_inputs_to_group(group_id, inputs_div);
+
             }
 
             set_field_options(field_type, $('#field_' + id), id, rect, container);
-
-            /* $('.add-input').off('click').on('click', add_input);
-            $('.delete-input').off('click').on('click', delete_input); */
 
             setTimeout(select_refresh, 200);
 
@@ -978,202 +924,6 @@ if (document.URL.match(/create\/add_fields/)) {
 
         return field_div_html;
     }
-
-    /* function field_properties(type, group_id, field_id) {
-
-        let input_id = Date.now();
-        let custom_name_heading;
-        if (type == 'radio') {
-            custom_name_heading = 'Radio Button Group Name';
-        } else {
-            custom_name_heading = 'Custom Name';
-        }
-
-        let properties = ' \
-            <div class="modal-header draggable-handle"> \
-                <h4 class="modal-title" id="edit_properties_modal_title_'+field_id+'">Field Properties</h4> \
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
-                    <span aria-hidden="true" class="text-white">&times;</span> \
-                </button> \
-            </div> \
-            <div class="modal-body pb-5"> \
-                <div class="h5-responsive text-orange my-2">'+ type.toUpperCase() + '</div> \
-                <div class="form-div"> \
-                    <div class="container"> \
-                        <div class="row"> \
-        ';
-        if (type != 'checkbox' && type != 'radio') {
-            properties += ' \
-                            <div class="col-12"> \
-                                <select class="custom-form-element form-select field-data-name" id="name_select_'+ field_id + '" data-field-type="common" data-label="Select Common Name (Shared)"> \
-                                    <option value="">&nbsp;</option> \
-                                    ' + $('#' + type + '_select_options').val() + ' \
-                                </select> \
-                            </div> \
-                            <div class="text-primary text-center w-100">OR</div> \
-            ';
-        }
-        properties += ' \
-                            <div class="col-12"> \
-                                <input type="text" class="custom-form-element form-input field-data-name" id="name_input_'+ field_id + '" data-field-type="custom" data-label="' + custom_name_heading + '"> \
-                                <div class="collapse custom-name-results"><div class="list-group list-group-action dropdown-results-div"></div></div> \
-                            </div> \
-                        </div> \
-        ';
-        if (type != 'checkbox' && type != 'radio') {
-            properties += '<div class="row"><div class="col-12"><hr></div></div>';
-        }
-        if (type == 'number') {
-            properties += ' \
-                        <div class="row"> \
-                            <div class="col-12"> \
-                                <select class="custom-form-element form-select field-data-number-type" id="number_select_'+ field_id + '" data-field-type="number-type" data-label="Number Type"> \
-                                    <option value="">&nbsp;</option> \
-                                    <option value="numeric">Numeric - 3,000</option> \
-                                    <option value="written">Written - Three Thousand</option> \
-                                </select> \
-                            </div> \
-                        </div> \
-            ';
-        } else if (type == 'textline') {
-            properties += ' \
-                        <div class="row"> \
-                            <div class="col-12"> \
-                                <select class="custom-form-element form-select field-data-textline-type" id="textline_select_'+ field_id + '" data-field-type="textline-type" data-label="Format Type - Optional"> \
-                                    <option value="">&nbsp;</option> \
-                                    <option value="number numbers-only">Number</option> \
-                                    <option value="phone numbers-only">Phone Number</option> \
-                                </select> \
-                            </div> \
-                        </div> \
-            ';
-        } else if (type == 'address') {
-            properties += ' \
-                        <div class="row"> \
-                            <div class="col-12"> \
-                                <select class="custom-form-element form-select field-data-address-type" id="address_select_'+ field_id + '" data-field-type="address-type" data-label="Address Type"> \
-                                    <option value="">&nbsp;</option> \
-                                    <option value="full">Full Address</option> \
-                                    <option value="street">Street Address</option> \
-                                    <option value="city">City</option> \
-                                    <option value="state">State</option> \
-                                    <option value="zip">Zip Code</option> \
-                                    <option value="county">County</option> \
-                                </select> \
-                            </div> \
-                        </div> \
-            ';
-        }
-
-        if (type != 'checkbox' && type != 'radio') {
-            properties += ' \
-                            <div class="row"> \
-                                <div class="col-12"> \
-                                    <input type="text" class="custom-form-element form-input field-data-helper-text" id="helper_text_input_'+ field_id + '" data-label="Helper Text - Optional"> \
-                                </div> \
-                            </div> \
-            ';
-        }
-        if (type == 'address' || type == 'name') {
-            properties += ' \
-                        <div class="row"> \
-                            <div class="col-12"> \
-                                <div class="text-gray font-weight-bold mt-3">Inputs</div> \
-                            </div> \
-                            <div class="col-12"> \
-                                <div class="container field-data-inputs-container"> \
-            ';
-            if (type == 'name') {
-                properties += ' \
-                                    <div class="row field-data-inputs-div"> \
-                                        <div class="col-12"> \
-                                            <div class="border border-primary p-2 mb-4"> \
-                                                <div class="clearfix"> \
-                                                    <a href="javascript: void(0)" class="delete-input float-right mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
-                                                </div> \
-                                                <div class="mt-1"> \
-                                                    <input type="text" class="custom-form-element form-input field-data-input" id="input_name_'+ field_id + '_'+input_id+'" data-default-value="" data-id="'+input_id+'" data-label="Input Name"> \
-                                                </div> \
-                                                <div class="mt-3 mb-2"> \
-                                                    <input type="text" class="custom-form-element form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+input_id+'" data-id="'+input_id+'" data-label="Input Helper Text"> \
-                                                </div> \
-                                            </div> \
-                                        </div> \
-                                    </div> \
-                ';
-            } else if (type == 'address') {
-                // adding all address field inputs
-                let input_list = JSON.stringify({
-                    'street': {
-                        'name': 'Street Address',
-                        'helper': 'Enter The Street Address'
-                    },
-                    'city': {
-                        'name': 'City',
-                        'helper': 'Enter The City'
-                    },
-                    'county': {
-                        'name': 'County',
-                        'helper': 'Enter The County'
-                    },
-                    'state': {
-                        'name': 'State',
-                        'helper': 'Enter The State'
-                    },
-                    'zip': {
-                        'name': 'Zip Code',
-                        'helper': 'Enter The Zip Code'
-                    }
-                });
-                let inputs = JSON.parse(input_list);
-                let c = 1;
-                for (let key in inputs) {
-                    c += 1;
-                    let input_name = inputs[key]['name'];
-                    let input_helper_text = inputs[key]['helper'];
-                    let inputs_ids = input_id + c;
-
-                    properties += ' \
-                                    <div class="row field-data-inputs-div"> \
-                                        <div class="col-12"> \
-                                            <div class="border border-primary p-2 mb-4"> \
-                                                <div class="clearfix"> \
-                                                    <a href="javascript: void(0)" class="delete-input float-right mr-2 mt-1"><i class="fas fa-times-square text-danger fa-lg"></i></a> \
-                                                </div> \
-                                                <div class="mt-4"> \
-                                                    <input type="text" class="custom-form-element form-input field-data-input" id="input_name_'+ field_id + '_'+inputs_ids+'" value="'+input_name+'" data-default-value="'+input_name+'" data-id="'+inputs_ids+'" data-label="Input Name"> \
-                                                </div> \
-                                                <div class="mt-3 mb-2"> \
-                                                    <input type="text" class="custom-form-element form-input field-data-input-helper-text" id="input_helper_text_'+ field_id + '_'+inputs_ids+'" value="'+input_helper_text+'" data-default-value="'+input_helper_text+'" data-id="'+inputs_ids+'" data-label="Input Helper Text"> \
-                                                </div> \
-                                            </div> \
-                                        </div> \
-                                    </div> \
-                    ';
-                }
-            }
-            properties += ' \
-                                </div> \
-                                <div class="my-3"><a href="javascript: void(0);" class="text-green add-input" data-field-id="'+ field_id + '"><i class="fa fa-plus"></i> Add Input</a></div> \
-                            </div> \
-                        </div> \
-            ';
-        }
-        properties += ' \
-                    </div> \
-                </div > \
-            </div > \
-        ';
-        properties += ' \
-            <div class="modal-footer d-flex justify-content-around"> \
-                <a href="javascript:void(0);" class="btn btn-danger" data-dismiss="modal"><i class="fad fa-ban mr-2"></i> Cancel</a> \
-                <a href="javascript: void(0);" class="btn btn-success field-save-properties" data-group-id="'+ group_id + '" data-type="' + type + '"><i class="fad fa-save mr-2"></i> Save</a> \
-            </div> \
-        ';
-
-        return properties
-    } */
-
 
 
     function field_status() {
