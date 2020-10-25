@@ -23,7 +23,7 @@
 
                                         @if($field_type != 'checkbox' && $field_type != 'radio')
 
-                                            <select class="custom-form-element form-select field-data-name" id="name_select_{{ $field_id }}" data-field-type="common" data-default-value="{{$common_name}}" data-label="Select Common Name (Shared)">
+                                            <select class="custom-form-element form-select field-data-name required" id="name_select_{{ $field_id }}" data-field-type="common" data-default-value="{{$common_name}}" data-label="Select Common Name (Shared)">
                                                 <option value="">&nbsp;</option>
                                                 @foreach ($common_fields as $common_field_type => $field_names)
                                                     @if($field_type == $common_field_type)
@@ -38,7 +38,7 @@
 
                                         @endif
 
-                                        <input type="text" class="custom-form-element form-input field-data-name" id="name_input_{{ $field_id }}" data-field-type="custom" value="{{ $custom_name }}" data-default-value="{{ $custom_name }}" data-label="{{ $label }}">
+                                        <input type="text" class="custom-form-element form-input field-data-name required" id="name_input_{{ $field_id }}" data-field-type="custom" value="{{ $custom_name }}" data-default-value="{{ $custom_name }}" data-label="{{ $label }}">
                                         <div class="collapse custom-name-results">
                                             <div class="list-group dropdown-results-div"></div>
                                         </div>
@@ -57,7 +57,7 @@
 
                                             @if($field_type == 'number')
 
-                                                <select class="custom-form-element form-select field-data-number-type" id="number_select_{{ $field_id }}" data-field-type="number-type" data-default-value="{{ $field_number_type }}" data-label="Number Type">
+                                                <select class="custom-form-element form-select field-data-number-type required" id="number_select_{{ $field_id }}" data-field-type="number-type" data-default-value="{{ $field_number_type }}" data-label="Number Type">
                                                     <option value="">&nbsp;</option>
                                                     <option value="numeric" @if($field_number_type=='numeric' ) selected @endif>Numeric - 3,000</option>
                                                     <option value="written" @if($field_number_type=='written' ) selected @endif>Written - Three Thousand</option>
@@ -73,7 +73,7 @@
 
                                             @elseif($field_type == 'address')
 
-                                                <select class="custom-form-element form-select field-data-address-type" id="address_select_{{ $field_id }}" data-field-type="address-type" data-default-value="{{ $field_address_type }}" data-label="Address Type">
+                                                <select class="custom-form-element form-select field-data-address-type required" id="address_select_{{ $field_id }}" data-field-type="address-type" data-default-value="{{ $field_address_type }}" data-label="Address Type">
                                                     <option value="">&nbsp;</option>
                                                     <option value="full" @if($field_address_type=='full' ) selected @endif>Full Address</option>
                                                     <option value="street" @if($field_address_type=='street' ) selected @endif>Street Address</option>
@@ -90,22 +90,6 @@
                                     </div>
 
                                 @endif
-
-                                {{-- @if($field_type != 'checkbox' && $field_type != 'radio')
-
-                                    <div class="col-12 col-sm-4">
-
-                                        <div class="p-3 border rounded">
-
-                                            <h6 class="text-primary">Helper Text</h6>
-
-                                            <input type="text" class="custom-form-element form-input field-data-helper-text" id="helper_text_input_{{ $field_id }}" value="{{ $field_helper_text }}" data-default-value="{{ $field_helper_text }}" data-label="Helper Text - Optional">
-
-                                        </div>
-
-                                    </div>
-
-                                @endif --}}
 
                             </div>
 

@@ -213,6 +213,9 @@ if (document.URL.match(/create\/add_fields/)) {
 
         });
 
+        $(document).on('change', '.field-data-name', function() {
+            name_required($(this).closest('.form-div'));
+        });
 
     });
 
@@ -636,6 +639,21 @@ if (document.URL.match(/create\/add_fields/)) {
 
     }
 
+    function name_required(form_div) {
+        let has_value = 'no';
+        form_div.find('.field-data-name').each(function() {
+            if($(this).val() != '') {
+                has_value = 'yes';
+            }
+        });
+        if(has_value == 'yes') {
+            form_div.find('.field-data-name').removeClass('required');
+        } else {
+            form_div.find('.field-data-name').addClass('required');
+        }
+        select_refresh();
+    }
+
     function save_field_properties(button) {
 
         button.html('<span class="spinner-border spinner-border-sm mr-2"></span> Saving');
@@ -964,6 +982,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     $(this).find('.field-status-name-div').html('');
                     modal.find('.field-data-name').each(function () {
                         if ($(this).val() != '') {
+                            modal.find('.field-data-name').removeClass('required');
                             field_name = $(this).val();
                             // add field name to last of each group
                             $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-name-div').last().html(field_name);
