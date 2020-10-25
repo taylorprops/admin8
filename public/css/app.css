@@ -14422,6 +14422,15 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 .page-add-fields {
   overflow-x: hidden;
   border: 1px solid #dee2e6;
+  /* .field-data-inputs-container {
+      max-height: 200px;
+      overflow: auto;
+  }
+
+  .field-data-inputs-container .col-12 {
+      padding-left: 0px;
+      padding-right: 0px;
+  } */
   /* .form-div h5 {
       padding-bottom: 5px;
   } */
@@ -14633,7 +14642,7 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 .page-add-fields .field-div .field-status-div {
   display: none;
   position: absolute;
-  bottom: -2px;
+  bottom: 0px;
   left: 2px;
   color: #4c9bdb;
   font-size: 0.6rem;
@@ -14648,10 +14657,6 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 .page-add-fields .field-div .modal-body {
   max-height: 75VH;
   overflow: auto;
-}
-
-.page-add-fields .field-div .field-data-inputs-div {
-  position: relative;
 }
 
 .page-add-fields .field-error-div {
@@ -14669,16 +14674,6 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .page-add-fields .field-div.active {
   z-index: 5;
-}
-
-.page-add-fields .field-data-inputs-container {
-  max-height: 200px;
-  overflow: auto;
-}
-
-.page-add-fields .field-data-inputs-container .col-12 {
-  padding-left: 0px;
-  padding-right: 0px;
 }
 
 .page-add-fields #edit_properties_modal h5 {

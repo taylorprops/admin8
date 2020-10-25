@@ -64,7 +64,7 @@ if($field -> field_type == 'textline' || $field -> field_type == 'address' || $f
     <div class="field-options-holder focused">
 
         <div class="ml-3">
-            <a href="javascript: void(0)" class="close-field-options"><i class="fa fa-times text-danger fa-2x"></i></a>
+            <a href="javascript: void(0)" class="close-field-options d-block text-danger"><i class="fa fa-times fa-lg mr-2"></i> Hide Options</a>
         </div>
         <div class="btn-group" role="group" aria-label="Field Options">
             <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a>

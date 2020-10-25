@@ -44,7 +44,7 @@
                             <div class="my-auto ml-1 text-primary"> Radio Buttons</div>
                         </div>
                         <div class="mr-1 pl-2">
-                            <div><a href="javascript:void(0)" class="btn btn-success" id="save_add_fields">Save</a></div>
+                            <div><a href="javascript:void(0)" class="btn btn-success" id="save_add_fields"><i class="fad fa-save mr-2"></i> Save</a></div>
                         </div>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
                             <div class="file-view-thumb">
                                 <a href="javascript: void(0)"><img class="file-thumb w-100 h-100" src="{{ $image -> file_location }}"></a>
                             </div>
-                            @if($loop -> last)
+                            @if($loop -> last && $loop -> count > 1)
                             <div class="file-view-thumb-footer d-flex justify-content-between mb-1">
                                 <span class="ml-1">Page {{ $c }}</span>
                                 <span class="mr-1">
@@ -175,5 +175,7 @@
 @endforeach
 
 <input type="hidden" id="inputs_html">
+
+<div class="modals-div"></div>
 
 @endsection

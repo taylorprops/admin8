@@ -290,7 +290,8 @@ window.form_elements = function () {
                     // remove cancel option if class form-select-no-cancel is set
                     if (!element.hasClass('form-select-no-cancel')) {
                         wrapper.find('.form-select-value-cancel').on('click', function () {
-                            element.val('').trigger('change');
+                            element.val('').find('option').attr('selected', false);
+                            element.trigger('change');
                             wrapper.find('.form-select-value-input').val('').trigger('change');
                             wrapper.find('li').removeClass('active');
                             wrapper.find('.form-select-value-cancel').hide();

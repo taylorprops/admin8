@@ -1005,7 +1005,7 @@ if (document.URL.match(/edit_files/)) {
 
                     let width = String(Math.ceil($(this).width()));
                     let text_len = text.length;
-                    let max_chars = width * .18;
+                    let max_chars = width * .15;
                     if (text_len > max_chars) {
                         let section = text.substring(0, max_chars);
                         let end = section.lastIndexOf(' ');

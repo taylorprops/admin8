@@ -140,7 +140,7 @@ window.datepicker_custom = function() {
         $(this).addClass('datepicker-added');
         let id = $(this).prop('id');
         if(!id) {
-            id = new Date();
+            id = new Date().getTime();
         }
         window.picker = datepicker('#'+id, {
             onSelect: (instance, date) => {
