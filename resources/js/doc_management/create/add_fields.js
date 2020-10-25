@@ -51,7 +51,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
             });
 
-            //$('.focused').hide();
+            $('.focused').hide();
 
             field_status();
             setTimeout(function () {
@@ -468,7 +468,7 @@ if (document.URL.match(/create\/add_fields/)) {
         $('.close-field-options').off('click').on('click', function() {
             setTimeout(function() {
                 $('.focused').hide();
-            $('.field-div').removeClass('active');
+                $('.field-div').removeClass('active');
             }, 50);
         });
 
