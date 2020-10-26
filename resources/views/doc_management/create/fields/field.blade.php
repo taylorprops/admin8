@@ -64,18 +64,18 @@ if($field -> field_type == 'textline' || $field -> field_type == 'address' || $f
     <div class="field-options-holder focused">
 
         <div>
-            <a href="javascript: void(0)" class="btn btn-sm btn-danger m-0 ml-2 close-field-options"><i class="fa fa-times fa-lg mr-2"></i> Hide Options</a>
+            <a href="javascript: void(0)" class="btn btn-sm btn-danger m-0 ml-2 close-field-options"><i class="fa fa-times fa-lg mr-2"></i> Hide</a>
         </div>
         <div class="btn-group" role="group" aria-label="Field Options">
-            <a type="button" class="btn btn-primary field-handle" data-toggle="tooltip" data-html="true" title="Move Field"><i class="fal fa-arrows fa-lg"></i></a>
-            <a type="button" class="btn btn-primary mini-slider-button" data-toggle="tooltip" data-html="true" title="Slightly Move Up or Down"><i class="fal fa-arrows-v fa-lg"></i></a>
+            <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a>
+            <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a>
             @if($show_options)
                 @if($add_items == 'yes')
-                    <a type="button" class="btn btn-primary field-add-item" data-group-id="{{ $field -> group_id }}" data-toggle="tooltip" data-html="true" title="Add Line To Group"><i class="fal fa-plus fa-lg"></i></a>
+                    <a type="button" class="btn btn-primary field-add-item" data-group-id="{{ $field -> group_id }}"><i class="fal fa-plus fa-lg"></i></a>
                 @endif
                 <a type="button" class="btn btn-primary field-properties" data-group-id="{{ $field -> group_id }}" data-field-id="{{ $field -> field_id }}" data-field-type="{{ $field -> field_type }}" data-toggle="collapse" href="#properties_container_{{ $field -> field_id }}" role="button" aria-expanded="false" aria-controls="properties_container_{{ $field -> field_id }}"><i class="fal fa-info-circle fa-lg"></i></a>
             @endif
-            <a type="button" class="btn btn-primary remove-field" data-toggle="tooltip" data-html="true" title="Delete Field"><i class="fal fa-times-circle fa-lg"></i></a>
+            <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a>
         </div>
 
         <div class="mini-slider-div">
@@ -85,7 +85,7 @@ if($field -> field_type == 'textline' || $field -> field_type == 'address' || $f
             </ul>
         </div>
 
-        <div id="properties_container_{{ $field -> field_id }}" class="collapse edit-properties-container bg-white border shadow" data-field-id="{{ $field -> field_id }}">
+
         @php
             $field_id = $field -> field_id;
             $field_type = $field -> field_type;
@@ -95,6 +95,7 @@ if($field -> field_type == 'textline' || $field -> field_type == 'address' || $f
             $field_helper_text = $field -> helper_text;
             $group_id = $field -> group_id;
             @endphp
+            <div id="properties_container_{{ $field -> field_id }}" class="collapse edit-properties-container bg-white border shadow @if($field_type == 'name' || $field_type == 'date' || $field_type == 'radio') w-400 @else w-600 @endif" data-field-id="{{ $field -> field_id }}">
             @include('/doc_management/create/fields/edit_properties_html')
         </div>
 

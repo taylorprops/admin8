@@ -1,14 +1,18 @@
 <div class="edit-properties-div p-2" id="edit_properties_div_{{ $field_id }}">
 
+    @php
+    $cols = $field_type == 'name' || $field_type == 'date' || $field_type == 'radio' ? 'col-12' : 'col-12 col-sm-6';
+    @endphp
+
     <div class="h5-responsive text-orange mb-2 ml-3">{{ strtoupper($field_type) }}</div>
 
     <div class="form-div">
 
-        <div class="container">
+        <div class="container p-0">
 
             <div class="row no-gutters">
 
-                <div class="col-12 col-sm-6">
+                <div class="{{ $cols }}">
 
                     <div class="p-2 mx-2 border rounded">
 
@@ -42,7 +46,7 @@
 
                 @if($field_type == 'number' || $field_type == 'textline' || $field_type == 'address')
 
-                    <div class="col-12 col-sm-6">
+                    <div class="{{ $cols }}">
 
                         <div class="p-2 mx-2 border rounded">
 

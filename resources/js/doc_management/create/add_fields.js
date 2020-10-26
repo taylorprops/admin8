@@ -852,14 +852,19 @@ if (document.URL.match(/create\/add_fields/)) {
         <div class="ui-resizable-handle ui-resizable-e focused"></div> \
         <div class="ui-resizable-handle ui-resizable-w focused"></div> \
         ';
+        let width_class = 'w-600';
         if (type == 'textline' || type == 'name' || type == 'address' || type == 'number') {
             field_class = 'textline-div standard';
             field_data = '<div class="textline-html"></div>';
             w_perc = 10;
+            if(type == 'name' ) {
+                width_class = 'w-400';
+            }
         } else if (type == 'radio') {
             handles = '';
             field_class = type + '-div standard';
             field_data = '<div class="radio-html"></div>';
+            width_class = 'w-400';
         } else if (type == 'checkbox') {
             handles = '';
             field_class = type + '-div standard';
@@ -868,6 +873,7 @@ if (document.URL.match(/create\/add_fields/)) {
             field_class = 'textline-div standard';
             field_data = '<div class="textline-html"></div>';
             hide_add_option = 'hidden';
+            width_class = 'w-400';
         }
 
         let field_div_html = ' \
@@ -878,22 +884,22 @@ if (document.URL.match(/create\/add_fields/)) {
             </div> \
             <div class="field-options-holder focused"> \
                 <div> \
-                    <a href="javascript: void(0)" class="btn btn-sm btn-danger m-0 ml-2 close-field-options"><i class="fa fa-times fa-lg mr-2"></i> Hide Options</a> \
+                    <a href="javascript: void(0)" class="btn btn-sm btn-danger m-0 ml-2 close-field-options"><i class="fa fa-times fa-lg mr-2"></i> Hide</a> \
                 </div> \
                 <div class="btn-group" role="group" aria-label="Field Options"> \
-                    <a type="button" class="btn btn-primary field-handle" data-toggle="tooltip" data-html="true" title="Move Field"><i class="fal fa-arrows fa-lg"></i></a> \
-                    <a type="button" class="btn btn-primary mini-slider-button" data-toggle="tooltip" data-html="true" title="Slightly Move Up or Down"><i class="fal fa-arrows-v fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
             ';
             if(type != 'checkbox') {
                     field_div_html += ' \
-                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '" data-toggle="tooltip" data-html="true" title="Add Line To The Group"><i class="fal fa-plus fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
                     <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-id="' + field_id +'" data-field-type="' + type +'" data-toggle="collapse" href="#properties_container_'+field_id+'" role="button" aria-expanded="false" aria-controls="properties_container_'+field_id+'"><i class="fal fa-info-circle fa-lg"></i></a> \
                     ';
             }
                     field_div_html += ' \
-                    <a type="button" class="btn btn-primary remove-field" data-toggle="tooltip" data-html="true" title="Delete Field"><i class="fal fa-times-circle fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
                 </div> \
-                <div id="properties_container_'+field_id+'" class="collapse edit-properties-container bg-white border shadow" data-field-id="'+field_id+'"></div> \
+                <div id="properties_container_'+field_id+'" class="collapse edit-properties-container bg-white border shadow '+width_class+'" data-field-id="'+field_id+'"></div> \
                 <div class="mini-slider-div"> \
                     <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
                         <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
