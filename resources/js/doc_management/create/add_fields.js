@@ -893,7 +893,6 @@ if (document.URL.match(/create\/add_fields/)) {
                     field_div_html += ' \
                     <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
                 </div> \
-                <div id="properties_container_'+field_id+'" class="collapse edit-properties-container bg-white border rounded shadow '+width_class+'" data-field-id="'+field_id+'"></div> \
                 <div class="mini-slider-div"> \
                     <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
                         <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
@@ -901,6 +900,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     </ul> \
                 </div> \
             </div> \
+            <div id="properties_container_'+field_id+'" class="collapse edit-properties-container bg-white border rounded shadow '+width_class+'" data-field-id="'+field_id+'" data-parent="#file_viewer"></div> \
             '+ handles + ' \
             '+ field_data + ' \
         </div> \

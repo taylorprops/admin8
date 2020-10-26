@@ -86,23 +86,23 @@ if($field -> field_type == 'textline' || $field -> field_type == 'address' || $f
         </div>
 
 
-        @php
-            $field_id = $field -> field_id;
-            $field_type = $field -> field_type;
-            $field_number_type = $field -> number_type;
-            $field_textline_type = $field -> textline_type;
-            $field_address_type = $field -> address_type;
-            $field_helper_text = $field -> helper_text;
-            $group_id = $field -> group_id;
-            @endphp
-            <div id="properties_container_{{ $field -> field_id }}" class="collapse edit-properties-container bg-white border rounded shadow @if($field_type == 'name' || $field_type == 'date' || $field_type == 'radio') w-400 @else w-600 @endif" data-field-id="{{ $field -> field_id }}">
-            @include('/doc_management/create/fields/edit_properties_html')
-        </div>
+
 
     </div>
 
 
-
+    @php
+    $field_id = $field -> field_id;
+    $field_type = $field -> field_type;
+    $field_number_type = $field -> number_type;
+    $field_textline_type = $field -> textline_type;
+    $field_address_type = $field -> address_type;
+    $field_helper_text = $field -> helper_text;
+    $group_id = $field -> group_id;
+    @endphp
+    <div id="properties_container_{{ $field -> field_id }}" class="collapse edit-properties-container bg-white border rounded shadow @if($field_type == 'name' || $field_type == 'date' || $field_type == 'radio') w-400 @else w-600 @endif" data-field-id="{{ $field -> field_id }}" data-parent="#file_viewer">
+        @include('/doc_management/create/fields/edit_properties_html')
+    </div>
 
 
     @if($field -> field_type != 'checkbox' && $field -> field_type != 'radio')
