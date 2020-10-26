@@ -108,7 +108,8 @@ if (document.URL.match(/create\/add_fields/)) {
                     w_perc = 1.45;
                 } else {
                     h_perc = $('#field_' + field_type + '_heightp').val();
-                    w_perc = $('#field_' + field_type + '_widthp').val();
+                    //w_perc = $('#field_' + field_type + '_widthp').val();
+                    w_perc = 10;
                 }
                 h_perc = parseFloat(h_perc);
                 w_perc = parseFloat(w_perc);
