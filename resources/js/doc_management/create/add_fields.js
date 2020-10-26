@@ -661,8 +661,6 @@ if (document.URL.match(/create\/add_fields/)) {
 
     function save_field_properties(button) {
 
-        button.html('<span class="spinner-border spinner-border-sm mr-2"></span> Saving');
-
         let group_id = button.data('group-id');
         let field_id = button.data('field-id');
         let type = button.data('type');
@@ -736,14 +734,9 @@ if (document.URL.match(/create\/add_fields/)) {
 
         }
 
-
-
-        setTimeout(function() {
-            button.html('<i class="fad fa-save mr-2"></i> Save');
-            $('#properties_container_'+field_id).collapse('hide');
-            field_status();
-            field_list();
-        }, 500);
+        $('#properties_container_'+field_id).collapse('hide');
+        field_status();
+        field_list();
 
 
         $('.group_' + group_id).removeClass('field-error');
