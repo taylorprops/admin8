@@ -150,9 +150,13 @@
             transform: translate(-50%, 0%);
             width: auto;
             background: transparent;
+
+            .close-field-options {
+                background: rgba(255, 255, 255, 0.9);
+            }
         }
 
-        .btn-group .btn {
+        .btn-group .btn:not(button) {
             margin-right: 2px;
             width: 45px;
         }
@@ -193,8 +197,8 @@
         }
         .mini-slider-div {
             position: absolute;
-            top: 20px;
-            left: 45%;
+            top: 100px;
+            left: 38%;
             display: none;
             width: 60px;
             height: auto;
@@ -238,8 +242,11 @@
     }
 
     .field-error-div {
-        color: $red;
-        margin: 7px;
+        background: $red;
+        color: $white;
+        padding: 15px;
+        margin: 0px 40px 20px 40px;
+        border-radius: 5px;
     }
     .field-error {
         background: rgba($danger-color, .7) !important;
@@ -268,16 +275,24 @@
         padding-bottom: 5px;
     } */
 
-    #edit_properties_modal {
+    .edit-properties-container {
+        position: absolute;
+        top: 110px;
+        width: 600px;
+        height: auto;
 
         h5 {
             margin-top: 25px;
             margin-bottom: 10px;
         }
 
+        h6 {
+            margin-bottom: 1.5rem;
+        }
+
         .form-ele {
-            margin-top: 0.5rem;
-            margin-bottom: 0.3rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
         }
     }
 

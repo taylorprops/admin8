@@ -63,40 +63,46 @@ if($field -> field_type == 'textline' || $field -> field_type == 'address' || $f
 
     <div class="field-options-holder focused">
 
-        <div class="ml-3">
-            <a href="javascript: void(0)" class="close-field-options d-block text-danger"><i class="fa fa-times fa-lg mr-2"></i> Hide Options</a>
+        <div>
+            <a href="javascript: void(0)" class="btn btn-sm btn-danger m-0 ml-2 close-field-options"><i class="fa fa-times fa-lg mr-2"></i> Hide Options</a>
         </div>
         <div class="btn-group" role="group" aria-label="Field Options">
-            <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a>
-            <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a>
+            <a type="button" class="btn btn-primary field-handle" data-toggle="tooltip" data-html="true" title="Move Field"><i class="fal fa-arrows fa-lg"></i></a>
+            <a type="button" class="btn btn-primary mini-slider-button" data-toggle="tooltip" data-html="true" title="Slightly Move Up or Down"><i class="fal fa-arrows-v fa-lg"></i></a>
             @if($show_options)
                 @if($add_items == 'yes')
-                    <a type="button" class="btn btn-primary field-add-item" data-group-id="{{ $field -> group_id }}""><i class="fal fa-plus fa-lg"></i></a>
+                    <a type="button" class="btn btn-primary field-add-item" data-group-id="{{ $field -> group_id }}" data-toggle="tooltip" data-html="true" title="Add Line To Group"><i class="fal fa-plus fa-lg"></i></a>
                 @endif
-                <a type="button" class="btn btn-primary field-properties" data-group-id="{{ $field -> group_id }}" data-field-id="{{ $field -> field_id }}" data-field-type="{{ $field -> field_type }}"><i class="fal fa-info-circle fa-lg"></i></a>
+                <a type="button" class="btn btn-primary field-properties" data-group-id="{{ $field -> group_id }}" data-field-id="{{ $field -> field_id }}" data-field-type="{{ $field -> field_type }}" data-toggle="collapse" href="#properties_container_{{ $field -> field_id }}" role="button" aria-expanded="false" aria-controls="properties_container_{{ $field -> field_id }}"><i class="fal fa-info-circle fa-lg"></i></a>
             @endif
-            <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a>
+            <a type="button" class="btn btn-primary remove-field" data-toggle="tooltip" data-html="true" title="Delete Field"><i class="fal fa-times-circle fa-lg"></i></a>
+        </div>
+
+        <div class="mini-slider-div">
+            <ul class="mini-slider list-group list-group-flush border border-primary p-0">
+                <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li>
+                <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li>
+            </ul>
+        </div>
+
+        <div id="properties_container_{{ $field -> field_id }}" class="collapse edit-properties-container bg-white border shadow" data-field-id="{{ $field -> field_id }}">
+        @php
+            $field_id = $field -> field_id;
+            $field_type = $field -> field_type;
+            $field_number_type = $field -> number_type;
+            $field_textline_type = $field -> textline_type;
+            $field_address_type = $field -> address_type;
+            $field_helper_text = $field -> helper_text;
+            $group_id = $field -> group_id;
+            @endphp
+            @include('/doc_management/create/fields/edit_properties_html')
         </div>
 
     </div>
 
-    <div class="mini-slider-div">
-        <ul class="mini-slider list-group list-group-flush border border-primary p-0">
-            <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li>
-            <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li>
-        </ul>
-    </div>
 
-    @php
-    $field_id = $field -> field_id;
-    $field_type = $field -> field_type;
-    $field_number_type = $field -> number_type;
-    $field_textline_type = $field -> textline_type;
-    $field_address_type = $field -> address_type;
-    $field_helper_text = $field -> helper_text;
-    $group_id = $field -> group_id;
-    @endphp
-    @include('/doc_management/create/fields/edit_properties_modal')
+
+
 
     @if($field -> field_type != 'checkbox' && $field -> field_type != 'radio')
         <div class="ui-resizable-handle ui-resizable-e focused"></div>

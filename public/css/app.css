@@ -14584,7 +14584,11 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   background: transparent;
 }
 
-.page-add-fields .field-div .btn-group .btn {
+.page-add-fields .field-div .field-options-holder .close-field-options {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.page-add-fields .field-div .btn-group .btn:not(button) {
   margin-right: 2px;
   width: 45px;
 }
@@ -14625,8 +14629,8 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .page-add-fields .field-div .mini-slider-div {
   position: absolute;
-  top: 20px;
-  left: 45%;
+  top: 100px;
+  left: 38%;
   display: none;
   width: 60px;
   height: auto;
@@ -14660,8 +14664,11 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 }
 
 .page-add-fields .field-error-div {
-  color: #b64341;
-  margin: 7px;
+  background: #b64341;
+  color: #fff;
+  padding: 15px;
+  margin: 0px 40px 20px 40px;
+  border-radius: 5px;
 }
 
 .page-add-fields .field-error {
@@ -14676,14 +14683,25 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   z-index: 5;
 }
 
-.page-add-fields #edit_properties_modal h5 {
+.page-add-fields .edit-properties-container {
+  position: absolute;
+  top: 110px;
+  width: 600px;
+  height: auto;
+}
+
+.page-add-fields .edit-properties-container h5 {
   margin-top: 25px;
   margin-bottom: 10px;
 }
 
-.page-add-fields #edit_properties_modal .form-ele {
-  margin-top: 0.5rem;
-  margin-bottom: 0.3rem;
+.page-add-fields .edit-properties-container h6 {
+  margin-bottom: 1.5rem;
+}
+
+.page-add-fields .edit-properties-container .form-ele {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 1500px) {

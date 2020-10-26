@@ -57,27 +57,19 @@ if (document.URL.match(/create\/add_fields/)) {
                 field_list();
             }, 200);
 
-            /* setTimeout(function () {
-                $('.add-input').off('click').on('click', add_input);
-                $('.delete-input').off('click').on('click', delete_input);
-            }, 1500); */
-
 
         }
 
-        $('#save_add_fields').on('click', save_add_fields);
-
-        /* $('.delete-input').off('click').on('click', delete_input); */
+        $('#save_add_fields').off('click').on('click', save_add_fields);
 
         // on page click hide all focused els
-        /* $(document).on('click', '.field-container', function (e) {
+        $(document).on('click', '.field-container', function (e) {
 
             if (!$(e.target).is('.field-div *')) {
-                $('.modal').modal('hide');
-                reset_field_properties();
+                $('.collapse').collapse('hide');
             }
 
-        }); */
+        });
 
 
         // on page double click add field
@@ -154,7 +146,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 $('#field_'+id).find('.focused').show();
 
-                get_edit_modal_html(id, id, field_type, rect, container, '', '');
+                get_edit_properties_html(id, id, field_type, rect, container, '', '');
 
 
             }
@@ -216,6 +208,16 @@ if (document.URL.match(/create\/add_fields/)) {
             name_required($(this).closest('.form-div'));
         });
 
+        // close options holder
+        $(document).on('click', '.close-field-options', function() {
+            $('.focused').hide();
+            $('.field-div').removeClass('active');
+        });
+
+        $(document).on('click', '.field-save-properties', function() {
+            save_field_properties($(this));
+        });
+
     });
 
 
@@ -239,19 +241,17 @@ if (document.URL.match(/create\/add_fields/)) {
         });
     }
 
-    function reset_field_properties() {
+    function reset_field_properties(field_id) {
         // reset name fields
-        $('.form-div').each(function () {
-            $(this).find('select, input').not('input.form-select-search-input, input.form-select-value-input').each(function () {
-                $(this).val($(this).data('default-value')).trigger('change');
-                if ($(this).hasClass('form-select')) {
-                    select_refresh();
-                }
-            });
+        $('#field_'+field_id).find('select, input').not('input.form-select-search-input, input.form-select-value-input').each(function () {
+            $(this).val($(this).data('default-value')).trigger('change');
+            if ($(this).hasClass('form-select')) {
+                select_refresh();
+            }
         });
         //select_dropdown.refresh();
-        $('.field-div').removeClass('active');
-        $('.focused, .mini-slider-div').hide();
+        /* $('.field-div').removeClass('active');
+        $('.focused, .mini-slider-div').hide(); */
 
     }
 
@@ -332,6 +332,9 @@ if (document.URL.match(/create\/add_fields/)) {
                         });
                     }
                 } */
+
+                let x = dragged_x;
+                position_edit_properties_div(x);
 
                 setTimeout(function() {
                     set_hwxy(dragged_ele, '', field_type);
@@ -417,7 +420,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 let new_ele = $('#field_' + id);
 
 
-                setTimeout(function () {
+                //setTimeout(function () {
                     $('.focused').fadeOut();
                     $('.field-div').removeClass('active');
                     new_ele.addClass('active').find('.focused').fadeIn();
@@ -452,31 +455,25 @@ if (document.URL.match(/create\/add_fields/)) {
                         clear_fields_on_change(group_id);
                     } */
 
-                    get_edit_modal_html(id, group_id, field_type, rect, container, ele, new_ele);
+                    get_edit_properties_html(id, group_id, field_type, rect, container, ele, new_ele);
 
 
 
                     //select_menu();
 
 
-                }, 100);
+                //}, 100);
 
 
 
             });
         }
 
-        // close options holder
-        $('.close-field-options').off('click').on('click', function() {
-            setTimeout(function() {
-                $('.focused').hide();
-                $('.field-div').removeClass('active');
-            }, 50);
-        });
+
 
         // mini-slider
         $('.mini-slider-button').off('click').on('click', function () {
-            let minislider = $(this).closest('.field-options-holder').siblings('.mini-slider-div');
+            let minislider = $(this).closest('.field-options-holder').find('.mini-slider-div');
             minislider.show();
             $('.mini-slider-option').off('click').on('click', function () {
                 let dir = $(this).data('direction');
@@ -499,14 +496,15 @@ if (document.URL.match(/create\/add_fields/)) {
 
             let field_type = $(this).data('field-type');
             let field_id = $(this).data('field-id');
-            let edit_div = $(this).closest('.field-options-holder').siblings('.edit-properties-div');
+            let edit_div = $(this).closest('.field-options-holder').find('.edit-properties-div');
 
             //store inputs html in input to be restored on cancel
             $('#inputs_html').val(edit_div.find('.field-inputs-div').html());
 
-            $('#edit_properties_modal_'+field_id).appendTo('.modals-div').modal();
+            let x = $('#field_'+field_id).position().left;
+            position_edit_properties_div(x);
 
-            $('.modal-backdrop').appendTo(edit_div.closest('.field-div'));
+            edit_div.show();
 
             // prevent new field being created
             $('.edit-properties-div *').off('dblclick').on('dblclick', function (event) {
@@ -613,16 +611,10 @@ if (document.URL.match(/create\/add_fields/)) {
 
             }
 
-            $('.field-save-properties').off('click').on('click', function () {
-
-                save_field_properties($(this));
-
-            });
-
             // clear fields on cancel
-            $('.modal').on('hide.bs.modal', function () {
+            $('.collapse').on('hide.bs.collapse', function () {
 
-                reset_field_properties();
+                reset_field_properties(field_id);
 
                 let form = $(this).find('.form-div');
                 form.find('.field-inputs-div').html($('#inputs_html').val());
@@ -636,6 +628,19 @@ if (document.URL.match(/create\/add_fields/)) {
 
         form_elements();
 
+    }
+
+    function position_edit_properties_div(x) {
+        let width = $('#file_viewer').width();
+        if(x < (width / 4)) {
+            $('.edit-properties-container').css({ left: '0px', right: '' });
+        } else if(x > (width / 4) && x < (width / 2)) {
+            $('.edit-properties-container').css({ left: '-150px', right: '' });
+        } else if(x > (width / 2) && x < (width - (width * .35))) {
+            $('.edit-properties-container').css({ left: '', right: '-150px' });
+        } else if(x > (width - (width * .35))) {
+            $('.edit-properties-container').css({ left: '', right: '0px' });
+        }
     }
 
     function name_required(form_div) {
@@ -659,35 +664,11 @@ if (document.URL.match(/create\/add_fields/)) {
 
         let group_id = button.data('group-id');
         let field_id = button.data('field-id');
-        let edit_div = $('#edit_properties_modal_'+field_id);
         let type = button.data('type');
-        let form = button.parent('div.modal-footer').prev('div.modal-body').find('.form-div');
+        let form = button.closest('.form-div');
         let common_name = form.find('.form-select.field-data-name').val();
         let custom_name = form.find('.form-input.field-data-name').val();
         let inputs_div = form.find('.field-inputs-div');
-
-
-        // set default values and group values for properties
-
-
-
-        // address and name groups have different helper text for each field
-        /* if (type == 'address' || type == 'name' || type == 'checkbox') {
-            $('.group_' + group_id).each(function () {
-                let input = $(this).find('input.field-data-helper-text');
-                input.data('default-value', input.val()).trigger('change');
-            });
-            //add_inputs_to_group(group_id, inputs_div);
-        } else {
-            // all other groups have the same helper text for each field
-            let helper_input = form.find('input.field-data-helper-text');
-            let helper_text = helper_input.val();
-            $('.group_' + group_id).each(function () {
-                $(this).find('input.field-data-helper-text').val(helper_text).data('default-value', helper_text).trigger('change');
-            });
-        } */
-
-
 
 
         inputs_div.find('.field-data-input').each(function() {
@@ -713,24 +694,13 @@ if (document.URL.match(/create\/add_fields/)) {
         if (number_type == 'numeric') {
             if ($('.group_' + group_id).length > 1) {
                 $('.group_' + group_id).each(function() {
-                    let field_id = $(this).data('field-id');
-                    let modal = $('#edit_properties_modal_'+field_id);
-                    modal.find('select.field-data-number-type').not(number_select).val('written').data('default-value', 'written').trigger('change');
+                    $(this).find('select.field-data-number-type').not(number_select).val('written').data('default-value', 'written').trigger('change');
                 });
             }
         }
 
         if (type == 'checkbox') {
 
-            /* let checkbox = form.find('input.field-data-checkbox-value');
-            let checkbox_value = checkbox.val();
-            checkbox.data('default-value', checkbox_value);
-            $('.group_' + group_id).each(function () {
-                $(this).data('commonname', common_name).data('customname', custom_name);
-                $(this).find('.form-div').each(function () {
-                    $(this).find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
-                });
-            }); */
 
         } else if (type == 'radio') {
 
@@ -740,10 +710,8 @@ if (document.URL.match(/create\/add_fields/)) {
 
             $('.group_' + group_id).each(function () {
 
-                let field_id = $(this).data('field-id');
-                let group_edit_div = $('#edit_properties_modal_'+field_id);
                 $(this).data('customname', custom_name);
-                group_edit_div.find('.form-input.field-data-name').each(function () {
+                $(this).find('.form-input.field-data-name').each(function () {
                     $(this).val(custom_name).data('default-value', custom_name).trigger('change');
                 });
             });
@@ -752,13 +720,11 @@ if (document.URL.match(/create\/add_fields/)) {
 
             $('.group_' + group_id).each(function () {
 
-                let field_id = $(this).data('field-id');
-                let group_edit_div = $('#edit_properties_modal_'+field_id);
                 $(this).data('commonname', common_name).data('customname', custom_name);
-                group_edit_div.find('.form-select.field-data-name').each(function () {
+                $(this).find('.form-select.field-data-name').each(function () {
                     $(this).val(common_name).data('default-value', common_name).trigger('change');
                 });
-                group_edit_div.find('.form-input.field-data-name').each(function () {
+                $(this).find('.form-input.field-data-name').each(function () {
                     $(this).val(custom_name).data('default-value', custom_name).trigger('change');
                 });
 
@@ -769,13 +735,14 @@ if (document.URL.match(/create\/add_fields/)) {
 
         }
 
-        edit_div.modal('hide');
-        field_status();
-        field_list();
+
 
         setTimeout(function() {
             button.html('<i class="fad fa-save mr-2"></i> Save');
-        }, 1000);
+            $('#properties_container_'+field_id).collapse('hide');
+            field_status();
+            field_list();
+        }, 500);
 
 
         $('.group_' + group_id).removeClass('field-error');
@@ -818,15 +785,15 @@ if (document.URL.match(/create\/add_fields/)) {
     }
 
 
-    function get_edit_modal_html(id, group_id, field_type, rect, container, ele, new_ele) {
+    function get_edit_properties_html(field_id, group_id, field_type, rect, container, ele, new_ele) {
 
         let common_name = $('.group_' + group_id).data('commonname');
         let custom_name = $('.group_' + group_id).data('customname');
 
-        axios.get('/doc_management/get_edit_properties_modal', {
+        axios.get('/doc_management/get_edit_properties_html', {
             params: {
                 file_id: $('#file_id').val(),
-                field_id: id,
+                field_id: field_id,
                 field_type: field_type,
                 group_id: group_id
             },
@@ -837,9 +804,10 @@ if (document.URL.match(/create\/add_fields/)) {
             }
         })
         .then(function (response) {
-            let modal_html = response.data;
 
-            $('#field_' + id).append(modal_html);
+            let edit_properties_html = response.data;
+
+            $('#field_'+field_id).find('.edit-properties-container').html(edit_properties_html);
 
             field_status();
             setTimeout(function () {
@@ -853,18 +821,18 @@ if (document.URL.match(/create\/add_fields/)) {
                     new_ele.find('.form-select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
                     new_ele.find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
 
-                    let inputs_container = $('#field_' + id).find('.field-inputs-div');
+                    let inputs_container = $('#field_' + field_id).find('.field-inputs-div');
                     if(field_type == 'name') {
-                        add_name_inputs(id, inputs_container, new_ele.find('.form-select.field-data-name'));
+                        add_name_inputs(field_id, inputs_container, new_ele.find('.form-select.field-data-name'));
                     } else if(field_type == 'address') {
-                        add_address_inputs(id, inputs_container, new_ele.find('.form-select.field-data-name'));
+                        add_address_inputs(field_id, inputs_container, new_ele.find('.form-select.field-data-name'));
                     }
                 }
 
 
             }
 
-            set_field_options(field_type, $('#field_' + id), id, rect, container);
+            set_field_options(field_type, $('#field_' + field_id), field_id, rect, container);
 
             setTimeout(select_refresh, 200);
 
@@ -874,11 +842,8 @@ if (document.URL.match(/create\/add_fields/)) {
         });
     }
 
-    function field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, page, type) {
+    function field_html(h_perc, w_perc, x_perc, y_perc, field_id, group_id, page, type) {
 
-
-
-        //let properties_html = field_properties(type, group_id, id);
 
         let field_class = '';
         let field_data = '';
@@ -906,33 +871,35 @@ if (document.URL.match(/create\/add_fields/)) {
         }
 
         let field_div_html = ' \
-        <div class="field-div '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;" id="field_' + id + '" data-field-id="' + id + '" data-group-id="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
+        <div class="field-div '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;" id="field_' + field_id + '" data-field-id="' + field_id + '" data-group-id="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
             <div class="field-status-div d-flex justify-content-left"> \
                 <div class="field-status-name-div"></div> \
                 <div class="field-status-group-div float-right"></div> \
             </div> \
             <div class="field-options-holder focused"> \
-                <div class="ml-3"> \
-                    <a href="javascript: void(0)" class="close-field-options d-block text-danger"><i class="fa fa-times  fa-lg mr-2"></i> Hide Options</a> \
+                <div> \
+                    <a href="javascript: void(0)" class="btn btn-sm btn-danger m-0 ml-2 close-field-options"><i class="fa fa-times fa-lg mr-2"></i> Hide Options</a> \
                 </div> \
                 <div class="btn-group" role="group" aria-label="Field Options"> \
-                    <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
-                    <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary field-handle" data-toggle="tooltip" data-html="true" title="Move Field"><i class="fal fa-arrows fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary mini-slider-button" data-toggle="tooltip" data-html="true" title="Slightly Move Up or Down"><i class="fal fa-arrows-v fa-lg"></i></a> \
             ';
             if(type != 'checkbox') {
                     field_div_html += ' \
-                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
-                    <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-id="' + id +'" data-field-type="' + type +'"><i class="fal fa-info-circle fa-lg"></i></a>';
+                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '" data-toggle="tooltip" data-html="true" title="Add Line To The Group"><i class="fal fa-plus fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-id="' + field_id +'" data-field-type="' + type +'" data-toggle="collapse" href="#properties_container_'+field_id+'" role="button" aria-expanded="false" aria-controls="properties_container_'+field_id+'"><i class="fal fa-info-circle fa-lg"></i></a> \
+                    ';
             }
                     field_div_html += ' \
-                    <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary remove-field" data-toggle="tooltip" data-html="true" title="Delete Field"><i class="fal fa-times-circle fa-lg"></i></a> \
                 </div> \
-            </div> \
-            <div class="mini-slider-div"> \
-                <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
-                    <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
-                    <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li> \
-                </ul> \
+                <div id="properties_container_'+field_id+'" class="collapse edit-properties-container bg-white border shadow" data-field-id="'+field_id+'"></div> \
+                <div class="mini-slider-div"> \
+                    <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
+                        <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
+                        <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li> \
+                    </ul> \
+                </div> \
             </div> \
             '+ handles + ' \
             '+ field_data + ' \
@@ -972,16 +939,16 @@ if (document.URL.match(/create\/add_fields/)) {
             // add field names
             $('.field-div[data-group-id="' + group_ids[i] + '"]').each(function () {
 
+                let field_div = $(this);
                 let field_name = '';
-                let field_id = $(this).data('field-id');
-                let modal = $('#edit_properties_modal_'+field_id);
+
                 // all but checkbox get names added only to the last
                 if ($(this).data('type') != 'checkbox') {
 
                     $(this).find('.field-status-name-div').html('');
-                    modal.find('.field-data-name').each(function () {
+                    field_div.find('.field-data-name').each(function () {
                         if ($(this).val() != '') {
-                            modal.find('.field-data-name').removeClass('required');
+                            field_div.find('.field-data-name').removeClass('required');
                             field_name = $(this).val();
                             // add field name to last of each group
                             $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-name-div').last().html(field_name);
@@ -989,7 +956,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     });
                 } else {
                     // checkboxes get name for each since not really a group
-                    field_name = modal.find('.field-data-name').val();
+                    field_name = field_div.find('.field-data-name').val();
                     $(this).find('.field-status-name-div').html(field_name);
                 }
             });
@@ -1066,10 +1033,10 @@ if (document.URL.match(/create\/add_fields/)) {
         let cw = 100;
         let cd_adjusted = '';
         if (type == 'textline' || type == 'name' || type == 'address' || type == 'date' || type == 'number') {
-            dist = 3;
+            dist = 6;
             cd_adjusted = cw;
         } else if (type == 'radio' || type == 'checkbox') {
-            dist = 3;
+            dist = 6;
             cd_adjusted = cw - 4;
         }
 
@@ -1187,6 +1154,7 @@ if (document.URL.match(/create\/add_fields/)) {
     }
 
     function check_fields() {
+
         // remove all error divs
         $('.field-error-div').remove();
         $('.field-error').removeClass('field-error');
@@ -1196,64 +1164,50 @@ if (document.URL.match(/create\/add_fields/)) {
         $('.field-div').each(function () {
 
             let field_div = $(this);
-            let field_id = field_div.data('field-id');
             let type = field_div.data('type');
-            let modal = $('#edit_properties_modal_'+field_id);
 
             if(type != 'checkbox') {
 
                 // add error divs
-                $('<div class="field-error-div"></div>').insertAfter(modal.find('.form-div'));
+                $('<div class="list-group field-error-div"></div>').insertAfter(field_div.find('.form-div'));
 
                 let errors_found = 'no';
 
                 let field_name = null;
-                modal.find('.field-data-name').each(function () {
+                field_div.find('.field-data-name').each(function () {
                     if ($(this).val() != '') {
                         field_name = $(this).val();
                     }
                 });
                 if (field_name == null) {
                     field_div.addClass('field-error');
-                    modal.find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must name the field</div>');
+                    field_div.find('.field-error-div').append('<div class="field-error-item list-group-item list-group-item-danger"><i class="fal fa-exclamation-triangle mr-2"></i> You must name the field</div>');
                     errors = 'yes';
                     errors_found = 'yes';
                 }
 
-                /* if (field_div.find('input.field-data-helper-text').val() == '') {
-                    field_div.addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the helper text</div>');
-                    errors = 'yes';
-                    errors_found = 'yes';
-                } */
-
                 if (type == 'number') {
-                    if (modal.find('select.field-data-number-type').val() == '') {
+                    if (field_div.find('select.field-data-number-type').val() == '') {
                         field_div.addClass('field-error');
-                        modal.find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the number type</div>');
+                        field_div.find('.field-error-div').append('<div class="field-error-item list-group-item list-group-item-danger"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the number type</div>');
                         errors = 'yes';
                         errors_found = 'yes';
                     }
                 }
 
                 if (type == 'address') {
-                    if (modal.find('select.field-data-address-type').val() == '') {
+                    if (field_div.find('select.field-data-address-type').val() == '') {
                         field_div.addClass('field-error');
-                        modal.find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the address type</div>');
+                        field_div.find('.field-error-div').append('<div class="field-error-item list-group-item list-group-item-danger"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the address type</div>');
                         errors = 'yes';
                         errors_found = 'yes';
                     }
                 }
 
-                /* if (type == 'radio') {
-                    if (field_div.find('.field-data-radio-value').val() == '') {
-                        field_div.addClass('field-error').find('.field-error-div').append('<div class="field-error-item"><i class="fal fa-exclamation-triangle mr-2"></i> You must enter the value</div>');
-                        errors = 'yes';
-                        errors_found = 'yes';
-                    }
-                } */
-
                 if (errors_found == 'yes') {
                     $('.field-list-link[data-group-id="' +field_div.data('group-id')+'"]').addClass('text-danger');
+                } else {
+                    field_div.find('.field-error-div').remove();
                 }
 
             }
@@ -1291,10 +1245,9 @@ if (document.URL.match(/create\/add_fields/)) {
                     let field_div = $(this);
                     let field_id = field_div.data('field-id');
                     let type = field_div.data('type');
-                    let modal = $('#edit_properties_modal_'+field_id);
 
                     field_data['file_id'] = $('#file_id').val();
-                    field_data['field_id'] = field_div.data('field-id');
+                    field_data['field_id'] = field_id;
                     field_data['group_id'] = field_div.data('group-id');
                     field_data['page'] = field_div.data('page');
                     field_data['field_type'] = type;
@@ -1312,8 +1265,8 @@ if (document.URL.match(/create\/add_fields/)) {
                     //field_data['field_data_input_helper_text'] = [];
                     field_data['field_data_input_id'] = [];
 
-                    if (modal.find('.field-data-input').length > 0) {
-                        modal.find('.field-data-input').each(function () {
+                    if (field_div.find('.field-data-input').length > 0) {
+                        field_div.find('.field-data-input').each(function () {
                             if ($(this).val() != '') {
                                 field_data['field_data_input'].push($(this).val());
                                 field_data['field_data_input_id'].push($(this).data('id'));
@@ -1321,7 +1274,7 @@ if (document.URL.match(/create\/add_fields/)) {
                         });
                     }
 
-                    modal.find('.field-data-name').each(function () {
+                    field_div.find('.field-data-name').each(function () {
                         if ($(this).val() != '') {
                             field_data['field_name'] = $(this).val();
                             let field_type = $(this).data('field-type');
@@ -1330,17 +1283,17 @@ if (document.URL.match(/create\/add_fields/)) {
                     });
 
 
-                    //field_data['helper_text'] = modal.find('input.field-data-helper-text').val();
+                    //field_data['helper_text'] = field_div.find('input.field-data-helper-text').val();
 
-                    field_data['number_type'] = modal.find('select.field-data-number-type').val();
+                    field_data['number_type'] = field_div.find('select.field-data-number-type').val();
 
-                    field_data['address_type'] = modal.find('select.field-data-address-type').val();
+                    field_data['address_type'] = field_div.find('select.field-data-address-type').val();
 
-                    field_data['textline_type'] = modal.find('select.field-data-textline-type').val();
+                    field_data['textline_type'] = field_div.find('select.field-data-textline-type').val();
 
-                    field_data['radio_value'] = modal.find('.field-data-radio-value').val();
+                    field_data['radio_value'] = field_div.find('.field-data-radio-value').val();
 
-                    field_data['checkbox_value'] = modal.find('.field-data-checkbox-value').val();
+                    field_data['checkbox_value'] = field_div.find('.field-data-checkbox-value').val();
 
                     data.push(field_data);
 

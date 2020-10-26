@@ -44,7 +44,7 @@ class FieldsController extends Controller
 
     }
 
-    public function get_edit_properties_modal(Request $request) {
+    public function get_edit_properties_html(Request $request) {
 
         $field_id = $request -> field_id;
         $field_type = $request -> field_type;
@@ -63,7 +63,7 @@ class FieldsController extends Controller
         $field_inputs = FieldInputs::where('file_id', $request -> file_id) -> orderBy('id') -> get();
 
 
-        return view('/doc_management/create/fields/edit_properties_modal', compact('field_id', 'field_type', 'group_id', 'field_number_type', 'field_textline_type', 'field_address_type', 'field_helper_text', 'common_name', 'custom_name', 'label', 'common_fields', 'field_inputs', 'published'));
+        return view('/doc_management/create/fields/edit_properties_html', compact('field_id', 'field_type', 'group_id', 'field_number_type', 'field_textline_type', 'field_address_type', 'field_helper_text', 'common_name', 'custom_name', 'label', 'common_fields', 'field_inputs', 'published'));
     }
 
     public function get_custom_names(Request $request) {
