@@ -89,10 +89,10 @@
                 @endif
 
             </div>
-
+            <hr>
             <div class="row">
                 <div class="col-12">
-                    <div class="d-flex justify-content-around my-4">
+                    <div class="d-flex justify-content-around my-2">
 
                         <button class="btn btn-danger" data-toggle="collapse" href="#properties_container_{{ $field_id }}" role="button" aria-expanded="false" aria-controls="properties_container_{{ $field_id }}"><i class="fad fa-ban mr-2"></i> Cancel</button>
 

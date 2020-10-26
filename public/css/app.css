@@ -13890,10 +13890,10 @@ table.dataTable thead .sorting_desc_disabled:before {
   position: absolute;
   top: -9px;
   width: auto;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: #647c96;
   background: rgba(255, 255, 255, 0.9);
-  line-height: 0.8rem;
+  line-height: 0.7rem;
   border-radius: 4px;
   padding-bottom: 1px;
   padding-top: 1px;
