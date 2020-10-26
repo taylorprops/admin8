@@ -20,7 +20,6 @@ if (document.URL.match(/create\/add_fields/)) {
         // set field options on load
         if ($('.field-div').length > 0) {
 
-
             $('.field-div').each(function () {
 
                 // get bounding box coordinates
