@@ -8,40 +8,40 @@
 
         <div class="container-fluid">
             <div class="row bg-blue-light">
-                <div class="col-12 ml-1">
-                    <div class="d-flex justify-content-center field-select-container">
-                        <div class="field-wrapper pt-3 px-3" data-type="textline">
+                <div class="col-12">
+                    <div class="py-2 d-flex justify-content-center align-items-center field-select-container">
+                        <div class="field-wrapper px-3" data-type="textline">
                             <div class="textline-div-field rounded my-auto">
                                 <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-text fa-lg mr-2"></i> General Text</div>
                             </div>
                         </div>
-                        <div class="field-wrapper pt-3 px-3" data-type="name">
+                        <div class="field-wrapper px-3" data-type="name">
                             <div class="textline-div-field rounded my-auto">
                                 <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-user-alt fa-lg mr-2"></i> Name</div>
                             </div>
                         </div>
-                        <div class="field-wrapper pt-3 px-3" data-type="address">
+                        <div class="field-wrapper px-3" data-type="address">
                             <div class="textline-div-field rounded my-auto">
                                 <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-map-marker-alt fa-lg mr-2"></i> Address</div>
                             </div>
                         </div>
-                        <div class="field-wrapper pt-3 px-3" data-type="date">
+                        <div class="field-wrapper px-3" data-type="date">
                             <div class="textline-div-field rounded my-auto">
                                 <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-calendar-alt fa-lg mr-2"></i> Date</div>
                             </div>
                         </div>
-                        <div class="field-wrapper pt-3 px-3" data-type="number">
+                        <div class="field-wrapper px-3" data-type="number">
                             <div class="textline-div-field rounded my-auto">
                                 <div class="textline-html text-white ml-3 pt-1"><span class="text-white mr-2">0-9</span> Number</div>
                             </div>
                         </div>
-                        <div class="field-wrapper pt-2 px-3 d-flex justify-content-center" data-type="checkbox">
+                        <div class="field-wrapper px-3 d-flex justify-content-center" data-type="checkbox">
                             <div class="checkbox-div-field my-auto"></div>
-                            <div class="my-auto ml-1 text-primary"> Check Box</div>
+                            <div class="my-auto ml-1"> Check Box</div>
                         </div>
-                        <div class="field-wrapper pt-2 px-3 d-flex justify-content-center" data-type="radio">
+                        <div class="field-wrapper px-3 d-flex justify-content-center" data-type="radio">
                             <div class="radio-div-field my-auto"></div>
-                            <div class="my-auto ml-1 text-primary"> Radio Buttons</div>
+                            <div class="my-auto ml-1"> Radio Buttons</div>
                         </div>
                         <div class="mr-1 pl-2">
                             <div><a href="javascript:void(0)" class="btn btn-success" id="save_add_fields"><i class="fad fa-save mr-2"></i> Save</a></div>

@@ -120,10 +120,10 @@ if (document.URL.match(/create\/add_fields/)) {
                 $('.focused').hide();
 
                 // create unique id for field
-                let id = Date.now();
+                let field_id = Date.now();
 
                 //create field and attach to container
-                let field = field_html(h_perc, w_perc, x_perc, y_perc, id, id, $('#active_page').val(), field_type);
+                let field = field_html(h_perc, w_perc, x_perc, y_perc, field_id, field_id, $('#active_page').val(), field_type);
 
                 // append new field
                 $(container).append(field);
@@ -133,21 +133,21 @@ if (document.URL.match(/create\/add_fields/)) {
                 });
 
                 // clear other field when changing name
-                /* if ($('#field_' + id).data('type') != 'checkbox') {
-                    clear_fields_on_change(id);
+                /* if ($('#field_' + field_id).data('type') != 'checkbox') {
+                    clear_fields_on_change(field_id);
                 } */
 
 
                 $('.field-div').removeClass('active');
-                $('#field_' + id).addClass('active');
+                $('#field_' + field_id).addClass('active');
 
-                set_hwxy($('#field_' + id), id, field_type);
+                set_hwxy($('#field_' + field_id), field_id, field_type);
 
-                keep_in_view($('#field_' + id), w_perc, x_perc, y_perc, field_type);
+                keep_in_view($('#field_' + field_id), w_perc, x_perc, y_perc, field_type);
 
-                $('#field_'+id).find('.focused').show();
+                $('#field_'+field_id).find('.focused').show();
 
-                get_edit_properties_html(id, id, field_type, rect, container, '', '');
+                get_edit_properties_html(field_id, field_id, field_type, rect, container, $('#field_'+field_id));
 
 
             }
@@ -205,18 +205,23 @@ if (document.URL.match(/create\/add_fields/)) {
 
         });
 
-        $(document).on('change', '.field-data-name', function() {
-            name_required($(this).closest('.form-div'));
-        });
-
         // close options holder
         $(document).on('click', '.close-field-options', function() {
             $('.focused').hide();
             $('.field-div').removeClass('active');
+            $('.collapse').collapse('hide');
         });
 
-        $(document).on('click', '.field-save-properties', function() {
-            save_field_properties($(this));
+        $(document).on('click', '.field-save-properties', function(e) {
+
+            let button = $(this);
+            let field_div = button.closest('.field-div');
+            let inputs_container = field_div.find('.field-inputs-div');
+            $('#inputs_html').val(inputs_container.html());
+            field_div.find('input, select').each(function () {
+                $(this).data('default-value', $(this).val());
+            });
+            save_field_properties(button);
         });
 
     });
@@ -276,17 +281,7 @@ if (document.URL.match(/create\/add_fields/)) {
             $('.field-div').removeClass('active');
             ele.addClass('active');
             let group_id = ele.data('group-id');
-            /* let x_pos = ele.position().left;
-            let doc_width = $('#file_viewer').width();
-            let ele_pos = {
-                left: '0px'
-            }
-            if(x_pos > doc_width / 2) {
-                ele_pos = {
-                    right: '0px'
-                }
-            }
-            ele.find('.field-options-holder').css(ele_pos); */
+
             set_hwxy(ele, group_id, field_type);
 
         });
@@ -324,23 +319,15 @@ if (document.URL.match(/create\/add_fields/)) {
                 let dragged_w_perc = pix_2_perc_hw('width', dragged_w, container);
                 let dragged_group_id = dragged_ele.data('group-id');
 
-                // align checkboxes if grouped
-                /* if (field_type == 'checkbox') {
-                    if ($('.group_' + dragged_group_id).length > 1) {
-                        $('.group_' + dragged_group_id).each(function () {
-                            $(this).css({ left: dragged_x });
-                            set_hwxy($(this), '', field_type);
-                        });
-                    }
-                } */
-
-                let x = dragged_x;
-                position_edit_properties_div(x);
+                if (field_type != 'checkbox') {
+                    let x = dragged_x;
+                    position_edit_properties_div(x);
+                }
 
                 setTimeout(function() {
                     set_hwxy(dragged_ele, '', field_type);
                     keep_in_view(dragged_ele, dragged_w_perc, dragged_x_perc, dragged_y_perc, field_type);
-                }, 500);
+                }, 200);
 
             }
         });
@@ -400,71 +387,58 @@ if (document.URL.match(/create\/add_fields/)) {
                 let y_perc = pix_2_perc_xy('y', y,container);
 
                 // drop the new line height of ele below the original
-                let spacing = 1.2;
+                let spacing = 1.5;
                 if (field_type == 'radio' || field_type == 'checkbox') {
-                    spacing = 1.3;
+                    spacing = 1.5;
                 }
                 y_perc = y_perc + (h_perc * spacing);
 
-                $('.field-div').removeClass('active');
+
                 // create new id for new field in group
-                id = Date.now();
-                let field = field_html(h_perc, w_perc, x_perc, y_perc, id, group_id, $('#active_page').val(), field_type);
+                field_id = Date.now();
+                let field = field_html(h_perc, w_perc, x_perc, y_perc, field_id, group_id, $('#active_page').val(), field_type);
                 // append new field
                 ele.closest('.field-container').append(field);
 
-                field_status();
-                setTimeout(function () {
-                    field_list();
-                }, 200);
 
-                let new_ele = $('#field_' + id);
+                let new_ele = $('#field_' + field_id);
 
+                $('.focused').fadeOut();
+                $('.field-div').removeClass('active');
+                new_ele.addClass('active').find('.focused').fadeIn();
 
-                //setTimeout(function () {
-                    $('.focused').fadeOut();
-                    $('.field-div').removeClass('active');
-                    new_ele.addClass('active').find('.focused').fadeIn();
-                    let new_h = new_ele.height();
-                    let new_w = new_ele.width();
-                    let new_h_perc = pix_2_perc_hw('height', new_h, container);
-                    let new_w_perc = pix_2_perc_hw('width', new_w, container);
-                    let new_x = new_ele.position().left;
-                    let new_y = new_ele.position().top;
-                    let new_x_perc = pix_2_perc_xy('x', new_x, container);
-                    let new_y_perc = pix_2_perc_xy('y', new_y,container);
+                let new_h = new_ele.height();
+                let new_w = new_ele.width();
+                let new_h_perc = pix_2_perc_hw('height', new_h, container);
+                let new_w_perc = pix_2_perc_hw('width', new_w, container);
+                let new_x = new_ele.position().left;
+                let new_y = new_ele.position().top;
+                let new_x_perc = pix_2_perc_xy('x', new_x, container);
+                let new_y_perc = pix_2_perc_xy('y', new_y,container);
 
-                    if ((parseFloat(new_y_perc) + parseFloat(new_h_perc)) > 99) {
-                        new_ele.css({ border: '3px dotted #900' });
-                        setTimeout(function () {
-                            new_ele.remove();
-                        }, 1000);
-                        return false;
-                    }
+                if ((parseFloat(new_y_perc) + parseFloat(new_h_perc)) > 99) {
+                    new_ele.css({ border: '3px dotted #900' });
+                    setTimeout(function () {
+                        new_ele.remove();
+                    }, 1000);
+                    return false;
+                }
 
-                    set_hwxy(new_ele, '', field_type);
+                set_hwxy(new_ele, '', field_type);
 
-                    // assign group id to new field
-                    new_ele.data('group-id', group_id).removeClass('standard').addClass('group').addClass('group_' + group_id);
+                // assign group field_id to new field
+                new_ele.data('group-id', group_id).removeClass('standard').addClass('group').addClass('group_' + group_id);
 
-                    // move add line option to last line
-                    $('.group_' + group_id).find('.add-item-container').hide();
-                    $('.group_' + group_id).find('.add-item-container').last().show();
+                // move add line option to last line
+                $('.group_' + group_id).find('.add-item-container').hide();
+                $('.group_' + group_id).find('.add-item-container').last().show();
 
-                    // clear other field when changing name
-                    /* if (new_ele.data('type') != 'checkbox') {
-                        clear_fields_on_change(group_id);
-                    } */
+                // clear other field when changing name
+                /* if (new_ele.data('type') != 'checkbox') {
+                    clear_fields_on_change(group_id);
+                } */
 
-                    get_edit_properties_html(id, group_id, field_type, rect, container, ele, new_ele);
-
-
-
-                    //select_menu();
-
-
-                //}, 100);
-
+                get_edit_properties_html(field_id, group_id, field_type, rect, container, new_ele);
 
 
             });
@@ -497,10 +471,11 @@ if (document.URL.match(/create\/add_fields/)) {
 
             let field_type = $(this).data('field-type');
             let field_id = $(this).data('field-id');
-            let edit_div = $(this).closest('.field-options-holder').find('.edit-properties-div');
+            let edit_div = $(this).closest('.field-div').find('.edit-properties-div');
+            let inputs_container = edit_div.find('.field-inputs-div');
 
             //store inputs html in input to be restored on cancel
-            $('#inputs_html').val(edit_div.find('.field-inputs-div').html());
+            $('#inputs_html').val(inputs_container.html());
 
             let x = $('#field_'+field_id).position().left;
             position_edit_properties_div(x);
@@ -513,7 +488,7 @@ if (document.URL.match(/create\/add_fields/)) {
             });
 
             let select = edit_div.find('.form-select.field-data-name');
-            let inputs_container = edit_div.find('.field-inputs-div');
+
 
             // remove common name when custom name is type in
             edit_div.find('.form-input.field-data-name').on('change', function () {
@@ -541,10 +516,10 @@ if (document.URL.match(/create\/add_fields/)) {
                         response.data.custom_names.forEach(function (result) {
                             edit_div.find('.dropdown-results-div').append('<a href="javascript: void(0)" class="list-group-item list-group-item-action result">'+result['field_name_display']+'</a>');
                         });
-                        edit_div.find('.custom-name-results').collapse('show');
-                        $('.result').add('click').on('click', function() {
+                        edit_div.find('.custom-name-results').show();
+                        $('.result').off('click').on('click', function() {
                             edit_div.find('.field-data-name').val($(this).text());
-                            edit_div.find('.custom-name-results').collapse('hide');
+                            edit_div.find('.custom-name-results').hide();
                         });
                     })
                     .catch(function (error) {
@@ -552,20 +527,18 @@ if (document.URL.match(/create\/add_fields/)) {
                     });
 
                 } else {
-
-                    edit_div.find('.custom-name-results').collapse('hide');
+                    edit_div.find('.custom-name-results').hide();
 
                 }
 
-                $(document).on('click',function(e) {
+                $(document).on('click', function(e) {
                     if (!$(e.target).is(edit_div.find('.custom-name-results *'))) {
-                        $('.collapse').collapse('hide');
+                        $('.custom-name-results').hide();
                     }
                 });
 
             });
 
-            // auto populate helper text for address fields - they will always be the same as the address type
             if (field_type == 'address') {
 
                 select.on('change', function() {
@@ -581,6 +554,8 @@ if (document.URL.match(/create\/add_fields/)) {
                         inputs_container.html('');
 
                     }
+
+                    name_required($(this).closest('.form-div'));
 
                 });
 
@@ -613,13 +588,12 @@ if (document.URL.match(/create\/add_fields/)) {
             }
 
             // clear fields on cancel
-            $('.collapse').on('hide.bs.collapse', function () {
+            $('.edit-properties-container').on('hidden.bs.collapse', function (e) {
 
                 reset_field_properties(field_id);
 
                 let form = $(this).find('.form-div');
                 form.find('.field-inputs-div').html($('#inputs_html').val());
-
 
                 edit_div.hide();
 
@@ -669,6 +643,7 @@ if (document.URL.match(/create\/add_fields/)) {
         let custom_name = form.find('.form-input.field-data-name').val();
         let inputs_div = form.find('.field-inputs-div');
 
+        $('#properties_container_'+field_id).collapse('hide');
 
         inputs_div.find('.field-data-input').each(function() {
             $(this).data('default-value', $(this).val()).trigger('change');
@@ -727,19 +702,18 @@ if (document.URL.match(/create\/add_fields/)) {
                     $(this).val(custom_name).data('default-value', custom_name).trigger('change');
                 });
 
-
             });
 
             select_refresh();
 
         }
 
-        $('#properties_container_'+field_id).collapse('hide');
+
         field_status();
         field_list();
 
-
         $('.group_' + group_id).removeClass('field-error');
+
     }
 
     function add_address_inputs(field_id, inputs_container, select) {
@@ -779,7 +753,7 @@ if (document.URL.match(/create\/add_fields/)) {
     }
 
 
-    function get_edit_properties_html(field_id, group_id, field_type, rect, container, ele, new_ele) {
+    function get_edit_properties_html(field_id, group_id, field_type, rect, container, ele) {
 
         let common_name = $('.group_' + group_id).data('commonname');
         let custom_name = $('.group_' + group_id).data('customname');
@@ -799,30 +773,23 @@ if (document.URL.match(/create\/add_fields/)) {
         })
         .then(function (response) {
 
-            let edit_properties_html = response.data;
-
-            $('#field_'+field_id).find('.edit-properties-container').html(edit_properties_html);
-
-            field_status();
-            setTimeout(function () {
-                field_list();
-            }, 200);
-
             // set values for field name
             if (field_type != 'checkbox') {
 
-                if(new_ele != '') {
-                    new_ele.find('.form-select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
-                    new_ele.find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
+                let edit_properties_html = response.data;
+                $('#field_'+field_id).find('.edit-properties-container').html(edit_properties_html);
+
+                if(ele) {
+                    ele.find('.form-select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
+                    ele.find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
 
                     let inputs_container = $('#field_' + field_id).find('.field-inputs-div');
                     if(field_type == 'name') {
-                        add_name_inputs(field_id, inputs_container, new_ele.find('.form-select.field-data-name'));
+                        add_name_inputs(field_id, inputs_container, ele.find('.form-select.field-data-name'));
                     } else if(field_type == 'address') {
-                        add_address_inputs(field_id, inputs_container, new_ele.find('.form-select.field-data-name'));
+                        add_address_inputs(field_id, inputs_container, ele.find('.form-select.field-data-name'));
                     }
                 }
-
 
             }
 
@@ -883,10 +850,10 @@ if (document.URL.match(/create\/add_fields/)) {
                 <div class="btn-group" role="group" aria-label="Field Options"> \
                     <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
                     <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
+                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
             ';
             if(type != 'checkbox') {
                     field_div_html += ' \
-                    <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
                     <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-id="' + field_id +'" data-field-type="' + type +'" data-toggle="collapse" href="#properties_container_'+field_id+'" role="button" aria-expanded="false" aria-controls="properties_container_'+field_id+'"><i class="fal fa-info-circle fa-lg"></i></a> \
                     ';
             }

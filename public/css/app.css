@@ -13282,7 +13282,7 @@ body.modal-open {
 * {
   scrollbar-width: thin;
   /* "auto" or "thin"  */
-  scrollbar-color: #1972bb rgba(99, 128, 153, 0.3);
+  scrollbar-color: rgba(76, 155, 219, 0.4) #f8fcff;
 }
 
 .modal-dialog .modal-content .modal-header {
@@ -14072,8 +14072,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 }
 
 .qs-datepicker-container {
-  width: 100% !important;
-  max-width: 250px !important;
+  width: 250px !important;
   height: auto !important;
   font-size: 0.7rem;
 }
@@ -14484,14 +14483,43 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 }
 
 .page-add-fields .field-wrapper {
-  padding: 5px;
-  border: 2px solid transparent;
+  padding: 15px;
+  border: 1px solid transparent;
+  border-radius: 5px;
   cursor: pointer;
+}
+
+.page-add-fields .field-wrapper[data-type=checkbox] {
+  color: #4c9bdb;
+}
+
+.page-add-fields .field-wrapper[data-type=radio] {
+  color: #4c9bdb;
 }
 
 .page-add-fields .field-wrapper.active {
   background: #fff;
-  border: 2px solid #4c9bdb;
+  border: 1px solid #dee2e6;
+}
+
+.page-add-fields .field-wrapper.active[data-type=checkbox] {
+  color: #df7935;
+}
+
+.page-add-fields .field-wrapper.active[data-type=radio] {
+  color: #df7935;
+}
+
+.page-add-fields .field-wrapper.active .textline-div-field {
+  background: #df7935;
+}
+
+.page-add-fields .field-wrapper.active .checkbox-div-field {
+  border: 4px solid #df7935;
+}
+
+.page-add-fields .field-wrapper.active .radio-div-field {
+  border: 4px solid #df7935;
 }
 
 .page-add-fields .textline-div-field,
@@ -14718,10 +14746,14 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   }
 }
 
-.custom-name-results {
+.custom-name-wrapper {
+  position: relative;
+}
+
+.custom-name-wrapper .custom-name-results {
   position: absolute;
-  top: 60px;
-  width: 60%;
+  top: -15px;
+  width: 80%;
   border-color: #78c4e7;
   box-shadow: 0 0 5px #78c4e7;
   border-radius: 3px;
@@ -14729,7 +14761,7 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   z-index: 1500;
 }
 
-.custom-name-results .dropdown-results-div {
+.custom-name-wrapper .custom-name-results .dropdown-results-div {
   max-height: 200px;
   overflow: auto;
 }
@@ -15824,6 +15856,9 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 .page-fill-fields {
   overflow-x: hidden;
   border: 1px solid #dee2e6;
+  /* .user-field-div.textline-div {
+      background: rgba($primary, .1);
+  } */
   /* .field-div.active {
       cursor: default;
       box-shadow: 0px 9px 0px -5px #FFFFFF,
@@ -16034,20 +16069,34 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 }
 
 .page-fill-fields .data-div.data-div-radio-check {
+  cursor: pointer;
+  font-size: 1.6em;
+}
+
+.page-fill-fields .data-div.data-div-radio-check.data-div-radio {
+  top: -2px;
+  height: 15px;
+  line-height: 30%;
+  border: 1px solid #4c9bdb;
+  border-radius: 50%;
+  background: #f8fcff;
+  color: #1972bb;
+}
+
+.page-fill-fields .data-div.data-div-radio-check.data-div-checkbox {
   top: -3px;
   left: 2px;
-  font-size: 1.6em;
   line-height: 80%;
 }
 
-.page-fill-fields .field-div:not(.user-field-div):not(.radio) {
+.page-fill-fields .field-div:not([data-type=radio]) {
   background: rgba(223, 121, 53, 0.1);
   cursor: pointer;
   color: #000;
   box-shadow: none;
 }
 
-.page-fill-fields .field-div.radio {
+.page-fill-fields .field-div[data-type=radio] {
   background: transparent;
   cursor: pointer;
   color: #000;
@@ -16058,10 +16107,6 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   cursor: pointer;
   box-shadow: none;
   color: #000;
-}
-
-.page-fill-fields .user-field-div.textline-div {
-  background: rgba(76, 155, 219, 0.1);
 }
 
 .page-fill-fields .user-field-div.highlight-div,

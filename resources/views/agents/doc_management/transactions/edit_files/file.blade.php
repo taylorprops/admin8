@@ -47,9 +47,9 @@
                         <a class="text-primary-dark fill-form-option" href="javascript: void(0)" id="rotate_form_button"><i class="fad fa-sync-alt fa-lg"></i><br>Rotate</a>
                     </div>
                     @else
-                    <div class="form-options-div border-right">
+                    {{-- <div class="form-options-div border-right">
                         <a class="text-primary-dark fill-form-option" href="javascript: void(0)"><i class="fad fa-rabbit-fast fa-lg"></i><br>Quick Fill</a>
-                    </div>
+                    </div> --}}
                     @endif
 
                     <div class="form-options-div border-right">
@@ -122,7 +122,7 @@
                                         @endforeach
                                     </div>
                                 </div>
-                                <div class="h5-responsive text-white bg-primary p-2 text-center">
+                                <div class="h5-responsive text-white bg-primary p-2 mb-1 text-center">
                                     <span class="badge">End Page {{ $c }}</span>
                                 </div>
 

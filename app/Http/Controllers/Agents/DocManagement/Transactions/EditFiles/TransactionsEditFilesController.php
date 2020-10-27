@@ -180,7 +180,6 @@ class TransactionsEditFilesController extends Controller
 
             if (!$pdf -> saveAs($full_path_dir . '/layers/layer_' . $c . '.pdf')) {
                 $error = $pdf -> getError();
-                dd($error);
             }
 
             // merge layers from pages folder and layers folder and dump in combined folder

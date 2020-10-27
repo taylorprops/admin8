@@ -58,7 +58,9 @@ if (document.URL.match(/edit_files/)) {
             fill_fields(type, group_id, form_div, 'load');
             field_count += 1;
             if(field_count == field_div_count) {
-                save_field_input_values('yes');
+                setTimeout(function() {
+                    save_field_input_values('yes');
+                }, 1000);
             }
         });
 
@@ -82,7 +84,7 @@ if (document.URL.match(/edit_files/)) {
             reset_field_properties();
         });
 
-        $('.field-div').not('.disabled').on('click', function () {
+        $('.field-div').not('.disabled').off('click').on('click', function () {
 
             let group_id = $(this).data('group-id');
             // checkboxes and radios never get highlighted
@@ -106,8 +108,8 @@ if (document.URL.match(/edit_files/)) {
                 if ($(this).data('type') == 'radio') {
 
                     $('.group_' + group_id).find('.data-div').html('');
-                    $('.group_' + group_id).find('input[type="radio"]').attr('checked', false);
-                    $(this).find('.data-div').next('input[type="radio"]').attr('checked', true);
+                    /* $('.group_' + group_id).find('input[type="radio"]').attr('checked', false);
+                    $(this).find('.data-div').next('input[type="radio"]').attr('checked', true); */
                     $(this).find('.data-div').html('x');
 
                 } else {
@@ -648,7 +650,7 @@ if (document.URL.match(/edit_files/)) {
         let styles;
         $(els).each(function () {
             let data_div = $(this);
-            styles = ['color', 'font-size', 'line-height', 'font-weight', 'opacity', 'background', 'margin-left', 'padding-left', 'height', 'display', 'position', 'top'];
+            styles = ['color', 'font-size', 'line-height', 'font-weight', 'opacity', 'background', 'margin-left', 'padding-left', 'padding-top', 'display', 'position', 'font-family', 'letter-spacing', 'margin-top'];
             $.each(styles, function (index, style) {
                 data_div.data(style, data_div.css(style));
             });
@@ -656,8 +658,9 @@ if (document.URL.match(/edit_files/)) {
 
         // set inline styles for PDF
         // system fields
-        $('.data-div').not('.data-div-radio-check, .highlight, .strikeout').css({ 'font-size': '.9rem', 'color': '#000', 'padding-left': '5px', 'padding-top': '3px', 'font-family': 'Arial', 'letter-spacing': '0.03rem' });
-        $('.data-div-radio-check').css({ 'margin-left': '1px', 'color': '#000', 'font-size': '1.2em', 'line-height': '80%', 'font-weight': 'bold' });
+        $('.data-div').not('.data-div-radio-check, .highlight, .strikeout').css({ 'font-size': '.9rem', 'color': 'blue', 'padding-left': '5px', 'padding-top': '3px', 'font-family': 'Arial', 'letter-spacing': '0.03rem' });
+        $('.data-div-checkbox').css({ 'margin-left': '1px', 'color': '#000', 'font-size': '1.4em', 'line-height': '80%', 'font-weight': 'bold' });
+        $('.data-div-radio').css({ 'margin-left': '2px', 'color': '#000', 'font-size': '1.4em', 'line-height': '90%', 'font-weight': 'bold' });
         // remove background
         $('.file-image-bg').css({ opacity: '0.0' });
         $('.field-div').css({ background: 'none' });
@@ -1005,7 +1008,7 @@ if (document.URL.match(/edit_files/)) {
 
                     let width = String(Math.ceil($(this).width()));
                     let text_len = text.length;
-                    let max_chars = width * .15;
+                    let max_chars = width * .12;
                     if (text_len > max_chars) {
                         let section = text.substring(0, max_chars);
                         let end = section.lastIndexOf(' ');
@@ -1048,9 +1051,14 @@ if (document.URL.match(/edit_files/)) {
                 let type = group.data('type');
                 let order = Math.ceil(group.data('y'));
                 let name = '';
-                if (group.data('type') == 'checkbox') {
+                if (group.data('type') == 'radio') {
                     group.each(function () {
                         name = $(this).data('customname');
+                        page_container.append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
+                    });
+                } else if (group.data('type') == 'checkbox') {
+                    group.each(function () {
+                        name = 'Checkbox';
                         page_container.append('<div class="mb-1 border-bottom border-primary field-list-div" data-order="' + order + '"><a href="javascript: void(0)" class="field-list-link ml-3" data-group-id="' + group_id + '" data-type="' + type + '">' + name + '</a></div>');
                     });
                 } else {

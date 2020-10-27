@@ -31,13 +31,16 @@
                                 @endforeach
                             </select>
 
-                            <h6 class="text-primary">OR</h6>
+                            <div class="text-primary w-100 text-center my-0">OR</div>
 
                         @endif
 
                         <input type="text" class="custom-form-element form-input field-data-name required" id="name_input_{{ $field_id }}" data-field-type="custom" value="{{ $custom_name }}" data-default-value="{{ $custom_name }}" data-label="{{ $label }}">
-                        <div class="collapse custom-name-results">
-                            <div class="list-group dropdown-results-div"></div>
+
+                        <div class="custom-name-wrapper">
+                            <div class="custom-name-results">
+                                <div class="list-group dropdown-results-div"></div>
+                            </div>
                         </div>
 
                     </div>

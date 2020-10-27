@@ -44,7 +44,7 @@ body, body.modal-open {
 }
 * {
     scrollbar-width: thin;          /* "auto" or "thin"  */
-    scrollbar-color: $blue-dark rgba(99, 128, 153, 0.3);
+    scrollbar-color: rgba($primary, 0.4) $blue-light;
 }
 
 .modal-dialog .modal-content .modal-header {

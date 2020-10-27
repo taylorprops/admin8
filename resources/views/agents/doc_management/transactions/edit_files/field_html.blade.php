@@ -59,9 +59,9 @@ if($field_inputs == 'no') {
     $data_div_styles = '';
 
     if($field_type == 'radio' || $field_type == 'checkbox') {
-        $data_div_classes = 'data-div-radio-check';
+        $data_div_classes = 'data-div-radio-check data-div-radio';
         if($field_type == 'checkbox') {
-            $data_div_classes = $data_div_classes.' data-div-checkbox';
+            $data_div_classes = 'data-div-radio-check data-div-checkbox';
         }
     } else {
         $data_div_styles = $data_div_styles.' letter-spacing:0.03em;';
@@ -108,7 +108,11 @@ if($transaction_type == 'listing') {
     data-commonname="{{ $common_name }}"
     data-customname="{{ $custom_name }}">
 
+    @if($field_type == 'radio')
+    <label class="data-div {{ $data_div_classes }}" style="{{ $data_div_styles }}" for="{{ $field_user -> field_id }}"></label>
+    @else
     <div class="data-div {{ $data_div_classes }}" style="{{ $data_div_styles }}"></div>
+    @endif
 
     @if($field_type == 'user_text')
 
@@ -175,7 +179,7 @@ if($transaction_type == 'listing') {
         $checked = get_value_radio_checkbox($field_values, $input_id);
         @endphp
 
-        <input type="radio" class="fillable-field-input" value="{{ $field_user -> radio_value }}" id="{{ $input_id }}" {{ $checked }} data-common-name="{{ $common_name }}">
+        <input type="radio" class="fillable-field-input d-none" name="{{ $field_user -> field_name }}" value="" id="{{ $input_id }}" {{ $checked }} data-common-name="{{ $common_name }}">
 
     @elseif($field_type == 'checkbox')
 

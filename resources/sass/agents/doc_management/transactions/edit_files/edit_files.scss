@@ -213,22 +213,35 @@
     //$min_font: 1em;
     //$max_font: 1.6em;
     .data-div.data-div-radio-check {
-        top: -3px;
-        left: 2px;
+        cursor: pointer;
         font-size: 1.6em;
-        line-height: 80%;
+
+        &.data-div-radio {
+            top: -2px;
+            height: 15px;
+            line-height: 30%;
+            border: 1px solid $primary;
+            border-radius: 50%;
+            background: $blue-light;
+            color: $blue-dark;
+        }
+        &.data-div-checkbox {
+            top: -3px;
+            left: 2px;
+            line-height: 80%;
+        }
     }
 
 
 
     // Fields
-    .field-div:not(.user-field-div):not(.radio) {
+    .field-div:not([data-type="radio"]) {
         background: rgba($orange, .1);
         cursor: pointer;
         color: #000;
         box-shadow: none;
     }
-    .field-div.radio {
+    .field-div[data-type="radio"] {
         background: transparent;
         cursor: pointer;
         color: #000;
@@ -241,9 +254,9 @@
         box-shadow: none;
         color: #000;
     }
-    .user-field-div.textline-div {
+    /* .user-field-div.textline-div {
         background: rgba($primary, .1);
-    }
+    } */
     .user-field-div.highlight-div, .data-div.highlight {
         background: rgba($yellow, .3);
     }
