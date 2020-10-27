@@ -368,6 +368,8 @@ if (document.URL.match(/create\/add_fields/)) {
             // add items to group
             ele.find('.field-add-item').off('click').on('click', function () {
 
+                $('.collapse').collapse('hide');
+
                 // assign group id for original field
                 let group_id = $(this).data('group-id');
 
@@ -400,45 +402,49 @@ if (document.URL.match(/create\/add_fields/)) {
                 // append new field
                 ele.closest('.field-container').append(field);
 
-
                 let new_ele = $('#field_' + field_id);
 
                 $('.focused').fadeOut();
-                $('.field-div').removeClass('active');
-                new_ele.addClass('active').find('.focused').fadeIn();
 
-                let new_h = new_ele.height();
-                let new_w = new_ele.width();
-                let new_h_perc = pix_2_perc_hw('height', new_h, container);
-                let new_w_perc = pix_2_perc_hw('width', new_w, container);
-                let new_x = new_ele.position().left;
-                let new_y = new_ele.position().top;
-                let new_x_perc = pix_2_perc_xy('x', new_x, container);
-                let new_y_perc = pix_2_perc_xy('y', new_y,container);
+                setTimeout(function() {
 
-                if ((parseFloat(new_y_perc) + parseFloat(new_h_perc)) > 99) {
-                    new_ele.css({ border: '3px dotted #900' });
-                    setTimeout(function () {
-                        new_ele.remove();
-                    }, 1000);
-                    return false;
-                }
+                    $('.field-div').removeClass('active');
+                    new_ele.addClass('active').find('.focused').fadeIn();
 
-                set_hwxy(new_ele, '', field_type);
+                    let new_h = new_ele.height();
+                    let new_w = new_ele.width();
+                    let new_h_perc = pix_2_perc_hw('height', new_h, container);
+                    let new_w_perc = pix_2_perc_hw('width', new_w, container);
+                    let new_x = new_ele.position().left;
+                    let new_y = new_ele.position().top;
+                    let new_x_perc = pix_2_perc_xy('x', new_x, container);
+                    let new_y_perc = pix_2_perc_xy('y', new_y,container);
 
-                // assign group field_id to new field
-                new_ele.data('group-id', group_id).removeClass('standard').addClass('group').addClass('group_' + group_id);
+                    if ((parseFloat(new_y_perc) + parseFloat(new_h_perc)) > 99) {
+                        new_ele.css({ border: '3px dotted #900' });
+                        setTimeout(function () {
+                            new_ele.remove();
+                        }, 1000);
+                        return false;
+                    }
 
-                // move add line option to last line
-                $('.group_' + group_id).find('.add-item-container').hide();
-                $('.group_' + group_id).find('.add-item-container').last().show();
+                    set_hwxy(new_ele, '', field_type);
 
-                // clear other field when changing name
-                /* if (new_ele.data('type') != 'checkbox') {
-                    clear_fields_on_change(group_id);
-                } */
+                    // assign group field_id to new field
+                    new_ele.data('group-id', group_id).removeClass('standard').addClass('group').addClass('group_' + group_id);
 
-                get_edit_properties_html(field_id, group_id, field_type, rect, container, new_ele);
+                    // move add line option to last line
+                    $('.group_' + group_id).find('.add-item-container').hide();
+                    $('.group_' + group_id).find('.add-item-container').last().show();
+
+                    // clear other field when changing name
+                    /* if (new_ele.data('type') != 'checkbox') {
+                        clear_fields_on_change(group_id);
+                    } */
+
+                    get_edit_properties_html(field_id, group_id, field_type, rect, container, new_ele);
+
+                }, 100);
 
 
             });
@@ -889,21 +895,20 @@ if (document.URL.match(/create\/add_fields/)) {
 
             // find out if grouped and add icon
             let grouped = false;
-            if ($('.field-div[data-group-id="' + group_ids[i] + '"]').length > 1) {
+            let field_divs = $('.field-div[data-group-id="' + group_ids[i] + '"]');
+            if (field_divs.length > 1) {
                 grouped = true;
             }
             if (grouped == true) {
-                $('.field-div[data-group-id="' + group_ids[i] + '"]').each(function () {
-                    // remove all group icons
-                    $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-group-div').html('');
-                    // add group icon to last of all
-                    $('.field-div[data-group-id="' + group_ids[i] + '"]').last().find('.field-status-group-div').html('<i class="fal fa-layer-group"></i>');
-
-                });
+                // remove all group icons
+                field_divs.find('.field-status-group-div').html('');
+                // add group icon to last of all
+                field_divs.last().find('.field-status-group-div').html('<i class="fal fa-layer-group"></i>');
             }
 
 
             // add field names
+            let cont = 'yes';
             $('.field-div[data-group-id="' + group_ids[i] + '"]').each(function () {
 
                 let field_div = $(this);
@@ -918,7 +923,16 @@ if (document.URL.match(/create\/add_fields/)) {
                             field_div.find('.field-data-name').removeClass('required');
                             field_name = $(this).val();
                             // add field name to last of each group
-                            $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-name-div').last().html(field_name);
+                            if(field_div.data('type') == 'number') {
+                                if(cont == 'yes') {
+                                    if(field_div.find('.field-data-number-type option:checked').val() == 'written') {
+                                        field_div.find('.field-status-name-div').last().html(field_name);
+                                        cont = 'no';
+                                    }
+                                }
+                            } else {
+                                $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-name-div').last().html(field_name);
+                            }
                         }
                     });
                 } else {
