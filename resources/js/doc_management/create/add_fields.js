@@ -830,9 +830,7 @@ if (document.URL.match(/create\/add_fields/)) {
             field_class = 'textline-div standard';
             field_data = '<div class="textline-html"></div>';
             w_perc = 10;
-            if(type == 'name' ) {
-                width_class = 'w-400';
-            }
+
         } else if (type == 'radio') {
             handles = '';
             field_class = type + '-div standard';

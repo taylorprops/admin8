@@ -1,7 +1,7 @@
 <div class="edit-properties-div p-2" id="edit_properties_div_{{ $field_id }}">
 
     @php
-    $cols = $field_type == 'name' || $field_type == 'date' || $field_type == 'radio' ? 'col-12' : 'col-12 col-sm-6';
+    $cols = $field_type == 'date' || $field_type == 'radio' ? 'col-12' : 'col-12 col-sm-6';
     @endphp
 
     <div class="h5-responsive text-orange mb-2 ml-3">{{ strtoupper($field_type) }}</div>
