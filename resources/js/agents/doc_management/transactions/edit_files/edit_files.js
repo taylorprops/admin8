@@ -992,40 +992,36 @@ if (document.URL.match(/edit_files/)) {
         let field_type = $('.group_' + group_id).data('type');
 
         // split value between lines
-        if ($('.group_' + group_id).length == 1) {
-
-            $('.group_' + group_id).first().find('.data-div').html(text);
-
-        } else {
-
+        if ($('.group_' + group_id).not('[data-number-type="numeric"]').length == 1) {
             if (field_type == 'number') {
                 $('.group_' + group_id + '[data-number-type="written"]').first().find('.data-div').html(text);
             } else {
-
-
-                $('.group_' + group_id).not('[data-number-type="numeric"]').find('.data-div').html('');
-                $('.group_' + group_id).not('[data-number-type="numeric"]').each(function () {
-                    // if there is still text left over
-                    if (text != '') {
-
-                        let width = String(Math.ceil($(this).width()));
-                        let text_len = text.length;
-                        let max_chars = width * .12;
-                        if (text_len > max_chars) {
-                            let section = text.substring(0, max_chars);
-                            let end = section.lastIndexOf(' ');
-                            let field_text = text.substring(0, end);
-                            $(this).find('.data-div').html(field_text);
-                            let start = end + 1;
-                            text = text.substring(start);
-                        } else {
-                            $(this).find('.data-div').html(text);
-                            text = '';
-                        }
-                    }
-                });
-
+                $('.group_' + group_id).first().find('.data-div').html(text);
             }
+
+        } else {
+
+            $('.group_' + group_id).not('[data-number-type="numeric"]').find('.data-div').html('');
+            $('.group_' + group_id).not('[data-number-type="numeric"]').each(function () {
+                // if there is still text left over
+                if (text != '') {
+
+                    let width = String(Math.ceil($(this).width()));
+                    let text_len = text.length;
+                    let max_chars = width * .12;
+                    if (text_len > max_chars) {
+                        let section = text.substring(0, max_chars);
+                        let end = section.lastIndexOf(' ');
+                        let field_text = text.substring(0, end);
+                        $(this).find('.data-div').html(field_text);
+                        let start = end + 1;
+                        text = text.substring(start);
+                    } else {
+                        $(this).find('.data-div').html(text);
+                        text = '';
+                    }
+                }
+            });
 
         }
     }

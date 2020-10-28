@@ -919,6 +919,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                     $(this).find('.field-status-name-div').html('');
                     field_div.find('.field-data-name').each(function () {
+
                         if ($(this).val() != '') {
                             field_div.find('.field-data-name').removeClass('required');
                             field_name = $(this).val();
@@ -926,7 +927,10 @@ if (document.URL.match(/create\/add_fields/)) {
                             if(field_div.data('type') == 'number') {
                                 if(cont == 'yes') {
                                     if(field_div.find('.field-data-number-type option:checked').val() == 'written') {
-                                        field_div.find('.field-status-name-div').last().html(field_name);
+                                        field_div.find('.field-status-name-div').html(field_name);
+                                        cont = 'no';
+                                    } else {
+                                        field_div.find('.field-status-name-div').first().html(field_name);
                                         cont = 'no';
                                     }
                                 }
@@ -934,6 +938,7 @@ if (document.URL.match(/create\/add_fields/)) {
                                 $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-name-div').last().html(field_name);
                             }
                         }
+
                     });
                 } else {
                     // checkboxes get name for each since not really a group
