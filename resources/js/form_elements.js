@@ -455,9 +455,8 @@ function show_dropdown(input) {
 }
 
 function hide_dropdowns() {
-    $('.form-select-dropdown').removeClass('active').hide();
-    $('.form-select-search-input').val('').trigger('change');
-    $('.form-select-value-input').removeClass('form-select-value-input-focus');
+    $('.form-select-dropdown.active').removeClass('active').hide().find('.form-select-search-input').val('').trigger('change');
+    $('.form-select-dropdown.active').find('.form-select-value-input').removeClass('form-select-value-input-focus');
 }
 
 $(document).on('mouseup', function (e) {

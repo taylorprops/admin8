@@ -57,13 +57,14 @@ class TransactionsEditFilesController extends Controller
         $common_fields = new CommonFields();
 
         $file = TransactionUpload::where('file_id', $file_id) -> first();
+        $file_name = $file -> file_name_display;
         $images = TransactionUploadImages::where('file_id', $file_id) -> orderBy('page_number') -> get();
 
         $fields_user = UserFields::where('file_id', $file_id) -> orderBy('id') -> get();
         $fields_user_inputs = UserFieldsInputs::where('file_id', $file_id) -> orderBy('id') -> get();
         $field_values = UserFieldsValues::where('file_id', $file_id) -> get();
 
-        return view('/agents/doc_management/transactions/edit_files/file', compact('Listing_ID', 'Contract_ID', 'Referral_ID', 'transaction_type', 'Agent_ID', 'file', 'images', 'fields_user', 'fields_user_inputs', 'file_id', 'document_id', 'field_values', 'file_type', 'common_fields'));
+        return view('/agents/doc_management/transactions/edit_files/file', compact('Listing_ID', 'Contract_ID', 'Referral_ID', 'transaction_type', 'Agent_ID', 'file', 'file_name', 'images', 'fields_user', 'fields_user_inputs', 'file_id', 'document_id', 'field_values', 'file_type', 'common_fields'));
 
     }
 

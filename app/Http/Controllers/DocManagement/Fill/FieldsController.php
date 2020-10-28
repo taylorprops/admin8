@@ -79,13 +79,14 @@ class FieldsController extends Controller
     public function add_fields(Request $request) {
 
         $file = Upload::whereFileId($request -> file_id) -> first();
+        $file_name = $file -> file_name_display;
         $published = $file -> published;
         $images = UploadImages::whereFileId($request -> file_id) -> orderBy('page_number') -> get();
         $fields = Fields::where('file_id', $request -> file_id) -> orderBy('id') -> get();
         $common_fields = CommonFields::getCommonFields();
         $field_types = FieldTypes::select('field_type') -> get();
         $field_inputs = FieldInputs::where('file_id', $request -> file_id) -> orderBy('id') -> get();
-        return view('/doc_management/create/fields/add_fields', compact('file', 'published', 'images', 'fields', 'common_fields', 'field_types', 'field_inputs'));
+        return view('/doc_management/create/fields/add_fields', compact('file', 'file_name', 'published', 'images', 'fields', 'common_fields', 'field_types', 'field_inputs'));
 
     }
 

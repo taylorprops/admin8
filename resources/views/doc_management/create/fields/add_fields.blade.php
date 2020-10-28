@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', 'Edit File')
+@section('title', 'Edit - '.$file_name)
 @section('content')
 
 <div class="container page-add-fields file-view-container p-0 mx-auto">

@@ -20,6 +20,8 @@ if (document.URL.match(/create\/upload\/files/)) {
         get_forms(form_group_id, state, order);
 
 
+
+
     }
 
     function get_forms(form_group_id, state, order=null) {
@@ -62,6 +64,11 @@ if (document.URL.match(/create\/upload\/files/)) {
                 let ele = form_group.find('.activate-upload');
 
                 filter_uploads(ele);
+
+                $('.add-edit-button').on('click', function () {
+                    $('.uploads-list').removeClass('border border-danger');
+                    $(this).closest('.uploads-list').addClass('border border-danger');
+                });
 
             })
             .catch(function (error) {

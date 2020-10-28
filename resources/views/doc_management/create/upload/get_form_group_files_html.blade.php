@@ -36,7 +36,7 @@ $show_title = false;
 
                     @if($file -> file_location != '')
 
-                        <a href="/doc_management/create/add_fields/{{ $file -> file_id }}" class="btn btn-sm btn-primary ml-0" {{-- data-toggle="tooltip" data-html="true" --}} title="Add fields to the form" target="_blank">@if($file -> published == 'no')<i class="fal fa-plus mr-2"></i> Add/Edit @else <i class="fal fa-eye mr-2"></i> View @endif Fields</a>
+                        <a href="/doc_management/create/add_fields/{{ $file -> file_id }}" class="btn btn-sm btn-primary ml-0 add-edit-button" title="Add fields to the form" target="_blank">@if($file -> published == 'no')<i class="fal fa-plus mr-2"></i> Add/Edit @else <i class="fal fa-eye mr-2"></i> View @endif Fields</a>
 
                     @endif
 
