@@ -667,6 +667,12 @@ if (document.URL.match(/create\/add_fields/)) {
             $(this).data('default-value', textline_type);
         });
 
+        let name_select = form.find('select.field-data-name-type');
+        name_select.each(function () {
+            let name_type = $(this).val();
+            $(this).data('default-value', name_type);
+        });
+
         let number_select = form.find('select.field-data-number-type');
         let number_type = number_select.val();
         number_select.data('default-value', number_type);
@@ -1276,6 +1282,8 @@ if (document.URL.match(/create\/add_fields/)) {
                     field_data['address_type'] = field_div.find('select.field-data-address-type').val();
 
                     field_data['textline_type'] = field_div.find('select.field-data-textline-type').val();
+
+                    field_data['name_type'] = field_div.find('select.field-data-name-type').val();
 
                     field_data['radio_value'] = field_div.find('.field-data-radio-value').val();
 

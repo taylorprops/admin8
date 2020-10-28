@@ -47,6 +47,21 @@ function address_type($val) {
     }
 
 }
+function name_type($val) {
+
+    if ($val == 'Seller or Landlord One Name') {
+        return 'one';
+    } else if ($val == 'Seller or Landlord Two Name') {
+        return 'two';
+    } else if ($val == 'Buyer Or Renter One Name') {
+        return 'one';
+    } else if ($val == 'Buyer Or Renter Two Name') {
+        return 'two';
+    } else {
+        return 'both';
+    }
+
+}
 
 function bright_mls_search($ListingId) {
 

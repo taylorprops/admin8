@@ -94,6 +94,7 @@ if($transaction_type == 'listing') {
     data-group-id="{{ $field_user -> group_id }}"
     data-type="{{ $field_type }}"
     data-address-type="{{ $field_user -> address_type }}"
+    data-name-type="{{ $field_user -> name_type }}"
     data-number-type="{{ $field_user -> number_type }}"
     data-page="{{ $field_user -> page }}"
     data-x="{{ $field_user -> left }}"
@@ -242,6 +243,7 @@ if($transaction_type == 'listing') {
                                             }
 
                                             $address_type = address_type($common_name_input);
+                                            $name_type = name_type($common_name_input);
 
                                             @endphp
 
@@ -254,6 +256,7 @@ if($transaction_type == 'listing') {
                                                     data-label="{{ $common_name_input }}"
                                                     data-type="{{ $common_name_input }}"
                                                     data-address-type="{{ $address_type }}"
+                                                    data-name-type="{{ $name_type }}"
                                                     value="{{ $value }}"
                                                     data-default-value="{{ $value }}"
                                                     data-common-name="{{ $common_name_input }}">

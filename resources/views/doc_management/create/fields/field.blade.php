@@ -97,7 +97,7 @@ if($field -> field_type == 'textline' || $field -> field_type == 'address' || $f
     $field_number_type = $field -> number_type;
     $field_textline_type = $field -> textline_type;
     $field_address_type = $field -> address_type;
-    $field_helper_text = $field -> helper_text;
+    $field_name_type = $field -> name_type;
     $group_id = $field -> group_id;
     @endphp
     <div id="properties_container_{{ $field -> field_id }}" class="collapse edit-properties-container bg-white border rounded shadow @if($field_type == 'name' || $field_type == 'date' || $field_type == 'radio') w-400 @else w-600 @endif" data-field-id="{{ $field -> field_id }}" data-parent="#file_viewer">

@@ -886,7 +886,7 @@ if (document.URL.match(/edit_files/)) {
                             group.find('.data-div').html(address_values[index]);
                         }
                     } else {
-                        let full_address = address_values[0] + ' ' + address_values[1] + ' ' + address_values[3] + ' ' + address_values[4];
+                        let full_address = address_values[0] + ' ' + address_values[1] + ' ' + address_values[2] + ' ' + address_values[3];
                         group.find('.data-div').html(full_address);
                         split_lines(group_id, full_address);
                     }
@@ -900,8 +900,10 @@ if (document.URL.match(/edit_files/)) {
 
             // get all input labels from data-type
             let name_labels = [];
+            let name_names = [];
             inputs.each(function () {
                 name_labels.push($(this).data('type'));
+                name_names.push($(this).data('name-type'));
             });
 
             let name_values = [];
@@ -916,6 +918,8 @@ if (document.URL.match(/edit_files/)) {
 
             $('.group_' + group_id).each(function () {
                 let group = $(this);
+                let name_type = $(this).data('name-type');
+
                 let name1 = $(this).find('.fillable-field-input').eq(0).val();
                 let name2 = $(this).find('.fillable-field-input').eq(1).val();
                 let names = name1;
@@ -926,8 +930,8 @@ if (document.URL.match(/edit_files/)) {
 
                 if (!names.match(/undefined/)) {
 
-                    group.find('.data-div').html(names);
-                    split_lines(group_id, names);
+                    /* group.find('.data-div').html(names);
+                    split_lines(group_id, names); */
 
                     group.find('.fillable-field-input').each(function () {
                         let inputs = $(this);
@@ -937,6 +941,19 @@ if (document.URL.match(/edit_files/)) {
                             }
                         });
                     }).trigger('change');
+
+                    $.each(name_names, function (index, name_name) {
+                        if (name_type != 'both') {
+                            if (group.data('name-type') == name_name) {
+                                group.find('.data-div').html(name_values[index]);
+                            }
+                        } else {
+                            let full_names = name_values[0]+' '+name_values[1];
+                            group.find('.data-div').html(names);
+                            split_lines(group_id, names);
+                        }
+                    });
+
                 }
             });
 

@@ -47,7 +47,10 @@
 
                 </div>
 
-                @if($field_type == 'number' || $field_type == 'textline' || $field_type == 'address')
+                @php
+                $allowed_field_types = ['number', 'textline', 'address', 'name'];
+                @endphp
+                @if(in_array($field_type, $allowed_field_types))
 
                     <div class="{{ $cols }}">
 
@@ -69,6 +72,15 @@
                                     <option value="">&nbsp;</option>
                                     <option value="number numbers-only" @if($field_textline_type=='number numbers-only' ) selected @endif>Number</option>
                                     <option value="phone numbers-only" @if($field_textline_type=='phone numbers-only' ) selected @endif>Phone Number</option>
+                                </select>
+
+                            @elseif($field_type == 'name')
+
+                                <select class="custom-form-element form-select field-data-name-type" id="name_select_{{ $field_id }}" data-field-type="name-type" data-default-value="{{ $field_name_type }}" data-label="Name Type">
+                                    <option value="">&nbsp;</option>
+                                    <option value="both" @if($field_name_type=='both' ) selected @endif>All Sellers or All Buyers</option>
+                                    <option value="one" @if($field_name_type=='one' ) selected @endif>Seller One or Buyer One</option>
+                                    <option value="two" @if($field_name_type=='two' ) selected @endif>Seller Two or Buyer Two</option>
                                 </select>
 
                             @elseif($field_type == 'address')
