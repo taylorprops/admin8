@@ -66,8 +66,8 @@ if (document.URL.match(/create\/upload\/files/)) {
                 filter_uploads(ele);
 
                 $('.add-edit-button').on('click', function () {
-                    $('.uploads-list').removeClass('border border-danger');
-                    $(this).closest('.uploads-list').addClass('border border-danger');
+                    $('.uploads-list').removeClass('bg-orange-light');
+                    $(this).closest('.uploads-list').addClass('bg-orange-light');
                 });
 
             })
