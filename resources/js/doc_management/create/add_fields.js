@@ -319,10 +319,8 @@ if (document.URL.match(/create\/add_fields/)) {
                 let dragged_w_perc = pix_2_perc_hw('width', dragged_w, container);
                 let dragged_group_id = dragged_ele.data('group-id');
 
-                if (field_type != 'checkbox') {
-                    let x = dragged_x;
-                    position_edit_properties_div(x);
-                }
+                let x = dragged_x;
+                position_edit_properties_div(x);
 
                 setTimeout(function() {
                     set_hwxy(dragged_ele, '', field_type);
@@ -615,12 +613,17 @@ if (document.URL.match(/create\/add_fields/)) {
         let width = $('#file_viewer').width();
         if(x < (width / 4)) {
             $('.edit-properties-container').css({ left: '0px', right: '' });
+            $('.field-options-holder').css({ left: '-8px', right: '' });
         } else if(x > (width / 4) && x < (width / 2)) {
             $('.edit-properties-container').css({ left: '-150px', right: '' });
+            $('.field-options-holder').css({ left: '-8px', right: '' });
         } else if(x > (width / 2) && x < (width - (width * .35))) {
             $('.edit-properties-container').css({ left: '', right: '-150px' });
+            $('.field-options-holder').css({ left: '', right: '-8px' });
         } else if(x > (width - (width * .35))) {
             $('.edit-properties-container').css({ left: '', right: '0px' });
+            $('.field-options-holder').css({ left: '', right: '-8px' });
+
         }
     }
 
@@ -1023,10 +1026,10 @@ if (document.URL.match(/create\/add_fields/)) {
         let cw = 100;
         let cd_adjusted = '';
         if (type == 'textline' || type == 'name' || type == 'address' || type == 'date' || type == 'number') {
-            dist = 4;
+            dist = 0;
             cd_adjusted = cw;
         } else if (type == 'radio' || type == 'checkbox') {
-            dist = 4;
+            dist = 0;
             cd_adjusted = cw - 4;
         }
 
