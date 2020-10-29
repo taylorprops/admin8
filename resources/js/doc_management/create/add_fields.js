@@ -144,6 +144,8 @@ if (document.URL.match(/create\/add_fields/)) {
                 set_hwxy($('#field_' + field_id), field_id, field_type);
 
                 keep_in_view($('#field_' + field_id), w_perc, x_perc, y_perc, field_type);
+                let field_div_x = $('#field_'+field_id).position().left;
+                position_edit_properties_div(field_div_x);
 
                 $('#field_'+field_id).find('.focused').show();
 
@@ -261,7 +263,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
     }
 
-    function set_field_options(field_type, ele, id, rect, container) {
+    function set_field_options(field_type, ele, field_id, rect, container) {
 
         let handles = {
             'e': '.ui-resizable-e', 'w': '.ui-resizable-w'
@@ -283,6 +285,9 @@ if (document.URL.match(/create\/add_fields/)) {
             let group_id = ele.data('group-id');
 
             set_hwxy(ele, group_id, field_type);
+
+            let x = $('#field_'+field_id).position().left;
+            position_edit_properties_div(x);
 
         });
 
@@ -324,7 +329,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 setTimeout(function() {
                     set_hwxy(dragged_ele, '', field_type);
-                    keep_in_view(dragged_ele, dragged_w_perc, dragged_x_perc, dragged_y_perc, field_type);
+                    //keep_in_view(dragged_ele, dragged_w_perc, dragged_x_perc, dragged_y_perc, field_type);
                 }, 200);
 
             }
@@ -619,10 +624,10 @@ if (document.URL.match(/create\/add_fields/)) {
             $('.field-options-holder').css({ left: '-8px', right: '' });
         } else if(x > (width / 2) && x < (width - (width * .35))) {
             $('.edit-properties-container').css({ left: '', right: '-150px' });
-            $('.field-options-holder').css({ left: '', right: '-8px' });
+            $('.field-options-holder').css({ left: '', right: '0px' });
         } else if(x > (width - (width * .35))) {
             $('.edit-properties-container').css({ left: '', right: '0px' });
-            $('.field-options-holder').css({ left: '', right: '-8px' });
+            $('.field-options-holder').css({ left: '', right: '0px' });
 
         }
     }
@@ -1030,7 +1035,7 @@ if (document.URL.match(/create\/add_fields/)) {
             cd_adjusted = cw;
         } else if (type == 'radio' || type == 'checkbox') {
             dist = 0;
-            cd_adjusted = cw - 4;
+            cd_adjusted = cw;
         }
 
         /* let x_pos = ele.position().left;
@@ -1057,7 +1062,7 @@ if (document.URL.match(/create\/add_fields/)) {
         setTimeout(function () {
             let group_id = ele.data('group-id');
             set_hwxy(ele, group_id, type);
-        }, 1500);
+        }, 100);
 
     }
 
