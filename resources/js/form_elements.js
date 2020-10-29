@@ -312,7 +312,7 @@ window.form_elements = function () {
 
 
                     // when a single li is clicked
-                    wrapper.find('.form-select-li').on('click', function () {
+                    wrapper.find('.form-select-li').off('click').on('click', function () {
 
                         if (!$(this).hasClass('form-check-input-multiple')) {
                             let li = $(this);
@@ -455,6 +455,7 @@ function show_dropdown(input) {
 }
 
 function hide_dropdowns() {
+    console.log('hiding');
     $('.form-select-dropdown.active').removeClass('active').hide().find('.form-select-search-input').val('').trigger('change');
     $('.form-select-dropdown.active').find('.form-select-value-input').removeClass('form-select-value-input-focus');
 }

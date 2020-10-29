@@ -1023,10 +1023,10 @@ if (document.URL.match(/create\/add_fields/)) {
         let cw = 100;
         let cd_adjusted = '';
         if (type == 'textline' || type == 'name' || type == 'address' || type == 'date' || type == 'number') {
-            dist = 6;
+            dist = 4;
             cd_adjusted = cw;
         } else if (type == 'radio' || type == 'checkbox') {
-            dist = 6;
+            dist = 4;
             cd_adjusted = cw - 4;
         }
 
