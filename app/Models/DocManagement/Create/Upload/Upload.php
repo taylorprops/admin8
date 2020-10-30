@@ -20,6 +20,10 @@ class Upload extends Model
     protected $primaryKey = 'file_id';
     protected $guarded = [];
 
+    public function fields() {
+        return $this -> hasMany('App\Models\DocManagement\Create\Fields\Fields', 'file_id');
+    }
+
 
     public function scopeIsContract($query, $checklist_form_id) {
 

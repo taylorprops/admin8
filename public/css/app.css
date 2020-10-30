@@ -12953,9 +12953,9 @@ a.text-primary-dark:focus {
   font-family: "Lato";
 }
 
-/* html {
-    font-size: 1rem;
-} */
+html {
+  scroll-behavior: smooth;
+}
 
 @media (max-width: 767.98px) {
   body {

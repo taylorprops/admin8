@@ -168,7 +168,7 @@ class UploadController extends Controller {
         }
         $resource_items = new ResourceItems();
 
-        $files = Upload::where('form_group_id', $form_group_id) -> orderBy($order_by, $dir) -> get();
+        $files = Upload::where('form_group_id', $form_group_id) -> withCount('fields') -> orderBy($order_by, $dir) -> get();
 
         $files_count = count($files);
 
