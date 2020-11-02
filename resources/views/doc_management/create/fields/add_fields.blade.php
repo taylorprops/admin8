@@ -87,10 +87,7 @@
                                     <div class="field-container w-100 h-100">
                                         <img class="w-100 h-100 file-image" src="{{ $image -> file_location }}">
 
-                                        @foreach($fields -> where('page', $c) as $field)
-                                            @php $type = 'existing'; @endphp
-                                            @include('doc_management.create.fields.field')
-                                        @endforeach
+
 
                                     </div>
                                 </div>
