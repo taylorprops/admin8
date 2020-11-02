@@ -568,8 +568,12 @@
         .popout.middle {
             left: 0px;
         }
+        .popout.bottom {
+            left: 0px;
+            bottom: -52px;
+        }
 
-        .check-deductions-div {
+        .check-deductions-div, .commission-deductions-div {
             max-width: 500px;
         }
 

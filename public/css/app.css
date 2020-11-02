@@ -15683,7 +15683,13 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   left: 0px;
 }
 
-.page-transaction-details .commission-container .check-deductions-div {
+.page-transaction-details .commission-container .popout.bottom {
+  left: 0px;
+  bottom: -52px;
+}
+
+.page-transaction-details .commission-container .check-deductions-div,
+.page-transaction-details .commission-container .commission-deductions-div {
   max-width: 500px;
 }
 

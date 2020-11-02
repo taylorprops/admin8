@@ -22,6 +22,8 @@ if($transaction_type == 'listing') {
     $header_transaction_type = '<i class="fad fa-handshake mr-2"></i> Referral Agreement';
     $transaction_type_bg = 'bg-orange';
 }
+
+$status = $resource_items -> GetResourceName($property -> Status);
 @endphp
 <div class="row mt-1 mt-sm-4">
 
@@ -73,7 +75,7 @@ if($transaction_type == 'listing') {
                 @else
 
                     @php
-                    $header_status = $resource_items -> GetResourceName($property -> Status);
+                    $header_status = $status;
                     if($header_status == 'Under Contract') {
                         $header_status = $for_sale ? 'Under Contract' : 'Lease Accepted';
                     }
@@ -106,7 +108,7 @@ if($transaction_type == 'listing') {
         @elseif($transaction_type == 'contract')
 
             @php
-            $status = $resource_items -> GetResourceName($property -> Status);
+
             $docs_submitted = $upload -> DocsSubmitted('', $Contract_ID);
             $action = $docs_submitted['contract_submitted'] ? 'Release' : 'Cancel';
             @endphp
@@ -290,7 +292,7 @@ if($transaction_type == 'listing') {
                                 <span class="font-weight-bold text-yellow text-nowrap">Status</span>
                             </div>
                             <div class="col-6 text-left text-nowrap">
-                                {{ $resource_items -> GetResourceName($property -> Status) }}
+                                {{ $status }}
                             </div>
                         </div>
                         <div class="row">

@@ -49,23 +49,23 @@ class ResourceItems extends Model
 
     } */
     public function scopeSellerResourceId() {
-        $resource_id = ResourceItems::where('resource_name', 'Seller') -> first();
+        $resource_id = ResourceItems::select('resource_id') -> where('resource_name', 'Seller') -> first();
         return $resource_id -> resource_id;
     }
     public function scopeBuyerResourceId() {
-        $resource_id = ResourceItems::where('resource_name', 'Buyer') -> first();
+        $resource_id = ResourceItems::select('resource_id') -> where('resource_name', 'Buyer') -> first();
         return $resource_id -> resource_id;
     }
     public function scopeBuyerAgentResourceId() {
-        $resource_id = ResourceItems::where('resource_name', 'Buyer Agent') -> first();
+        $resource_id = ResourceItems::select('resource_id') -> where('resource_name', 'Buyer Agent') -> first();
         return $resource_id -> resource_id;
     }
     public function scopeListingAgentResourceId() {
-        $resource_id = ResourceItems::where('resource_name', 'Listing Agent') -> first();
+        $resource_id = ResourceItems::select('resource_id') -> where('resource_name', 'Listing Agent') -> first();
         return $resource_id -> resource_id;
     }
     public function scopeTitleResourceId() {
-        $resource_id = ResourceItems::where('resource_name', 'Title') -> first();
+        $resource_id = ResourceItems::select('resource_id') -> where('resource_name', 'Title') -> first();
         return $resource_id -> resource_id;
     }
 
@@ -75,18 +75,18 @@ class ResourceItems extends Model
     }
 
     public function scopeGetLocation($query, $id) {
-        $location = $query -> where('resource_id', $id) -> first();
+        $location = $query -> select('resource_name') -> where('resource_id', $id) -> first();
         return $location -> resource_name;
     }
 
     public function scopeGetState($query, $resource_id) {
-        $location = $query -> where('resource_id', $resource_id) -> first();
+        $location = $query -> select('resource_state') -> where('resource_id', $resource_id) -> first();
         return $location -> resource_state;
     }
 
     public function scopeGetResourceName($query, $id) {
         if($id) {
-            $resource = $query -> where('resource_id', $id) -> first();
+            $resource = $query -> select('resource_name') -> where('resource_id', $id) -> first();
             return $resource -> resource_name;
         }
         return false;
@@ -94,14 +94,14 @@ class ResourceItems extends Model
 
     public function scopeGetResourceID($query, $name, $type) {
         if($name) {
-            $resource = $query -> where('resource_name', $name) -> where('resource_type', $type) -> first();
+            $resource = $query -> select('resource_id') -> where('resource_name', $name) -> where('resource_type', $type) -> first();
             return $resource -> resource_id;
         }
         return false;
     }
 
     public function scopeGetCategoryColor($query, $id) {
-        $tags = $query -> where('resource_id', $id) -> first();
+        $tags = $query -> select('resource_color') -> where('resource_id', $id) -> first();
         return $tags -> resource_color;
     }
 

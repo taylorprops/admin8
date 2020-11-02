@@ -150,9 +150,9 @@
                                 <div>
                                     <a href="javascript: void(0)" class="btn btn-sm btn-primary show-view-add-button">View/Add</a>
                                 </div>
-                                <div class="badge badge-pill badge-primary py-1" id="deductions_count"></div>
+                                <div class="badge badge-pill badge-primary py-1" id="income_deductions_count"></div>
                                 <div class="mr-2 font-10 text-danger">
-                                    <span id="deductions_total"></span>
+                                    <span id="income_deductions_total"></span>
                                     <input type="hidden" id="income_deductions_total_value" class="total">
                                 </div>
                             </div>
@@ -175,25 +175,25 @@
                             <div class="d-flex justify-content-start align-items-center">
                                 <div class="h4 mt-2 text-primary">Check Deductions</div>
                                 <div class="ml-4">
-                                    <a class="btn btn-sm btn-success" data-toggle="collapse" href="#add_check_deduction_div" role="button" aria-expanded="false" aria-controls="add_check_deduction_div"><i class="fa fa-plus mr-2"></i> Add</a>
+                                    <a class="btn btn-sm btn-success" data-toggle="collapse" href="#add_income_deduction_div" role="button" aria-expanded="false" aria-controls="add_income_deduction_div"><i class="fa fa-plus mr-2"></i> Add</a>
                                 </div>
                             </div>
 
                             <div class="view-add-div">
 
-                                <div class="collapse" id="add_check_deduction_div">
+                                <div class="collapse" id="add_income_deduction_div">
 
                                     <div class="d-flex flex-wrap justify-content-start align-items-center">
                                         <div class="mr-2">
-                                            <input type="text" class="custom-form-element form-input required" name="check_deduction_description" id="check_deduction_description" data-label="Enter Description">
+                                            <input type="text" class="custom-form-element form-input required" name="income_deduction_description" id="income_deduction_description" data-label="Enter Description">
                                         </div>
                                         <div class="mr-2">
-                                            <input type="text" class="custom-form-element form-input money-decimal numbers-only required" name="check_deduction_amount" id="check_deduction_amount" data-label="Enter Amount">
+                                            <input type="text" class="custom-form-element form-input money-decimal numbers-only required" name="income_deduction_amount" id="income_deduction_amount" data-label="Enter Amount">
                                         </div>
                                         <div>
                                             <div class="d-flex justify-content-start align-items-center h-100">
-                                                <a href="javascript: void(0);" class="btn btn-sm btn-success" id="save_add_check_deduction_button"><i class="fad fa-save mr-2"></i> Save</a>
-                                                <a class="btn btn-sm btn-danger" data-toggle="collapse" href="#add_check_deduction_div" role="button" aria-expanded="false" aria-controls="add_check_deduction_div"><i class="fad fa-ban"></i></a>
+                                                <a href="javascript: void(0);" class="btn btn-sm btn-success" id="save_add_income_deduction_button"><i class="fad fa-save mr-2"></i> Save</a>
+                                                <a class="btn btn-sm btn-danger" data-toggle="collapse" href="#add_income_deduction_div" role="button" aria-expanded="false" aria-controls="add_income_deduction_div"><i class="fad fa-ban"></i></a>
                                             </div>
                                         </div>
                                     </div>
@@ -236,7 +236,7 @@
         {{-- Total Income --}}
         <div class="row no-gutters">
 
-            <div class="col-12 col-lg-5 border-top border-bottom py-2">
+            <div class="col-12 col-lg-5 border-top py-2">
 
                 <div class="row">
                     <div class="col-5">
@@ -257,8 +257,40 @@
                     </div>
                 </div>
 
+            </div>
 
+        </div>
 
+        {{-- Agent Commission % --}}
+        <div class="row">
+
+            <div class="col-12 col-lg-5 pr-2 pr-lg-0 border-bottom">
+                <div class="row">
+                    <div class="col-5">
+                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
+                            Agent Commission
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="pr-4">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div class="agent-commission percent d-flex justify-content-start align-items-center">
+                                    <select class="custom-form-element form-select form-select-no-search form-select-no-cancel text-center total" name="agent_commission_percent" id="agent_commission_percent" >
+                                        <option value=""></option>
+                                        @foreach($commission_percentages as $percent)
+                                        <option value="{{ $percent }}" @if($percent == $agent -> commission_percent) selected @endif>{{ $percent }}</option>
+                                        @endforeach
+                                    </select>
+                                    <i class="fal fa-percentage text-primary ml-1"></i>
+                                </div>
+                                <div class="mx-5"></div>
+                                <div class="w-100">
+                                    <input type="text" class="custom-form-element form-input text-success text-right pr-2 total" readonly name="agent_commission_amount" id="agent_commission_amount">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -275,39 +307,110 @@
             </div>
         </div>
 
-        {{-- Agent Commission % --}}
+
+
+        {{-- Admin Fee - Paid By Agent --}}
         <div class="row">
 
             <div class="col-12 col-lg-5 pr-2 pr-lg-0">
                 <div class="row">
                     <div class="col-5">
                         <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Agent Commission
+                            Admin Fee - Paid By Agent
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <div class="d-flex justify-content-start align-items-center">
-                                <div class="agent-commission percent d-flex justify-content-start align-items-center">
-                                    <select class="custom-form-element form-select form-select-no-search form-select-no-cancel text-center" name="agent_commission_percent" id="agent_commission_percent" >
-                                        <option value=""></option>
-                                        @foreach($commission_percentages as $percent)
-                                        <option value="{{ $percent }}" @if($percent == $agent -> commission_percent) selected @endif>{{ $percent }}</option>
-                                        @endforeach
-                                    </select>
-                                    <i class="fal fa-percentage text-primary ml-1"></i>
-                                </div>
-                                <div class="mx-5"></div>
-                                <div class="w-100">
-                                    <input type="text" class="custom-form-element form-input text-danger text-right pr-2 total" readonly name="agent_commission_amount" id="agent_commission_amount">
-                                </div>
-                            </div>
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-danger text-right pr-2 total" name="admin_fee_from_agent" id="admin_fee_from_agent">
                         </div>
                     </div>
                 </div>
             </div>
 
         </div>
+
+        {{-- Commission Deductions --}}
+        <div class="row popout-row">
+
+            <div class="col-12 col-lg-5 pr-3 pr-lg-0">
+
+                <div class="row">
+
+                    <div class="col-5 text-gray">
+                        <div class="py-3 text-right">
+                            Commission Deductions
+                        </div>
+                    </div>
+
+                    <div class="col-7">
+                        <div class="popout-action pr-1 pr-lg-4 py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="javascript: void(0)" class="btn btn-sm btn-primary show-view-add-button">View/Add</a>
+                                </div>
+                                <div class="badge badge-pill badge-primary py-1" id="commission_deductions_count"></div>
+                                <div class="mr-2 font-10 text-danger">
+                                    <span id="commission_deductions_total"></span>
+                                    <input type="hidden" id="commission_deductions_total_value" class="total">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-12 col-lg-7 p-lg-0">
+
+                <div class="popout-div mr-3">
+
+                    <div class="popout bottom animated fast flipInX w-100">
+
+                        <div class="px-1 px-sm-3 pb-3 pt-1">
+
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div class="h4 mt-2 text-primary">Commission Deductions</div>
+                                <div class="ml-4">
+                                    <a class="btn btn-sm btn-success" data-toggle="collapse" href="#add_commission_deduction_div" role="button" aria-expanded="false" aria-controls="add_commission_deduction_div"><i class="fa fa-plus mr-2"></i> Add</a>
+                                </div>
+                            </div>
+
+                            <div class="view-add-div">
+
+                                <div class="collapse" id="add_commission_deduction_div">
+
+                                    <div class="d-flex flex-wrap justify-content-start align-items-center">
+                                        <div class="mr-2">
+                                            <input type="text" class="custom-form-element form-input required" name="commission_deduction_description" id="commission_deduction_description" data-label="Enter Description">
+                                        </div>
+                                        <div class="mr-2">
+                                            <input type="text" class="custom-form-element form-input money-decimal numbers-only required" name="commission_deduction_amount" id="commission_deduction_amount" data-label="Enter Amount">
+                                        </div>
+                                        <div>
+                                            <div class="d-flex justify-content-start align-items-center h-100">
+                                                <a href="javascript: void(0);" class="btn btn-sm btn-success" id="save_add_commission_deduction_button"><i class="fad fa-save mr-2"></i> Save</a>
+                                                <a class="btn btn-sm btn-danger" data-toggle="collapse" href="#add_commission_deduction_div" role="button" aria-expanded="false" aria-controls="add_commission_deduction_div"><i class="fad fa-ban"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="list-group commission-deductions-div mt-3"></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
 
     </form>
 

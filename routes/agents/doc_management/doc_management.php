@@ -128,12 +128,20 @@
     Route::post('/agents/doc_management/transactions/undo_delete_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@undo_delete_check_in');
     // save edit check in
     Route::post('/agents/doc_management/transactions/save_edit_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_edit_check_in');
+
     // get check deductions
-    Route::get('/agents/doc_management/transactions/get_check_deductions', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_check_deductions');
+    Route::get('/agents/doc_management/transactions/get_income_deductions', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_income_deductions');
     // save add check deduction
-    Route::post('/agents/doc_management/transactions/save_add_check_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_check_deduction');
+    Route::post('/agents/doc_management/transactions/save_add_income_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_income_deduction');
     // delete check deduction
-    Route::post('/agents/doc_management/transactions/delete_check_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@delete_check_deduction');
+    Route::post('/agents/doc_management/transactions/delete_income_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@delete_income_deduction');
+
+    // get check deductions
+    Route::get('/agents/doc_management/transactions/get_commission_deductions', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_commission_deductions');
+    // save add check deduction
+    Route::post('/agents/doc_management/transactions/save_add_commission_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_commission_deduction');
+    // delete check deduction
+    Route::post('/agents/doc_management/transactions/delete_commission_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@delete_commission_deduction');
 
 
 

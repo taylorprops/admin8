@@ -104,12 +104,17 @@ class Upload extends Model
         $contract_submitted = false;
         $release_submitted = false;
 
+        $listing_agreement_form_tags = ResourceItems::GetResourceID('listing_agreement', 'form_tags');
+        $withdraw_form_tags = ResourceItems::GetResourceID('withdraw', 'form_tags');
+        $contract_form_tags = ResourceItems::GetResourceID('contract', 'form_tags');
+        $release_form_tags = ResourceItems::GetResourceID('release', 'form_tags');
+
         foreach($checklist_items as $checklist_item) {
 
             $checklist_form_id = $checklist_item -> checklist_form_id;
             $upload = Upload::find($checklist_form_id);
 
-            if($upload -> form_tags == ResourceItems::GetResourceID('listing_agreement', 'form_tags')) {
+            if($upload -> form_tags == $listing_agreement_form_tags) {
 
                 $listing_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
                 if($listing_submitted_check) {
@@ -125,7 +130,7 @@ class Upload extends Model
                     }
                 }
 
-            } else if($upload -> form_tags == ResourceItems::GetResourceID('withdraw', 'form_tags')) {
+            } else if($upload -> form_tags == $withdraw_form_tags) {
 
                 $listing_withdraw_submitted_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
                 if($listing_withdraw_submitted_submitted_check) {
@@ -134,7 +139,7 @@ class Upload extends Model
                     }
                 }
 
-            } else if($upload -> form_tags == ResourceItems::GetResourceID('contract', 'form_tags')) {
+            } else if($upload -> form_tags == $contract_form_tags) {
 
                 $contract_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
                 if($contract_submitted_check) {
@@ -143,7 +148,7 @@ class Upload extends Model
                     }
                 }
 
-            } else if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
+            } else if($upload -> form_tags == $release_form_tags) {
 
                 $release_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
                 if($release_submitted_check) {

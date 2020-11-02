@@ -822,18 +822,27 @@ if (document.URL.match(/transaction_details/)) {
                     $('.popout').eq(0).show();
                     get_checks_in(Commission_ID);
                     get_commission_notes(Commission_ID);
-                    get_check_deductions(Commission_ID);
+                    get_income_deductions(Commission_ID);
+                    get_commission_deductions(Commission_ID);
 
                     $('.add-check-in-button').off('click').on('click', show_add_check_in);
 
                     $('#save_add_check_in_button').off('click').on('click', save_add_check_in);
 
-                    $('#save_add_check_deduction_button').off('click').on('click', function() {
-                        save_add_check_deduction();
+                    $('#save_add_income_deduction_button').off('click').on('click', function() {
+                        save_add_income_deduction();
                     });
 
-                    $('#add_check_deduction_div').on('hidden.bs.collapse', function () {
-                        $('#check_deduction_description, #check_deduction_amount').val('').trigger('change');
+                    $('#add_income_deduction_div').on('hidden.bs.collapse', function () {
+                        $('#income_deduction_description, #income_deduction_amount').val('').trigger('change');
+                    });
+
+                    $('#save_add_commission_deduction_button').off('click').on('click', function() {
+                        save_add_commission_deduction();
+                    });
+
+                    $('#add_commission_deduction_div').on('hidden.bs.collapse', function () {
+                        $('#commission_deduction_description, #commission_deduction_amount').val('').trigger('change');
                     });
 
                     $('.total').each(function() {

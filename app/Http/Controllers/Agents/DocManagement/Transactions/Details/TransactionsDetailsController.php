@@ -38,7 +38,8 @@ use App\Models\DocManagement\Transactions\Data\ListingsData;
 use App\Models\Commission\Commission;
 use App\Models\Commission\CommissionChecksIn;
 use App\Models\Commission\CommissionNotes;
-use App\Models\Commission\CommissionCheckDeductions;
+use App\Models\Commission\CommissionIncomeDeductions;
+use App\Models\Commission\CommissionCommissionDeductions;
 use App\Models\Employees\Agents;
 use App\Models\Employees\Teams;
 use App\Models\Resources\LocationData;
@@ -2428,6 +2429,8 @@ class TransactionsDetailsController extends Controller {
         return view('/agents/doc_management/transactions/details/data/get_commission', compact( 'commission_notes'));
     }
 
+    // Checks
+
     public function get_checks_in(Request $request) {
         $checks_in = CommissionChecksIn::where('Commission_ID', $request -> Commission_ID) -> orderBy('active', 'DESC') -> orderBy('created_at', 'DESC') -> get();
 
@@ -2563,25 +2566,56 @@ class TransactionsDetailsController extends Controller {
 
     }
 
-    public function get_check_deductions(Request $request) {
+    // Income Deductions
+
+    public function get_income_deductions(Request $request) {
 
         $Commission_ID = $request -> Commission_ID;
-        $deductions = CommissionCheckDeductions::where('Commission_ID', $Commission_ID) -> orderBy('created_at', 'DESC') -> get();
+        $deductions = CommissionIncomeDeductions::where('Commission_ID', $Commission_ID) -> orderBy('created_at', 'DESC') -> get();
 
         return compact('deductions');
 
     }
 
-    public function delete_check_deduction(Request $request) {
+    public function delete_income_deduction(Request $request) {
         $deduction_id = $request -> deduction_id;
-        $delete = CommissionCheckDeductions::find($deduction_id) -> delete();
+        $delete = CommissionIncomeDeductions::find($deduction_id) -> delete();
 
         return response() -> json(['success' => true]);
     }
 
-    public function save_add_check_deduction(Request $request) {
+    public function save_add_income_deduction(Request $request) {
 
-        $deduction = new CommissionCheckDeductions();
+        $deduction = new CommissionIncomeDeductions();
+        $deduction -> Commission_ID = $request -> Commission_ID;
+        $deduction -> amount = preg_replace('/[\$,]+/', '', $request -> amount);
+        $deduction -> description = $request -> description;
+        $deduction -> save();
+
+        return response() -> json(['success' => true]);
+    }
+
+    // Commission Deductions
+
+    public function get_commission_deductions(Request $request) {
+
+        $Commission_ID = $request -> Commission_ID;
+        $deductions = CommissionCommissionDeductions::where('Commission_ID', $Commission_ID) -> orderBy('created_at', 'DESC') -> get();
+
+        return compact('deductions');
+
+    }
+
+    public function delete_commission_deduction(Request $request) {
+        $deduction_id = $request -> deduction_id;
+        $delete = CommissionCommissionDeductions::find($deduction_id) -> delete();
+
+        return response() -> json(['success' => true]);
+    }
+
+    public function save_add_commission_deduction(Request $request) {
+
+        $deduction = new CommissionCommissionDeductions();
         $deduction -> Commission_ID = $request -> Commission_ID;
         $deduction -> amount = preg_replace('/[\$,]+/', '', $request -> amount);
         $deduction -> description = $request -> description;
