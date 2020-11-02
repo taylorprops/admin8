@@ -152,10 +152,10 @@
 <input type="hidden" id="active_page" value="1">
 <input type="hidden" id="active_field">
 
-@foreach($field_types as $fields)
+@foreach($field_types as $field_type)
 
     @php
-    $field = $fields -> field_type;
+    $field = $field_type -> field_type;
     $heightp = '1.3';
     $widthp = '15';
     if($field == 'date') {
