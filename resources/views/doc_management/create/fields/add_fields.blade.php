@@ -85,10 +85,10 @@
                                     <div class="field-container w-100 h-100">
                                         <img class="w-100 h-100 file-image" src="{{ $image -> file_location }}">
 
-                                        {{-- @foreach($fields -> where('page', $c) as $field)
+                                        @foreach($fields -> where('page', $c) as $field)
                                             @php $type = 'existing'; @endphp
                                             @include('doc_management.create.fields.field', [$field, $common_fields, $c, $type, $published])
-                                        @endforeach --}}
+                                        @endforeach
 
                                     </div> <!-- end field-container -->
                                 </div> <!-- end file-view-page-container -->
