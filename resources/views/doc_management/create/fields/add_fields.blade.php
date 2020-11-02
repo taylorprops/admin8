@@ -71,7 +71,9 @@
             <div class="col-12 col-xl-8 p-0 mx-auto">
 
                 <div class="container-fluid p-0">
+
                     <div class="file-viewer-container mx-auto">
+
                         <div class="file-view" id="file_viewer">
 
                             @foreach($images as $image)
@@ -87,27 +89,32 @@
 
                                         @foreach($fields -> where('page', $c) as $field)
                                             @php $type = 'existing'; @endphp
-                                            @include('doc_management.create.fields.field', [$field, $common_fields, $c, $type, $published])
+                                            @include('doc_management.create.fields.field')
                                         @endforeach
 
-                                    </div> <!-- end field-container -->
-                                </div> <!-- end file-view-page-container -->
+                                    </div>
+                                </div>
+
                                 <div class="file-view-page-info bg-primary text-white p-2 mb-4">
                                     Page {{ $c.' of '.$total_pages }}
                                 </div>
 
                             @endforeach
 
-                        </div> <!-- ende file_viewer -->
-                    </div> <!-- end file-viewer-container -->
+                        </div>
 
-                </div> <!-- end container-fluid p-0 -->
+                    </div>
+
+                </div>
+
             </div>
 
             <div class="col-2 p-0 edit-file-sidebar">
 
                 <div class="file-view" id="thumb_viewer">
+
                     <div class="h5-responsive text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
+
                     @foreach($images as $image)
                         <?php $c = $image -> page_number; ?>
                         <div class="file-view-thumb-container  w-50 mx-auto" <?php echo($c == 1) ? 'active' : ''; ?>" id="thumb_{{ $c }}" data-id="{{ $c }}">
@@ -130,7 +137,9 @@
                             @endif
                         </div>
                     @endforeach
+
                 </div>
+
             </div>
 
         </div>
