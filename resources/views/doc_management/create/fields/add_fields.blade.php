@@ -85,11 +85,9 @@
                                     <div class="field-container w-100 h-100">
                                         <img class="w-100 h-100 file-image" src="{{ $image -> file_location }}">
 
-                                        @foreach($fields as $field)
-                                            @if($field -> page == $c)
-                                                @php $type = 'existing'; @endphp
-                                                @include('doc_management.create.fields.field', [$field, $common_fields, $c, $type, $published])
-                                            @endif
+                                        @foreach($fields -> where($field -> page == $c) as $field)
+                                            @php $type = 'existing'; @endphp
+                                            @include('doc_management.create.fields.field', [$field, $common_fields, $c, $type, $published])
                                         @endforeach
 
                                     </div> <!-- end field-container -->
@@ -146,8 +144,8 @@
 <input type="hidden" id="active_field">
 
 @foreach($field_types as $fields)
-    @php
 
+    @php
     $field = $fields -> field_type;
     $heightp = '1.3';
     $widthp = '15';
@@ -158,6 +156,7 @@
         $widthp = '1.45';
     }
     @endphp
+
     <input type="hidden" id="field_{{$field}}_height">
     <input type="hidden" id="field_{{$field}}_width">
     <input type="hidden" id="field_{{$field}}_x">
@@ -167,12 +166,12 @@
     <input type="hidden" id="field_{{$field}}_xp">
     <input type="hidden" id="field_{{$field}}_yp">
     <input type="hidden" id="field_{{$field}}_group-id">
+
+    <input type="hidden" id="{{$field}}_select_options">
+
 @endforeach
 
-@foreach($field_types as $fields)
-    @php $field = $fields -> field_type @endphp
-    <input type="hidden" id="{{$field}}_select_options">
-@endforeach
+
 
 <input type="hidden" id="inputs_html">
 
