@@ -3,6 +3,8 @@
 
 $checklist_count = $checklists -> countInChecklist($file -> file_id);
 $show_title = false;
+
+
 @endphp
 <div class="p-2 mb-4 uploads-list @if($file -> published == 'yes') published @else notpublished @endif @if($file -> active == 'yes') active @else notactive @endif">
     <div class="container">
@@ -12,10 +14,10 @@ $show_title = false;
             </div>
             <div class="col-12 col-md-4">
                 <div class="d-flex justify-content-end">
-                    @php $categories = explode(',', $file -> form_categories); @endphp
+                    {{-- @php $categories = explode(',', $file -> form_categories); @endphp
                     @foreach($categories as $category)
                     <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> GetCategoryColor($category) }}">{{ $resource_items -> getResourceName($category) }}</span>
-                    @endforeach
+                    @endforeach --}}
                 </div>
             </div>
         </div>
