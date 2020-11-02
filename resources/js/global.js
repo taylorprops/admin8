@@ -256,18 +256,46 @@ window.scrollToAnchor = function(id) {
 
 // Numbers Only
 $(document).on('keydown', '.numbers-only', function (event) {
-    // Allow special chars + arrows
-    if (event.code == 46 || event.code == 8 || event.code == 9 || event.code == 190 || event.code == 110
-        || event.code == 27 || event.code == 13
-        || ((event.code == 65 || event.code == 86 || event.code == 90) && event.ctrlKey == true)
-        || (event.code >= 35 && event.code <= 39)) {
-        return;
+    // set attr  max with input type = text
+
+    let allowed_keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',', 'Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab'];
+
+    if(!$(this).hasClass('no-decimals')) {
+        allowed_keys.push('.');
+    }
+    if(!allowed_keys.includes(event.key)) {
+        event.preventDefault();
     } else {
-        // If it's not a number stop the keypress
-        if (event.shiftKey || (event.code < 48 || event.code > 57) && (event.code < 96 || event.code > 105)) {
-            event.preventDefault();
+        //let min = $(this).attr('min') ?? null;
+        let max = $(this).attr('max') ?? null;
+        /* if(min) {
+            if(parseInt($(this).val()+event.key) < min) {
+                event.preventDefault();
+                $(this).val(event.key);
+            }
+        } */
+        if(max) {
+            if(parseInt($(this).val()+event.key) > max) {
+                event.preventDefault();
+                $(this).val(event.key);
+            }
         }
     }
+
+
+    // Allow special chars + arrows
+    /* if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 190 || event.keyCode == 110
+        || event.keyCode == 27 || event.keyCode == 13
+        || ((event.keyCode == 65 || event.keyCode == 86 || event.keyCode == 90) && event.ctrlKey == true)
+        || (event.keyCode >= 35 && event.keyCode <= 39)) {
+        return;
+    } else {
+
+        // If it's not a number stop the keypress
+        if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+            event.preventDefault();
+        }
+    } */
 });
 
 window.global_loading_on = function(ele, html) {

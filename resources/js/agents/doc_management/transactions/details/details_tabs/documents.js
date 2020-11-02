@@ -662,17 +662,18 @@ if (document.URL.match(/transaction_details/)) {
         function arrows(new_active_item) {
 
             let active_item = $('.add-to-checklist-document-div.active');
-            active_item.removeClass('active z-depth-2 p-4').addClass('p-2');
+            active_item.removeClass('active z-depth-2 p-4').addClass('p-2').find('.helper').hide();
 
             let wrapper = $('#add_to_checklist_documents_wrapper');
 
-            new_active_item.addClass('active z-depth-2 p-4');
+            new_active_item.addClass('active z-depth-2 p-4').find('.helper').show();
             if(new_active_item.hasClass('assigned')) {
                 $('.assign-button').prop('disabled', true);
             } else {
                 $('.assign-button').not('.disabled').prop('disabled', false);
             }
-            wrapper.scrollTop(wrapper.scrollTop() + new_active_item.position().top - (wrapper.height()/2) + (new_active_item.height()/2) - 41);
+
+            wrapper.scrollTop(wrapper.scrollTop() + new_active_item.position().top - (wrapper.height()/2) + (new_active_item.height()/2) + 30);
 
             disable_arrows();
 
@@ -704,7 +705,14 @@ if (document.URL.match(/transaction_details/)) {
 
             docs_div.closest('.submitted-docs-div').show();
 
-            docs_div.prepend('<div class="added-document d-flex justify-content-start align-items-center docs" data-document-id="'+document_id+'" data-checklist-id="'+checklist_id+'" data-checklist-item-id="'+checklist_item_id+'"><div><a href="javascript: void(0)" class="delete-doc" data-document-id="'+document_id+'"><i class="fad fa-times-circle text-danger mr-2"></i></a></div><div class="text-success">'+file_name.substring(0, 70)+'</div></div>');
+            docs_div.prepend(' \
+            <div class="added-document d-flex justify-content-between align-items-center docs" data-document-id="'+document_id+'" data-checklist-id="'+checklist_id+'" data-checklist-item-id="'+checklist_item_id+'"> \
+                <div class="d-flex justify-content-start align-items-center text-success"> \
+                    <div><i class="fad fa-check-circle mr-2"></i></div> \
+                    <div>'+file_name.substring(0, 70)+'</div> \
+                </div> \
+                <div><a href="javascript: void(0)" class="delete-doc text-danger" data-document-id="'+document_id+'"><i class="fad fa-times-circle mr-1"></i> <span class="small">Remove</span></a></div> \
+            </div>');
 
             active_div.addClass('assigned');
             if(active_div.nextAll('.add-to-checklist-document-div').not('.assigned').length > 0) {

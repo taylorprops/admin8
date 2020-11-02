@@ -74,40 +74,42 @@
 
 
     <div class="collapse" id="bulk_options_div">
-        <div class="h5 text-orange d-none d-md-block">Bulk Options</div>
-        <div class="d-flex justify-content-between justify-content-xl-start">
+        <div class="p-3">
+            <div class="h5 text-orange d-none d-md-block">Bulk Options</div>
+            <div class="d-flex justify-content-between justify-content-xl-start">
 
-            <button type="button" class="btn btn-sm btn-primary rounded-pill add-to-checklist-button" title="Assign To Checklist" data-toggle="tooltip" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-tasks mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Assign To Checklist</span></button>
+                <button type="button" class="btn btn-sm btn-primary rounded-pill add-to-checklist-button" title="Assign To Checklist" data-toggle="tooltip" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-tasks mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Assign To Checklist</span></button>
 
-            <button type="button" class="btn btn-sm btn-primary rounded-pill" id="sign_documents_button" title="Get Signed" data-toggle="tooltip"><i class="fad fa-signature mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Get Signed</span></button>
+                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="sign_documents_button" title="Get Signed" data-toggle="tooltip"><i class="fad fa-signature mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Get Signed</span></button>
 
-            <div class="dropright" title="Print Documents">
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-envelope mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Email</span></button>
-                <div class="dropdown-menu">
-                    <a class="text-primary dropdown-item docs-email-button" data-docs-type="merged" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> As One Document</a>
-                    <a class="text-primary dropdown-item docs-email-button" data-docs-type="single" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> As Individual Documents</a>
+                <div class="dropright" title="Print Documents">
+                    <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-envelope mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Email</span></button>
+                    <div class="dropdown-menu">
+                        <a class="text-primary dropdown-item docs-email-button" data-docs-type="merged" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> As One Document</a>
+                        <a class="text-primary dropdown-item docs-email-button" data-docs-type="single" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> As Individual Documents</a>
+                    </div>
                 </div>
-            </div>
 
-            <div class="dropright" title="Print Documents">
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-print mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Print</span></button>
-                <div class="dropdown-menu">
-                    <a class="text-primary dropdown-item docs-print-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
-                    <a class="text-primary dropdown-item docs-print-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                <div class="dropright" title="Print Documents">
+                    <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-print mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Print</span></button>
+                    <div class="dropdown-menu">
+                        <a class="text-primary dropdown-item docs-print-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
+                        <a class="text-primary dropdown-item docs-print-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                    </div>
                 </div>
-            </div>
 
-            <div class="dropright" title="Download Documents">
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-download mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Download</span></button>
-                <div class="dropdown-menu">
-                    <a class="text-primary dropdown-item docs-download-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
-                    <a class="text-primary dropdown-item docs-download-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
+                <div class="dropright" title="Download Documents">
+                    <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-download mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Download</span></button>
+                    <div class="dropdown-menu">
+                        <a class="text-primary dropdown-item docs-download-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
+                        <a class="text-primary dropdown-item docs-download-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
+                    </div>
                 </div>
+
+                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="move_documents_button" title="Move Documents" data-toggle="tooltip"><i class="fad fa-exchange mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Move</span></button>
+
+                <button type="button" class="btn btn-sm btn-danger rounded-pill" id="delete_documents_button" title="Move Documents To Trash" data-toggle="tooltip"><i class="fad fa-trash mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Trash</span></button>
             </div>
-
-            <button type="button" class="btn btn-sm btn-primary rounded-pill" id="move_documents_button" title="Move Documents" data-toggle="tooltip"><i class="fad fa-exchange mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Move</span></button>
-
-            <button type="button" class="btn btn-sm btn-danger rounded-pill" id="delete_documents_button" title="Move Documents To Trash" data-toggle="tooltip"><i class="fad fa-trash mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Trash</span></button>
         </div>
     </div>
 

@@ -2414,7 +2414,10 @@ class TransactionsDetailsController extends Controller {
         $commission_checks_in = CommissionChecksIn::where('Commission_ID', $Commission_ID) -> get();
         $commission_notes = CommissionNotes::where('Commission_ID', $Commission_ID) -> get();
 
-        return view('/agents/doc_management/transactions/details/data/get_commission', compact('commission', 'commission_checks_in'));
+        $agent = Agents::find($commission -> Agent_ID);
+        $commission_percentages = Agents::select('commission_percent') -> groupBy('commission_percent') -> pluck('commission_percent');
+
+        return view('/agents/doc_management/transactions/details/data/get_commission', compact('commission', 'commission_checks_in', 'agent', 'commission_percentages'));
     }
 
     public function get_commission_notes(Request $request) {
@@ -2633,6 +2636,8 @@ class TransactionsDetailsController extends Controller {
         $Listing_ID = $request -> Listing_ID;
         $listing = Listings::find($Listing_ID);
 
+        $Agent_ID = $listing -> Agent_ID;
+
         // update listing
         $listing -> BuyerAgentFirstName = $agent_first;
         $listing -> BuyerAgentLastName = $agent_last;
@@ -2701,6 +2706,7 @@ class TransactionsDetailsController extends Controller {
         // add to commission and get commission id
         $commission = new Commission();
         $commission -> Contract_ID = $Contract_ID;
+        $commission -> Agent_ID = $Agent_ID;
         $commission -> save();
         $Commission_ID = $commission -> id;
 
@@ -2717,7 +2723,7 @@ class TransactionsDetailsController extends Controller {
         $add_buyer_to_members -> first_name = $buyer_one_first;
         $add_buyer_to_members -> last_name = $buyer_one_last;
         $add_buyer_to_members -> Contract_ID = $Contract_ID;
-        $add_buyer_to_members -> Agent_ID = $listing -> Agent_ID;
+        $add_buyer_to_members -> Agent_ID = $Agent_ID;
         $add_buyer_to_members -> save();
 
         if($buyer_two_first != '') {
@@ -2726,7 +2732,7 @@ class TransactionsDetailsController extends Controller {
             $add_buyer_to_members -> first_name = $buyer_two_first;
             $add_buyer_to_members -> last_name = $buyer_two_last;
             $add_buyer_to_members -> Contract_ID = $Contract_ID;
-            $add_buyer_to_members -> Agent_ID = $listing -> Agent_ID;
+            $add_buyer_to_members -> Agent_ID = $Agent_ID;
             $add_buyer_to_members -> save();
         }
 
@@ -2744,7 +2750,7 @@ class TransactionsDetailsController extends Controller {
             $add_buyer_agent_to_members -> address_office_state = $agent_state;
             $add_buyer_agent_to_members -> address_office_zip = $agent_zip;
             $add_buyer_agent_to_members -> Contract_ID = $Contract_ID;
-            $add_buyer_agent_to_members -> Agent_ID = $listing -> Agent_ID;
+            $add_buyer_agent_to_members -> Agent_ID = $Agent_ID;
             $add_buyer_agent_to_members -> save();
         }
 
@@ -2756,7 +2762,7 @@ class TransactionsDetailsController extends Controller {
             $add_heritage_to_members -> member_type_id = ResourceItems::TitleResourceId();
             $add_heritage_to_members -> company = 'Heritage Title';
             $add_heritage_to_members -> Contract_ID = $Contract_ID;
-            $add_heritage_to_members -> Agent_ID = $listing -> Agent_ID;
+            $add_heritage_to_members -> Agent_ID = $Agent_ID;
             $add_heritage_to_members -> save();
         }
         // TODO: if earnest

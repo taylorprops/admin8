@@ -505,6 +505,7 @@ class TransactionsAddController extends Controller {
             } else if($transaction_type == 'referral') {
                 $commission -> Referral_ID = $new_transaction -> Referral_ID;
             }
+            $commission -> Agent_ID = $request -> Agent_ID;
             $commission -> save();
             $Commission_ID = $commission -> id;
         }

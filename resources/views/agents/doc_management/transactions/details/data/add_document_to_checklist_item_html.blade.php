@@ -1,7 +1,7 @@
 <div class="container p-0 p-sm-1 p-md-2">
     <div class="row">
         <div class="col-12">
-            <div class="h5-responsive text-primary mb-3">Select the Document from the left and click "Add Doc" on the corresponding Checklist Item</div>
+            <div class="h5-responsive text-primary mb-3">Select the Document from the left and click "Assign" on the corresponding Checklist Item</div>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
 
                 <div class="row">
 
-                    <div class="d-none d-md-block col-md-2 pr-0">
+                    <div class="d-none {{-- d-md-block col-md-2 pr-0 --}}">
 
                         <div class="doc-list-arrows-div ml-2">
                             <button type="button" class="btn btn-primary doc-list-arrow mb-2" data-dir="up"><i class="fa fa-arrow-up fa-2x"></i></button>
@@ -25,15 +25,20 @@
 
                     </div>
 
-                    <div class="col-12 col-md-10 pl-0">
+                    <div class="col-12 {{-- col-md-10 pl-0 --}}">
 
                         <div id="add_to_checklist_documents_wrapper" class="list-group">
 
                             @foreach($documents as $document)
 
                                 <div class="add-to-checklist-document-div list-group-item list-group-item-action border border-primary rounded my-2 @if($loop -> first) active z-depth-2 p-4 @else p-2 @endif" data-document-id="{{ $document -> id}}" data-file-name="{{ $document -> file_name_display }}">
-                                    <div>
-                                        {{ $document -> file_name_display }}
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            {{ $document -> file_name_display }}
+                                        </div>
+                                        <div class="helper @if(!$loop -> first) hidden @endif">
+                                            <i class="fad fa-arrow-right fa-2x text-white ml-3"></i>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -102,7 +107,7 @@
 
                                         <div class="d-flex justify-content-start align-items-center">
                                             <div class="mr-2">
-                                                <button type="button" class="btn btn-primary btn-sm assign-button {{ $release.' '.$contract.' '.$closing_doc.' '.strtolower($status) }}" data-checklist-id="{{ $checklist_item -> checklist_id }}" data-checklist-item-id="{{ $checklist_item ->  id }}" data-file-name="{{ $checklist_item_name }}"><i class="fa fa-plus mr-2"></i> Add</button>
+                                                <button type="button" class="btn btn-primary btn-sm assign-button {{ $release.' '.$contract.' '.$closing_doc.' '.strtolower($status) }}" data-checklist-id="{{ $checklist_item -> checklist_id }}" data-checklist-item-id="{{ $checklist_item ->  id }}" data-file-name="{{ $checklist_item_name }}"><i class="fa fa-plus mr-2"></i> Assign</button>
                                             </div>
 
                                             <div class="text-primary">
@@ -120,7 +125,7 @@
                                     <div class="submitted-docs-div bg-blue-light p-1 rounded m-1 @if(count($docs) == 0) hidden @endif">
                                         <div class="d-flex justify-content-start align-items-center">
                                             <div class="mx-3"><i class="fad fa-file-alt fa-lg text-primary"></i></div>
-                                            <div class="submitted-docs">
+                                            <div class="submitted-docs w-100">
                                                 @foreach ($docs as $doc)
                                                     @php
                                                     $document_details = $transaction_documents_model -> GetDocInfo($doc -> document_id);

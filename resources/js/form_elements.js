@@ -455,7 +455,6 @@ function show_dropdown(input) {
 }
 
 function hide_dropdowns() {
-    console.log('hiding');
     $('.form-select-dropdown.active').removeClass('active').hide().find('.form-select-search-input').val('').trigger('change');
     $('.form-select-dropdown.active').find('.form-select-value-input').removeClass('form-select-value-input-focus');
 }

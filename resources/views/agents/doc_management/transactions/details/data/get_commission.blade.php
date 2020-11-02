@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-5"></div>
                     <div class="col-7">
-                        <div class="h5-responsive text-orange mb-2 w-100 border-bottom">Income</div>
+                        <div class="h5-responsive text-orange mb-4 w-100 border-bottom">Income</div>
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                                 <div class="badge badge-pill badge-primary py-1" id="checks_in_count"></div>
                                 <div class="mr-2 font-10 text-success">
                                     <span id="checks_in_total"></span>
-                                    <input type="hidden" id="checks_in_total_value" name="checks_in_total_value" class="total income">
+                                    <input type="hidden" id="checks_in_total_value" name="checks_in_total_value" class="total">
                                 </div>
                             </div>
 
@@ -53,9 +53,9 @@
 
                         <div class="px-3 pb-3 pt-1">
 
-                            <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex justify-content-start align-items-center mb-3">
                                 <div class="h4 mt-2 text-primary">Checks In</div>
-                                <div>
+                                <div class="ml-4">
                                     <a href="javascript: void(0)" class="btn btn-sm btn-success add-check-in-button"><i class="fa fa-plus mr-2"></i> Add</a>
                                 </div>
                             </div>
@@ -86,7 +86,7 @@
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2 total income required" name="money_in_escrow" id="money_in_escrow">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2 total" name="money_in_escrow" id="money_in_escrow">
                         </div>
                     </div>
                 </div>
@@ -107,8 +107,23 @@
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2 total income required" name="admin_fee_from_title" id="admin_fee_from_title">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2 total" name="admin_fee_from_title" id="admin_fee_from_title">
                         </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-12 col-lg-5 pr-2 pr-lg-0">
+
+                <div class="row">
+                    <div class="col-5"></div>
+                    <div class="col-7 border-top mt-3">
+                        <h6 class="text-danger mt-2">Income Deductions</h6>
                     </div>
                 </div>
 
@@ -138,7 +153,7 @@
                                 <div class="badge badge-pill badge-primary py-1" id="deductions_count"></div>
                                 <div class="mr-2 font-10 text-danger">
                                     <span id="deductions_total"></span>
-                                    <input type="hidden" id="deductions_total_value" class="total deduction">
+                                    <input type="hidden" id="income_deductions_total_value" class="total">
                                 </div>
                             </div>
 
@@ -153,13 +168,13 @@
 
                 <div class="popout-div mr-3">
 
-                    <div class="popout middle animated fast flipInX w-100">
+                    <div class="popout top animated fast flipInX w-100">
 
                         <div class="px-1 px-sm-3 pb-3 pt-1">
 
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-start align-items-center">
                                 <div class="h4 mt-2 text-primary">Check Deductions</div>
-                                <div>
+                                <div class="ml-4">
                                     <a class="btn btn-sm btn-success" data-toggle="collapse" href="#add_check_deduction_div" role="button" aria-expanded="false" aria-controls="add_check_deduction_div"><i class="fa fa-plus mr-2"></i> Add</a>
                                 </div>
                             </div>
@@ -210,7 +225,7 @@
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-right pr-2 total income required" name="admin_fee_from_client" id="admin_fee_from_client">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-danger text-right pr-2 total" name="admin_fee_from_client" id="admin_fee_from_client">
                         </div>
                     </div>
                 </div>
@@ -233,7 +248,7 @@
                         <div class="bg-green-light text-white p-2 mr-4">
                             <div class="d-flex justify-content-end">
                                 <div class="mr-1 font-10 text-success">
-                                    <span id="total_income">$14,789</span>
+                                    <span id="total_income"></span>
                                     <input type="hidden" id="total_income_value" name="total_income_value">
                                 </div>
                             </div>
@@ -258,6 +273,40 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        {{-- Agent Commission % --}}
+        <div class="row">
+
+            <div class="col-12 col-lg-5 pr-2 pr-lg-0">
+                <div class="row">
+                    <div class="col-5">
+                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
+                            Agent Commission
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="pr-4">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div class="agent-commission percent d-flex justify-content-start align-items-center">
+                                    <select class="custom-form-element form-select form-select-no-search form-select-no-cancel text-center" name="agent_commission_percent" id="agent_commission_percent" >
+                                        <option value=""></option>
+                                        @foreach($commission_percentages as $percent)
+                                        <option value="{{ $percent }}" @if($percent == $agent -> commission_percent) selected @endif>{{ $percent }}</option>
+                                        @endforeach
+                                    </select>
+                                    <i class="fal fa-percentage text-primary ml-1"></i>
+                                </div>
+                                <div class="mx-5"></div>
+                                <div class="w-100">
+                                    <input type="text" class="custom-form-element form-input text-danger text-right pr-2 total" readonly name="agent_commission_amount" id="agent_commission_amount">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </form>

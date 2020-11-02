@@ -13794,7 +13794,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 .form-ele .form-select-value-input,
 .form-ele .file-field {
   width: 100%;
-  padding: 12px 20px 2px 5px;
+  padding: 8px 20px 2px 5px;
   border: none;
   border: 1px solid #eeebeb;
   color: #647c96;
@@ -13894,10 +13894,9 @@ table.dataTable thead .sorting_desc_disabled:before {
   color: #647c96;
   background: rgba(255, 255, 255, 0.9);
   line-height: 0.7rem;
-  border-radius: 4px;
+  border-radius: 2px;
   padding-bottom: 1px;
   padding-top: 1px;
-  box-shadow: 0px 4px 7px 4px rgba(255, 255, 255, 0.59);
   z-index: 10;
 }
 
@@ -13937,7 +13936,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 .form-ele .form-select-dropdown {
   display: none;
   position: absolute;
-  top: 45px;
+  top: 40px;
   left: 0px;
   background: #fff;
   border: 1px solid #ccc;
@@ -15425,7 +15424,6 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   top: 50px;
   background: rgba(255, 255, 255, 0.9);
   width: 100%;
-  padding: 10px;
   border-top: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
   z-index: 5;
@@ -15476,7 +15474,7 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   position: relative;
   max-height: 65VH;
   overflow-y: hidden;
-  padding-top: 70px;
+  padding-top: 40px;
   padding-bottom: 400px;
 }
 
@@ -15662,7 +15660,7 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 }
 
 .page-transaction-details .commission-container .popout .view-add-div {
-  max-height: 350px;
+  max-height: 500px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -15683,6 +15681,14 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .page-transaction-details .commission-container .popout.middle {
   left: 0px;
+}
+
+.page-transaction-details .commission-container .check-deductions-div {
+  max-width: 500px;
+}
+
+.page-transaction-details .commission-container .agent-commission.percent {
+  width: 170px;
 }
 
 .page-transaction-details .save-split-doc-options {

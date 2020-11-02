@@ -9,7 +9,37 @@ if (document.URL.match(/transaction_details/)) {
     });
 
     window.total_commission = function() {
-        console.log('totaling');
+
+        let fields_filled = true;
+        $('.total').each(function() {
+            if($(this).val() == '') {
+                fields_filled = false;
+            }
+        });
+
+        if(fields_filled == true) {
+
+            let total = 0;
+
+            let checks_in = parseFloat($('#checks_in_total_value').val().replace(/[,\$]/g, ''));
+            let money_in_escrow = parseFloat($('#money_in_escrow').val().replace(/[,\$]/g, ''));
+            let admin_fee_from_title = parseFloat($('#admin_fee_from_title').val().replace(/[,\$]/g, ''));
+            let income_deductions = parseFloat($('#income_deductions_total_value').val().replace(/[,\$]/g, ''));
+            let admin_fee_from_client = parseFloat($('#admin_fee_from_client').val().replace(/[,\$]/g, ''));
+
+            let total_income = (checks_in + money_in_escrow + admin_fee_from_title) - income_deductions - admin_fee_from_client;
+
+            $('#total_income').html(global_format_number_with_decimals(total_income.toString()));
+            $('#total_income_value').val(total_income);
+
+            let agent_commission_percent = parseInt($('#agent_commission_percent').val()) / 100;
+            let agent_commission_amount = total_income * agent_commission_percent;
+            $('#agent_commission_amount').val(global_format_number_with_decimals(Math.floor(agent_commission_amount).toFixed(2)));
+
+        }
+
+
+
     }
 
     window.get_check_deductions = function(Commission_ID) {
@@ -38,7 +68,7 @@ if (document.URL.match(/transaction_details/)) {
                         <div>'+deduction['description']+'</div> \
                         <div class="d-flex justify-content-end align-items-center"> \
                             <div class="pr-5">'+global_format_number_with_decimals(deduction['amount'])+'</div> \
-                            <div><a href="javascript: void(0)" class="btn btn-sm btn-danger delete-deduction-button" data-deduction-id="'+deduction['id']+'"><i class="fad fa-times-circle"></i></a></div> \
+                            <div><a href="javascript: void(0)" class="btn btn-sm btn-danger delete-deduction-button" data-deduction-id="'+deduction['id']+'"><i class="fal fa-times"></i></a></div> \
                         </div> \
                     </div> \
                     ';
@@ -50,8 +80,11 @@ if (document.URL.match(/transaction_details/)) {
             $('.delete-deduction-button').off('click').on('click', delete_deduction);
             deductions_total = global_format_number_with_decimals(deductions_total.toString());
             $('#deductions_total_value').val(deductions_total);
+            $('#income_deductions_total_value').val(deductions_total);
             $('#deductions_total').text(deductions_total);
             $('#deductions_count').text(deductions_count);
+
+            total_commission();
 
         })
         .catch(function (error) {
@@ -94,7 +127,7 @@ if (document.URL.match(/transaction_details/)) {
             axios.post('/agents/doc_management/transactions/save_add_check_deduction', formData, axios_options)
             .then(function (response) {
                 $('#add_check_deduction_div').collapse('hide');
-                total_commission();
+
                 toastr['success']('Deduction Successfully Added');
                 get_check_deductions(Commission_ID);
             })
