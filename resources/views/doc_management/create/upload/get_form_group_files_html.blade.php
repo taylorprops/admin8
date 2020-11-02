@@ -1,9 +1,22 @@
+@php
+$category_color_ids = [];
+foreach($files -> pluck('form_categories') as $categories) {
+    $category_color_ids = array_unique(array_merge(explode(',', $categories), $category_color_ids));
+}
+$colors_array = [];
+$color_names = [];
+foreach($category_color_ids as $color_id) {
+    $colors_array[$color_id] = $resource_items -> GetCategoryColor($color_id);
+    $color_names[$color_id] = $resource_items -> getResourceName($color_id);
+}
+
+@endphp
+
 @foreach ($files as $file)
 @php
 
 $checklist_count = $checklists -> countInChecklist($file -> file_id);
 $show_title = false;
-
 
 @endphp
 <div class="p-2 mb-4 uploads-list @if($file -> published == 'yes') published @else notpublished @endif @if($file -> active == 'yes') active @else notactive @endif">
@@ -14,10 +27,10 @@ $show_title = false;
             </div>
             <div class="col-12 col-md-4">
                 <div class="d-flex justify-content-end">
-                    {{-- @php $categories = explode(',', $file -> form_categories); @endphp
-                    @foreach($categories as $category)
-                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $resource_items -> GetCategoryColor($category) }}">{{ $resource_items -> getResourceName($category) }}</span>
-                    @endforeach --}}
+                    @php $categories = explode(',', $file -> form_categories); @endphp
+                    @foreach($categories as $category_id)
+                    <span class="badge badge-pill text-white ml-1" style="background-color: {{ $colors_array[$category_id] }}">{{ $color_names[$category_id] }}</span>
+                    @endforeach
                 </div>
             </div>
         </div>

@@ -69,10 +69,10 @@ if($field -> field_type == 'textline' || $field -> field_type == 'address' || $f
         <div class="btn-group" role="group" aria-label="Field Options">
             <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a>
             <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a>
+            @if($add_items == 'yes')
+                <a type="button" class="btn btn-primary field-add-item" data-group-id="{{ $field -> group_id }}"><i class="fal fa-plus fa-lg"></i></a>
+            @endif
             @if($show_options)
-                @if($add_items == 'yes')
-                    <a type="button" class="btn btn-primary field-add-item" data-group-id="{{ $field -> group_id }}"><i class="fal fa-plus fa-lg"></i></a>
-                @endif
                 <a type="button" class="btn btn-primary field-properties" data-group-id="{{ $field -> group_id }}" data-field-id="{{ $field -> field_id }}" data-field-type="{{ $field -> field_type }}" data-toggle="collapse" href="#properties_container_{{ $field -> field_id }}" role="button" aria-expanded="false" aria-controls="properties_container_{{ $field -> field_id }}"><i class="fal fa-info-circle fa-lg"></i></a>
             @endif
             <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a>
