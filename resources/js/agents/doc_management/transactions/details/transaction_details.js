@@ -901,7 +901,7 @@ if (document.URL.match(/transaction_details/)) {
                                 format_money_with_decimals($(this));
                             }
                         })
-                        .keyup(function() {
+                        .on('keyup', function() {
                             let val = $(this).val();
                             if(val.match(/[a-zA-Z]+/)) {
                                 $(this).val(val.replace(/[a-zA-Z]+/,''));

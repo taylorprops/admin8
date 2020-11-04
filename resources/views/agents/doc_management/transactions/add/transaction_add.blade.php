@@ -272,7 +272,7 @@ if(auth() -> user() -> group == 'agent') {
                             <select class="custom-form-element form-select form-select-no-cancel" id="add_agent_id" data-label="Select Agent">
                                 <option value=""></option>
                                 @foreach($agents as $agent)
-                                    <option value="{{ $agent -> id }}">{{ $agent -> last_name.', '.$agent -> first_name }}</option>
+                                    <option value="{{ $agent -> id }}">{{ $agent -> first_name.' '.$agent -> last_name }}</option>
                                 @endforeach
                             </select>
                         </div>

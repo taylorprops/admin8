@@ -134,12 +134,10 @@ if (document.URL.match(/transaction_details/)) {
                     $('#County').append('<option value="' + v.county.toUpperCase() + '">' + v.county + '</option>');
                 });
                 setTimeout(function () {
-                    select_refresh();
                     if (state == 'DC') {
                         $('#County').val('DISTRICT OF COLUMBIA');
-                        select_refresh();
                     }
-                }, 500);
+                }, 100);
             })
             .catch(function (error) {
                 console.log(error);

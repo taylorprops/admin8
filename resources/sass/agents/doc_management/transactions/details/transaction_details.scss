@@ -561,16 +561,27 @@
 
         }
 
+        .popout-action {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
         .popout.top {
             left: 0px;
             top: 0px;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border-bottom-left-radius: 8px;
         }
         .popout.middle {
             left: 0px;
         }
         .popout.bottom {
             left: 0px;
-            bottom: .19rem;
+            bottom: .15rem;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border-top-left-radius: 8px;
         }
 
         .check-deductions-div, .commission-deductions-div {

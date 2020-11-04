@@ -253,13 +253,8 @@ if (document.URL.match(/create\/add_fields/)) {
         // reset name fields
         $('#field_'+field_id).find('select, input').not('input.form-select-search-input, input.form-select-value-input').each(function () {
             $(this).val($(this).data('default-value')).trigger('change');
-            if ($(this).hasClass('form-select')) {
-                select_refresh();
-            }
         });
-        //select_dropdown.refresh();
-        /* $('.field-div').removeClass('active');
-        $('.focused, .mini-slider-div').hide(); */
+        select_refresh();
 
     }
 
@@ -503,8 +498,8 @@ if (document.URL.match(/create\/add_fields/)) {
             edit_div.find('.form-input.field-data-name').on('change', function () {
 
                 if($(this).val() != '') {
-                    select.val('');
-                    setTimeout(select_refresh, 500);
+                    select.val('').trigger('change');
+                    //setTimeout(select_refresh, 500);
                     inputs_container.html('');
                 }
 
@@ -724,7 +719,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
             });
 
-            select_refresh();
+            //select_refresh();
 
         }
 
@@ -815,7 +810,9 @@ if (document.URL.match(/create\/add_fields/)) {
 
             set_field_options(field_type, $('#field_' + field_id), field_id, rect, container);
 
-            setTimeout(select_refresh, 200);
+            //setTimeout(function() {
+                select_refresh();
+            //}, 500);
 
         })
         .catch(function (error) {
