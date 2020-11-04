@@ -41,7 +41,8 @@ use App\Models\Commission\CommissionNotes;
 use App\Models\Commission\CommissionIncomeDeductions;
 use App\Models\Commission\CommissionCommissionDeductions;
 use App\Models\Employees\Agents;
-use App\Models\Employees\Teams;
+use App\Models\Employees\AgentsTeams;
+use App\Models\Employees\AgentsNotes;
 use App\Models\Resources\LocationData;
 use App\User;
 use Config;
@@ -83,7 +84,8 @@ class TransactionsDetailsController extends Controller {
         }
 
         $agents = Agents::get();
-        $agent_details = Agents::find($property -> Agent_ID);
+
+        $agent_details = Agents::where('id', $property -> Agent_ID) -> first();
 
         // check if earnest and title questions are complete before allowing adding docs to the checklist
         $questions_confirmed = 'yes';
@@ -217,7 +219,7 @@ class TransactionsDetailsController extends Controller {
         $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? true : false;
 
         $agents = Agents::where('active', 'yes') -> orderBy('last_name') -> get();
-        $teams = Teams::where('active', 'yes') -> orderBy('team_name') -> get();
+        $teams = AgentsTeams::where('active', 'yes') -> orderBy('team_name') -> get();
         $street_suffixes = config('global.vars.street_suffixes');
         $street_dir_suffixes = config('global.vars.street_dir_suffixes');
         $states_active = config('global.vars.active_states');
@@ -459,17 +461,20 @@ class TransactionsDetailsController extends Controller {
 
         }
 
-        $FullStreetAddress = $request -> StreetNumber . ' ' . $request -> StreetName . ' ' . $request -> StreetSuffix;
+        if($request -> StreetNumber  != '') {
 
-        if($request -> StreetDirSuffix) {
-            $FullStreetAddress .= ' ' . $request -> StreetDirSuffix;
+            $FullStreetAddress = $request -> StreetNumber . ' ' . $request -> StreetName . ' ' . $request -> StreetSuffix;
+
+            if($request -> StreetDirSuffix) {
+                $FullStreetAddress .= ' ' . $request -> StreetDirSuffix;
+            }
+
+            if($request -> UnitNumber) {
+                $FullStreetAddress .= ' ' . $request -> UnitNumber;
+            }
+
+            $request -> merge(['FullStreetAddress' => $FullStreetAddress]);
         }
-
-        if($request -> UnitNumber) {
-            $FullStreetAddress .= ' ' . $request -> UnitNumber;
-        }
-
-        $request -> merge(['FullStreetAddress' => $FullStreetAddress]);
 
         $resource_items = new ResourceItems();
         $new_status = null;
@@ -2416,9 +2421,15 @@ class TransactionsDetailsController extends Controller {
         $commission_notes = CommissionNotes::where('Commission_ID', $Commission_ID) -> get();
 
         $agent = Agents::find($commission -> Agent_ID);
+        $property = Contracts::find($commission -> Contract_ID);
+        $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? true : false;
+        $teams = new AgentsTeams();
+        $agent_notes = AgentsNotes::where('agent_id', $commission -> Agent_ID) -> get();
+
+        // get percentages for select menu
         $commission_percentages = Agents::select('commission_percent') -> groupBy('commission_percent') -> pluck('commission_percent');
 
-        return view('/agents/doc_management/transactions/details/data/get_commission', compact('commission', 'commission_checks_in', 'agent', 'commission_percentages'));
+        return view('/agents/doc_management/transactions/details/data/get_commission', compact('commission', 'commission_checks_in', 'agent', 'property', 'for_sale', 'teams', 'agent_notes', 'commission_percentages'));
     }
 
     public function get_commission_notes(Request $request) {

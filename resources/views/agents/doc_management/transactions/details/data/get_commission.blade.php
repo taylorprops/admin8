@@ -4,6 +4,219 @@
     <form id="commission_form">
 
         <div class="row">
+
+            <div class="col-4">
+
+                <div class="row">
+                    <div class="col-5"></div>
+                    <div class="col-7">
+                        <div class="h5-responsive text-orange mb-2 w-100 border-bottom">Property Details</div>
+                    </div>
+                </div>
+
+                {{-- Sales Price --}}
+                <div class="row">
+
+                    <div class="col-5">
+                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
+                            Sales Price
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="pr-4">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only pr-2 required" name="sales_price" id="sales_price" value="${{-- {{ number_format($property -> ContractPrice, 0) }} --}}">
+                        </div>
+                    </div>
+
+                </div>
+
+                {{-- Settle Date --}}
+                <div class="row">
+
+                    <div class="col-5">
+                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
+                            Settle Date
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="pr-4">
+                            <input type="text" class="custom-form-element form-input datepicker pr-2 required" name="settle_date" id="settle_date" value="{{-- {{ $property -> CloseDate }} --}}">
+                        </div>
+                    </div>
+
+                </div>
+
+                {{-- Represent Both Sides --}}
+                <div class="row">
+
+                    <div class="col-5">
+                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
+                            Represent Both Sides
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="pr-4">
+                            <select class="custom-form-element form-select form-select-no-search required" id="both_sides" name="both_sides">
+                                <option value=""></option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                {{-- Using Heritage Title --}}
+                <div class="row">
+
+                    <div class="col-5">
+                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
+                            Using Heritage Title
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="pr-4">
+                            <select class="custom-form-element form-select form-select-no-search required" id="using_heritage" name="using_heritage">
+                                <option value=""></option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-8">
+
+                <ul class="nav nav-tabs" id="options_tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link options-tab active" id="agent_details_tab" data-toggle="tab" href="#agent_details_div" role="tab" aria-controls="agent_details_div" aria-selected="true">Agent Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link options-tab" id="notes_tab" data-toggle="tab" href="#notes_div" role="tab" aria-controls="notes_div" aria-selected="false">Notes</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content border-left border-bottom border-right pt-2 pb-1" id="options_tab_content">
+
+                    <div class="tab-pane fade show active" id="agent_details_div" role="tabpanel" aria-labelledby="agent_details_tab">
+
+                        <div class="agent-details-div">
+                            <div class="row">
+                                <div class="col-4">
+
+                                    <div class="font-weight-bold font-11 text-primary">{{ $agent -> full_name }}</div>
+
+                                    @if($agent -> team_id > 0)
+                                    <div class="font-italic font-8">{{ $teams -> GetTeamName($agent -> team_id) }}</div>
+                                    @endif
+
+                                    <div class="font-weight-bold font-8 mt-2">
+                                        @if($agent -> llc_name != '')
+                                            LLC - {{ $agent -> llc_name }}<br>
+                                            EIN - {{ $agent -> ein }}<br>
+                                        @endif
+                                        SS - {{ $agent -> social_security }}
+                                    </div>
+
+                                    <div class="text-gray mt-2">
+                                        {{ $agent -> address_street }}<br>
+                                        {{ $agent -> address_city.', '.$agent -> address_state.' '.$agent -> address_zip }}<br>
+                                        {{ $agent -> cell_phone }}<br>
+                                        <a href="mailto:{{ $agent -> email }}">{{ $agent -> email }}</a>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-4">
+
+                                    <div class="p-2 text-gray">
+
+                                        @if(!stristr($agent -> company, 'referral'))
+
+                                            <div class="d-flex justify-content-between">
+                                                <div>Admin Fee Amount</div>
+                                                <div>{{ $for_sale == true ? $agent -> admin_fee : $agent -> admin_fee_rentals }}</div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between @if($agent -> balance > 0) text-danger @endif">
+                                                <div>Balance Dues</div>
+                                                <div>${{ number_format($agent -> balance, 2) ?? '0.00' }}</div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between @if($agent -> balance_eno > 0) text-danger @endif">
+                                                <div>Balance E&O</div>
+                                                <div>${{ number_format($agent -> balance_eno, 2) ?? '0.00' }}</div>
+                                            </div>
+
+                                            @if($agent -> office_rent_amount > 0 || $agent -> balance_rent != 0)
+                                                <div class="d-flex justify-content-between @if($agent -> balance_rent > 0) text-danger @endif">
+                                                    <div>Balance Rent</div>
+                                                    <div>${{ number_format($agent -> balance_rent, 2) ?? '0.00' }}</div>
+                                                </div>
+                                            @endif
+
+                                            <hr class="my-1">
+
+                                            <div class="d-flex justify-content-between">
+                                                <div>Auto Billed</div>
+                                                <div>{{ $agent -> auto_bill == 'on' ? 'Yes' : 'No' }}</div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between">
+                                                <div>Commission</div>
+                                                <div>{{ ucwords($agent -> commission_percent) }}% - Plan {{ ucwords($agent -> commission_plan) }}</div>
+                                            </div>
+
+                                        @endif
+
+                                        @if($agent -> owe_other == 'yes')
+                                            <div class="wage-garnishments p-1 mt-1 bg-orange-light text-danger rounded">{!! nl2br($agent -> owe_other_notes) !!}</div>
+                                        @endif
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-4">
+
+                                    <div class="font-weight-bold text-primary">Agent Account Notes</div>
+
+                                    <div class="notes-container">
+                                        @foreach($agent_notes as $agent_note)
+                                            <div class="note-div border-top">
+                                                <div class="font-7 text-gray">{{ date('Y-m-d', strtotime($agent_note -> created_at)) }} - <span class="font-italic">{{ $agent_note -> created_by }}</span></div>
+                                                {!! nl2br($agent_note -> notes) !!}
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="notes_div" role="tabpanel" aria-labelledby="notes_tab">
+
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="row">
             <div class="col-5">
                 <div class="row">
                     <div class="col-5"></div>
@@ -122,8 +335,8 @@
 
                 <div class="row">
                     <div class="col-5"></div>
-                    <div class="col-7 border-top mt-3">
-                        <h6 class="text-danger mt-2">Income Deductions</h6>
+                    <div class="col-7 mt-2">
+                        <div class="h5-responsive text-orange mb-4 w-100 border-bottom">Income Deductions</div>
                     </div>
                 </div>
 
@@ -153,7 +366,7 @@
                                 <div class="badge badge-pill badge-primary py-1" id="income_deductions_count"></div>
                                 <div class="mr-2 font-10 text-danger">
                                     <span id="income_deductions_total"></span>
-                                    <input type="hidden" id="income_deductions_total_value" class="total">
+                                    <input type="hidden" id="income_deductions_total_value" name="income_deductions_total_value" class="total">
                                 </div>
                             </div>
 
@@ -199,7 +412,9 @@
                                     </div>
 
                                 </div>
-                                <div class="list-group check-deductions-div mt-3"></div>
+                                <div class="p-1 p-sm-2 p-md-4">
+                                    <div class="list-group check-deductions-div"></div>
+                                </div>
 
                             </div>
 
@@ -351,7 +566,7 @@
                                 <div class="badge badge-pill badge-primary py-1" id="commission_deductions_count"></div>
                                 <div class="mr-2 font-10 text-danger">
                                     <span id="commission_deductions_total"></span>
-                                    <input type="hidden" id="commission_deductions_total_value" class="total">
+                                    <input type="hidden" id="commission_deductions_total_value" name="commission_deductions_total_value" class="total">
                                 </div>
                             </div>
 
@@ -364,7 +579,7 @@
 
             <div class="col-12 col-lg-7 p-lg-0">
 
-                <div class="popout-div mr-3">
+                <div class="popout-div mr-3 h-100">
 
                     <div class="popout bottom animated fast flipInX w-100">
 
@@ -395,9 +610,10 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
-                                <div class="list-group commission-deductions-div mt-3"></div>
+                                <div class="p-1 p-sm-2 p-md-4">
+                                    <div class="list-group commission-deductions-div"></div>
+                                </div>
 
                             </div>
 
@@ -405,6 +621,34 @@
 
                     </div>
 
+                </div>
+
+            </div>
+
+        </div>
+
+        {{-- Commission Income --}}
+        <div class="row no-gutters">
+
+            <div class="col-12 col-lg-5 border-top border-bottom py-2">
+
+                <div class="row">
+                    <div class="col-5">
+                        <div class="h-100 font-10 d-flex text-success justify-content-end align-items-center">
+                            Total Commission To Agent
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="bg-green-light text-white p-2 mr-4">
+                            <div class="d-flex justify-content-end">
+                                <div class="mr-1 font-12 text-success">
+                                    <span id="total_commission"></span>
+                                    <input type="hidden" id="total_commission_value" name="total_commission_value">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
             </div>

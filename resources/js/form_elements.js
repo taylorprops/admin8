@@ -244,10 +244,10 @@ window.form_elements = function () {
                     if (multiple) {
                         wrapper.find('.form-select-dropdown').append('<div class="w-100 form-select-save-div"><div class="d-flex d-flex justify-content-center p-0"><a href="javascript: void(0)" class="form-select-multiple-save btn btn-success btn-sm">Close</a></div></div>');
                         $('.form-select-multiple-save').on('click', function () {
-                            setTimeout(function() {
+                            //setTimeout(function() {
                                 hide_dropdowns();
                                 reset_select();
-                            }, 100);
+                            //}, 100);
                         });
 
                         set_multiple_select_value(wrapper, input);

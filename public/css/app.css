@@ -15178,7 +15178,7 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   padding: 0.1rem 0.2rem;
 }
 
-.page-transaction-details .nav-link:not(.add-to-checklist) {
+.page-transaction-details .nav-link:not(.add-to-checklist):not(.options-tab) {
   text-transform: uppercase;
   font-size: 1.1rem;
   padding: 0.5rem 1.5rem;
@@ -15685,7 +15685,7 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .page-transaction-details .commission-container .popout.bottom {
   left: 0px;
-  bottom: -52px;
+  bottom: 0.19rem;
 }
 
 .page-transaction-details .commission-container .check-deductions-div,
@@ -15695,6 +15695,16 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .page-transaction-details .commission-container .agent-commission.percent {
   width: 170px;
+}
+
+.page-transaction-details .commission-container .notes-container {
+  height: 220px;
+  overflow: auto;
+}
+
+.page-transaction-details .wage-garnishments {
+  max-height: 200px;
+  overflow: auto;
 }
 
 .page-transaction-details .save-split-doc-options {

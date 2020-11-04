@@ -81,7 +81,7 @@ class FieldsController extends Controller
         $file = Upload::whereFileId($request -> file_id) -> first();
         $file_name = $file -> file_name_display;
         $published = $file -> published;
-        $images = UploadImages::whereFileId($request -> file_id) -> orderBy('page_number') -> get();
+        $images = UploadImages::where('file_id', $request -> file_id) -> orderBy('page_number') -> get();
         $fields = Fields::where('file_id', $request -> file_id) -> orderBy('id') -> get();
         $common_fields = CommonFields::getCommonFields();
         $field_types = FieldTypes::select('field_type') -> get();

@@ -195,7 +195,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 col-sm-6 col-md-12 col-lg-6">
+                                    <div class="col-12 col-sm-6 col-md-12 col-lg-9">
                                         <select class="custom-form-element form-select" data-label="Team" name="Team_ID" id="Team_ID">
                                             <option value=""></option>
                                             @foreach($teams as $team)

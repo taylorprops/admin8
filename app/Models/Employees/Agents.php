@@ -8,6 +8,7 @@ class Agents extends Model
 {
     protected $connection = 'mysql';
     public $table = 'emp_agents';
+    protected $primaryKey = 'id';
     protected $guarded = [];
 
     public function scopeAgentDetails($query, $id) {

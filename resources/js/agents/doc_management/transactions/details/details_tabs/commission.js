@@ -40,6 +40,11 @@ if (document.URL.match(/transaction_details/)) {
             let admin_fee_from_agent = parseFloat($('#admin_fee_from_agent').val().replace(/[,\$]/g, ''));
             let commission_deductions = parseFloat($('#commission_deductions_total_value').val().replace(/[,\$]/g, ''));
 
+            let total_commission = agent_commission_amount - admin_fee_from_agent - commission_deductions;
+
+            $('#total_commission').html(global_format_number_with_decimals(total_commission.toString()));
+            $('#total_commission_value').val(total_commission);
+
         }
 
 

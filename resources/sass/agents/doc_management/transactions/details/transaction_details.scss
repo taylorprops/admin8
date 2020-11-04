@@ -9,7 +9,7 @@
         padding: 0.1rem 0.2rem;
     }
 
-    .nav-link:not(.add-to-checklist) {
+    .nav-link:not(.add-to-checklist):not(.options-tab) {
         text-transform: uppercase;
         font-size: 1.1rem;
         padding: 0.5rem 1.5rem;
@@ -570,7 +570,7 @@
         }
         .popout.bottom {
             left: 0px;
-            bottom: -52px;
+            bottom: .19rem;
         }
 
         .check-deductions-div, .commission-deductions-div {
@@ -581,6 +581,16 @@
             width: 170px;
         }
 
+        .notes-container {
+            height: 220px;
+            overflow: auto;
+        }
+
+    }
+
+    .wage-garnishments {
+        max-height: 200px;
+        overflow: auto;
     }
 
     .save-split-doc-options {
