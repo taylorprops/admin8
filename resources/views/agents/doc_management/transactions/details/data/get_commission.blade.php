@@ -5,7 +5,7 @@
 
         <div class="row">
 
-            <div class="col-4">
+            <div class="col-5">
 
                 <div class="row">
                     <div class="col-5"></div>
@@ -88,7 +88,7 @@
 
             </div>
 
-            <div class="col-8">
+            <div class="col-7">
 
                 <ul class="nav nav-tabs" id="options_tab" role="tablist">
                     <li class="nav-item">
