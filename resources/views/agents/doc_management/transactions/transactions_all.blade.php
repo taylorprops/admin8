@@ -9,7 +9,7 @@
 
             <div class="card p-2">
 
-                <div class="h4-responsive text-orange"><i class="fad fa-sign mr-2"></i> Active Listings</div>
+                <div class="h4 text-orange"><i class="fad fa-sign mr-2"></i> Active Listings</div>
 
                 <!-- Card content -->
                 <div class="card-body">
@@ -21,11 +21,11 @@
                             <div class="col-12 col-md-6">
                                 <a href="/agents/doc_management/transactions/transaction_details/{{ $listing -> Listing_ID }}/listing">
 
-                                    <div class="bg-primary p-2 m-2 z-depth-1 text-white">
+                                    <div class="bg-primary p-2 m-2 shadow text-white">
 
                                         <div class="row">
                                             <div class="col-12">
-                                                <div class="h5-responsive text-center">{!! $listing -> FullStreetAddress. '<br>' . $listing -> City . ' ' . $listing -> StateOrProvince .' '.$listing -> PostalCode !!}</div>
+                                                <div class="h5 text-center">{!! $listing -> FullStreetAddress. '<br>' . $listing -> City . ' ' . $listing -> StateOrProvince .' '.$listing -> PostalCode !!}</div>
                                             </div>
                                         </div>
                                         <hr class="bg-white">
@@ -34,7 +34,7 @@
                                             <div class="mr-3"><i class="fad fa-sign mx-2 fa-3x"></i></div>
                                             <div>
                                                 @if($listing -> ListPictureURL)
-                                                <img src="{{ $listing -> ListPictureURL }}" class="property-image image-fluid mr-2 z-depth-1">
+                                                <img src="{{ $listing -> ListPictureURL }}" class="property-image image-fluid mr-2 shadow">
                                                 @else
                                                 <i class="fad fa-home-alt fa-5x"></i>
                                                 @endif
@@ -42,8 +42,8 @@
                                         </div>
                                         <hr class="bg-white">
                                         <div class="d-flex justify-content-around">
-                                            <div class="h4-responsive">{{ $resource_items -> GetResourceName($listing -> Status) }}</div>
-                                            <div class="h4-responsive">${{ number_format($listing -> ListPrice) }}</div>
+                                            <div class="h4">{{ $resource_items -> GetResourceName($listing -> Status) }}</div>
+                                            <div class="h4">${{ number_format($listing -> ListPrice) }}</div>
                                         </div>
 
                                         <hr class="bg-white">
@@ -86,7 +86,7 @@
 
             <div class="card p-2">
 
-                <div class="h4-responsive text-orange"><i class="fad fa-file-signature mr-2"></i> Active Contracts</div>
+                <div class="h4 text-orange"><i class="fad fa-file-signature mr-2"></i> Active Contracts</div>
 
                 <!-- Card content -->
                 <div class="card-body">
@@ -98,11 +98,11 @@
                             <div class="col-12 col-md-6">
                                 <a href="/agents/doc_management/transactions/transaction_details/{{ $contract -> Contract_ID }}/contract">
 
-                                    <div class="bg-primary p-2 m-2 z-depth-1 text-white">
+                                    <div class="bg-primary p-2 m-2 shadow text-white">
 
                                         <div class="row">
                                             <div class="col-12">
-                                                <div class="h5-responsive text-center">{!! $contract -> FullStreetAddress. '<br>' . $contract -> City . ' ' . $contract -> StateOrProvince .' '.$contract -> PostalCode !!}</div>
+                                                <div class="h5 text-center">{!! $contract -> FullStreetAddress. '<br>' . $contract -> City . ' ' . $contract -> StateOrProvince .' '.$contract -> PostalCode !!}</div>
                                             </div>
                                         </div>
                                         <hr class="bg-white">
@@ -111,7 +111,7 @@
                                             <div class="mr-3"><i class="fad fa-file-signature mx-2 fa-3x"></i></div>
                                             <div>
                                                 @if($contract -> ListPictureURL)
-                                                <img src="{{ $contract -> ListPictureURL }}" class="property-image image-fluid mr-2 z-depth-1">
+                                                <img src="{{ $contract -> ListPictureURL }}" class="property-image image-fluid mr-2 shadow">
                                                 @else
                                                 <i class="fad fa-home-alt fa-5x"></i>
                                                 @endif
@@ -119,8 +119,8 @@
                                         </div>
                                         <hr class="bg-white">
                                         <div class="d-flex justify-content-around">
-                                            <div class="h4-responsive">{{ $resource_items -> GetResourceName($contract -> Status) }}</div>
-                                            <div class="h4-responsive">${{ number_format($contract -> ContractPrice) }}</div>
+                                            <div class="h4">{{ $resource_items -> GetResourceName($contract -> Status) }}</div>
+                                            <div class="h4">${{ number_format($contract -> ContractPrice) }}</div>
                                         </div>
 
                                         <hr class="bg-white">
@@ -166,7 +166,7 @@
 
             <div class="card p-2">
 
-                <div class="h4-responsive text-orange"><i class="fad fa-sign mr-2"></i> Active Referrals</div>
+                <div class="h4 text-orange"><i class="fad fa-sign mr-2"></i> Active Referrals</div>
 
                 <!-- Card content -->
                 <div class="card-body">
@@ -178,18 +178,18 @@
                             <div class="col-12 col-md-6">
                                 <a href="/agents/doc_management/transactions/transaction_details/{{ $referral -> Referral_ID }}/referral">
 
-                                    <div class="bg-primary p-2 m-2 z-depth-1 text-white">
+                                    <div class="bg-primary p-2 m-2 shadow text-white">
 
                                         <div class="row">
                                             <div class="col-12">
-                                                <div class="h5-responsive text-center">{!! $referral -> FullStreetAddress. '<br>' . $referral -> City . ' ' . $referral -> StateOrProvince .' '.$referral -> PostalCode !!}</div>
+                                                <div class="h5 text-center">{!! $referral -> FullStreetAddress. '<br>' . $referral -> City . ' ' . $referral -> StateOrProvince .' '.$referral -> PostalCode !!}</div>
                                             </div>
                                         </div>
                                         <hr class="bg-white">
 
                                         <div class="d-flex justify-content-around align-items-center">
                                             <div><i class="fad fa-handshake fa-3x"></i></div>
-                                            <div class="h4-responsive">{{ $resource_items -> GetResourceName($referral -> Status) }}</div>
+                                            <div class="h4">{{ $resource_items -> GetResourceName($referral -> Status) }}</div>
 
                                         </div>
                                         <hr class="bg-white">

@@ -644,7 +644,7 @@ if (document.URL.match(/edit_files/)) {
 
     function to_pdf() {
 
-        global_loading_on('', '<div class="h3-responsive text-white">Merging Fields, Creating and Saving PDF.</div> <div class="h3-responsive mt-5 text-yellow">Please be patient, this process can take <br>5 - 10 seconds for each page.</div>');
+        global_loading_on('', '<div class="h3 text-white">Merging Fields, Creating and Saving PDF.</div> <div class="h3 mt-5 text-yellow">Please be patient, this process can take <br>5 - 10 seconds for each page.</div>');
         // fields that css will be changed during export to pdf. They will be reset after
         let els = '.data-div, .file-image-bg, .field-div, .data-div-radio-check';
         let styles;
@@ -828,7 +828,7 @@ if (document.URL.match(/edit_files/)) {
             // add values to data-div for each field in group
             $('.group_' + group_id).each(function () {
                 // add values to all inputs in group
-                $(this).find('.fillable-field-input').val(num).data('default-value', num).trigger('change');
+                $(this).find('.fillable-field-input').val(num).data('default-value', num)/* .trigger('change') */;
                 // only the written fields will be split.
                 let subtype = $(this).data('number-type');
                 let data_div = $(this).find('.data-div');
@@ -875,10 +875,10 @@ if (document.URL.match(/edit_files/)) {
                     let input = $(this);
                     $.each(address_labels, function (index, address_label) {
                         if (input.data('type') == address_label) {
-                            input.val(address_values[index]).data('default-value', address_values[index]).trigger('change');
+                            input.val(address_values[index]).data('default-value', address_values[index])/* .trigger('change') */;
                         }
                     });
-                }).trigger('change');
+                })/* .trigger('change') */;
 
                 $.each(address_names, function (index, address_name) {
                     if (address_type != 'full') {
@@ -937,10 +937,10 @@ if (document.URL.match(/edit_files/)) {
                         let inputs = $(this);
                         $.each(name_labels, function (index, name_label) {
                             if (inputs.data('type') == name_label) {
-                                inputs.val(name_values[index]).data('default-value', name_values[index]).trigger('change');
+                                inputs.val(name_values[index]).data('default-value', name_values[index])/* .trigger('change') */;
                             }
                         });
-                    }).trigger('change');
+                    })/* .trigger('change') */;
 
                     $.each(name_names, function (index, name_name) {
                         if (name_type != 'both') {
@@ -1145,7 +1145,7 @@ if (document.URL.match(/edit_files/)) {
         // reset name fields
         $('.form-div').each(function () {
             $(this).find('input, textarea').each(function () {
-                $(this).val($(this).data('default-value')).trigger('change');
+                $(this).val($(this).data('default-value'))/* .trigger('change') */;
             });
         });
         $('.field-div').removeClass('active');

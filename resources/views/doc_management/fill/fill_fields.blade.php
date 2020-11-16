@@ -61,7 +61,7 @@
             </div> <!-- col-8 -->
             <div class="col-2 pl-0">
                 <div class="file-view" id="thumb_viewer">
-                    <div class="h3-responsive text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
+                    <div class="h3 text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
                     @foreach($images as $image)
                         <?php $c = $image['page_number']; ?>
                         <div class="file-view-thumb-container  w-50 mx-auto <?php echo($c == 1) ? 'active' : ''; ?>" id="thumb_{{ $c }}" data-id="{{ $c }}">

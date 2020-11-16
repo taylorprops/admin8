@@ -9,7 +9,7 @@ if (document.URL.match(/create\/upload\/files/)) {
     function init() {
         // get forms for each form group
         let data_count = $('.forms-data').length;
-        global_loading_on('', '<div class="h3-responsive text-white">Loading...</div>');
+        global_loading_on('', '<div class="h3 text-white">Loading...</div>');
 
         // load first form group
         let form_group = $('.forms-data').eq(0);
@@ -26,7 +26,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
     function get_forms(form_group_id, state, order=null) {
 
-        global_loading_on('', '<div class="h3-responsive text-white">Loading...</div>');
+        global_loading_on('', '<div class="h3 text-white">Loading...</div>');
 
         let form_group = $('#list_div_'+form_group_id+'_files');
         let options = {
@@ -625,21 +625,22 @@ if (document.URL.match(/create\/upload\/files/)) {
                 let form_categories = response.data.form_categories;
                 let form_tags = response.data.form_tags;
                 let checklist_group_id = response.data.checklist_group_id;
-                let form = $('#edit_file_form');
-                //form.find('select').val('').trigger('change');
+                //let form = $('#edit_file_form');
+                //form.find('select').val('')/* .trigger('change') */;
                 $('#edit_form_name').text(file_name_orig);
-                $('#edit_file_name_display').val(file_name).trigger('change');
+                $('#edit_file_name_display').val(file_name)/* .trigger('change') */;
                 $('#edit_form_group_id').val(form_group_id).prop('disabled', disabled);
                 $('#edit_state').val(state).prop('disabled', disabled);
-                $('#edit_helper_text').val(helper_text).trigger('change');
-                $('#edit_form_tags').val(form_tags).trigger('change');
-                $('#edit_checklist_group_id').val(checklist_group_id).trigger('change').prop('disabled', disabled);
+                $('#edit_helper_text').val(helper_text)/* .trigger('change') */;
+                $('#edit_form_tags').val(form_tags)/* .trigger('change') */;
+                $('#edit_checklist_group_id').val(checklist_group_id)/* .trigger('change') */.prop('disabled', disabled);
                 form_categories = form_categories.split(',');
 
+                $('#edit_form_categories').find('option').prop('selected', false);
                 $.each(form_categories, function (i, e) {
                     $('#edit_form_categories').find('option[value="' + e + '"]').prop('selected', true);
                 });
-                $('#edit_form_categories').trigger('change');
+                $('#edit_form_categories')/* .trigger('change') */;
 
                 $('#edit_file_id').val(upload_id);
                 setTimeout(function () {
@@ -796,7 +797,7 @@ if (document.URL.match(/create\/upload\/files/)) {
                         $('.add-title').on('click', function() {
                             $('.show-forms-button').show();
                             let title = $(this).closest('.title-option').find('input').val();
-                            $('#file_name_display, #helper_text').val(title).trigger('change');
+                            $('#file_name_display, #helper_text').val(title)/* .trigger('change') */;
                             $('#form_names_div').collapse('hide');
                         });
 
@@ -839,7 +840,7 @@ if (document.URL.match(/create\/upload\/files/)) {
             axios.post('/doc_management/upload_file', formData, axios_options)
                 .then(function (response) {
                     $('#add_upload_modal').modal('hide');
-                    $('#file_name_display, #file_upload, #form_categories, #form_tags, #checklist_group_id').val('').trigger('change');
+                    $('#file_name_display, #file_upload, #form_categories, #form_tags, #checklist_group_id').val('')/* .trigger('change') */;
                     select_refresh();
                     get_forms(form_group_id, state, order);
                     $('#upload_file_button').prop('disabled', false).html('<i class="fad fa-upload mr-2"></i> Upload Form');

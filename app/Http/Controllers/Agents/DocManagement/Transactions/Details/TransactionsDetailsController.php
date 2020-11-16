@@ -37,6 +37,8 @@ use App\Models\DocManagement\Transactions\Upload\TransactionUploadPages;
 use App\Models\DocManagement\Transactions\Data\ListingsData;
 use App\Models\Commission\Commission;
 use App\Models\Commission\CommissionChecksIn;
+use App\Models\Commission\CommissionChecksInQueue;
+use App\Models\Commission\CommissionChecksOut;
 use App\Models\Commission\CommissionNotes;
 use App\Models\Commission\CommissionIncomeDeductions;
 use App\Models\Commission\CommissionCommissionDeductions;
@@ -61,17 +63,33 @@ class TransactionsDetailsController extends Controller {
         $transaction_type = $request -> transaction_type;
         $id = $request -> id;
 
+        $Listing_ID = 0;
+        $Contract_ID = 0;
+        $Referral_ID = 0;
+        $contracts = [];
+
         if($transaction_type == 'listing') {
             $property = Listings::find($id);
-
+            $field = 'Listing_ID';
+            $Listing_ID = $id;
             // if not all required details submitted require them
             if($property -> ExpirationDate == '' || $property -> ExpirationDate == '0000-00-00') {
                 return redirect('/agents/doc_management/transactions/add/transaction_required_details_listing/' . $id . '/listing');
             }
+            $active_status_id = ResourceItems::GetResourceID('Active', 'contract_status');
+            $contracts = Contracts::where('Listing_ID', $Listing_ID) -> where('Status', $active_status_id) -> pluck('Contract_ID');
+
+            if(count($contracts) > 0) {
+                $Contract_ID = $contracts[0];
+            }
+
+            $member_type_id = ResourceItems::SellerResourceId();
 
         } else if($transaction_type == 'contract') {
             $property = Contracts::find($id);
-
+            $field = 'Contract_ID';
+            $Contract_ID = $id;
+            $Listing_ID = $property -> Listing_ID;
             // if not all required details submitted require them
             if($property -> SaleRent != 'rental') {
                 if($property -> ContractDate == '' || $property -> ContractDate == '0000-00-00') {
@@ -79,13 +97,19 @@ class TransactionsDetailsController extends Controller {
                 }
             }
 
+            $member_type_id = ResourceItems::BuyerResourceId();
+
         } else if($transaction_type == 'referral') {
             $property = Referrals::find($id);
+            $field = 'Referral_ID';
+            $Referral_ID = $id;
         }
 
-        $agents = Agents::get();
 
-        $agent_details = Agents::where('id', $property -> Agent_ID) -> first();
+        $agents = Agents::select('id', 'first_name', 'last_name', 'llc_name', 'email', 'cell_phone', 'company') -> where('active', 'yes') -> orderBy('last_name') -> get();
+        $Agent_ID = $property -> Agent_ID;
+
+        $agent_details = Agents::where('id', $Agent_ID) -> first();
 
         // check if earnest and title questions are complete before allowing adding docs to the checklist
         $questions_confirmed = 'yes';
@@ -103,7 +127,58 @@ class TransactionsDetailsController extends Controller {
         }
         $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? true : false;
 
-        return view('/agents/doc_management/transactions/details/transaction_details', compact('property', 'transaction_type', 'questions_confirmed', 'agents', 'agent_details', 'for_sale'));
+        if(($property -> Contract_ID > 0 && $property -> Listing_ID > 0) || count($contracts) > 0) {
+            $folders = TransactionDocumentsFolders::where('Agent_ID', $Agent_ID) -> where(function ($query) use ($Listing_ID, $Contract_ID) {
+                $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
+            })
+            -> orderBy('order') -> get();
+        } else {
+            $folders = TransactionDocumentsFolders::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
+        }
+
+        $transaction_checklist = TransactionChecklists::where($field, $id) -> first();
+        $checklist_id = $transaction_checklist -> id;
+        $original_checklist_id = $transaction_checklist -> checklist_id;
+
+        $transaction_checklist_hoa_condo = $transaction_checklist -> hoa_condo;
+        $transaction_checklist_year_built = $transaction_checklist -> year_built;
+
+        $checklist = Checklists::where('id', $original_checklist_id) -> first();
+
+        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
+        $checklist_items_required = $checklist_items -> where('checklist_item_required', 'yes') -> sortBy('checklist_item_order');
+        $checklist_items_if_applicable = $checklist_items -> where('checklist_item_required', 'no') -> sortBy('checklist_item_order');
+
+        $available_files = new Upload();
+
+        $resource_items = new ResourceItems();
+        $form_groups = $resource_items -> where('resource_type', 'form_groups') -> where('resource_association', 'yes') -> orderBy('resource_order') -> get();
+        $form_categories = $resource_items -> where('resource_type', 'form_categories') -> orderBy('resource_order') -> get();
+
+        $files = new Upload();
+
+        $members = null;
+
+        if($transaction_type != 'referral') {
+            $member_type_id = Members::GetMemberTypeID('Buyer');
+
+            if($Listing_ID > 0) {
+                $member_type_id = Members::GetMemberTypeID('Seller');
+            }
+
+            $members = Members::where($field, $id) -> where('member_type_id', $member_type_id) -> get();
+        }
+
+        $contacts = CRMContacts::where('Agent_ID', $Agent_ID) -> get();
+
+        $rejected_reasons = ResourceItemsAdmin::where('resource_type', 'rejected_reason') -> orderBy('resource_order') -> get();
+
+        $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
+        $property_sub_types = $resource_items -> where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
+
+        $states = LocationData::AllStates();
+
+        return view('/agents/doc_management/transactions/details/transaction_details', compact('Listing_ID', 'Contract_ID', 'Referral_ID', 'property', 'transaction_type', 'questions_confirmed', 'agents', 'agent_details', 'for_sale', 'checklist', 'checklist_id', 'folders', 'checklist_items_required', 'checklist_items_if_applicable', 'available_files', 'resource_items', 'form_groups', 'form_categories', 'files', 'members', 'contacts', 'rejected_reasons', 'property_types', 'property_sub_types', 'transaction_checklist_hoa_condo', 'transaction_checklist_year_built', 'states'));
 
     }
 
@@ -583,9 +658,8 @@ class TransactionsDetailsController extends Controller {
         $contact_types = $resource_items -> where('resource_type', 'contact_type') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
         $states = LocationData::AllStates();
-        $contacts = CRMContacts::where('Agent_ID', $Agent_ID) -> get();
 
-        return view('/agents/doc_management/transactions/details/data/get_members', compact('members', 'contact_types', 'resource_items', 'states', 'contacts', 'for_sale'));
+        return view('/agents/doc_management/transactions/details/data/get_members', compact('members', 'contact_types', 'resource_items', 'states','for_sale'));
 
     }
 
@@ -739,7 +813,6 @@ class TransactionsDetailsController extends Controller {
         $Referral_ID = $request -> Referral_ID ?? 0;
         $Agent_ID = $request -> Agent_ID;
         $transaction_type = $request -> transaction_type;
-        $contracts = [];
 
         if($transaction_type == 'listing') {
 
@@ -767,17 +840,7 @@ class TransactionsDetailsController extends Controller {
             $id = $Referral_ID;
         }
 
-        $members = null;
 
-        if($transaction_type != 'referral') {
-            $member_type_id = Members::GetMemberTypeID('Buyer');
-
-            if($Listing_ID > 0) {
-                $member_type_id = Members::GetMemberTypeID('Seller');
-            }
-
-            $members = Members::where($field, $id) -> where('member_type_id', $member_type_id) -> get();
-        }
 
         // if our listing and contract include listing folders with contract
         if(($property -> Contract_ID > 0 && $property -> Listing_ID > 0) || count($contracts) > 0) {
@@ -802,21 +865,14 @@ class TransactionsDetailsController extends Controller {
         $transaction_checklist = TransactionChecklists::where($field, $id) -> first();
         $checklist_id = $transaction_checklist -> id;
 
-        $checklist_items = TransactionChecklistItems::where('checklist_id', $checklist_id) -> get();
-
-        $checklist_items_required = $checklist_items -> where('checklist_item_required', 'yes') -> sortBy('checklist_item_order');
-        $checklist_items_if_applicable = $checklist_items -> where('checklist_item_required', 'no') -> sortBy('checklist_item_order');
-
         $available_files = new Upload();
 
-        $resource_items = new ResourceItems();
-        $form_groups = $resource_items -> where('resource_type', 'form_groups') -> where('resource_association', 'yes') -> orderBy('resource_order') -> get();
-        $form_categories = $resource_items -> where('resource_type', 'form_categories') -> orderBy('resource_order') -> get();
+
 
         $property_email = $property -> PropertyEmail;
         $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? true : false;
 
-        return view('/agents/doc_management/transactions/details/data/get_documents', compact('transaction_type', 'property', 'Agent_ID', 'Listing_ID', 'Contract_ID', 'members', 'checklist_id', 'documents', 'folders', 'checklist_items_required', 'checklist_items_if_applicable', 'available_files', 'resource_items', 'form_groups', 'form_categories', 'property_email', 'for_sale'));
+        return view('/agents/doc_management/transactions/details/data/get_documents', compact('transaction_type', 'property', 'Agent_ID', 'Listing_ID', 'Contract_ID', 'checklist_id', 'documents', 'folders', 'available_files', 'property_email', 'for_sale'));
     }
 
     public function add_folder(Request $request) {
@@ -1881,13 +1937,12 @@ class TransactionsDetailsController extends Controller {
         $transaction_checklist_item_notes_model = new TransactionChecklistItemsNotes();
         $users = User::get();
 
-        $agent = Agents::find($Agent_ID);
+        /* $agent = Agents::find($Agent_ID); */
 
         $transaction_checklist = TransactionChecklists::where($field, $id) -> first();
         $transaction_checklist_id = $transaction_checklist -> id;
         $original_checklist_id = $transaction_checklist -> checklist_id;
-        $transaction_checklist_hoa_condo = $transaction_checklist -> hoa_condo;
-        $transaction_checklist_year_built = $transaction_checklist -> year_built;
+
 
         $checklist = Checklists::where('id', $original_checklist_id) -> first();
 
@@ -1903,8 +1958,6 @@ class TransactionsDetailsController extends Controller {
 
         $checklist_groups = ResourceItems::where('resource_type', 'checklist_groups') -> whereIn('resource_form_group_type', $checklist_types) -> orderBy('resource_order') -> get();
 
-        $rejected_reasons = ResourceItemsAdmin::where('resource_type', 'rejected_reason') -> orderBy('resource_order') -> get();
-
         $trash_folder = TransactionDocumentsFolders::where($field, $id) -> where('folder_name', 'Trash') -> first();
         // if the contract was released just use the folder from the listing
         if(!$trash_folder && $field == 'Contract_ID') {
@@ -1915,11 +1968,6 @@ class TransactionsDetailsController extends Controller {
 
 
         $resource_items = new ResourceItems();
-        $property_types = $resource_items -> where('resource_type', 'checklist_property_types') -> orderBy('resource_order') -> get();
-        $property_sub_types = $resource_items -> where('resource_type', 'checklist_property_sub_types') -> orderBy('resource_order') -> get();
-
-        $files = new Upload();
-        $form_groups = $resource_items -> where('resource_type', 'form_groups') -> orderBy('resource_order') -> get();
 
         $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? true : false;
 
@@ -1928,7 +1976,7 @@ class TransactionsDetailsController extends Controller {
             $checklist_type = 'Lease';
         }
 
-        return view('/agents/doc_management/transactions/details/data/get_checklist', compact('property', 'Listing_ID', 'Contract_ID', 'transaction_type', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id', 'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model', 'checklist_groups', 'documents_model', 'users', 'documents_available', 'documents_checklist', 'resource_items', 'property_types', 'property_sub_types', 'checklist', 'transaction_checklist_hoa_condo', 'transaction_checklist_year_built', 'rejected_reasons', 'files', 'form_groups', 'agent', 'for_sale', 'checklist_type'));
+        return view('/agents/doc_management/transactions/details/data/get_checklist', compact('property', 'Listing_ID', 'Contract_ID', 'transaction_type', 'checklist_items_model', 'transaction_checklist', 'transaction_checklist_id', 'transaction_checklist_items', 'transaction_checklist_item_docs_model', 'transaction_checklist_item_notes_model', 'transaction_checklist_items_model', 'checklist_groups', 'documents_model', 'users', 'documents_available', 'documents_checklist', 'resource_items', 'for_sale', 'checklist_type'));
     }
 
     public function get_add_document_to_checklist_documents_html(Request $request) {
@@ -2087,13 +2135,13 @@ class TransactionsDetailsController extends Controller {
         $add_notes -> checklist_item_id = $request -> checklist_item_id;
         $add_notes -> checklist_item_doc_id = $request -> checklist_item_doc_id ?? null;
 
-        if($transaction_type == 'listing') {
+        //if($transaction_type == 'listing') {
             $add_notes -> Listing_ID = $Listing_ID;
-        } else if($transaction_type == 'contract') {
+        //} else if($transaction_type == 'contract') {
             $add_notes -> Contract_ID = $Contract_ID;
-        } else if($transaction_type == 'referral') {
+        //} else if($transaction_type == 'referral') {
             $add_notes -> Referral_ID = $Referral_ID;
-        }
+        //}
 
         $Agent_ID = 0;
 
@@ -2422,35 +2470,61 @@ class TransactionsDetailsController extends Controller {
 
         $agent = Agents::find($commission -> Agent_ID);
         $property = Contracts::find($commission -> Contract_ID);
-        $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? true : false;
+        $rep_both_sides = $property -> Listing_ID > 0 ? 'yes' : null;
+        $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? 'yes' : null;
         $teams = new AgentsTeams();
         $agent_notes = AgentsNotes::where('agent_id', $commission -> Agent_ID) -> get();
+        $agents = Agents::select('id', 'first_name', 'last_name', 'llc_name') -> where('active', 'yes') -> orderBy('last_name') -> get();
 
         // get percentages for select menu
         $commission_percentages = Agents::select('commission_percent') -> groupBy('commission_percent') -> pluck('commission_percent');
 
-        return view('/agents/doc_management/transactions/details/data/get_commission', compact('commission', 'commission_checks_in', 'agent', 'property', 'for_sale', 'teams', 'agent_notes', 'commission_percentages'));
+        return view('/agents/doc_management/transactions/details/data/get_commission', compact('commission', 'commission_checks_in', 'agent', 'property', 'rep_both_sides', 'for_sale', 'teams', 'agent_notes', 'commission_percentages', 'agents'));
+    }
+
+    public function save_commission(Request $request) {
+
+        $commission_fields = $request -> all();
+        $commission_id = $request -> commission_id;
+        $commission = Commission::find($commission_id);
+
+        foreach($commission_fields as $key => $val) {
+            if($key != 'commission_id') {
+                $commission -> $key = $val;
+            }
+        }
+        $commission -> save();
+
+        $close_price = preg_replace('/[\$,]+/', '', $request -> close_price);
+        $contract = Contracts::find($commission -> Contract_ID) -> update(['CloseDate' => $request -> close_date, 'ClosePrice' => $close_price, 'UsingHeritage' => $request -> using_heritage, 'TitleCompany' => $request -> title_company]);
+
+        return response() -> json(['result' => 'success']);
     }
 
     public function get_commission_notes(Request $request) {
 
         $Commission_ID = $request -> Commission_ID;
-        $commission_notes = CommissionNotes::where('Commission_ID', $Commission_ID) -> get();
+        $commission_notes = CommissionNotes::where('Commission_ID', $Commission_ID) -> orderBy('created_at', 'DESC') -> get();
+        $users = new User();
 
-        return view('/agents/doc_management/transactions/details/data/get_commission', compact( 'commission_notes'));
+        return view('/agents/doc_management/transactions/details/data/get_commission_notes_html', compact( 'commission_notes', 'users'));
+    }
+
+    public function add_commission_notes(Request $request) {
+        $notes = new CommissionNotes();
+        $notes -> Commission_ID = $request -> Commission_ID;
+        $notes -> user_id = auth() -> user() -> id;
+        $notes -> notes = $request -> notes;
+        $notes -> save();
+
+        return response() -> json(['response' => 'success']);
     }
 
     // Checks
 
-    public function get_checks_in(Request $request) {
-        $checks_in = CommissionChecksIn::where('Commission_ID', $request -> Commission_ID) -> orderBy('active', 'DESC') -> orderBy('created_at', 'DESC') -> get();
+    public function get_check_details(Request $request) {
 
-        return view('/agents/doc_management/transactions/details/data/get_checks_in_html', compact('checks_in'));
-    }
-
-    public function get_check_in_details(Request $request) {
-
-        $check = $request -> file('check_upload');
+        $check = $request -> file('check_in_upload') ?? $request -> file('check_out_upload');
 
         $new_file_name = str_replace('.pdf', '', $check -> getClientOriginalName());
         $new_file_name = date('YmdHis').'_'.sanitize($new_file_name).'.png';
@@ -2459,11 +2533,14 @@ class TransactionsDetailsController extends Controller {
         $text = (new TesseractOCR(Storage::disk('public') -> path('tmp/'.$new_file_name)))
             -> run();
 
+        $text = iconv('UTF-8', 'ASCII//IGNORE//TRANSLIT', $text);
         $check_location = '/storage/tmp/'.$new_file_name;
 
-        $check_date_preg = preg_match('/\b[0-9]{1,2}[-|\/]{1}[0-9]{2}[-|\/]{1}([0-9]{4}|[0-9]{2})\b/', $text, $check_date_matches);
+        // get date
+        $check_date_preg = preg_match('/\b[0-9]{1,2}[-|\/]{1}[0-9]{1,2}[-|\/]{1}([0-9]{4}|[0-9]{2})\b/', $text, $check_date_matches);
         $check_date = $check_date_matches[0] ?? null;
         if($check_date) {
+            // set date format
             $divider = stristr($check_date, '-') ? '-' : '/';
             $date_parts = explode($divider, $check_date);
             $month = $date_parts[0];
@@ -2480,16 +2557,44 @@ class TransactionsDetailsController extends Controller {
             }
             $check_date = $year.'-'.$month.'-'.$day;
         }
+
+        // get check number
+        // test if our checks that contain "Check #"
         $check_number_preg = preg_match('/\b\Check\s#\:\s([0-9]{4,})\b/', $text, $check_number_matches);
         $check_number = null;
         if(isset($check_number_matches[1])) {
             $check_number = $check_number_matches[1];
         } else {
+            // if not one of our checks get number (4 or more numbers and no -)
             $check_number_preg = preg_match('/\b[0-9]{4,}(?!-)\b/', $text, $check_number_matches);
             $check_number = $check_number_matches[0];
         }
+
+        // get check amount
         $check_amount_preg = preg_match('/\b[0-9,]+\.[0-9]{2}\b/', $text, $check_amount_matches);
         $check_amount = $check_amount_matches[0] ?? null;
+
+        // Outgoing checks
+
+        // get pay to the order of
+        $check_pay_to_preg = preg_match('/ORDER\sOF\s[_]*([a-zA-Z0-9\.\,\-\s]+)/', $text, $check_pay_to_matches);
+        $check_pay_to = null;
+        if($check_pay_to_matches) {
+            $check_pay_to = trim(preg_replace('/\s\bg\b/', '', $check_pay_to_matches[1])) ?? null;
+
+            if(substr($check_pay_to, -1) == '.') {
+                $check_pay_to = substr($check_pay_to, 0, -1);
+            }
+        }
+
+        $check_pay_to_agent_id = null;
+        $agent_search = Agents::where('full_name', $check_pay_to) -> orWhere('llc_name', 'like', '%'.substr($check_pay_to, 0, 15).'%') -> get();
+        if(count($agent_search) > 1) {
+            $agent_search = Agents::where('full_name', $check_pay_to) -> orWhere('llc_name', $check_pay_to) -> get();
+        }
+        if(count($agent_search) == 1) {
+            $check_pay_to_agent_id = $agent_search -> first() -> id;
+        }
 
         //dd($check_date, $check_number, $check_amount, $text);
 
@@ -2497,16 +2602,25 @@ class TransactionsDetailsController extends Controller {
             'check_date' => $check_date,
             'check_number' => $check_number,
             'check_amount' => $check_amount,
-            'check_location' => $check_location
+            'check_location' => $check_location,
+            'check_pay_to' => $check_pay_to,
+            'check_pay_to_agent_id' => $check_pay_to_agent_id
         ]);
 
 
     }
 
+    public function get_checks_in(Request $request) {
+        $checks_in = CommissionChecksIn::where('Commission_ID', $request -> Commission_ID) -> orderBy('active', 'DESC') -> orderBy('created_at', 'DESC') -> get();
+
+        return view('/agents/doc_management/transactions/details/data/get_checks_in_html', compact('checks_in'));
+    }
+
     public function save_add_check_in(Request $request) {
 
-        $Commission_ID = $request -> Commission_ID;
-        $file = $request -> file('check_upload');
+        $Commission_ID = $request -> Commission_ID ?? null;
+        $file = $request -> file('check_in_upload');
+        $page = $request -> page;
 
         $ext = $file -> getClientOriginalExtension();
         $file_name = $file -> getClientOriginalName();
@@ -2515,46 +2629,57 @@ class TransactionsDetailsController extends Controller {
         $clean_file_name = sanitize($file_name_no_ext);
         $new_file_name = $clean_file_name . '.' . $ext;
 
-        // create upload folder storage/commission/checks_in/commission_id/
-        if(!Storage::disk('public') -> exists('commission/checks_in/'.$Commission_ID)) {
-            Storage::disk('public') -> makeDirectory('commission/checks_in/'.$Commission_ID);
+
+        // create upload folder storage/commission/checks_in/commission_id/ or queue
+        $path = $page == 'details' ? 'checks_in/'.$Commission_ID : 'checks_in_queue/'.date('YmdHis');
+        if(!Storage::disk('public') -> exists('commission/'.$path)) {
+            Storage::disk('public') -> makeDirectory('commission/'.$path);
         }
         // move file to folder
-        if(!Storage::disk('public') -> put('commission/checks_in/'.$Commission_ID.'/'.$new_file_name, file_get_contents($file))) {
+        if(!Storage::disk('public') -> put('commission/'.$path.'/'.$new_file_name, file_get_contents($file))) {
             $fail = json_encode(['fail' => 'File Not Uploaded']);
             return ($fail);
         }
-        $file_location = '/storage/commission/checks_in/'.$Commission_ID.'/'.$new_file_name;
+        $file_location = '/storage/commission/'.$path.'/'.$new_file_name;
 
         $new_image_name = str_replace('.pdf', '.png', $new_file_name);
-        $image_location = '/storage/commission/checks_in/'.$Commission_ID.'/'.$new_image_name;
+        $image_location = '/storage/commission/'.$path.'/'.$new_image_name;
 
         // convert to image
-        exec('convert -density 300 -quality 100 '.Storage::disk('public') -> path('commission/checks_in/'.$Commission_ID.'/'.$new_file_name).'[0] '.Storage::disk('public') -> path('commission/checks_in/'.$Commission_ID.'/'.$new_image_name));
+        exec('convert -density 300 -quality 100 '.Storage::disk('public') -> path('commission/'.$path.'/'.$new_file_name).'[0] '.Storage::disk('public') -> path('commission/'.$path.'/'.$new_image_name));
 
-        $add_check = new CommissionChecksIn();
+        if($page == 'details') {
+            $add_check = new CommissionChecksIn();
+        } else {
+            $add_check = new CommissionChecksInQueue();
+            $add_check -> street = $request -> check_in_street;
+            $add_check -> city = $request -> check_in_city;
+            $add_check -> state = $request -> check_in_state;
+            $add_check -> zip = $request -> check_in_zip;
+            $add_check -> agent_id = $request -> check_in_agent_id;
+        }
         $add_check -> Commission_ID = $Commission_ID;
         $add_check -> file_location = $file_location;
         $add_check -> image_location = $image_location;
-        $add_check -> check_date = $request -> check_date;
-        $add_check -> check_amount = preg_replace('/[\$,]+/', '', $request -> check_amount);
-        $add_check -> check_number = $request -> check_number;
-        $add_check -> date_received = $request -> date_received;
-        $add_check -> date_deposited = $request -> date_deposited;
+        $add_check -> check_date = $request -> check_in_date;
+        $add_check -> check_amount = preg_replace('/[\$,]+/', '', $request -> check_in_amount);
+        $add_check -> check_number = $request -> check_in_number;
+        $add_check -> date_received = $request -> check_in_date_received;
+        $add_check -> date_deposited = $request -> check_in_date_deposited;
         $add_check -> save();
     }
 
     public function save_edit_check_in(Request $request) {
 
-        $check_id = $request -> edit_check_id;
+        $check_id = $request -> edit_check_in_id;
 
         $check = CommissionChecksIn::find($check_id);
 
-        $check -> check_date = $request -> edit_check_date;
-        $check -> check_amount = preg_replace('/[\$,]+/', '', $request -> edit_check_amount);
-        $check -> check_number = $request -> edit_check_number;
-        $check -> date_received = $request -> edit_date_received;
-        $check -> date_deposited = $request -> edit_date_deposited;
+        $check -> check_date = $request -> edit_check_in_date;
+        $check -> check_amount = preg_replace('/[\$,]+/', '', $request -> edit_check_in_amount);
+        $check -> check_number = $request -> edit_check_in_number;
+        $check -> date_received = $request -> edit_check_in_date_received;
+        $check -> date_deposited = $request -> edit_check_in_date_deposited;
         $check -> save();
 
         return response() -> json(['success' => true]);
@@ -2572,6 +2697,98 @@ class TransactionsDetailsController extends Controller {
     public function undo_delete_check_in(Request $request) {
 
         $check = CommissionChecksIn::find($request -> check_id) -> update(['active' => 'yes']);
+
+        return response() -> json(['response' => 'success']);
+
+    }
+
+    public function get_checks_out(Request $request) {
+        $checks_out = CommissionChecksOut::where('Commission_ID', $request -> Commission_ID) -> orderBy('active', 'DESC') -> orderBy('created_at', 'DESC') -> get();
+
+        return view('/agents/doc_management/transactions/details/data/get_checks_out_html', compact('checks_out'));
+    }
+
+    public function save_add_check_out(Request $request) {
+
+        $Commission_ID = $request -> Commission_ID;
+        $file = $request -> file('check_out_upload');
+
+        $ext = $file -> getClientOriginalExtension();
+        $file_name = $file -> getClientOriginalName();
+
+        $file_name_no_ext = str_replace('.' . $ext, '', $file_name);
+        $clean_file_name = sanitize($file_name_no_ext);
+        $new_file_name = $clean_file_name . '.' . $ext;
+
+        // create upload folder storage/commission/checks_out/commission_id/
+        if(!Storage::disk('public') -> exists('commission/checks_out/'.$Commission_ID)) {
+            Storage::disk('public') -> makeDirectory('commission/checks_out/'.$Commission_ID);
+        }
+        // move file to folder
+        if(!Storage::disk('public') -> put('commission/checks_out/'.$Commission_ID.'/'.$new_file_name, file_get_contents($file))) {
+            $fail = json_encode(['fail' => 'File Not Uploaded']);
+            return ($fail);
+        }
+        $file_location = '/storage/commission/checks_out/'.$Commission_ID.'/'.$new_file_name;
+
+        $new_image_name = str_replace('.pdf', '.png', $new_file_name);
+        $image_location = '/storage/commission/checks_out/'.$Commission_ID.'/'.$new_image_name;
+
+        // convert to image
+        exec('convert -density 300 -quality 100 '.Storage::disk('public') -> path('commission/checks_out/'.$Commission_ID.'/'.$new_file_name).'[0] '.Storage::disk('public') -> path('commission/checks_out/'.$Commission_ID.'/'.$new_image_name));
+
+        $add_check = new CommissionChecksOut();
+        $add_check -> Commission_ID = $Commission_ID;
+        $add_check -> file_location = $file_location;
+        $add_check -> image_location = $image_location;
+        $add_check -> check_date = $request -> check_out_date;
+        $add_check -> check_amount = preg_replace('/[\$,]+/', '', $request -> check_out_amount);
+        $add_check -> check_number = $request -> check_out_number;
+        $add_check -> check_recipient_agent_id = $request -> check_out_agent_id;
+        $add_check -> check_recipient = $request -> check_out_recipient;
+        $add_check -> check_delivery_method = $request -> check_out_delivery_method;
+        $add_check -> check_date_ready = $request -> check_out_date_ready;
+        $add_check -> check_mail_to_street = $request -> check_out_mail_to_street;
+        $add_check -> check_mail_to_city = $request -> check_out_mail_to_city;
+        $add_check -> check_mail_to_state = $request -> check_out_mail_to_state;
+        $add_check -> check_mail_to_zip = $request -> check_out_mail_to_zip;
+        $add_check -> save();
+    }
+
+    public function save_edit_check_out(Request $request) {
+
+        $check_id = $request -> edit_check_out_id;
+
+        $check = CommissionChecksOut::find($check_id);
+
+        $check -> check_date = $request -> edit_check_out_date;
+        $check -> check_amount = preg_replace('/[\$,]+/', '', $request -> edit_check_out_amount);
+        $check -> check_number = $request -> edit_check_out_number;
+        $check -> check_recipient = $request -> edit_check_out_recipient;
+        $check -> check_recipient_agent_id = $request -> edit_check_out_agent_id;
+        $check -> check_delivery_method = $request -> edit_check_out_delivery_method;
+        $check -> check_date_ready = $request -> edit_check_out_date_ready;
+        $check -> check_mail_to_street = $request -> edit_check_out_mail_to_street;
+        $check -> check_mail_to_city = $request -> edit_check_out_mail_to_city;
+        $check -> check_mail_to_state = $request -> edit_check_out_mail_to_state;
+        $check -> check_mail_to_zip = $request -> edit_check_out_mail_to_zip;
+        $check -> save();
+
+        return response() -> json(['success' => true]);
+
+    }
+
+    public function save_delete_check_out(Request $request) {
+
+        $check = CommissionChecksOut::find($request -> check_id) -> update(['active' => 'no']);
+
+        return response() -> json(['response' => 'success']);
+
+    }
+
+    public function undo_delete_check_out(Request $request) {
+
+        $check = CommissionChecksOut::find($request -> check_id) -> update(['active' => 'yes']);
 
         return response() -> json(['response' => 'success']);
 

@@ -126,6 +126,8 @@ Route::middleware('admin') -> group(function () {
     // get edit properties modal
     Route::get('/doc_management/get_edit_properties_html', 'DocManagement\Fill\FieldsController@get_edit_properties_html');
 
+
+
     /********* Document Review ************/
     // doc review page
     Route::get('/doc_management/document_review/{Contract_ID?}', 'DocManagement\Review\DocumentReviewController@document_review');
@@ -135,6 +137,24 @@ Route::middleware('admin') -> group(function () {
     Route::get('/doc_management/get_documents', 'DocManagement\Review\DocumentReviewController@get_documents');
     // get details
     Route::get('/doc_management/get_details', 'DocManagement\Review\DocumentReviewController@get_details');
+
+
+    /********* Commission ************/
+    // commission
+    Route::get('/doc_management/commission', 'DocManagement\Commission\CommissionController@commission');
+    // get checks queue to add to commission
+    Route::get('/doc_management/commission/get_checks', 'DocManagement\Commission\CommissionController@get_checks');
+    // get checks queue to add to commission
+    /* Route::get('/doc_management/commission/checks_queue_html', function() {
+        return view('/doc_management/commission/checks_queue_html');
+    }); */
+
+
+
+    /************ Form Elements ************/
+    Route::get('/form_elements', function() {
+        return view('/tests/form_elements');
+    });
 
 
 });

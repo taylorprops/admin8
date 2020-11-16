@@ -1,7 +1,7 @@
 @if(count($checklist_item_documents) == 0)
     @php return false; @endphp
 @endif
-<div class="row animated fadeIn">
+<div class="row animate__animated animate__fadeIn">
 
     <div class="col-12">
 
@@ -21,15 +21,18 @@
                         $file_location = $document_details['file_location_converted'];
                         @endphp
 
-                        <div class="bg-blue-light text-primary p-2 d-flex justify-content-between align-items-center" id="document_{{ $document_id }}">
-                            <div class="h5-responsive">
-                                {{ $file_name }}
-                            </div>
-                            <div>
+                        <div class="bg-blue-light text-primary p-2 d-flex justify-content-start align-items-center" id="document_{{ $document_id }}">
+
+                            <div class="mx-4">
                                 <a href="{{ $file_location }}" target="_blank">
                                     <i class="fad fa-download fa-lg"></i>
                                 </a>
                             </div>
+
+                            <div class="h5 mt-2">
+                                {{ $file_name }}
+                            </div>
+
                         </div>
 
                         @foreach($document_images as $document_image)
@@ -113,11 +116,17 @@
 
                     <div class="mr-2">
                         <div class="d-flex justify-content-center align-items-center">
-                            <span class="font-weight-bold text-primary mr-2 zoom-out"><i class="fa fa-minus-circle"></i></span>
+
+                            <input id="zoom" type="text"data-slider-id='zoomSlider' data-slider-min="50" data-slider-max="150" data-slider-step="5" data-slider-value="85" />
+
+
+                            {{-- <span class="font-weight-bold text-primary mr-2 zoom-out"><i class="fa fa-minus-circle"></i></span>
                             <form class="range-field ml-0 mr-0">
                                 <input class="border-0" id="zoom" type="range" min="50" max="150" value="85" />
                             </form>
-                            <span class="font-weight-bold text-primary ml-2 zoom-in"><i class="fa fa-plus-circle"></i></span>
+                            <span class="font-weight-bold text-primary ml-2 zoom-in"><i class="fa fa-plus-circle"></i></span> --}}
+
+
                         </div>
                     </div>
 

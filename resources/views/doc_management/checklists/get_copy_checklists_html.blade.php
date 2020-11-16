@@ -45,14 +45,14 @@
             <h5 class="text-orange">Select which regions to export to</h5>
             <div class="export-to-form-groups-div">
 
-                <div class="row list-group-columns bg-white sticky-top mb-1 h5 text-primary">
+                <div class="row list-group-columns bg-white sticky-top mb-1 text-primary">
                     <div class="col-1"></div>
                     <div class="col-3">Region</div>
                     <div class="col">Requires Addenda</div>
                 </div>
                 <div class="list-group">
                     @foreach($form_groups as $form_group)
-                        <div class="list-group-item pt-1 pb-0 px-0">
+                        <div class="list-group-item p-1 mr-2">
                             <div class="row">
                                 <div class="col-2">
                                     <input type="checkbox" class="custom-form-element form-checkbox export-to-form-group" value="{{ $form_group -> resource_id }}">

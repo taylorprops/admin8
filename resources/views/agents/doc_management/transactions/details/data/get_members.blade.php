@@ -7,7 +7,7 @@
                     <a href="javascript: void(0)" id="add_member_button" class="btn btn-success"><i class="fa fa-plus mr-2"></i> Add Member</a>
                     <div class="list-group my-3 border-top
                     " id="members_tab" role="tablist">
-                        <a class="list-group-item list-group-item-action hidden font-weight-bold" id="add_member_group" data-toggle="list" href="#add_member_div" role="tab">New Contact</a>
+                        <a class="list-group-item list-group-item-action hide font-weight-bold" id="add_member_group" data-toggle="list" href="#add_member_div" role="tab">New Contact</a>
                         @foreach($members as $member)
                             @php
                             $member_type = $resource_items -> GetResourceName($member -> member_type_id);
@@ -41,8 +41,8 @@
                             @php
                             $disabled = $member -> disabled == true ? 'disabled' : '';
                             @endphp
-                        <div class="tab-pane animated fadeIn slow mt-0 {{ $disabled }} @if($loop -> first) show active @endif member-div" id="member_{{ $member -> id }}_div" role="tabpanel">
-                            <div class="h3-responsive text-orange mb-2">@if($member -> entity_name) {{ $member -> entity_name }} @elseif($member -> first_name) {{ $member -> first_name . ' ' . $member -> last_name }} @else {{ $member -> company }} @endif</div>
+                        <div class="tab-pane animate__animated animate__fadeIn animate__slow mt-0 {{ $disabled }} @if($loop -> first) show active @endif member-div" id="member_{{ $member -> id }}_div" role="tabpanel">
+                            <div class="h3 text-orange mb-2">@if($member -> entity_name) {{ $member -> entity_name }} @elseif($member -> first_name) {{ $member -> first_name . ' ' . $member -> last_name }} @else {{ $member -> company }} @endif</div>
                             <div class="card" id="member_div_{{ $member -> id }}">
                                 <div class="card-body">
 
@@ -175,7 +175,7 @@
 
                         @endforeach
 
-                        <div class="tab-pane animated fadeIn slow mt-0 member-div" id="add_member_div" role="tabpanel" aria-labelledby="add_member_group"></div>
+                        <div class="tab-pane animate__animated animate__fadeIn animate__slow mt-0 member-div" id="add_member_div" role="tabpanel" aria-labelledby="add_member_group"></div>
 
                     </div>
                 </div>
@@ -184,80 +184,4 @@
     </div>
 </div>
 
-<div class="modal fade draggable" id="confirm_delete_member_modal" tabindex="-1" role="dialog" aria-labelledby="delete_member_title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header draggable-handle">
-                <h4 class="modal-title" id="delete_member_title">Confirm</h4>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <i class="fal fa-times mt-2"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container text-center">Delete Member?</div>
-            </div>
-            <div class="modal-footer d-flex justify-content-around">
-                <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success modal-confirm-button" id="delete_member_button"><i class="fad fa-check mr-2"></i> Confirm</a>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade draggable" id="import_contact_modal" tabindex="-1" role="dialog" aria-labelledby="import_contact_modal_title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header draggable-handle">
-                <h4 class="modal-title" id="import_contact_modal_title">Select Contacts</h4>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <i class="fal fa-times mt-2"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container">
-                    <div class="table-responsive text-nowrap">
-                        <table id="contacts_table" class="table table-hover table-bordered table-sm" width="100%">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Last</th>
-                                    <th>First</th>
-                                    <th>Address</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($contacts as $contact)
-                                <tr>
-                                    <td>
-                                        <a href="javascript: void(0)"
-                                        class="btn btn-sm btn-primary add-contact-button"
-                                        data-contact-id="{{ $contact -> id }}"
-                                        data-contact-type-id="{{ $contact -> contact_type_id }}"
-                                        data-contact-first="{{ $contact -> contact_first }}"
-                                        data-contact-last="{{ $contact -> contact_last }}"
-                                        data-contact-company="{{ $contact -> contact_company }}"
-                                        data-contact-phone="{{ $contact -> contact_phone_cell }}"
-                                        data-contact-email="{{ $contact -> contact_email }}"
-                                        data-contact-street="{{ $contact -> contact_street }}"
-                                        data-contact-city="{{ $contact -> contact_city }}"
-                                        data-contact-state="{{ $contact -> contact_state }}"
-                                        data-contact-zip="{{ $contact -> contact_zip }}"
-                                        >Import</a>
-                                    </td>
-                                    <td>{{ $contact -> contact_last }}</td>
-                                    <td>{{ $contact -> contact_first }}</td>
-                                    <td>{{ $contact -> contact_street.' '.$contact -> contact_city.', '.$contact -> contact_state.' '.$contact -> contact_zip }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer d-flex justify-content-around">
-                <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success" id="save_import_contact_button"><i class="fad fa-check mr-2"></i> Add Contact</a>
-            </div>
-        </div>
-    </div>
-</div>

@@ -1,4 +1,4 @@
-<div class="h3-responsive text-secondary mb-4 property-type-div-header">{{ ucwords($checklist_type) }} Checklists</div>
+<div class="h3 text-secondary mb-4 property-type-div-header">{{ ucwords($checklist_type) }} Checklists</div>
 
 @php
 $checklist = $checklists_model -> where('checklist_type', 'referral') -> first();
@@ -24,9 +24,9 @@ $checklist = $checklists_model -> where('checklist_type', 'referral') -> first()
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="d-flex justify-content-start">
+                    <div class="d-flex justify-content-start align-items-center">
                         <div>
-                            <span class="chip checklist-items-chip bg-primary-light text-primary-dark">{{ $checklist -> checklist_count ?? 0 }}</span>
+                            <span class="badge bg-blue-light text-primary-dark rounded">{{ $checklist -> checklist_count ?? 0 }}</span>
                         </div>
                         <div>
                             <a href="javascript: void(0)"
@@ -77,7 +77,7 @@ $checklist = $checklists_model -> where('checklist_type', 'referral') -> first()
                 /* $in_use = $checklists_model -> isChecklistInUse($checklist -> id); */
                 @endphp
 
-                <div class="checklist-items-container border-bottom border-gray checklist-items-{{ $checklist_type }} @if($checklist_type == 'contract') hidden @endif" data-checklist-id="{{ $checklist -> id }}">
+                <div class="checklist-items-container border-bottom border-gray checklist-items-{{ $checklist_type }} @if($checklist_type == 'contract') hide @endif" data-checklist-id="{{ $checklist -> id }}">
                     <div class="row my-2">
                         <div class="col-6">
                             <div class="row mt-2 checklist-items">
@@ -104,9 +104,9 @@ $checklist = $checklists_model -> where('checklist_type', 'referral') -> first()
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="d-flex justify-content-start">
+                            <div class="d-flex justify-content-end align-items-center">
                                 <div>
-                                    <span class="chip checklist-items-chip bg-primary-light text-primary-dark">{{ $checklist -> checklist_count ?? 0 }}</span>
+                                    <span class="badge bg-primary-light text-primary-dark rounded">{{ $checklist -> checklist_count ?? 0 }}</span>
                                 </div>
                                 <div>
                                     <a href="javascript: void(0)"

@@ -94,7 +94,7 @@
 
             <div class="col-2 p-0 edit-file-sidebar">
                 <div class="file-view">
-                    <div class="h5-responsive text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>
+                    <div class="h5 text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>
                     <div class="field-list-container"></div>
                 </div>
             </div>
@@ -103,13 +103,13 @@
 
                 <div class="container-fluid p-0">
                     <div class="file-viewer-container mx-auto">
-                        <div class="file-view animated fadeIn" id="file_viewer">
+                        <div class="file-view animate__animated animate__fadeIn" id="file_viewer">
 
                             @foreach($images as $image)
 
                             <?php $c = $image -> page_number; ?>
 
-                                <div class="h5-responsive bg-primary p-2 text-center mb-0" id="page_{{ $c }}">
+                                <div class="h5 bg-primary p-2 text-center mb-0" id="page_{{ $c }}">
                                     <span class="badge">Page <?php echo $c.' of '.$total_pages; ?></span>
                                 </div>
                                 <div class="file-view-page-container border border-primary w-100 @if($loop -> first) active @endif" data-id="{{ $c }}">
@@ -122,7 +122,7 @@
                                         @endforeach
                                     </div>
                                 </div>
-                                <div class="h5-responsive text-white bg-primary p-2 mb-1 text-center">
+                                <div class="h5 text-white bg-primary p-2 mb-1 text-center">
                                     <span class="badge">End Page {{ $c }}</span>
                                 </div>
 
@@ -136,11 +136,11 @@
             </div>
 
             <div class="col-2 p-0 edit-file-sidebar">
-                <div class="file-view animated fadeIn" id="thumb_viewer">
-                    <div class="h5-responsive text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
+                <div class="file-view animate__animated animate__fadeIn" id="thumb_viewer">
+                    <div class="h5 text-white bg-primary-dark p-2"><i class="fad fa-send-backward mr-3"></i> Pages</div>
                     @foreach($images as $image)
                         @php $c = $image -> page_number; @endphp
-                        <div class="file-view-thumb-container animated w-50 mb-2 mx-auto @if($c == 1) active @endif" id="thumb_{{ $c }}" data-id="{{ $c }}">
+                        <div class="file-view-thumb-container w-50 mb-2 mx-auto @if($c == 1) active @endif" id="thumb_{{ $c }}" data-id="{{ $c }}">
                             <div class="file-view-thumb">
                                 <a href="javascript: void(0)"><img class="file-thumb w-100 h-100" src="{{ $image -> file_location }}"></a>
                             </div>

@@ -1,7 +1,10 @@
 header {
 
     .navbar {
-        padding: 0.2rem 1rem !important;
+
+    }
+    .navbar-dark .navbar-nav .nav-link {
+        color: #fff;
     }
 
     .header-logo {
@@ -27,7 +30,6 @@ header {
     .main-search-input::placeholder {
         color: white;
     }
-
 
 
 
@@ -58,6 +60,7 @@ header {
 
     .dropdown-menu {
         margin-top: 0;
+        padding: 5px 10px 5px 6px;
     }
     .dropdown-menu .dropdown-toggle::after {
         vertical-align: middle;

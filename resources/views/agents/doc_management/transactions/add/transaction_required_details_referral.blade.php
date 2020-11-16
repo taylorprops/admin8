@@ -7,14 +7,14 @@
     <div class="row">
         <div class="col-12">
 
-            <div class="h3-responsive text-orange mt-3 mt-sm-4 text-center w-100">{{ $referral -> FullStreetAddress }} {{ $referral -> City.', '.$referral -> StateOrProvince.' '.$referral -> PostalCode }}</div>
+            <div class="h3 text-orange mt-3 mt-sm-4 text-center w-100">{{ $referral -> FullStreetAddress }} {{ $referral -> City.', '.$referral -> StateOrProvince.' '.$referral -> PostalCode }}</div>
 
-            <div class="h4-responsive text-primary my-4 text-center">Just a few more details</div>
+            <div class="h4 text-primary my-4 text-center">Just a few more details</div>
 
             <form id="details_form" autocomplete="off">
                 <input autocomplete="false" name="hidden" type="text" style="display:none;">
 
-                <div class="container z-depth-1 mb-4 py-3">
+                <div class="container shadow mb-4 py-3">
 
                     <div class="row">
                         <div class="col-12">
@@ -68,7 +68,7 @@
 
                 </div>
 
-                <div class="container z-depth-1 mb-4 py-3">
+                <div class="container shadow mb-4 py-3">
 
                     <div class="row mt-4">
                         <div class="col-12">
@@ -89,7 +89,7 @@
                                             <div class="mb-4">Type the Agent's Name, Email or BrightMLS ID</div>
                                             <input type="text" class="custom-form-element form-input agent-search" data-label="Enter Agent's Name, Email or ID" autocomplete="agentsearch">
                                             <div class="search-results-container">
-                                                <div class="list-group search-results bg-white p-2 border z-depth-1 w-100"></div>
+                                                <div class="list-group search-results bg-white p-2 border shadow w-100"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -139,7 +139,7 @@
 
                 </div>
 
-                <div class="container z-depth-1 mb-4 py-3">
+                <div class="container shadow mb-4 py-3">
 
                     <div class="row">
                         <div class="col-12">

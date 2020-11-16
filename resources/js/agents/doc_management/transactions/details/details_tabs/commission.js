@@ -6,7 +6,25 @@ if (document.URL.match(/transaction_details/)) {
 
         $(document).on('keyup change', '.total', total_commission);
 
+        $(document).on('click', '#save_commission_button', function() {
+            save_commission('yes');
+        });
+
+
+
     });
+
+    window.show_title = function() {
+        $('#title_company_row').hide();
+        //$('#title_company').removeClass('required');
+        if($('#using_heritage').val() == 'no') {
+            $('#title_company_row').show();
+            //$('#title_company').addClass('required');
+        } else {
+            $('#title_company').val('Heritage Title, Ltd');
+        }
+    }
+
 
     window.total_commission = function() {
 
@@ -22,32 +40,71 @@ if (document.URL.match(/transaction_details/)) {
 
             let total = 0;
 
-            let checks_in = parseFloat($('#checks_in_total_value').val().replace(/[,\$]/g, ''));
-            let money_in_escrow = parseFloat($('#money_in_escrow').val().replace(/[,\$]/g, ''));
-            let admin_fee_from_title = parseFloat($('#admin_fee_from_title').val().replace(/[,\$]/g, ''));
-            let income_deductions = parseFloat($('#income_deductions_total_value').val().replace(/[,\$]/g, ''));
+            let checks_in = parseFloat($('#checks_in_total').val().replace(/[,\$]/g, ''));
+            let earnest_deposit_amount = parseFloat($('#earnest_deposit_amount').val().replace(/[,\$]/g, ''));
+            let income_deductions = parseFloat($('#income_deductions_total').val().replace(/[,\$]/g, ''));
             let admin_fee_from_client = parseFloat($('#admin_fee_from_client').val().replace(/[,\$]/g, ''));
+            let checks_out = parseFloat($('#checks_out_total').val().replace(/[,\$]/g, ''));
 
-            let total_income = (checks_in + money_in_escrow + admin_fee_from_title) - income_deductions - admin_fee_from_client;
+            let total_income = (checks_in + earnest_deposit_amount) - income_deductions - admin_fee_from_client;
 
-            $('#total_income').html(global_format_number_with_decimals(total_income.toString()));
-            $('#total_income_value').val(total_income);
+            $('#total_income_display').html(global_format_number_with_decimals(total_income.toString()));
+            $('#total_income').val(total_income);
 
             let agent_commission_percent = parseInt($('#agent_commission_percent').val()) / 100;
             let agent_commission_amount = total_income * agent_commission_percent;
             $('#agent_commission_amount').val(global_format_number_with_decimals(Math.floor(agent_commission_amount).toFixed(2)));
 
             let admin_fee_from_agent = parseFloat($('#admin_fee_from_agent').val().replace(/[,\$]/g, ''));
-            let commission_deductions = parseFloat($('#commission_deductions_total_value').val().replace(/[,\$]/g, ''));
+            let commission_deductions = parseFloat($('#commission_deductions_total').val().replace(/[,\$]/g, ''));
 
             let total_commission = agent_commission_amount - admin_fee_from_agent - commission_deductions;
 
-            $('#total_commission').html(global_format_number_with_decimals(total_commission.toString()));
-            $('#total_commission_value').val(total_commission);
+            $('#total_commission_to_agent_display').html(global_format_number_with_decimals(total_commission.toString()));
+            $('#total_commission_to_agent').val(total_commission);
+
+            let total_left = total_commission - checks_out;
+            $('#total_left_display').html(global_format_number_with_decimals(total_left.toString()));
+            $('#total_left').val(total_left);
+
+            $('.total-left').removeClass('bg-green-light text-success bg-orange-light text-danger');
+
+            if(total_left != '0.00') {
+                $('.total-left').addClass('bg-orange-light text-danger');
+            } else {
+                $('.total-left').addClass('bg-green-light text-success');
+            }
+
 
         }
 
 
+
+    }
+
+    window.save_commission = function (show_toastr) {
+
+        let Contract_ID = $('#Contract_ID').val();
+        let form = $('#commission_form');
+
+        let formData = new FormData();
+
+        form.find('.form-value').each(function() {
+            let val = $(this).val().replace(/[,\$]/g, '');
+            formData.append($(this).attr('id'), val);
+        });
+
+        formData.append('Contract_ID', Contract_ID);
+        axios.post('/agents/doc_management/transactions/save_commission', formData, axios_options)
+        .then(function (response) {
+            if(show_toastr == 'yes') {
+                toastr['success']('Commission Details Successfully Saved');
+            }
+            load_tabs('details');
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 
     }
 
@@ -91,8 +148,8 @@ if (document.URL.match(/transaction_details/)) {
             $('.delete-income-deduction-button').off('click').on('click', delete_income_deduction);
             income_deductions_total = global_format_number_with_decimals(income_deductions_total.toString());
             $('#deductions_total_value').val(income_deductions_total);
-            $('#income_deductions_total_value').val(income_deductions_total);
-            $('#income_deductions_total').text(income_deductions_total);
+            $('#income_deductions_total').val(income_deductions_total);
+            $('#income_deductions_total_display').text(income_deductions_total);
             $('#income_deductions_count').text(income_deductions_count);
 
             total_commission();
@@ -190,8 +247,8 @@ if (document.URL.match(/transaction_details/)) {
             $('.delete-commission-deduction-button').off('click').on('click', delete_commission_deduction);
             commission_deductions_total = global_format_number_with_decimals(commission_deductions_total.toString());
             $('#deductions_total_value').val(commission_deductions_total);
-            $('#commission_deductions_total_value').val(commission_deductions_total);
-            $('#commission_deductions_total').text(commission_deductions_total);
+            $('#commission_deductions_total').val(commission_deductions_total);
+            $('#commission_deductions_total_display').text(commission_deductions_total);
             $('#commission_deductions_count').text(commission_deductions_count);
 
             total_commission();
@@ -265,34 +322,17 @@ if (document.URL.match(/transaction_details/)) {
         })
         .then(function (response) {
             $('.checks-in-div').html(response.data);
-            $('#checks_in_total').text(global_format_number_with_decimals($('#checks_total').val().toString()));
-            $('#checks_in_total_value').val($('#checks_total').val().toString());
-            $('#checks_in_count').text($('#checks_count').val());
+            $('#checks_in_total_display').text(global_format_number_with_decimals($('#checks_in_total_amount').val().toString()));
+            $('#checks_in_total').val($('#checks_in_total_amount').val().toString());
+            $('#checks_in_count').text($('#checks_in_total_count').val());
             $('.delete-check-in-button').off('click').on('click', show_delete_check_in);
             $('.edit-check-in-button').off('click').on('click', show_edit_check_in);
-            $('#save_edit_check_in_button').off('click').on('click', save_edit_check_in);
+            //$('#save_edit_check_in_button').off('click').on('click', save_edit_check_in);
             $('.undo-delete-check-in-button').off('click').on('click', undo_delete_check_in)
-            $('.show-deleted-button').off('click').on('click', function() {
-                $('.inactive').toggleClass('hidden');
+            $('.show-deleted-in-button').off('click').on('click', function() {
+                $('.check-image-container.in.inactive').toggleClass('hidden');
             });
             total_commission();
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-
-    }
-
-    window.undo_delete_check_in = function() {
-
-        let Commission_ID = $('#Commission_ID').val();
-        let check_id = $(this).data('check-id');
-        let formData = new FormData();
-        formData.append('check_id', check_id);
-        axios.post('/agents/doc_management/transactions/undo_delete_check_in', formData, axios_options)
-        .then(function (response) {
-            get_checks_in(Commission_ID);
-            toastr['success']('Check Successfully Reactivated');
         })
         .catch(function (error) {
             console.log(error);
@@ -303,73 +343,27 @@ if (document.URL.match(/transaction_details/)) {
     window.show_add_check_in = function() {
 
         $('#add_check_in_modal').modal();
-
-        $('#check_upload').off('change').on('change', function () {
-
-            if($(this).val() != '') {
-
-                global_loading_on('', '<div class="h5 text-white">Scanning Check</div>');
-                let form = $('#add_check_in_form');
-                let formData = new FormData(form[0]);
-                axios.post('/agents/doc_management/transactions/get_check_in_details', formData, axios_options)
-                .then(function (response) {
-                    if(response.data.check_date) {
-                        $('#check_date').val(response.data.check_date).trigger('change');
-                        $('#check_amount').val(response.data.check_amount).trigger('change');
-                        $('#check_number').val(response.data.check_number).trigger('change');
-                    }
-                    $('.check-preview-div').html('<div class="border border-primary mt-2 check-preview"><img src="'+response.data.check_location+'" class="w-100"></div>');
-                    global_loading_off();
-
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            }
-
-        });
+        $('#add_check_in_modal').on('hidden.bs.modal', clear_add_check_form);
+        // shared with commission js
+        get_check_info();
 
     }
 
-    window.save_add_check_in = function() {
 
-        let form = $('#add_check_in_form');
-        let validate = validate_form(form);
-
-        if(validate == 'yes') {
-
-            $('#save_add_check_in_button').prop('disabled', true).html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Check...');
-            let formData = new FormData(form[0]);
-            let Commission_ID = $('#Commission_ID').val();
-            formData.append('Commission_ID', Commission_ID);
-
-            axios.post('/agents/doc_management/transactions/save_add_check_in', formData, axios_options)
-            .then(function (response) {
-                $('#add_check_in_modal').modal('hide');
-                toastr['success']('Check Successfully Added');
-                get_checks_in(Commission_ID);
-                clear_add_check_form();
-                $('#save_add_check_in_button').prop('disabled', false).html('<i class="fad fa-check mr-2"></i> Save');
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-        }
-
-    }
 
     window.show_edit_check_in = function() {
 
         $('#edit_check_in_modal').modal();
-        $('.edit-check-preview-div').html('<div class="border border-primary mt-2 check-preview"><img src="'+$(this).data('image-location')+'" class="w-100"></div>');
-        $('#edit_check_id').val($(this).data('check-id'));
-        $('#edit_check_date').val($(this).data('check-date'));
-        $('#edit_check_number').val($(this).data('check-number'));
-        $('#edit_check_amount').val($(this).data('check-amount'));
-        $('#edit_date_received').val($(this).data('date-received'));
-        $('#edit_date_deposited').val($(this).data('date-deposited'));
-        $('input').trigger('change');
+        //$('#edit_check_in_modal').on('hidden.bs.modal', clear_add_check_form);
+
+        $('.edit-check-in-preview-div').html('<div class="border border-primary mt-2 check-preview"><img src="'+$(this).data('image-location')+'" class="w-100"></div>');
+        $('#edit_check_in_id').val($(this).data('check-id'));
+        $('#edit_check_in_date').val($(this).data('check-date'));
+        $('#edit_check_in_number').val($(this).data('check-number'));
+        $('#edit_check_in_amount').val($(this).data('check-amount'));
+        $('#edit_check_in_date_received').val($(this).data('date-received'));
+        $('#edit_check_in_date_deposited').val($(this).data('date-deposited'));
+        //$('input')./* trigger('change') */;
 
         $('#save_edit_check_in_button').off('click').on('click', save_edit_check_in);
 
@@ -408,6 +402,7 @@ if (document.URL.match(/transaction_details/)) {
         axios.post('/agents/doc_management/transactions/save_delete_check_in', formData, axios_options)
         .then(function (response) {
             get_checks_in(Commission_ID);
+            toastr['success']('Check Successfully Deleted');
 
         })
         .catch(function (error) {
@@ -415,32 +410,346 @@ if (document.URL.match(/transaction_details/)) {
         });
     }
 
+    window.undo_delete_check_in = function() {
 
-    window.clear_add_check_form = function() {
-        $('#add_check_in_form').find('input').not('#date_received').val('').trigger('change');
-        $('.check-preview-div').html('');
+        let Commission_ID = $('#Commission_ID').val();
+        let check_id = $(this).data('check-id');
+        let formData = new FormData();
+        formData.append('check_id', check_id);
+        axios.post('/agents/doc_management/transactions/undo_delete_check_in', formData, axios_options)
+        .then(function (response) {
+            get_checks_in(Commission_ID);
+            toastr['success']('Check Successfully Reactivated');
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+
+    window.get_checks_out = function(Commission_ID) {
+
+        axios.get('/agents/doc_management/transactions/get_checks_out', {
+            params: {
+                Commission_ID: Commission_ID
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+            $('.checks-out-div').html(response.data);
+            $('#checks_out_total_display').text(global_format_number_with_decimals($('#checks_out_total_amount').val().toString()));
+            $('#checks_out_total').val($('#checks_out_total_amount').val().toString());
+            $('#checks_out_count').text($('#checks_out_total_count').val());
+            $('.delete-check-out-button').off('click').on('click', show_delete_check_out);
+            $('.edit-check-out-button').off('click').on('click', show_edit_check_out);
+            //$('#save_edit_check_out_button').off('click').on('click', save_edit_check_out);
+            $('.undo-delete-check-out-button').off('click').on('click', undo_delete_check_out)
+            $('.show-deleted-out-button').off('click').on('click', function() {
+                $('.check-image-container.out.inactive').toggleClass('hidden');
+            });
+            total_commission();
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+    window.show_add_check_out = function() {
+
+        $('#add_check_out_modal').modal();
+        $('#add_check_out_modal').on('hidden.bs.modal', clear_add_check_form);
+
+        $('#check_out_upload').off('change').on('change', function () {
+
+            if($(this).val() != '') {
+
+                $('#check_out_date, #check_out_amount, #check_out_number').val('');
+
+                global_loading_on('', '<div class="h5 text-white">Scanning Check</div>');
+                let form = $('#add_check_out_form');
+                let formData = new FormData(form[0]);
+                axios.post('/agents/doc_management/transactions/get_check_details', formData, axios_options)
+                .then(function (response) {
+                    if(response.data.check_date) {
+                        $('#check_out_date').val(response.data.check_date)/* .trigger('change') */;
+                        $('#check_out_amount').val(response.data.check_amount)/* .trigger('change') */;
+                        $('#check_out_number').val(response.data.check_number)/* .trigger('change') */;
+                        if(response.data.check_pay_to_agent_id) {
+                            $('#check_out_agent_id').val(response.data.check_pay_to_agent_id)/* .trigger('change') */;
+                            select_refresh();
+                        }
+                    }
+                    $('.check-out-preview-div').html('<div class="border border-primary mt-2 check-preview"><img src="'+response.data.check_location+'" class="w-100"></div>');
+                    global_loading_off();
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+
+        });
+
+        $('#check_out_agent_id').on('change', function() {
+            if($(this).val() != '') {
+                $('#check_out_recipient').val($(this).find('option:selected').data('recipient'))/* .trigger('change') */;
+            } else {
+                $('#check_out_recipient').val('')/* .trigger('change') */;
+            }
+        });
+
+        $('.mail-to-div').hide();
+        show_mail_to_address();
+        $('#check_out_delivery_method').on('change', function() {
+            show_mail_to_address();
+        });
+
+    }
+
+    function show_mail_to_address() {
+        if($('#check_out_delivery_method').val() == 'mail' || $('#check_out_delivery_method').val() == 'fedex') {
+            $('.mail-to-div').fadeIn();
+            $('.mail-to-div').find('input, select').addClass('required');
+        } else {
+            $('.mail-to-div').fadeOut();
+            $('.mail-to-div').find('input, select').removeClass('required');
+        }
+    }
+
+    window.save_add_check_out = function() {
+
+        let form = $('#add_check_out_form');
+        let validate = validate_form(form);
+
+        if(validate == 'yes') {
+
+            $('#save_add_check_out_button').prop('disabled', true).html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Check...');
+            let formData = new FormData(form[0]);
+            let Commission_ID = $('#Commission_ID').val();
+            formData.append('Commission_ID', Commission_ID);
+
+            axios.post('/agents/doc_management/transactions/save_add_check_out', formData, axios_options)
+            .then(function (response) {
+                $('#add_check_out_modal').modal('hide');
+                toastr['success']('Check Successfully Added');
+                get_checks_out(Commission_ID);
+                $('#save_add_check_out_button').prop('disabled', false).html('<i class="fad fa-check mr-2"></i> Save');
+                setTimeout(function() {
+                    save_commission('no');
+                }, 500);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        }
+
+    }
+
+    window.show_edit_check_out = function() {
+
+        $('#edit_check_out_modal').modal();
+        //$('#edit_check_out_modal').on('hidden.bs.modal', clear_add_check_form);
+
+        $('.edit-check-out-preview-div').html('<div class="border border-primary mt-2 check-preview"><img src="'+$(this).data('image-location')+'" class="w-100"></div>');
+
+        $('#edit_check_out_id').val($(this).data('check-id'));
+        $('#edit_check_out_date').val($(this).data('check-date'));
+        $('#edit_check_out_number').val($(this).data('check-number'));
+        $('#edit_check_out_amount').val($(this).data('check-amount'));
+
+        if($(this).data('recipient-agent-id') > 0) {
+            $('#edit_check_out_agent_id').val($(this).data('recipient-agent-id'));
+        }
+
+        $('#edit_check_out_recipient').val($(this).data('recipient'));
+        $('#edit_check_out_delivery_method').val($(this).data('delivery-method'));
+        $('#edit_check_out_date_ready').val($(this).data('date-ready'));
+        $('#edit_check_out_mail_to_street').val($(this).data('mail-to-street'));
+        $('#edit_check_out_mail_to_city').val($(this).data('mail-to-city'));
+        $('#edit_check_out_mail_to_state').val($(this).data('mail-to-state'));
+        $('#edit_check_out_mail_to_zip').val($(this).data('mail-to-zip'));
+        $('.edit-mail-to-div').hide();
+        if($(this).data('delivery-method') == 'mail' || $(this).data('delivery-method') == 'fedex') {
+            $('.edit-mail-to-div').show();
+        }
+
+        $('#edit_check_out_modal').find('.custom-form-element').each(function() {
+            if($(this).val() != '') {
+                $(this)/* .trigger('change') */;
+            }
+        });
+
+
+        $('#save_edit_check_out_button').off('click').on('click', save_edit_check_out);
+
+        $('.edit-mail-to-div').hide();
+        show_edit_mail_to_address();
+        $('#edit_check_out_delivery_method').on('change', function() {
+            show_edit_mail_to_address();
+        });
+
+        $('#edit_check_out_agent_id').on('change', function() {
+            if($(this).val() > 0) {
+                $('#edit_check_out_recipient').val($(this).find('option:selected').data('recipient'))/* .trigger('change') */;
+            } else {
+                $('#edit_check_out_recipient').val('');
+            }
+        });
+
+        select_refresh();
+
+    }
+
+    function show_edit_mail_to_address() {
+        if($('#edit_check_out_delivery_method').val() == 'mail' || $('#edit_check_out_delivery_method').val() == 'fedex') {
+            $('.edit-mail-to-div').fadeIn();
+            $('.edit-mail-to-div').find('input, select').addClass('required');
+        } else {
+            $('.edit-mail-to-div').fadeOut();
+            $('.edit-mail-to-div').find('input, select').removeClass('required');
+        }
+    }
+
+    window.save_edit_check_out = function() {
+
+        let Commission_ID = $('#Commission_ID').val();
+        let form = $('#edit_check_out_form');
+        let formData = new FormData(form[0]);
+
+        axios.post('/agents/doc_management/transactions/save_edit_check_out', formData, axios_options)
+        .then(function (response) {
+            get_checks_out(Commission_ID);
+            toastr['success']('Check Successfully Edited');
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    window.show_delete_check_out = function() {
+        let check_id = $(this).data('check-id');
+        $('#confirm_modal').modal().find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><div class="mr-3"><i class="fad fa-exclamation-circle fa-2x text-danger"></i></div><div class="text-center">Are you sure you want to delete this check?</div></div>');
+        $('#confirm_modal').modal().find('.modal-title').html('Delete Check');
+        $('#confirm_button').off('click').on('click', function() {
+            save_delete_check_out(check_id);
+        });
+    }
+
+    window.save_delete_check_out = function(check_id) {
+
+        let Commission_ID = $('#Commission_ID').val();
+        let formData = new FormData();
+        formData.append('check_id', check_id);
+        axios.post('/agents/doc_management/transactions/save_delete_check_out', formData, axios_options)
+        .then(function (response) {
+            get_checks_out(Commission_ID);
+            toastr['success']('Check Successfully Deleted')
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    window.undo_delete_check_out = function() {
+
+        let Commission_ID = $('#Commission_ID').val();
+        let check_id = $(this).data('check-id');
+        let formData = new FormData();
+        formData.append('check_id', check_id);
+        axios.post('/agents/doc_management/transactions/undo_delete_check_out', formData, axios_options)
+        .then(function (response) {
+            get_checks_out(Commission_ID);
+            toastr['success']('Check Successfully Reactivated');
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+    clear_add_check_form = function() {
+        $('#add_check_in_form, #edit_check_in_form, #add_check_out_form, #edit_check_out_form').find('input, select').val('')/* .trigger('change') */;
+        $('.check-in-preview-div, .edit-check-in-preview-div, .check-out-preview-div, .edit-check-out-preview-div').html('');
     }
 
 
     // Notes
-
-    window.get_commission_notes = function(Commission_ID) {
-
+    window.get_commission_notes = function() {
+        let Commission_ID = $('#Commission_ID').val();
+        axios.get('/agents/doc_management/transactions/get_commission_notes', {
+            params: {
+                Commission_ID: Commission_ID
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+            $('.notes-list-group').html(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
+
+    window.add_commission_notes = function() {
+
+        let Commission_ID = $('#Commission_ID').val();
+        let notes = $('.commission-notes-input').val();
+
+        let formData = new FormData();
+        formData.append('Commission_ID', Commission_ID);
+        formData.append('notes', notes);
+
+        axios.post('/agents/doc_management/transactions/add_commission_notes', formData, axios_options)
+        .then(function (response) {
+            get_commission_notes();
+            toastr['success']('Note Successfully Added');
+            $('.commission-notes-input').val('')/* .trigger('change') */;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+
 
     function popout() {
 
-        if(!$(this).closest('.popout-action').hasClass('bg-blue-light')) {
+        if($(this).hasClass('toggle-agent-info')) {
+            $('.agent-info-toggle').hide();
+        } else {
+            $('.agent-info-toggle').show();
+        }
 
-            let popout = $(this).closest('.popout-row').find('.popout');
-            /*
-            flipOutX flipInX
-            slideInLeft slideOutRight
-            */
+        let popout_row = $(this).closest('.popout-row');
+        let popout_action = popout_row.find('.popout-action');
+        let popout = popout_row.find('.popout');
+        if(!popout_action.hasClass('bg-blue-light')) {
+
             let anime_in = 'flipInX';
             let anime_out = 'flipOutX';
             $('.popout-action, .popout').removeClass('active bg-blue-light '+ anime_in+' '+anime_out);
-            $(this).closest('.popout-action').addClass('bg-blue-light');
+            popout_action.addClass('bg-blue-light');
 
             $('.popout').not(popout).addClass(anime_out).hide();
 
@@ -448,10 +757,6 @@ if (document.URL.match(/transaction_details/)) {
             if($(window).width() > 992) {
                 $('.popout.middle').css({ top: '-'+ ((popout.height() / 2) - 30) + 'px' });
             }
-
-            setTimeout(function() {
-                //$('.popout').removeClass('');
-            }, 100);
 
         }
 

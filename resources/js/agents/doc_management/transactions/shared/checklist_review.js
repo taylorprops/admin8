@@ -275,7 +275,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         // select and show form groups
         $('.select-form-group').on('change', function () {
             // clear search input
-            $('.form-search').val('').trigger('change');
+            $('.form-search').val('')/* .trigger('change') */;
 
             // if all show everything or just the selected group
             if ($(this).val() == 'all') {
@@ -300,7 +300,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
                 clear_selected_form();
 
                 $(this).addClass('selected');
-                $('#add_checklist_item_name').val('').trigger('change');
+                $('#add_checklist_item_name').val('')/* .trigger('change') */;
                 $(this).addClass('bg-green-light selected').find('.checked-div').removeClass('d-none').next('.form-name-display').removeClass('text-primary').addClass('text-success');
 
             }
@@ -439,7 +439,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
             let validate = validate_form(form);
             if (validate == 'yes') {
                 if (page_type == 'checklist') {
-                    global_loading_on('', '<div class="h3-responsive text-white">Updating Checklist Item and Adding To Comments</div>');
+                    global_loading_on('', '<div class="h3 text-white">Updating Checklist Item and Adding To Comments</div>');
                 }
                 let note = $('#rejected_reason').val();
                 checklist_item_review_status(ele, action, note);

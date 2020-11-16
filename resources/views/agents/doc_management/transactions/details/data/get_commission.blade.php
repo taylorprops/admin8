@@ -1,5 +1,21 @@
 <div class="container commission-container mx-auto p-1 pb-5 mb-5">
 
+    @php
+    $divider = '
+        <div class="row">
+            <div class="col-5">
+                <hr>
+            </div>
+        </div>
+    ';
+    $divider_full = '
+        <div class="row">
+            <div class="col-12">
+                <hr>
+            </div>
+        </div>
+    ';
+    @endphp
 
     <form id="commission_form">
 
@@ -10,77 +26,112 @@
                 <div class="row">
                     <div class="col-5"></div>
                     <div class="col-7">
-                        <div class="h5-responsive text-orange mb-2 mt-3 w-100 border-bottom">Property Details</div>
+                        <div class="h5 text-orange mb-2 mt-3 w-100 border-bottom">Property Details</div>
                     </div>
                 </div>
 
-                {{-- Sales Price --}}
+                {{-- Close Price --}}
                 <div class="row">
 
                     <div class="col-5">
-                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Sales Price
+                        <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="text-gray">Close Price</div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Close Price" data-content="This is the final close price on the ALTA. This is not the same as the Sales Price."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only pr-2 required" name="sales_price" id="sales_price" value="${{-- {{ number_format($property -> ContractPrice, 0) }} --}}">
-                        </div>
-                    </div>
-
-                </div>
-
-                {{-- Settle Date --}}
-                <div class="row">
-
-                    <div class="col-5">
-                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Settle Date
-                        </div>
-                    </div>
-                    <div class="col-7">
-                        <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input datepicker pr-2 required" name="settle_date" id="settle_date" value="{{-- {{ $property -> CloseDate }} --}}">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only pr-2 form-value" name="close_price" id="close_price" value="${{ number_format($property -> ClosePrice, 0) }}">
                         </div>
                     </div>
 
                 </div>
 
-                {{-- Represent Both Sides --}}
+                {{-- Close Date --}}
                 <div class="row">
 
                     <div class="col-5">
-                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Represent Both Sides
+                        <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="text-gray">Close Date</div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Close Date" data-content="This is the final close date on the ALTA. This is not the same as the Settle Date."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <select class="custom-form-element form-select form-select-no-search required" id="both_sides" name="both_sides">
+                            <input type="text" class="custom-form-element form-input datepicker pr-2 form-value" name="close_date" id="close_date" value="{{ $property -> CloseDate }}">
+                        </div>
+                    </div>
+
+                </div>
+
+                @if($rep_both_sides)
+                {{-- Work With Both Sides --}}
+                <div class="row">
+
+                    <div class="col-5">
+                        <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="text-gray">Work With Both Sides</div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Work With Both Sides" data-content="This is when an agent works with both parties even if they don't represent both parties."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="pr-4">
+                            <select class="custom-form-element form-select form-select-no-search form-value" id="both_sides" name="both_sides">
                                 <option value=""></option>
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
+                                <option value="yes" @if($commission -> both_sides == 'yes') selected @endif>Yes</option>
+                                <option value="no" @if($commission -> both_sides == 'no') selected @endif>No</option>
                             </select>
                         </div>
                     </div>
 
                 </div>
+                @else
+                <input type="hidden" class="form-value" id="both_sides" name="both_sides" value="no">
+                @endif
 
                 {{-- Using Heritage Title --}}
                 <div class="row">
 
                     <div class="col-5">
-                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Using Heritage Title
+                        <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="text-gray">Using Heritage Title</div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Using Heritage Title" data-content="Did the property sale settle at Heritage Title?"><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <select class="custom-form-element form-select form-select-no-search required" id="using_heritage" name="using_heritage">
+                            <select class="custom-form-element form-select form-select-no-search form-value" id="using_heritage" name="using_heritage">
                                 <option value=""></option>
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
+                                <option value="yes" @if($property -> UsingHeritage == 'yes') selected @endif>Yes</option>
+                                <option value="no" @if($property -> UsingHeritage == 'no') selected @endif>No</option>
                             </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                {{-- Title Company --}}
+                <div class="row" id="title_company_row">
+
+                    <div class="col-5">
+                        <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="text-gray">Title Company</div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Title Company" data-content="Enter the Title Company used"><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="pr-4">
+                            <input type="text" class="custom-form-element form-input form-value" id="title_company" name="title_company" data-label="Title Company" value="{{ $property -> TitleCompany }}">
                         </div>
                     </div>
 
@@ -90,7 +141,7 @@
 
             <div class="col-7">
 
-                <div class="p-2">
+                <div class="ml-5 mt-2 p-2">
 
                     <ul class="nav nav-tabs" id="options_tab" role="tablist">
                         <li class="nav-item">
@@ -101,13 +152,13 @@
                         </li>
                     </ul>
 
-                    <div class="tab-content border-left border-bottom border-right pt-2 pb-1" id="options_tab_content">
+                    <div class="tab-content border-left border-bottom border-right p-3" id="options_tab_content">
 
                         <div class="tab-pane fade show active" id="agent_details_div" role="tabpanel" aria-labelledby="agent_details_tab">
 
                             <div class="agent-details-div">
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-6">
 
                                         <div class="font-weight-bold font-11 text-primary">{{ $agent -> full_name }}</div>
 
@@ -132,57 +183,9 @@
 
                                     </div>
 
-                                    <div class="col-4">
 
-                                        <div class="p-2 text-gray">
 
-                                            @if(!stristr($agent -> company, 'referral'))
-
-                                                <div class="d-flex justify-content-between">
-                                                    <div>Admin Fee Amount</div>
-                                                    <div>${{ $for_sale == true ? $agent -> admin_fee : $agent -> admin_fee_rentals }}</div>
-                                                </div>
-
-                                                <div class="d-flex justify-content-between @if($agent -> balance > 0) text-danger @endif">
-                                                    <div>Balance Dues</div>
-                                                    <div>${{ number_format($agent -> balance, 2) ?? '0.00' }}</div>
-                                                </div>
-
-                                                <div class="d-flex justify-content-between @if($agent -> balance_eno > 0) text-danger @endif">
-                                                    <div>Balance E&O</div>
-                                                    <div>${{ number_format($agent -> balance_eno, 2) ?? '0.00' }}</div>
-                                                </div>
-
-                                                @if($agent -> office_rent_amount > 0 || $agent -> balance_rent != 0)
-                                                    <div class="d-flex justify-content-between @if($agent -> balance_rent > 0) text-danger @endif">
-                                                        <div>Balance Rent</div>
-                                                        <div>${{ number_format($agent -> balance_rent, 2) ?? '0.00' }}</div>
-                                                    </div>
-                                                @endif
-
-                                                <hr class="my-1">
-
-                                                <div class="d-flex justify-content-between">
-                                                    <div>Auto Billed</div>
-                                                    <div>{{ $agent -> auto_bill == 'on' ? 'Yes' : 'No' }}</div>
-                                                </div>
-
-                                                <div class="d-flex justify-content-between">
-                                                    <div>Commission</div>
-                                                    <div>{{ ucwords($agent -> commission_percent) }}% - Plan {{ ucwords($agent -> commission_plan) }}</div>
-                                                </div>
-
-                                            @endif
-
-                                            @if($agent -> owe_other == 'yes')
-                                                <div class="wage-garnishments p-1 mt-1 bg-orange-light text-danger rounded">{!! nl2br($agent -> owe_other_notes) !!}</div>
-                                            @endif
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-4">
+                                    <div class="col-6">
 
                                         <div class="font-weight-bold text-primary">Agent Account Notes</div>
 
@@ -204,7 +207,24 @@
 
                         <div class="tab-pane fade" id="notes_div" role="tabpanel" aria-labelledby="notes_tab">
 
+                            <div class="px-5">
 
+                                <div class="commission-notes-div border-bottom">
+                                    <ul class="list-group notes-list-group"></ul>
+                                </div>
+
+                                <div class="row no-gutters bg-blue-light d-flex align-items-center py-2 px-4 mt-3 rounded">
+                                    <div class="col-11">
+                                        <div>
+                                            <input type="text" class="custom-form-element form-input commission-notes-input" data-label="Add Notes"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-1">
+                                        <a href="javascript: void(0)" class="btn btn-success save-commission-notes-button ml-2"><i class="fa fa-save"></i></a>
+                                    </div>
+                                </div>
+
+                            </div>
 
                         </div>
 
@@ -223,7 +243,7 @@
                 <div class="row">
                     <div class="col-5"></div>
                     <div class="col-7">
-                        <div class="h5-responsive text-orange mb-4 w-100 border-bottom">Income</div>
+                        <div class="h5 text-orange my-4 w-100 border-bottom">Income</div>
                     </div>
                 </div>
             </div>
@@ -236,9 +256,14 @@
 
                 <div class="row">
 
-                    <div class="col-5 text-gray">
-                        <div class="py-3 text-right">
-                            Checks In
+                    <div class="col-5">
+                        <div class="d-flex justify-content-end align-items-center mt-3">
+                            <div class="text-primary text-right show-view-add-button">
+                                Checks In
+                            </div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Checks In" data-content="Add all checks from other Brokers, Title Companies, etc."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
 
@@ -246,12 +271,12 @@
                         <div class="popout-action pr-1 pr-lg-4 py-2 bg-blue-light">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <a href="javascript: void(0)" class="btn btn-sm btn-primary show-view-add-button">View/Add</a>
+                                    <a href="javascript: void(0)" class="btn btn-primary show-view-add-button">View/Add <i class="fal fa-plus ml-2"></i></a>
                                 </div>
                                 <div class="badge badge-pill badge-primary py-1" id="checks_in_count"></div>
                                 <div class="mr-2 font-10 text-success">
-                                    <span id="checks_in_total"></span>
-                                    <input type="hidden" id="checks_in_total_value" name="checks_in_total_value" class="total">
+                                    <span id="checks_in_total_display"></span>
+                                    <input type="hidden" id="checks_in_total" name="checks_in_total" class="total form-value">
                                 </div>
                             </div>
 
@@ -266,18 +291,18 @@
 
                     <div class="popout-div mr-3">
 
-                        <div class="popout top animated fast flipInX w-100 bg-blue-light active">
+                        <div class="popout top animate__animated animate__fast animate__flipInX w-100 bg-blue-light active">
 
-                            <div class="px-3 pb-3 pt-1">
+                            <div class="px-3 py-1">
 
                                 <div class="d-flex justify-content-start align-items-center mb-3">
                                     <div class="h4 mt-2 text-primary">Checks In</div>
                                     <div class="ml-4">
-                                        <a href="javascript: void(0)" class="btn btn-sm btn-success add-check-in-button"><i class="fa fa-plus mr-2"></i> Add</a>
+                                        <a href="javascript: void(0)" class="btn btn-success add-check-in-button"><i class="fa fa-plus mr-2"></i> Add</a>
                                     </div>
                                 </div>
 
-                                <div class="view-add-div checks-in-div p-1 p-sm-2 p-md-4">
+                                <div class="view-add-div checks-in-div p-1 p-sm-2">
 
                                 </div>
 
@@ -293,62 +318,32 @@
 
         </div>
 
-        {{-- Money In Escrow --}}
+        @if($property -> EarnestHeldBy == 'us')
+        {{-- Earnest Deposit --}}
         <div class="row">
 
             <div class="col-12 col-lg-5 pr-2 pr-lg-0">
                 <div class="row">
                     <div class="col-5">
-                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Money In Escrow
+                        <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="text-gray">Earnest Deposit</div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Earnest Deposit" data-content="This amount cannot be changed. If we are holding earnest the number will be imported from the Earnest Deposit tab."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2 total" name="money_in_escrow" id="money_in_escrow">
+                            <input type="text" class="custom-form-element form-input money-decimal text-success text-right pr-2 total form-value readonly" name="earnest_deposit_amount" id="earnest_deposit_amount" value="{{ $property -> EarnestAmount ?? 0 }}" readonly>
                         </div>
                     </div>
                 </div>
             </div>
 
         </div>
+        @endif
 
-        {{-- Admin Fee - From Title --}}
-        <div class="row">
-
-            <div class="col-12 col-lg-5 pr-2 pr-lg-0">
-
-                <div class="row">
-                    <div class="col-5">
-                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Admin Fee - From Title
-                        </div>
-                    </div>
-                    <div class="col-7">
-                        <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-success text-right pr-2 total" name="admin_fee_from_title" id="admin_fee_from_title">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="row">
-
-            <div class="col-12 col-lg-5 pr-2 pr-lg-0">
-
-                <div class="row">
-                    <div class="col-5"></div>
-                    <div class="col-7 mt-2">
-                        <div class="h5-responsive text-orange mb-4 w-100 border-bottom">Income Deductions</div>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
+        {!! $divider !!}
 
         {{-- Income Deductions --}}
         <div class="row popout-row">
@@ -357,9 +352,14 @@
 
                 <div class="row">
 
-                    <div class="col-5 text-gray">
-                        <div class="py-3 text-right">
-                            Income Deductions
+                    <div class="col-5">
+                        <div class="d-flex justify-content-end align-items-center mt-3">
+                            <div class="text-primary text-right show-view-add-button">
+                                Income Deductions
+                            </div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Income Deductions" data-content="Use this for any portions of the checks that are not income. Situations would include payment to another agent in our company who worked on the opposite side of the transaction."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
 
@@ -367,12 +367,12 @@
                         <div class="popout-action pr-1 pr-lg-4 py-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <a href="javascript: void(0)" class="btn btn-sm btn-primary show-view-add-button">View/Add</a>
+                                    <a href="javascript: void(0)" class="btn btn-primary show-view-add-button">View/Add <i class="fal fa-plus ml-2"></i></a>
                                 </div>
                                 <div class="badge badge-pill badge-primary py-1" id="income_deductions_count"></div>
                                 <div class="mr-2 font-10 text-danger">
-                                    <span id="income_deductions_total"></span>
-                                    <input type="hidden" id="income_deductions_total_value" name="income_deductions_total_value" class="total">
+                                    <span id="income_deductions_total_display"></span>
+                                    <input type="hidden" id="income_deductions_total" name="income_deductions_total" class="total form-value">
                                 </div>
                             </div>
 
@@ -389,14 +389,14 @@
 
                     <div class="popout-div mr-3">
 
-                        <div class="popout top animated fast flipInX w-100">
+                        <div class="popout top animate__animated animate__fast animate__flipInX w-100">
 
                             <div class="px-1 px-sm-3 pb-3 pt-1">
 
                                 <div class="d-flex justify-content-start align-items-center">
                                     <div class="h4 mt-2 text-primary">Income Deductions</div>
                                     <div class="ml-4">
-                                        <a class="btn btn-sm btn-success" data-toggle="collapse" href="#add_income_deduction_div" role="button" aria-expanded="false" aria-controls="add_income_deduction_div"><i class="fa fa-plus mr-2"></i> Add</a>
+                                        <a class="btn btn-success" data-toggle="collapse" href="#add_income_deduction_div" role="button" aria-expanded="false" aria-controls="add_income_deduction_div"><i class="fa fa-plus mr-2"></i> Add</a>
                                     </div>
                                 </div>
 
@@ -444,13 +444,16 @@
             <div class="col-12 col-lg-5 pr-2 pr-lg-0">
                 <div class="row">
                     <div class="col-5">
-                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Admin Fee - Paid By Client
+                        <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="text-gray">Admin Fee - Paid By Client</div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Admin Fee - Paid By Client" data-content="This is the final close date on the ALTA. This is not the same as the Settle Date."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-danger text-right pr-2 total" name="admin_fee_from_client" id="admin_fee_from_client">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-danger text-right pr-2 total form-value" id="admin_fee_from_client" id="admin_fee_from_client" value="{{ $commission -> admin_fee_from_client }}">
                         </div>
                     </div>
                 </div>
@@ -458,10 +461,12 @@
 
         </div>
 
+        {!! $divider !!}
+
         {{-- Total Income --}}
         <div class="row no-gutters">
 
-            <div class="col-12 col-lg-5 border-top py-2">
+            <div class="col-12 col-lg-5 py-2">
 
                 <div class="row">
                     <div class="col-5">
@@ -470,11 +475,11 @@
                         </div>
                     </div>
                     <div class="col-7">
-                        <div class="bg-green-light text-white rounded p-2 mr-4">
+                        <div class="bg-green-light rounded p-2 mr-4">
                             <div class="d-flex justify-content-end">
                                 <div class="mr-1 font-10 text-success">
-                                    <span id="total_income"></span>
-                                    <input type="hidden" id="total_income_value" name="total_income_value">
+                                    <span id="total_income_display"></span>
+                                    <input type="hidden" class="form-value" id="total_income" name="total_income">
                                 </div>
                             </div>
 
@@ -489,18 +494,21 @@
         {{-- Agent Commission % --}}
         <div class="row no-gutters">
 
-            <div class="col-12 col-lg-5  py-2 border-bottom">
+            <div class="col-12 col-lg-5 py-2">
                 <div class="row">
                     <div class="col-5">
-                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Agent Commission
+                        <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="text-gray">Agent Commission %</div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Agent Commission %" data-content="The agents commission percentage."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
                             <div class="d-flex justify-content-start align-items-center">
                                 <div class="agent-commission percent d-flex justify-content-start align-items-center">
-                                    <select class="custom-form-element form-select form-select-no-search form-select-no-cancel text-center total" name="agent_commission_percent" id="agent_commission_percent" >
+                                    <select class="custom-form-element form-select form-select-no-search form-select-no-cancel text-center total form-value" id="agent_commission_percent" id="agent_commission_percent" >
                                         <option value=""></option>
                                         @foreach($commission_percentages as $percent)
                                         <option value="{{ $percent }}" @if($percent == $agent -> commission_percent) selected @endif>{{ $percent }}</option>
@@ -508,9 +516,9 @@
                                     </select>
                                     <i class="fal fa-percentage text-primary ml-1"></i>
                                 </div>
-                                <div class="mx-5"></div>
+                                <div class="d-none d-xl-block mx-5"></div>
                                 <div class="w-100">
-                                    <input type="text" class="custom-form-element form-input text-success text-right pr-2 total" readonly name="agent_commission_amount" id="agent_commission_amount">
+                                    <input type="text" class="custom-form-element form-input text-success text-right pr-2 total readonly" readonly name="agent_commission_amount" id="agent_commission_amount">
                                 </div>
                             </div>
                         </div>
@@ -520,19 +528,94 @@
 
         </div>
 
-        {{-- Commission Deductions --}}
+        {!! $divider !!}
+
+        {{-- Commission Deductions Header --}}
         <div class="row">
             <div class="col-5">
                 <div class="row">
                     <div class="col-5"></div>
                     <div class="col-7">
-                        <div class="h5-responsive text-orange mb-2 mt-3 w-100 border-bottom">Commission Deductions</div>
+                        <div class="h5 text-orange mb-2 mt-3 w-100 border-bottom">Commission Deductions</div>
                     </div>
                 </div>
             </div>
+            <div class="col-7">
+
+                @if(!stristr($agent -> company, 'referral'))
+
+                    <div class="agent-info-container ml-5">
+
+                        <div class="p-2 text-gray agent-info-toggle">
+
+                            <ul class="nav nav-tabs" id="billing_details_tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link options-tab active" id="billing_details_tab" data-toggle="tab" href="#billing_details_div" role="tab" aria-controls="billing_details_div" aria-selected="true">Agent Billing Details</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content border-left border-bottom border-right p-3" id="billing_details_div">
+
+                                <div class="row">
+
+                                    <div class="col-12 col-md-6">
+
+                                        <div class="d-flex justify-content-between">
+                                            <div>Admin Fee Amount</div>
+                                            <div>${{ $for_sale ? $agent -> admin_fee : $agent -> admin_fee_rentals }}</div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between @if($agent -> balance > 0) text-danger @endif">
+                                            <div>Balance Dues</div>
+                                            <div>${{ number_format($agent -> balance, 2) ?? '0.00' }}</div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between @if($agent -> balance_eno > 0) text-danger @endif">
+                                            <div>Balance E&O</div>
+                                            <div>${{ number_format($agent -> balance_eno, 2) ?? '0.00' }}</div>
+                                        </div>
+
+                                        @if($agent -> office_rent_amount > 0 || $agent -> balance_rent != 0)
+                                            <div class="d-flex justify-content-between @if($agent -> balance_rent > 0) text-danger @endif">
+                                                <div>Balance Rent</div>
+                                                <div>${{ number_format($agent -> balance_rent, 2) ?? '0.00' }}</div>
+                                            </div>
+                                        @endif
+
+                                        <hr class="my-1">
+
+                                        <div class="d-flex justify-content-between">
+                                            <div>Auto Billed</div>
+                                            <div>{{ $agent -> auto_bill == 'on' ? 'Yes' : 'No' }}</div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between">
+                                            <div>Commission</div>
+                                            <div>{{ ucwords($agent -> commission_percent) }}% - Plan {{ ucwords($agent -> commission_plan) }}</div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+
+                                        @if($agent -> owe_other == 'yes')
+                                            <div class="wage-garnishments p-1 mt-1 bg-orange-light text-danger rounded">{!! nl2br($agent -> owe_other_notes) !!}</div>
+                                        @endif
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                @endif
+
+            </div>
         </div>
-
-
 
         {{-- Admin Fee - Paid By Agent --}}
         <div class="row">
@@ -540,13 +623,16 @@
             <div class="col-12 col-lg-5 pr-2 pr-lg-0">
                 <div class="row">
                     <div class="col-5">
-                        <div class="h-100 text-gray d-flex justify-content-end align-items-center">
-                            Admin Fee - Paid By Agent
+                        <div class="h-100 d-flex justify-content-end align-items-center">
+                            <div class="text-gray">Admin Fee - Paid By Agent</div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Admin Fee - Paid By Agent" data-content="If the client did not pay the admin fee add it here to be deducted from the agent's commission."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="pr-4">
-                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-danger text-right pr-2 total" name="admin_fee_from_agent" id="admin_fee_from_agent">
+                            <input type="text" class="custom-form-element form-input money-decimal numbers-only text-danger text-right pr-2 total form-value" id="admin_fee_from_agent" id="admin_fee_from_agent" value="{{ $commission -> admin_fee_from_agent }}">
                         </div>
                     </div>
                 </div>
@@ -562,8 +648,13 @@
                 <div class="row">
 
                     <div class="col-5 text-gray">
-                        <div class="py-3 text-right">
-                            Commission Deductions
+                        <div class="d-flex justify-content-end align-items-center mt-3">
+                            <div class="text-primary text-right show-view-add-button toggle-agent-info">
+                                Commission Deductions
+                            </div>
+                            <div>
+                                <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Commission Deductions" data-content="Use this for any deductions from the agent's commission. Examples include wage garnishments, child support and dues payments."><i class="fad fa-question-circle ml-2"></i></a>
+                            </div>
                         </div>
                     </div>
 
@@ -571,12 +662,12 @@
                         <div class="popout-action pr-1 pr-lg-4 py-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <a href="javascript: void(0)" class="btn btn-sm btn-primary show-view-add-button">View/Add</a>
+                                    <a href="javascript: void(0)" class="btn btn-primary show-view-add-button toggle-agent-info">View/Add <i class="fal fa-plus ml-2"></i></a>
                                 </div>
                                 <div class="badge badge-pill badge-primary py-1" id="commission_deductions_count"></div>
                                 <div class="mr-2 font-10 text-danger">
-                                    <span id="commission_deductions_total"></span>
-                                    <input type="hidden" id="commission_deductions_total_value" name="commission_deductions_total_value" class="total">
+                                    <span id="commission_deductions_total_display"></span>
+                                    <input type="hidden" id="commission_deductions_total" name="commission_deductions_total" class="total form-value">
                                 </div>
                             </div>
 
@@ -593,38 +684,117 @@
 
                     <div class="popout-div mr-3 h-100">
 
-                        <div class="popout bottom animated fast flipInX w-100">
+                        <div class="popout bottom animate__animated animate__fast animate__flipInX w-100">
 
                             <div class="px-1 px-sm-3 pb-3 pt-1">
 
                                 <div class="d-flex justify-content-start align-items-center">
                                     <div class="h4 mt-2 text-primary">Commission Deductions</div>
                                     <div class="ml-4">
-                                        <a class="btn btn-sm btn-success" data-toggle="collapse" href="#add_commission_deduction_div" role="button" aria-expanded="false" aria-controls="add_commission_deduction_div"><i class="fa fa-plus mr-2"></i> Add</a>
+                                        <a class="btn btn-success" data-toggle="collapse" href="#add_commission_deduction_div" role="button" aria-expanded="false" aria-controls="add_commission_deduction_div"><i class="fa fa-plus mr-2"></i> Add</a>
                                     </div>
                                 </div>
 
-                                <div class="view-add-div">
 
-                                    <div class="collapse" id="add_commission_deduction_div">
+                                <div class="row">
 
-                                        <div class="d-flex flex-wrap justify-content-start align-items-center">
-                                            <div class="mr-2">
-                                                <input type="text" class="custom-form-element form-input required" name="commission_deduction_description" id="commission_deduction_description" data-label="Enter Description">
-                                            </div>
-                                            <div class="mr-2">
-                                                <input type="text" class="custom-form-element form-input money-decimal numbers-only required" name="commission_deduction_amount" id="commission_deduction_amount" data-label="Enter Amount">
-                                            </div>
-                                            <div>
-                                                <div class="d-flex justify-content-start align-items-center h-100">
-                                                    <a href="javascript: void(0);" class="btn btn-sm btn-success" id="save_add_commission_deduction_button"><i class="fad fa-save mr-2"></i> Save</a>
-                                                    <a class="btn btn-sm btn-danger" data-toggle="collapse" href="#add_commission_deduction_div" role="button" aria-expanded="false" aria-controls="add_commission_deduction_div"><i class="fad fa-ban"></i></a>
+                                    <div class="col-7">
+
+                                        <div class="view-add-div">
+
+                                            <div class="collapse" id="add_commission_deduction_div">
+
+                                                <div class="bg-white rounded p-2 mt-3">
+                                                    <div class="row">
+                                                        <div class="col-12 col-md-8">
+                                                            <input type="text" class="custom-form-element form-input required" name="commission_deduction_description" id="commission_deduction_description" data-label="Enter Description">
+                                                        </div>
+                                                        <div class="col-12 col-md-4">
+                                                            <input type="text" class="custom-form-element form-input money-decimal numbers-only required" name="commission_deduction_amount" id="commission_deduction_amount" data-label="Enter Amount">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="d-flex justify-content-around align-items-center">
+                                                                <div>
+                                                                    <a href="javascript: void(0);" class="btn btn-sm btn-success" id="save_add_commission_deduction_button"><i class="fad fa-save mr-2"></i> Save</a>
+                                                                    <a class="btn btn-sm btn-danger" data-toggle="collapse" href="#add_commission_deduction_div" role="button" aria-expanded="false" aria-controls="add_commission_deduction_div"><i class="fad fa-ban"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
+
                                             </div>
+
+                                            <div class="p-1 p-sm-2 p-md-4">
+                                                <div class="list-group commission-deductions-div"></div>
+                                            </div>
+
+                                            <div class="col-12 mt-3">
+
+                                                @if($agent -> owe_other == 'yes')
+                                                    <div class="wage-garnishments p-1 mt-1 bg-orange-light text-danger rounded">{!! nl2br($agent -> owe_other_notes) !!}</div>
+                                                @endif
+
+                                            </div>
+
                                         </div>
+
                                     </div>
-                                    <div class="p-1 p-sm-2 p-md-4">
-                                        <div class="list-group commission-deductions-div"></div>
+
+                                    <div class="col-5">
+
+                                        <div class="p-2 text-gray">
+
+                                            @if(!stristr($agent -> company, 'referral'))
+
+                                                <div class="row">
+
+                                                    <div class="col-12">
+
+                                                        <div class="d-flex justify-content-between">
+                                                            <div>Admin Fee Amount</div>
+                                                            <div>${{ $for_sale ? $agent -> admin_fee : $agent -> admin_fee_rentals }}</div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between @if($agent -> balance > 0) text-danger @endif">
+                                                            <div>Balance Dues</div>
+                                                            <div>${{ number_format($agent -> balance, 2) ?? '0.00' }}</div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between @if($agent -> balance_eno > 0) text-danger @endif">
+                                                            <div>Balance E&O</div>
+                                                            <div>${{ number_format($agent -> balance_eno, 2) ?? '0.00' }}</div>
+                                                        </div>
+
+                                                        @if($agent -> office_rent_amount > 0 || $agent -> balance_rent != 0)
+                                                            <div class="d-flex justify-content-between @if($agent -> balance_rent > 0) text-danger @endif">
+                                                                <div>Balance Rent</div>
+                                                                <div>${{ number_format($agent -> balance_rent, 2) ?? '0.00' }}</div>
+                                                            </div>
+                                                        @endif
+
+                                                        <hr class="my-1">
+
+                                                        <div class="d-flex justify-content-between">
+                                                            <div>Auto Billed</div>
+                                                            <div>{{ $agent -> auto_bill == 'on' ? 'Yes' : 'No' }}</div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between">
+                                                            <div>Commission</div>
+                                                            <div>{{ ucwords($agent -> commission_percent) }}% - Plan {{ ucwords($agent -> commission_plan) }}</div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            @endif
+
+                                        </div>
+
                                     </div>
 
                                 </div>
@@ -642,152 +812,170 @@
         </div>
 
         {{-- Total Commission to Agent --}}
-        <div class="row no-gutters">
+        <div class="row no-gutters pr-2">
 
-            <div class="col-12 col-lg-5 border-top border-bottom py-2">
+            <div class="col-12 col-lg-5">
+
+                <div class="rounded py-3 my-3 mr-3 bg-green-light">
+
+                    <div class="col-12">
+
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="h-100 font-10 d-flex text-success justify-content-end align-items-center">
+                                    Total Commission To Agent
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="d-flex justify-content-end">
+                                    <div class="mr-1 text-success">
+                                        <span id="total_commission_to_agent_display"></span>
+                                        <input type="hidden" class="form-value" id="total_commission_to_agent" name="total_commission_to_agent">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {{-- Save --}}
+        <div class="row pr-2">
+
+            <div class="col-12 col-lg-5">
+
+                <div class="d-flex justify-content-center pt-3">
+
+                    <a href="javascript: void(0)" class="btn btn-lg btn-success" id="save_commission_button"><i class="fa fa-save mr-2"></i> Save Commission</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {!! $divider_full !!}
+
+        {{-- Checks Out Header --}}
+        <div class="row">
+            <div class="col-5">
+                <div class="row">
+                    <div class="col-5"></div>
+                    <div class="col-7">
+                        <div class="h5 text-orange mb-2 mt-3 w-100 border-bottom">Checks Out</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Checks Out --}}
+        <div class="row popout-row">
+
+            <div class="col-12 col-lg-5 pr-3 pr-lg-0">
 
                 <div class="row">
-                    <div class="col-5">
-                        <div class="h-100 font-10 d-flex text-success justify-content-end align-items-center">
-                            Total Commission To Agent
+
+                    <div class="col-5 text-gray">
+                        <div class="text-primary mt-3 text-right show-view-add-button toggle-agent-info">
+                            Checks Out
                         </div>
                     </div>
+
                     <div class="col-7">
-                        <div class="bg-green-light text-white rounded p-2 mr-4">
-                            <div class="d-flex justify-content-end">
-                                <div class="mr-1 font-12 text-success">
-                                    <span id="total_commission"></span>
-                                    <input type="hidden" id="total_commission_value" name="total_commission_value">
+                        <div class="popout-action pr-1 pr-lg-4 py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="javascript: void(0)" class="btn btn-primary show-view-add-button toggle-agent-info">View/Add <i class="fal fa-plus ml-2"></i></a>
+                                </div>
+                                <div class="badge badge-pill badge-primary py-1" id="checks_out_count"></div>
+                                <div class="mr-2 font-10 text-danger">
+                                    <span id="checks_out_total_display"></span>
+                                    <input type="hidden" id="checks_out_total" name="checks_out_total" class="total form-value">
                                 </div>
                             </div>
 
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-12 col-lg-7 p-lg-0">
+
+                <div class="pr-2">
+
+                    <div class="popout-div mr-3">
+
+                        <div class="popout bottom animate__animated animate__fast animate__flipInX w-100">
+
+                            <div class="px-3 pb-3 pt-1">
+
+                                <div class="d-flex justify-content-start align-items-center mb-3">
+                                    <div class="h4 mt-2 text-primary">Checks Out</div>
+                                    <div class="ml-4">
+                                        <a href="javascript: void(0)" class="btn btn-success add-check-out-button"><i class="fa fa-plus mr-2"></i> Add</a>
+                                    </div>
+                                </div>
+
+                                <div class="view-add-div checks-out-div p-1">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
+        {!! $divider !!}
+
+        {{-- Total Left --}}
+        <div class="row no-gutters pr-2">
+
+            <div class="col-12 col-lg-5">
+
+                <div class="rounded py-4 mr-3 total-left">
+
+                    <div class="col-12">
+
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="h-100 font-12 d-flex justify-content-end align-items-center">
+                                    Total Left
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="d-flex justify-content-end">
+                                    <div class="mr-1 font-12">
+                                        <span id="total_left_display"></span>
+                                        <input type="hidden" class="form-value" id="total_left" name="total_left">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <input type="hidden" class="form-value" id="commission_id" name="commission_id" value="{{ $commission -> id }}">
 
     </form>
 
-
-
-    <div class="modal fade draggable" id="edit_check_in_modal" tabindex="-1" role="dialog" aria-labelledby="edit_check_in_modal_title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary draggable-handle">
-                    <h4 class="modal-title" id="edit_check_in_modal_title">Edit Check</h4>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <i class="fal fa-times mt-2"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="edit_check_in_form">
-
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="edit-check-preview-div"></div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="h5 text-orange">Check Details</div>
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input datepicker required" name="edit_check_date" id="edit_check_date" data-label="Date On Check">
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input numbers-only required" name="edit_check_number" id="edit_check_number" data-label="Check Number">
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input money-decimal numbers-only required" name="edit_check_amount" id="edit_check_amount" data-label="Check Amount">
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="h5 text-orange">Dates</div>
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input datepicker required" name="edit_date_received" id="edit_date_received" value="{{ date('Y-m-d') }}" data-label="Date Received">
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input datepicker" name="edit_date_deposited" id="edit_date_deposited" data-label="Date Deposited">
-                            </div>
-                        </div>
-                        <input type="hidden" name="edit_check_id" id="edit_check_id">
-                    </form>
-                </div>
-                <div class="modal-footer d-flex justify-content-around">
-                    <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                    <a class="btn btn-success" id="save_edit_check_in_button" data-dismiss="modal"><i class="fad fa-check mr-2"></i> Save</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade draggable" id="add_check_in_modal" tabindex="-1" role="dialog" aria-labelledby="add_check_in_modal_title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary draggable-handle">
-                    <h4 class="modal-title" id="add_check_in_modal_title">Add Check In</h4>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <i class="fal fa-times mt-2"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="add_check_in_form" enctype="multipart/form-data">
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="h5 text-orange">Upload</div>
-                            </div>
-                            <div class="col-12">
-                                <div><input type="file" accept="application/pdf" class="custom-form-element form-input-file required" name="check_upload" id="check_upload" data-label="Click to search or Drag and Drop files here"></div>
-                            </div>
-                            <div class="col-12">
-                                <div class="check-preview-div"></div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="h5 text-orange">Check Details</div>
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input datepicker required" name="check_date" id="check_date" data-label="Date On Check">
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input numbers-only required" name="check_number" id="check_number" data-label="Check Number">
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input money-decimal numbers-only required" name="check_amount" id="check_amount" data-label="Check Amount">
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="h5 text-orange">Dates</div>
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input datepicker required" name="date_received" id="date_received" value="{{ date('Y-m-d') }}" data-label="Date Received">
-                            </div>
-                            <div class="col-12 col-sm-6 col-lg-4">
-                                <input type="text" class="custom-form-element form-input datepicker" name="date_deposited" id="date_deposited" data-label="Date Deposited">
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-                <div class="modal-footer d-flex justify-content-around">
-                    <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                    <button type="button" class="btn btn-success" id="save_add_check_in_button"><i class="fad fa-check mr-2"></i> Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </div>
 

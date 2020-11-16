@@ -124,10 +124,10 @@ class DocumentReviewController extends Controller
         // used in checklist review modals
         $rejected_reasons = ResourceItemsAdmin::where('resource_type', 'rejected_reason') -> orderBy('resource_order') -> get();
 
-        $agent = Agents::find($property -> Agent_ID);
+        $agent_details = Agents::find($property -> Agent_ID);
 
 
-        return view('/doc_management/review/get_checklist_html', compact('property', 'transaction_type', 'transaction_checklist_id', 'checklist_groups', 'checklist_items', 'transaction_checklist_id', 'files', 'transaction_checklist_items_model', 'transaction_checklist_item_notes', 'form_groups', 'resource_items', 'rejected_reasons', 'agent'));
+        return view('/doc_management/review/get_checklist_html', compact('property', 'transaction_type', 'transaction_checklist_id', 'checklist_groups', 'checklist_items', 'transaction_checklist_id', 'files', 'transaction_checklist_items_model', 'transaction_checklist_item_notes', 'form_groups', 'resource_items', 'rejected_reasons', 'agent_details'));
 
     }
 

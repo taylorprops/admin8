@@ -67,7 +67,7 @@
 
             @endphp
 
-            <div class="h3-responsive text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.', '.$property_details -> PostalCode }}</div>
+            <div class="h3 text-orange mt-3 mt-sm-4 text-center w-100">{{ $property_details -> FullStreetAddress }} {{ $property_details -> City.', '.$property_details -> StateOrProvince.' '.$property_details -> PostalCode }}</div>
 
             <div class="container-1000 mx-auto mt-3 mt-md-5">
 
@@ -75,7 +75,7 @@
 
                     <div class="col-12">
 
-                        <div class="h4-responsive text-primary mb-1 mt-3 mt-md-5 text-center">Please Enter and Verify the following details</div>
+                        <div class="h4 text-primary mb-1 mt-3 mt-md-5 text-center">Please Enter and Verify the following details</div>
 
                             <form id="details_form">
 

@@ -45,6 +45,7 @@ if (document.URL.match(/transaction_required_details/)) {
             }]
         });
 
+
         $('.import-from-contacts-button').off('click').on('click', function() {
             show_import_modal($(this).data('member'), $(this).data('member-id'));
         });
@@ -54,10 +55,10 @@ if (document.URL.match(/transaction_required_details/)) {
 
 
         $('#import_property_address_button').on('click', function() {
-            $('#ClientStreet').val($(this).data('street')).trigger('change');
-            $('#ClientCity').val($(this).data('city')).trigger('change');
-            $('#ClientState').val($(this).data('state')).trigger('change');
-            $('#ClientZip').val($(this).data('zip')).trigger('change');
+            $('#ClientStreet').val($(this).data('street'))/* .trigger('change') */;
+            $('#ClientCity').val($(this).data('city'))/* .trigger('change') */;
+            $('#ClientState').val($(this).data('state'))/* .trigger('change') */;
+            $('#ClientZip').val($(this).data('zip'))/* .trigger('change') */;
             select_refresh();
         });
 
@@ -160,7 +161,7 @@ if (document.URL.match(/transaction_required_details/)) {
                 $('.not-using-heritage').show();
             } else {
                 $('.not-using-heritage').hide();
-                $('#TitleCompany').val('').trigger('change');
+                $('#TitleCompany').val('')/* .trigger('change') */;
             }
         });
 
@@ -199,8 +200,8 @@ if (document.URL.match(/transaction_required_details/)) {
         if(commission > 0 && percent > 0) {
             let referral_commission = percent * commission;
             let receiving_commission = commission - referral_commission;
-            $('#AgentCommission').val(referral_commission).trigger('change');
-            $('#OtherAgentCommission').val(receiving_commission).trigger('change');
+            $('#AgentCommission').val(referral_commission)/* .trigger('change') */;
+            $('#OtherAgentCommission').val(receiving_commission)/* .trigger('change') */;
             format_money_with_decimals($('#AgentCommission'));
             format_money_with_decimals($('#OtherAgentCommission'));
         }
@@ -220,21 +221,21 @@ if (document.URL.match(/transaction_required_details/)) {
         let office_zip = ele.data('agent-zip');
 
         if(type == 'receiving') {
-            $('#ReferringAgentFirstName').val(agent_first).trigger('change');
-            $('#ReferringAgentLastName').val(agent_last).trigger('change');
-            $('#ReferringAgentOfficeName').val(agent_company).trigger('change');
-            $('#ReferringAgentOfficeStreet').val(office_street).trigger('change');
-            $('#ReferringAgentOfficeCity').val(office_city).trigger('change');
-            $('#ReferringAgentOfficeState').val(office_state).trigger('change');
-            $('#ReferringAgentOfficeZip').val(office_zip).trigger('change');
+            $('#ReferringAgentFirstName').val(agent_first)/* .trigger('change') */;
+            $('#ReferringAgentLastName').val(agent_last)/* .trigger('change') */;
+            $('#ReferringAgentOfficeName').val(agent_company)/* .trigger('change') */;
+            $('#ReferringAgentOfficeStreet').val(office_street)/* .trigger('change') */;
+            $('#ReferringAgentOfficeCity').val(office_city)/* .trigger('change') */;
+            $('#ReferringAgentOfficeState').val(office_state)/* .trigger('change') */;
+            $('#ReferringAgentOfficeZip').val(office_zip)/* .trigger('change') */;
         } else {
-            $('#ReceivingAgentFirstName').val(agent_first).trigger('change');
-            $('#ReceivingAgentLastName').val(agent_last).trigger('change');
-            $('#ReceivingAgentOfficeName').val(agent_company).trigger('change');
-            $('#ReceivingAgentOfficeStreet').val(office_street).trigger('change');
-            $('#ReceivingAgentOfficeCity').val(office_city).trigger('change');
-            $('#ReceivingAgentOfficeState').val(office_state).trigger('change');
-            $('#ReceivingAgentOfficeZip').val(office_zip).trigger('change');
+            $('#ReceivingAgentFirstName').val(agent_first)/* .trigger('change') */;
+            $('#ReceivingAgentLastName').val(agent_last)/* .trigger('change') */;
+            $('#ReceivingAgentOfficeName').val(agent_company)/* .trigger('change') */;
+            $('#ReceivingAgentOfficeStreet').val(office_street)/* .trigger('change') */;
+            $('#ReceivingAgentOfficeCity').val(office_city)/* .trigger('change') */;
+            $('#ReceivingAgentOfficeState').val(office_state)/* .trigger('change') */;
+            $('#ReceivingAgentOfficeZip').val(office_zip)/* .trigger('change') */;
         }
         select_refresh();
 
@@ -255,16 +256,16 @@ if (document.URL.match(/transaction_required_details/)) {
         let office_zip = ele.data('agent-zip');
         let agent_mls = ele.data('agent-mls-id');
 
-        $('#ListAgentFirstName').val(agent_first).trigger('change');
-        $('#ListAgentLastName').val(agent_last).trigger('change');
-        $('#ListAgentPreferredPhone').val(agent_phone).trigger('change');
-        $('#ListAgentEmail').val(agent_email).trigger('change');
-        $('#ListAgentOfficeName').val(agent_company).trigger('change');
-        $('#ListAgentOfficeStreet').val(office_street).trigger('change');
-        $('#ListAgentOfficeCity').val(office_city).trigger('change');
-        $('#ListAgentOfficeState').val(office_state).trigger('change');
-        $('#ListAgentOfficeZip').val(office_zip).trigger('change');
-        $('#ListAgentMlsId').val(agent_mls).trigger('change');
+        $('#ListAgentFirstName').val(agent_first)/* .trigger('change') */;
+        $('#ListAgentLastName').val(agent_last)/* .trigger('change') */;
+        $('#ListAgentPreferredPhone').val(agent_phone)/* .trigger('change') */;
+        $('#ListAgentEmail').val(agent_email)/* .trigger('change') */;
+        $('#ListAgentOfficeName').val(agent_company)/* .trigger('change') */;
+        $('#ListAgentOfficeStreet').val(office_street)/* .trigger('change') */;
+        $('#ListAgentOfficeCity').val(office_city)/* .trigger('change') */;
+        $('#ListAgentOfficeState').val(office_state)/* .trigger('change') */;
+        $('#ListAgentOfficeZip').val(office_zip)/* .trigger('change') */;
+        $('#ListAgentMlsId').val(agent_mls)/* .trigger('change') */;
         select_refresh();
 
         $('.search-results').fadeOut('slow');
@@ -299,7 +300,7 @@ if (document.URL.match(/transaction_required_details/)) {
             member_div.find('[name^='+member+'_zip]').val($(this).data('contact-zip'));
             member_div.find('[name^='+member+'_crm_contact_id]').val($(this).data('contact-id'));
 
-            member_div.find('input').trigger('change');
+            member_div.find('input')/* .trigger('change') */;
             setTimeout(select_refresh, 500);
             $('#import_contact_modal').modal('hide');
         });
@@ -358,7 +359,7 @@ if (document.URL.match(/transaction_required_details/)) {
         if(type == 'listing' || (type == 'contract' && member == 'buyer')) {
             member_div += ' \
             <div class="'+member+'-div mb-3"> \
-                <div class="h5-responsive text-orange '+member+'-header"></div> \
+                <div class="h5 text-orange '+member+'-header"></div> \
                 <div class="d-flex justify-content-between"> \
                     <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-member="'+member+'" data-member-id="' + member_id + '"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a> \
                     <div><a href="javascript: void(0)" class="member-delete text-danger" data-member="'+member+'"><i class="fal fa-times fa-2x"></i></a></div> \
@@ -368,7 +369,7 @@ if (document.URL.match(/transaction_required_details/)) {
             member_div += ' \
             <div class="'+member+'-div mb-3"> \
                 <div class="d-flex justify-content-between"> \
-                    <div class="h5-responsive text-orange '+member+'-header"></div> \
+                    <div class="h5 text-orange '+member+'-header"></div> \
                     <div><a href="javascript: void(0)" class="member-delete text-danger" data-member="'+member+'"><i class="fal fa-times fa-2x"></i></a></div> \
                 </div> \
             ';
@@ -395,7 +396,7 @@ if (document.URL.match(/transaction_required_details/)) {
                 <div class="row"> \
                     <div class="col-12"> \
                         <input type="text" class="custom-form-element form-input '+member+'-street '+required+' street-autocomplete" name="'+member+'_street[]" data-label="Home Address"> \
-                        <div class="address-autocomplete-container"><div class="address-autocomplete-div z-depth-1"></div></div> \
+                        <div class="address-autocomplete-container"><div class="address-autocomplete-div shadow"></div></div> \
                     </div> \
                     <div class="col-12 col-md-6"> \
                         <input type="text" class="custom-form-element form-input '+member+'-city '+required+'" name="'+member+'_city[]" data-label="City"> \
@@ -458,10 +459,10 @@ if (document.URL.match(/transaction_required_details/)) {
                     if (!$(e.target).is('.address-autocomplete-div *')) {
                         $('.address-autocomplete-div').hide();
                     } else {
-                        container.find('.'+member+'-street').val(street).trigger('change');
-                        container.find('.'+member+'-city').val(city).trigger('change');
-                        container.find('.'+member+'-state').val(state).trigger('change');
-                        container.find('.'+member+'-zip').val(zip).trigger('change');
+                        container.find('.'+member+'-street').val(street)/* .trigger('change') */;
+                        container.find('.'+member+'-city').val(city)/* .trigger('change') */;
+                        container.find('.'+member+'-state').val(state)/* .trigger('change') */;
+                        container.find('.'+member+'-zip').val(zip)/* .trigger('change') */;
                         select_refresh();
                         $('.address-autocomplete-div').hide();
                     }

@@ -117,11 +117,11 @@
 
                                             </td>
                                             <td>
-                                                <div class="show-checklist-items-collapsible-div @if(!$in_checklist) hidden @endif">
+                                                <div class="show-checklist-items-collapsible-div @if(!$in_checklist) hide @endif">
                                                     <a class="btn btn-sm btn-primary show-checklist-items-collapsible" data-toggle="collapse" href="#items_{{ $loop -> iteration }}" aria-expanded="false" aria-controls="items_{{ $loop -> iteration }}" data-checklist-id="{{ $checklist -> id }}" data-file-id="{{ $file_id }}">Show Checklist Items</a>
                                                 </div>
                                                 <div class="checklist-items-collapsible-container">
-                                                    <div class="collapse checklist-items-collapsible collapsible-container border z-depth-1" id="items_{{ $loop -> iteration }}">
+                                                    <div class="collapse checklist-items-collapsible collapsible-container border shadow" id="items_{{ $loop -> iteration }}">
 
                                                     </div>
                                                 </div>

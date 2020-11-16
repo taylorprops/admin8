@@ -19,7 +19,7 @@
                                 role="tab"
                                 data-id="{{ $form_group -> resource_id }}">
                                 {{ $form_group -> resource_name }}
-                                <span class="float-right badge bg-blue-med py-1 px-2">{{ $form_count['form_count'] }}</span>
+                                <span class="float-right badge bg-blue-med text-white py-1 px-2">{{ $form_count['form_count'] }}</span>
                             </a>
                         @endforeach
                     </div>
@@ -30,7 +30,7 @@
             <div class="tab-content">
                 @foreach ($form_groups as $form_group)
                     <div class="list-div tab-pane fade @if ($loop -> first) show active @endif" id="list_div_{{ $form_group -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $form_group -> resource_id }}">
-                        <div class="h3-responsive text-orange">{{ $form_group -> resource_name }}</div>
+                        <div class="h3 text-orange">{{ $form_group -> resource_name }}</div>
                         <div class="row">
                             <div class="col-7">
                                 <div class="row">
@@ -214,7 +214,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-12">
-                                    <span id="edit_form_name" class="h5-responsive text-primary"></span>
+                                    <span id="edit_form_name" class="h5 text-primary"></span>
                                 </div>
                                 <div class="col-12">
                                     <input type="text" class="custom-form-element form-input required" name="edit_file_name_display" id="edit_file_name_display" data-label="Form Name">
@@ -393,7 +393,7 @@
                                             <input type="file" class="custom-form-element form-input-file required" accept="application/pdf" name="file_upload" id="file_upload" data-label="Select File">
                                         </div>
                                     </div>
-                                    <div class="row form-names hidden mt-2">
+                                    <div class="row form-names hide mt-2">
                                         <div class="col-12">
                                             <div class="p-2">
                                                 <a class="btn btn-primary show-forms-button" data-toggle="collapse" href="#form_names_div" role="button" aria-expanded="false" aria-controls="form_names_div">

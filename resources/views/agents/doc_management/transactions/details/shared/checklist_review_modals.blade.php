@@ -1,3 +1,4 @@
+{{-- checklist and doc review - shared --}}
 <div class="modal fade draggable" id="docs_complete_modal" tabindex="-1" role="dialog" aria-labelledby="docs_complete_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -41,7 +42,7 @@
                                     </div>
                                 </div>
                                 <div class="col-10 pl-0">
-                                    <input type="text" class="custom-form-element form-input form-small" id="email_agent_from" value="{{ \Auth::user() -> name.' - '.$agent -> company }} <{{ \Auth::user() -> email }}>">
+                                    <input type="text" class="custom-form-element form-input form-small" id="email_agent_from" value="{{ \Auth::user() -> name.' - '.$agent_details -> company }} <{{ \Auth::user() -> email }}>">
                                 </div>
                             </div>
                             <div class="row">
@@ -51,7 +52,7 @@
                                     </div>
                                 </div>
                                 <div class="col-10 pl-0">
-                                    <input type="text" class="custom-form-element form-input form-small" id="email_agent_to" value="{{ $agent -> first_name.' '.$agent -> last_name }} <{{ $agent -> email }}>">
+                                    <input type="text" class="custom-form-element form-input form-small" id="email_agent_to" value="{{ $agent_details -> first_name.' '.$agent_details -> last_name }} <{{ $agent_details -> email }}>">
                                 </div>
                             </div>
                             <div class="row">
@@ -146,7 +147,6 @@
     </div>
 </div>
 
-
 <div class="modal fade draggable modal-shared" id="add_checklist_item_modal" tabindex="-1" role="dialog" aria-labelledby="add_checklist_item_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -163,7 +163,7 @@
 
                         <div class="col-12 col-md-6">
 
-                            <div class="h5-responsive text-orange">Create Checklist Item</div>
+                            <div class="h5 text-orange">Create Checklist Item</div>
                             <input type="text" class="custom-form-element form-input" id="add_checklist_item_name" data-label="Enter Item Name">
 
                         </div>
@@ -174,9 +174,9 @@
 
                         <div class="col-12">
 
-                            <div class="h5-responsive text-orange mb-3">Or Select Standard Form</div>
+                            <div class="h5 text-orange mb-3">Or Select Standard Form</div>
 
-                            <div class="card z-depth-0">
+                            <div class="card shadow-none">
                                 <div class="card-body">
 
                                     <div class="row">
@@ -248,7 +248,7 @@
 
                     </div>
 
-                    <input type="hidden" id="add_checklist_item_checklist_id" value="{{ $transaction_checklist_id }}">
+                    <input type="hidden" id="add_checklist_item_checklist_id" value="{{ $checklist_id }}">
                     <input type="hidden" id="add_checklist_item_group_id">
                 </form>
             </div>
@@ -259,7 +259,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal fade draggable modal-shared" id="reject_document_modal" tabindex="-1" role="dialog" aria-labelledby="reject_document_modal_title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -300,3 +299,9 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+

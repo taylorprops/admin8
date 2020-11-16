@@ -10,7 +10,7 @@ if (document.URL.match(/checklists/)) {
             let checklist_location_id = global_get_url_parameters('checklist_location_id');
             let type = global_get_url_parameters('checklist_type');
             $('#list_' + checklist_location_id).trigger('click');
-            $('#list_div_' + checklist_location_id).find('.checklist-type-option').val(type).trigger('change');
+            $('#list_div_' + checklist_location_id).find('.checklist-type-option').val(type)/* .trigger('change') */;
             checklist_type();
             //select_refresh();
         }
@@ -361,7 +361,7 @@ if (document.URL.match(/checklists/)) {
             // select and show form groups
             $('.select-form-group').on('change', function () {
                 // clear search input
-                $('#form_search').val('').trigger('change');
+                $('#form_search').val('')/* .trigger('change') */;
                 // if all show everything or just the selected group
                 if ($(this).val() == 'all') {
                     $('.form-group-div, .list-group-header, .form-name').show();
@@ -466,22 +466,22 @@ if (document.URL.match(/checklists/)) {
             <li class="list-group-item checklist-item w-100 pt-1 pb-0 bg-orange-light" data-form-id="' + form_id + '" data-form-group-id="'+checklist_group_id+'"> \
                 <div class="row"> \
                     <div class="col-8"> \
-                        <div class="d-flex justify-content-start my-1"> \
+                        <div class="d-flex justify-content-start align-items-center"> \
                             <div> \
                                 <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i> \
                             </div> \
-                            <div class="h5-responsive text-primary" title="' + text_orig + '"><a href="javascript: void(0)"> ' + text + '</a></div> \
+                            <div class="h5 text-primary" title="' + text_orig + '"><a href="javascript: void(0)"> ' + text + '</a></div> \
                         </div> \
                     </div> \
                     <div class="col-3"> \
-                        <div class="d-flex justify-content-start my-1"> \
-                            <span>Required:</span> \
+                        <div class="d-flex justify-content-start align-items-center"> \
+                            <span class="mr-1">Required:</span> \
                             <input type="radio" class="custom-form-element form-radio checklist-item-required required" name="checklist_item_required_' + form_id + '" value="yes" data-label="Yes"> \
                             <input type="radio" class="custom-form-element form-radio checklist-item-required required" name="checklist_item_required_' + form_id + '" value="no" data-label="No"> \
                         </div> \
                     </div> \
-                    <div class="col-1"> \
-                        <a class="btn btn-sm btn-danger delete-checklist-item-button my-1"><i class="fa fa-trash"></i></a> \
+                    <div class="col-1 d-flex align-items-center"> \
+                        <a class="btn btn-sm btn-danger delete-checklist-item-button"><i class="fa fa-trash"></i></a> \
                     </div> \
                 </div> \
             </li> \
@@ -551,15 +551,15 @@ if (document.URL.match(/checklists/)) {
         let represent = $(this).data('represent');
 
         // assign form input values
-        $('#checklist_location_id').val(location_id).trigger('change');
-        $('#checklist_type').val(checklist_type).trigger('change');
-        $('#checklist_property_type_id').val(property_type).trigger('change');
-        $('#checklist_property_sub_type_id').val(property_sub_type).trigger('change');
-        $('#checklist_sale_rent').val(sale_rent).trigger('change');
-        $('#checklist_represent').val(represent).trigger('change');
+        $('#checklist_location_id').val(location_id)/* .trigger('change') */;
+        $('#checklist_type').val(checklist_type)/* .trigger('change') */;
+        $('#checklist_property_type_id').val(property_type)/* .trigger('change') */;
+        $('#checklist_property_sub_type_id').val(property_sub_type)/* .trigger('change') */;
+        $('#checklist_sale_rent').val(sale_rent)/* .trigger('change') */;
+        $('#checklist_represent').val(represent)/* .trigger('change') */;
 
         if (checklist_type== 'listing') {
-            $('#checklist_represent').val('seller').trigger('change');
+            $('#checklist_represent').val('seller')/* .trigger('change') */;
         }
 
 

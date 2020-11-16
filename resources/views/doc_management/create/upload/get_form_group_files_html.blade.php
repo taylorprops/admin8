@@ -23,7 +23,7 @@ $show_title = false;
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-8">
-                <div class="h5-responsive text-secondary" @if($show_title) title="{{ $file -> file_name_display }}" @endif>@if($file -> file_location != '') <i class="fad fa-file-plus mr-2 text-success"></i> @else <i class="fad fa-file-minus mr-2 text-gray"></i> @endif <a href="{{ $file -> file_location }}" target="_blank">{{ shorten_text($file -> file_name_display, 75) }}</a></div>
+                <div class="h5 text-secondary" @if($show_title) title="{{ $file -> file_name_display }}" @endif>@if($file -> file_location != '') <i class="fad fa-file-plus mr-2 text-success"></i> @else <i class="fad fa-file-minus mr-2 text-gray"></i> @endif <a href="{{ $file -> file_location }}" target="_blank">{{ shorten_text($file -> file_name_display, 75) }}</a></div>
             </div>
             <div class="col-12 col-md-4">
                 <div class="d-flex justify-content-end">
@@ -40,10 +40,10 @@ $show_title = false;
 
                     @if($file -> published == 'yes')
 
-                        <span class="chip @if($file -> active == 'yes') green @else red @endif text-white" data-toggle="tooltip" data-html="true" title="Fields for this form can no longer be edited and the from can no longer be deleted"><i class="fad @if($file -> active == 'yes') fa-check @else fa-ban @endif mr-2"></i> Published</span>
+                        <span class="badge @if($file -> active == 'yes') badge-success @else badge-danger @endif text-white" data-toggle="tooltip" data-html="true" title="Fields for this form can no longer be edited and the from can no longer be deleted"><i class="fad @if($file -> active == 'yes') fa-check @else fa-ban @endif mr-2"></i> Published</span>
 
                         <div>
-                            <div class="chip @if($checklist_count > 0) blue text-white @else blue-light text-orange @endif checklist-count-chip" data-toggle="tooltip" data-html="true" title="Found in {{ $checklist_count }} checklists">
+                            <div class="badge @if($checklist_count > 0) badge-primary text-white @else bg-blue-light text-orange @endif" data-toggle="tooltip" data-html="true" title="Found in {{ $checklist_count }} checklists">
                                 {{ $checklist_count }}
                             </div>
                         </div>
@@ -56,7 +56,7 @@ $show_title = false;
 
                         @if($file -> published == 'no')
                             <div>
-                                <div class="chip blue text-white checklist-count-chip" data-toggle="tooltip" data-html="true" title="{{ $file -> fields_count }} Fields Added">
+                                <div class="badge badge-primary text-white" data-toggle="tooltip" data-html="true" title="{{ $file -> fields_count }} Fields Added">
                                     {{ $file -> fields_count }}
                                 </div>
                             </div>

@@ -161,7 +161,7 @@ if (document.URL.match(/create\/add_fields/)) {
             let helper_text_input = $(this).closest('.form-div').find('.field-data-helper-text');
             if(helper_text_input.val() == '') {
                 $(this).bind('keyup change', function() {
-                    helper_text_input.val($(this).val()).trigger('change');
+                    helper_text_input.val($(this).val());
                 });
             }
         }); */
@@ -252,7 +252,7 @@ if (document.URL.match(/create\/add_fields/)) {
     function reset_field_properties(field_id) {
         // reset name fields
         $('#field_'+field_id).find('select, input').not('input.form-select-search-input, input.form-select-value-input').each(function () {
-            $(this).val($(this).data('default-value')).trigger('change');
+            $(this).val($(this).data('default-value'))/* .trigger('change') */;
         });
         select_refresh();
 
@@ -498,7 +498,7 @@ if (document.URL.match(/create\/add_fields/)) {
             edit_div.find('.form-input.field-data-name').on('change', function () {
 
                 if($(this).val() != '') {
-                    select.val('').trigger('change');
+                    select.val('')/* .trigger('change') */;
                     //setTimeout(select_refresh, 500);
                     inputs_container.html('');
                 }
@@ -571,7 +571,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                         inputs_container.html('');
 
-                        edit_div.find('.form-input.field-data-name').val('').trigger('change');
+                        edit_div.find('.form-input.field-data-name').val('')/* .trigger('change') */;
 
                         if (field_type == 'name') {
 
@@ -655,7 +655,7 @@ if (document.URL.match(/create\/add_fields/)) {
         $('#properties_container_'+field_id).collapse('hide');
 
         inputs_div.find('.field-data-input').each(function() {
-            $(this).data('default-value', $(this).val()).trigger('change');
+            $(this).data('default-value', $(this).val())/* .trigger('change') */;
         });
 
         let address_select = form.find('select.field-data-address-type');
@@ -683,7 +683,7 @@ if (document.URL.match(/create\/add_fields/)) {
         if (number_type == 'numeric') {
             if ($('.group_' + group_id).length > 1) {
                 $('.group_' + group_id).each(function() {
-                    $(this).find('select.field-data-number-type').not(number_select).val('written').data('default-value', 'written').trigger('change');
+                    $(this).find('select.field-data-number-type').not(number_select).val('written').data('default-value', 'written')/* .trigger('change') */;
                 });
             }
         }
@@ -701,7 +701,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 $(this).data('customname', custom_name);
                 $(this).find('.form-input.field-data-name').each(function () {
-                    $(this).val(custom_name).data('default-value', custom_name).trigger('change');
+                    $(this).val(custom_name).data('default-value', custom_name)/* .trigger('change') */;
                 });
             });
 
@@ -711,10 +711,10 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 $(this).data('commonname', common_name).data('customname', custom_name);
                 $(this).find('.form-select.field-data-name').each(function () {
-                    $(this).val(common_name).data('default-value', common_name).trigger('change');
+                    $(this).val(common_name).data('default-value', common_name)/* .trigger('change') */;
                 });
                 $(this).find('.form-input.field-data-name').each(function () {
-                    $(this).val(custom_name).data('default-value', custom_name).trigger('change');
+                    $(this).val(custom_name).data('default-value', custom_name)/* .trigger('change') */;
                 });
 
             });
@@ -795,8 +795,8 @@ if (document.URL.match(/create\/add_fields/)) {
                 $('#field_'+field_id).find('.edit-properties-container').html(edit_properties_html);
 
                 if(ele) {
-                    ele.find('.form-select.field-data-name').val(common_name).data('default-value', common_name).trigger('change');
-                    ele.find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name).trigger('change');
+                    ele.find('.form-select.field-data-name').val(common_name).data('default-value', common_name)/* .trigger('change') */;
+                    ele.find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name)/* .trigger('change') */;
 
                     let inputs_container = $('#field_' + field_id).find('.field-inputs-div');
                     if(field_type == 'name') {
@@ -1075,7 +1075,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     $.each(this, function (k, v) {
                         select_options = select_options + '<option value="' + v + '">' + v + '</option>';
                     });
-                    $('#' + type + '_select_options').val(select_options).trigger('change');
+                    $('#' + type + '_select_options').val(select_options)/* .trigger('change') */;
                 });
                 setTimeout(select_refresh, 500);
 

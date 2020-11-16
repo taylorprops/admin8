@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12">
 
-            <div class="h4-responsive text-primary ml-3"><i class="fad fa-file-signature mr-2 mb-3"></i> Accepted {{ $for_sale ? 'Contracts' : 'Leases' }}</div>
+            <div class="h4 text-primary ml-3"><i class="fad fa-file-signature mr-2 mb-3"></i> Accepted {{ $for_sale ? 'Contracts' : 'Leases' }}</div>
 
             <div class="row">
 
@@ -14,12 +14,12 @@
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
                     <a href="/agents/doc_management/transactions/transaction_details/{{ $contract -> Contract_ID }}/contract/">
 
-                        <div class="contract-div @if($status != '') bg-primary @else bg-default @endif p-3 mb-2 m-sm-2 h-100 z-depth-1 {{ $status }}">
+                        <div class="contract-div @if($status != '') bg-primary @else bg-default @endif p-3 mb-2 m-sm-2 h-100 shadow {{ $status }}">
                             <div class="d-flex justify-content-start align-items-center">
                                 <div class="mr-3"><i class="fad fa-file-signature text-white mr-2 fa-3x"></i></div>
                                 <div>
-                                    <div class="h4-responsive text-white">{{ $resource_items -> GetResourceName($contract -> Status) }}</div>
-                                    <div class="h4-responsive text-white">${{ $for_sale ? number_format($contract -> ContractPrice) : number_format($contract -> LeaseAmount) }}</div>
+                                    <div class="h4 text-white">{{ $resource_items -> GetResourceName($contract -> Status) }}</div>
+                                    <div class="h4 text-white">${{ $for_sale ? number_format($contract -> ContractPrice) : number_format($contract -> LeaseAmount) }}</div>
                                 </div>
                             </div>
                             <hr class="bg-white">

@@ -3,11 +3,9 @@
 
 @section('content')
 
-<input type="hidden" id="review_contract_id" value="{{ $Contract_ID }}">
-
 <div class="container-fluid page-document-review px-0">
 
-    <div class="row no-gutters">
+    <div class="row no-gutters vh-100">
 
         <div class="col-3">
 
@@ -29,7 +27,7 @@
                         @if(count($listings_with_notes) > 0 || count($contracts_with_notes) > 0 || count($referrals_with_notes) > 0)
 
                             <a href="javascript: void(0)" class="list-group-item property-list-header border-top-0 border-left-0 border-right-0" data-cat="notes">
-                                <div class="h4-responsive text-orange my-0 ml-2"><i class="fad fa-comments mr-2"></i> New Comments</div>
+                                <div class="h4 text-orange my-0 ml-2"><i class="fad fa-comments mr-2"></i> New Comments</div>
                             </a>
 
                             @foreach($listings_with_notes as $listing_with_notes)
@@ -97,7 +95,7 @@
                         @if(count($listings) > 0)
 
                             <a href="javascript: void(0)" class="list-group-item property-list-header border-top-0 border-left-0 border-right-0" data-cat="listings">
-                                <div class="h4-responsive text-orange my-0 ml-2"><i class="fad fa-sign mr-2"></i> Listing Documents</div>
+                                <div class="h4 text-orange my-0 ml-2"><i class="fad fa-sign mr-2"></i> Listing Documents</div>
                             </a>
 
                             @foreach($listings as $listing)
@@ -126,7 +124,7 @@
                         @if(count($contracts) > 0)
 
                             <a href="javascript: void(0)" class="list-group-item property-list-header border-top-0 border-left-0 border-right-0" data-cat="contracts">
-                                <div class="h4-responsive text-orange my-0 ml-2"><i class="fad fa-file-contract mr-2"></i> Contract/Lease Documents</div>
+                                <div class="h4 text-orange my-0 ml-2"><i class="fad fa-file-contract mr-2"></i> Contract/Lease Documents</div>
                             </a>
 
                             @foreach($contracts as $contract)
@@ -155,7 +153,7 @@
                         @if(count($referrals) > 0)
 
                             <a href="javascript: void(0)" class="list-group-item property-list-header border-top-0 border-left-0 border-right-0" data-cat="referrals">
-                                <div class="h4-responsive text-orange my-0 ml-2"><i class="fad fa-handshake mr-2"></i> Referral Documents</div>
+                                <div class="h4 text-orange my-0 ml-2"><i class="fad fa-handshake mr-2"></i> Referral Documents</div>
                             </a>
 
                             @foreach($referrals as $referral)
@@ -185,7 +183,7 @@
                         @if(count($cancel_requests) > 0)
 
                             <a href="javascript: void(0)" class="list-group-item property-list-header border-top-0 border-left-0 border-right-0" data-cat="cancels">
-                                <div class="h4-responsive text-orange my-0 ml-2"><i class="fad fa-minus-circle mr-2"></i> Contract Cancellation Requests</div>
+                                <div class="h4 text-orange my-0 ml-2"><i class="fad fa-minus-circle mr-2"></i> Contract Cancellation Requests</div>
                             </a>
 
                             @foreach($cancel_requests as $cancel_request)
@@ -211,7 +209,7 @@
 
                 <div class="checklist-items-container w-100">
 
-                    <div class="sticky bg-white py-2 border-bottom">
+                    <div class="sticky bg-white py-3 border-bottom">
                         <div class="d-flex justify-content-between align-items-center">
                             <a href="javascript: void(0);" id="close_checklist_button" class="btn btn-sm btn-primary"><i class="fal fa-chevron-double-left mr-2"></i> Back</a>
                             <a href="javascript: void(0);" class="btn btn-sm btn-primary next-button">Next <i class="fal fa-chevron-double-right ml-2"></i></a>
@@ -237,7 +235,7 @@
             <div class="documents-container">
 
                 <div class="documents-div">
-                    <div class="h1-responsive text-primary w-100 text-center mt-5 pt-5"><i class="fa fa-arrow-left mr-2"></i> To Begin Select A Property</div>
+                    <div class="h1 text-primary w-100 text-center mt-5 pt-5"><i class="fa fa-arrow-left mr-2"></i> To Begin Select A Property</div>
                 </div>
 
             </div>
@@ -256,9 +254,10 @@
 
     </div>
 
+    <div class="bottom-line"></div>
+
 </div>
 
-
-
+<input type="hidden" id="review_contract_id" value="{{ $Contract_ID }}">
 
 @endsection

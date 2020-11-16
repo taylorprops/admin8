@@ -166,7 +166,7 @@ if (document.URL.match(/create\/fill_fields/)) {
             // reset name fields
             $('.form-div').each(function () {
                 $(this).find('input, textarea').each(function () {
-                    $(this).val($(this).data('default-value')).trigger('change');
+                    $(this).val($(this).data('default-value'))/* .trigger('change') */;
                 });
             });
             $('.field-div').removeClass('active');
@@ -232,7 +232,7 @@ if (document.URL.match(/create\/fill_fields/)) {
                     // add values to data-div for each field in group
                     $('.group_' + group_id).each(function () {
                         // add values to all inputs in group
-                        $(this).find('.fillable-field-input').val(num).data('default-value', num).trigger('change');
+                        $(this).find('.fillable-field-input').val(num).data('default-value', num)/* .trigger('change') */;
                         // only the written fields will be split.
                         let subtype = $(this).data('number-type');
                         let data_div = $(this).find('.data-div');
@@ -274,10 +274,10 @@ if (document.URL.match(/create\/fill_fields/)) {
                         let input = $(this);
                         $.each(address_labels, function (index, address_label) {
                             if (input.data('type') == address_label) {
-                                input.val(address_values[index]).data('default-value', address_values[index]).trigger('change');
+                                input.val(address_values[index]).data('default-value', address_values[index])/* .trigger('change') */;
                             }
                         });
-                    }).trigger('change');
+                    })/* .trigger('change') */;
 
                     $.each(address_names, function (index, address_name) {
                         if (address_type != 'full') {
@@ -326,10 +326,10 @@ if (document.URL.match(/create\/fill_fields/)) {
                             let inputs = $(this);
                             $.each(name_labels, function (index, name_label) {
                                 if (inputs.data('type') == name_label) {
-                                    inputs.val(name_values[index]).data('default-value', name_values[index]).trigger('change');
+                                    inputs.val(name_values[index]).data('default-value', name_values[index])/* .trigger('change') */;
                                 }
                             });
-                        }).trigger('change');
+                        })/* .trigger('change') */;
                     }
                 });
 
@@ -415,7 +415,7 @@ if (document.URL.match(/create\/fill_fields/)) {
 
         function field_list() {
             $('.field-list-container').html('');
-            $('.field-list-container').append('<div class="h3-responsive text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>');
+            $('.field-list-container').append('<div class="h3 text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>');
             $('.file-view-page-container').each(function () {
                 let page_number = $(this).data('id');
                 $('.field-list-container').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');

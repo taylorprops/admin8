@@ -14,13 +14,13 @@
             <div class="resource-div">
                 <div class="card">
                     <div class="card-header bg-primary">
-                        <div class="h4-responsive text-white mb-0">{{ $resource -> resource_type_title }}
+                        <div class="h4 text-white mb-0">{{ $resource -> resource_type_title }}
                             <div class="float-right">
                                 <a href="javascript:void(0)" class="add-resource-button" data-resource-type="{{ $resource -> resource_type }}"><i class="fal fa-plus text-white"></i></i></a>
                                 <a href="javascript:void(0)" class="cancel-add-resource-button"><i class="fal fa-times text-danger"></i></i></a>
                             </div>
                         </div>
-                        <div class="container add-resource-div bg-white p-3 z-depth-2">
+                        <div class="container add-resource-div bg-white p-3 shadow">
                             <h4 class="text-secondary mb-3">Add Resource</h4>
                             <form>
                                 <div class="row">
@@ -127,7 +127,7 @@
             </div>
             <div class="modal-body">
                 <span class="confirm-delete-deactivate-resource-text"></span>
-                <div class="h5-responsive text-center text-orange font-weight-bold delete-deactivate-resource-file-name mt-3"></div>
+                <div class="h5 text-center text-orange font-weight-bold delete-deactivate-resource-file-name mt-3"></div>
             </div>
             <div class="modal-footer d-flex justify-content-around">
                 <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>

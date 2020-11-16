@@ -4,7 +4,7 @@
         <div class="col-12 col-lg-8">
             <div class="row">
                 <div class="col-12">
-                    <div class="h4-responsive text-orange mt-1 mt-sm-0">Step 1</div>
+                    <div class="h4 text-orange mt-1 mt-sm-0">Step 1</div>
                     <div class="text-gray">Split combined documents by adding pages from the "Available Documents" section to the "Selected Documents" section.</div>
                 </div>
             </div>
@@ -14,7 +14,7 @@
                     <div class="image-container border p-2">
                         <div class="image-slider">
                             @foreach($document_images as $document_image)
-                            <div class="image-holder m-2 border z-depth-1" data-index="{{ $loop -> index }}" data-document-image-id="{{ $document_image -> id }}" data-file-type="{{ $file_type }}">
+                            <div class="image-holder m-2 border shadow" data-index="{{ $loop -> index }}" data-document-image-id="{{ $document_image -> id }}" data-file-type="{{ $file_type }}">
                                 <div class="image-options-div w-100">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
@@ -47,7 +47,7 @@
         <div class="col-12 col-lg-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="h4-responsive text-orange mt-1 mt-sm-0">Step 2</div>
+                    <div class="h4 text-orange mt-1 mt-sm-0">Step 2</div>
                     <div class="text-gray">Add the "Selected Documents" to Checklist Item or Save to Documents</div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
 
                     <div class="mt-3 save-split-doc-options">
 
-                        <ul class="nav nav-tabs nav-justified md-tabs bg-primary px-3" id="document_options_tabs_nav" role="tablist">
+                        <ul class="nav nav-tabs px-3" id="document_options_tabs_nav" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active add-to-checklist" id="add_to_checklist_item_button" data-toggle="tab" href="#add_to_checklist_item_div" role="tab" aria-controls="add_to_checklist_item_div" aria-selected="true">Add To Checklist</a>
                             </li>
@@ -64,7 +64,7 @@
                                 <a class="nav-link add-to-checklist" id="save_to_documents_button" data-toggle="tab" href="#save_to_documents_div" role="tab" aria-controls="save_to_documents_div" aria-selected="false">Save To Documents</a>
                             </li>
                         </ul>
-                        <div class="tab-content card p-2 pt-5 mt-n3" id="document_options_tabs">
+                        <div class="tab-content p-2" id="document_options_tabs">
 
                             <div class="tab-pane fade show active" id="add_to_checklist_item_div" role="tabpanel" aria-labelledby="add_to_checklist_item_button">
 
@@ -79,7 +79,7 @@
 
                                         @foreach($checklist_groups as $checklist_group)
 
-                                            <div class="h5-responsive text-gray mt-3">{{ $checklist_group -> resource_name }}</div>
+                                            <div class="h5 text-gray mt-3">{{ $checklist_group -> resource_name }}</div>
 
                                             @if(count($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)
 

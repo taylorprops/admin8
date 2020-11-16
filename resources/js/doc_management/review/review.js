@@ -4,9 +4,9 @@ if(document.URL.match(/document_review/)) {
 
 
         $('.property-item').off('click').on('click', function() {
-            $('.documents-div').children().addClass('animated bounceOutDown');
-            $('.details-div').children().addClass('animated fadeOut');
-            global_loading_on('', '<div class="h4-responsive text-white">Loading Checklist Documents...</div>');
+            $('.documents-div').children().addClass('animate__animated animate__bounceOutDown');
+            $('.details-div').children().addClass('animate__animated animate__fadeOut');
+            global_loading_on('', '<div class="h4 text-white">Loading Checklist Documents...</div>');
             let id = $(this).data('id');
             let type = $(this).data('type');
             get_checklist(id, type);
@@ -69,7 +69,7 @@ if(document.URL.match(/document_review/)) {
 
     function cancel_search_properties() {
         $('.property-list-header, .property-item').show();
-        $('#search_properties').val('').trigger('change');
+        $('#search_properties').val('')/* .trigger('change') */;
     }
 
     function set_property_item_active(ele) {
@@ -280,16 +280,22 @@ if(document.URL.match(/document_review/)) {
                 text_editor(options);
             });
 
+            let zoom_input = $('#zoom').slider({
+                formatter: function(value) {
+                    return value+'%';
+                }
+            });
+
             $('#zoom').on('input change', zoom);
 
-            $('.zoom-out').on('click', function() {
+            /* $('.zoom-out').on('click', function() {
                 $('#zoom').val(parseInt($('#zoom').val()) - 5).trigger('change');
                 $('#thumb span').text($('#zoom').val());
             });
             $('.zoom-in').on('click', function() {
                 $('#zoom').val(parseInt($('#zoom').val()) + 5).trigger('change');
                 $('#thumb span').text($('#zoom').val());
-            });
+            }); */
 
             $('#scroll_up').off('click').on('click', function () {
                 document.querySelector('.review-image-container').scrollBy({
@@ -347,10 +353,10 @@ if(document.URL.match(/document_review/)) {
 
 
     function close_checklist() {
-        $('.checklist-items-container').addClass('animated fadeOut').hide();
-        $('.documents-div').children().addClass('animated bounceOutDown');
-        $('.documents-div').html('<div class="h1-responsive text-primary w-100 text-center mt-5 pt-5"><i class="fa fa-arrow-left mr-2"></i> To Begin Select A Property</div>');
-        $('.details-div').children().addClass('animated fadeOut');
+        $('.checklist-items-container').addClass('animate__animated animate__fadeOut').hide();
+        $('.documents-div').children().addClass('animate__animated animate__bounceOutDown');
+        $('.documents-div').html('<div class="h1 text-primary w-100 text-center mt-5 pt-5"><i class="fa fa-arrow-left mr-2"></i> To Begin Select A Property</div>');
+        $('.details-div').children().addClass('animate__animated animate__fadeOut');
         cancel_search_properties();
     }
 

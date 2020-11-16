@@ -26,7 +26,7 @@
                                     role="tab"
                                     data-id="{{ $location -> resource_id }}">
                                     @if($location -> resource_name != $location -> resource_state) {{ $location -> resource_state }} | @endif {{ $location -> resource_name }}
-                                    <span class="float-right badge bg-blue-med py-1 px-2" id="list_{{ $location -> resource_id }}_file_count"></span>
+                                    <span class="float-right badge bg-blue-med text-white py-1 px-2" id="list_{{ $location -> resource_id }}_file_count"></span>
                                 </a>
 
                             @endforeach
@@ -49,7 +49,7 @@
                         <div class="list-div tab-pane fade @if ($loop -> first) show active @endif @if($referral_location_id == $location -> resource_id) referral-tab-data @endif" id="list_div_{{ $location -> resource_id }}" role="tabpanel" aria-labelledby="list_{{ $location -> resource_id }}">
 
                             <div class="d-flex justify-content-between">
-                                <div class="h3-responsive text-primary">{{ $location -> resource_name }} @if($location -> resource_name != $location -> resource_state) | {{ $location -> resource_state }} @endif</div>
+                                <div class="h3 text-primary">{{ $location -> resource_name }} @if($location -> resource_name != $location -> resource_state) | {{ $location -> resource_state }} @endif</div>
                                 @if($referral_location_id != $location -> resource_id)
                                     <div class="d-flex justify-content-end">
                                         <div>
@@ -202,7 +202,7 @@
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <select id="checklist_property_sub_type_id" class="custom-form-element form-select form-select-no-cancel hidden required" data-label="Checklist Property Sub Type">
+                                    <select id="checklist_property_sub_type_id" class="custom-form-element form-select form-select-no-cancel hide required" data-label="Checklist Property Sub Type">
                                         <option value=""></option>
                                         @foreach($property_sub_types as $property_sub_type)
                                         <option value="{{ $property_sub_type -> resource_id }}">{{ $property_sub_type -> resource_name }}</option>

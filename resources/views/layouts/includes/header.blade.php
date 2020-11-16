@@ -39,7 +39,7 @@
                         <div class="mr-5">
                             <a class="nav-link text-white" href="javascript: void(0)"><i class="far fa-comments mr-2"></i> Support</a>
                         </div>
-                        <div>
+                        <div class="d-flex justify-content-around">
                             <a class="nav-link text-white py-0" href="javascript: void(0)"><i class="fas fa-user mr-2"></i> {{ ucwords(auth() -> user() -> group).' - '.auth() -> user() -> name }}</a>
                             <a class="nav-link text-white py-0 float-right ml-3" href="/logout">Logout</a>
                         </div>

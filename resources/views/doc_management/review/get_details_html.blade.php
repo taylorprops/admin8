@@ -1,10 +1,10 @@
-<div class="row animated fadeIn no-gutters">
+<div class="row animate__animated animate__fadeIn no-gutters">
     <div class="col-12">
 
         <div class="d-flex justify-content-between align-items-center pt-3 px-3">
 
             <div>
-                <div class="h5-responsive text-primary">{!! $address !!}</div>
+                <div class="h5 text-primary">{!! $address !!}</div>
             </div>
 
             <div class="">
@@ -42,8 +42,8 @@
 
                         @if($property -> Status == $cancel_pending_status_id)
                             <div class="divider"></div>
-                            <div class="m-1 p-3 bg-danger rounded animated shake delay-2s cancel-status">
-                                <div class="h4-responsive text-white d-flex justify-content-start align-items-center">
+                            <div class="m-1 p-3 bg-danger rounded animate__animated animate__shakeX animate__delay-2s cancel-status">
+                                <div class="h4 text-white d-flex justify-content-start align-items-center">
                                     <i class="fad fa-exclamation-circle mr-2"></i>
                                     <span>
                                         Cancellation Pending
@@ -52,8 +52,8 @@
                             </div>
                         @elseif($property -> Status == $canceled_status_id)
                             <div class="divider"></div>
-                            <div class="m-1 p-3 bg-success rounded animated cancel-status">
-                                <div class="h4-responsive text-white d-flex justify-content-start align-items-center">
+                            <div class="m-1 p-3 bg-success rounded cancel-status">
+                                <div class="h4 text-white d-flex justify-content-start align-items-center">
                                     <i class="fad fa-check-circle mr-2"></i>
                                     <span>
                                         Cancellation Complete

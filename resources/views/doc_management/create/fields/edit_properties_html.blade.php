@@ -4,7 +4,7 @@
     $cols = $field_type == 'date' || $field_type == 'radio' ? 'col-12' : 'col-12 col-sm-6';
     @endphp
 
-    <div class="h5-responsive text-orange mb-2 ml-3">{{ strtoupper($field_type) }}</div>
+    <div class="h5 text-orange mb-2 ml-3">{{ strtoupper($field_type) }}</div>
 
     <div class="form-div">
 

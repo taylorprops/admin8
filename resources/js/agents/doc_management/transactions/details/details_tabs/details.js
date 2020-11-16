@@ -24,7 +24,8 @@ if (document.URL.match(/transaction_details/)) {
             axios.post('/agents/doc_management/transactions/save_details', formData, axios_options)
             .then(function (response) {
                 if(response.data.success == 'ok') {
-                    load_tabs('details');
+                    //load_tabs('details');
+                    load_tabs('commission');
                     load_details_header();
                     toastr['success']('Transaction Details Saved!');
                 }
@@ -110,7 +111,7 @@ if (document.URL.match(/transaction_details/)) {
 
             } else if(response.data.status == 'not found') {
 
-                $('#modal_danger').modal().find('.modal-body').html('<div class="h4-responsive text-danger w-100 text-center"><i class="fad fa-exclamation-triangle mr-2"></i> Listing not found in BrightMLS</div>');
+                $('#modal_danger').modal().find('.modal-body').html('<div class="h4 text-danger w-100 text-center"><i class="fad fa-exclamation-triangle mr-2"></i> Listing not found in BrightMLS</div>');
 
             }
         })

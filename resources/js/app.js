@@ -50,6 +50,9 @@ require('./agents/doc_management/transactions/edit_files/edit_files.js');
 // review documents
 require('./doc_management/review/review.js');
 
+// commission
+require('./doc_management/commission/commission.js');
+
 
 
 

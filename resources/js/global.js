@@ -2,10 +2,24 @@ import datepicker from 'js-datepicker';
 
 $(function() {
 
+    (function($){
+        var originalVal = $.fn.val;
+        $.fn.val = function(){
+            var prev;
+            if(arguments.length>0){
+                prev = originalVal.apply(this,[]);
+            }
+            var result =originalVal.apply(this,arguments);
+            if(arguments.length>0 && prev!=originalVal.apply(this,[]))
+                $(this).change();
+            return result;
+        };
+    })(jQuery);
+
     /* global_page_transition(); */
 
     if(!document.URL.match(/login/)) {
-        inactivityTime();
+        //inactivityTime();
     }
 
     $('#main_nav_bar').bootnavbar({});
@@ -57,9 +71,10 @@ $(function() {
         console.log('error = '+error);
     });
 
-    $(document).on('click', '.modal-dismiss', function() {
+    $(document).on('click', '.modal-dismiss, .modal-backdrop', function() {
         $('.modal-backdrop').remove();
     });
+
 
     $(document).on('focus', '.numbers-only', function () {
         $(this).select();
@@ -69,7 +84,7 @@ $(function() {
         handle: '.draggable-handle'
     });
 
-    let c = 0;
+    /* let c = 0;
     let format_phone = setInterval(function() {
         $('.phone').each(function() {
             global_format_phone(this);
@@ -79,7 +94,13 @@ $(function() {
         if(c == 5) {
             clearInterval(format_phone);
         }
-    }, 1000);
+    }, 1000); */
+    setTimeout(function() {
+        $('.phone').each(function() {
+            global_format_phone(this);
+            $(this).attr('maxlength', 14);
+        });
+    }, 1500);
 
     $(document).on('keyup change', '.phone', function () {
         global_format_phone(this);
@@ -118,14 +139,14 @@ $(function() {
         }
 
         // modal-open gets stuck in the body class so have to remove it manually
-        let remove_modal_open = setInterval(function() {
+        /* let remove_modal_open = setInterval(function() {
             if($('.modal.show').length == 0) {
                 $('body').removeClass('modal-open');
                 clearInterval(remove_modal_open);
             } else {
                 $('body').addClass('modal-open');
             }
-        }, 1000);
+        }, 1000); */
 
     });
 
@@ -258,7 +279,7 @@ window.scrollToAnchor = function(id) {
 $(document).on('keydown', '.numbers-only', function (event) {
     // set attr  max with input type = text
 
-    let allowed_keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',', 'Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab'];
+    let allowed_keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',', 'Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab', 'Control', 'v'];
 
     if(!$(this).hasClass('no-decimals')) {
         allowed_keys.push('.');
@@ -417,6 +438,44 @@ window.format_money_with_decimals = function(ele) {
     ele.val(global_format_number_with_decimals(ele.val()));
 }
 
+window.global_format_money = function() {
+    $('.money, .money-decimal').each(function() {
+        let val = $(this).val();
+        if(val.match(/[a-zA-Z]+/)) {
+            $(this).val(val.replace(/[a-zA-Z]+/,''));
+        }
+    });
+    if($('.money').length > 0) {
+        format_money($('.money'));
+        $('.money').on('keyup', function () {
+            let val = $(this).val();
+            if(val.match(/[a-zA-Z]+/)) {
+                $(this).val(val.replace(/[a-zA-Z]+/,''));
+            }
+
+            format_money($(this));
+        });
+    }
+    if($('.money-decimal').length > 0) {
+        $('.money-decimal').each(function() {
+            if($(this).val() != '') {
+                format_money_with_decimals($(this));
+            }
+        });
+        $('.money-decimal').on('change', function () {
+            if($(this).val() != '') {
+                format_money_with_decimals($(this));
+            }
+        })
+        .on('keyup', function() {
+            let val = $(this).val();
+            if(val.match(/[a-zA-Z]+/)) {
+                $(this).val(val.replace(/[a-zA-Z]+/,''));
+            }
+        });
+    }
+}
+
 // Date Difference JS
 window.global_date_diff = function (s, e) {
     let start = new Date(s);
@@ -461,3 +520,17 @@ window.nl2br = function(str, replaceMode, isXhtml) {
         return location_details;
     }
 } */
+
+/* Multiple key strokes */
+/* let keysPressed = {};
+        document.addEventListener('keydown', (event) => {
+            keysPressed[event.key] = true;
+
+            if (keysPressed['Shift'] && event.key == 'Tab') {
+                console.log(keysPressed['Shift']+' + '+event.key);
+            }
+        });
+
+        document.addEventListener('keyup', (event) => {
+            delete keysPressed[event.key];
+        }); */

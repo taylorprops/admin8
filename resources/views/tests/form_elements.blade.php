@@ -14,31 +14,27 @@
         <div class="col-4">
             <div class="my-3 mx-2 sample-form-div">
                 <div class="text-primary font-weight-bold mt-2 mb-2">Input</div>
-                <input type="text" class="form-input" data-label="Input">
+                <input type="text" class="custom-form-element form-input" data-label="Input">
                 <div class="mt-3 border p-2">
                     <div class="text-primary font-weight-bold mt-2 mb-2">Code</div>
-                    <code>
-                        &lt;input type="text" class="form-input" data-label="Input">
-                    </code>
+                    <code></code>
                 </div>
             </div>
         </div>
         <div class="col-4">
             <div class="my-3 mx-2 sample-form-div">
                 <div class="text-primary font-weight-bold mt-2 mb-2">File Upload</div>
-                <input type="file" id="test_file" class="form-input-file" data-label="File Upload">
+                <input type="file" id="test_file" class="custom-form-element form-input-file custom-file-input" data-label="File Upload">
                 <div class="mt-3 border p-2">
                     <div class="text-primary font-weight-bold mt-2 mb-2">Code</div>
-                    <code>
-                        &lt;input type="file" id="test_file_id" class="form-input-file" data-label="File Upload">
-                    </code>
+                    <code></code>
                 </div>
             </div>
         </div>
         <div class="col-4">
             <div class="my-3 mx-2 sample-form-div">
                 <div class="text-primary font-weight-bold mt-2 mb-2">Select - Disabled</div>
-                <select class="form-select form-select-no-search" disabled data-label="Select - Disabled">
+                <select class="custom-form-element form-select form-select-no-search" disabled data-label="Select - Disabled">
                     <option value=""></option>
                     <option value="Pizza">Pizza</option>
                     <option value="Crabs" selected>Crabs</option>
@@ -56,15 +52,7 @@
                 </select>
                 <div class="mt-3 border p-2">
                     <div class="text-primary font-weight-bold mt-2 mb-2">Code</div>
-                    <code>
-                        &lt;select class="form-select form-select-no-search" disabled data-label="Select - Disabled">
-                            &lt;option value=""></option>
-                            &lt;option value="Pizza">Pizza</option>
-                            &lt;ption value="Crabs" selected>Crabs</option>
-                            &lt;option value="Burgers">Burgers</option>
-                            &lt;option value="Noodles">Noodles</option>
-                        &lt;/select>
-                    </code>
+                    <code></code>
                 </div>
             </div>
         </div>
@@ -73,7 +61,7 @@
         <div class="col-4">
             <div class="my-3 mx-2 sample-form-div">
                 <div class="text-primary font-weight-bold mt-2 mb-2">Select - Multiple</div>
-                <select class="form-select" multiple data-label="Select - Multiple">
+                <select class="custom-form-element form-select" multiple data-label="Select - Multiple">
                     <option value=""></option>
                     <option value="Pizza">Pizza</option>
                     <option value="Crabs" selected>Crabs</option>
@@ -91,24 +79,15 @@
                 </select>
                 <div class="mt-3 border p-2">
                     <div class="text-primary font-weight-bold mt-2 mb-2">Code</div>
-                    <code>
-                        &lt;select class="form-select" multiple data-label="Select - Multiple">
-                            &lt;option value="">&lt;/option>
-                            &lt;option value="Pizza">Pizza&lt;/option>
-                            &lt;option value="Crabs" selected>Crabs&lt;/option>
-                            &lt;option value="Burgers">Burgers&lt;/option>
-                            &lt;option value="Noodles" selected>Noodles&lt;/option>
-
-                        &lt;/select>
-                    </code>
+                    <code></code>
                 </div>
             </div>
         </div>
         <div class="col-4">
             <div class="my-3 mx-2 sample-form-div">
-                <select class="form-select form-select-no-search" data-label="Select - No Search">
+                <select class="custom-form-element form-select form-select-no-search" data-label="Select - No Search">
                     <option value=""></option>
-                    <option value="Pizza">Pizza als kdfjas lkdfas fal;s fjl;asd fl;as jfdlsk jfdlks dflks djf</option>
+                    <option value="Pizza">Pizza</option>
                     <option value="Crabs" selected>Crabs</option>
                     <option value="Burgers">Burgers</option>
                     <option value="Noodles">Noodles</option>
@@ -124,23 +103,14 @@
                 </select>
                 <div class="mt-3 border p-2">
                     <div class="text-primary font-weight-bold mt-2 mb-2">Code</div>
-                    <code>
-                        &lt;select class="form-select" multiple data-label="Select - Multiple">
-                            &lt;option value="">&lt;/option>
-                            &lt;option value="Pizza">Pizza&lt;/option>
-                            &lt;option value="Crabs" selected>Crabs&lt;/option>
-                            &lt;option value="Burgers">Burgers&lt;/option>
-                            &lt;option value="Noodles" selected>Noodles&lt;/option>
-
-                        &lt;/select>
-                    </code>
+                    <code></code>
                 </div>
             </div>
         </div>
         <div class="col-4">
             <div class="my-3 mx-2 sample-form-div">
                 <div class="text-primary font-weight-bold mt-2 mb-2">Select - No Cancel</div>
-                <select class="form-select form-select-no-cancel" data-label="Select - No Cancel">
+                <select class="custom-form-element form-select form-select-no-cancel" data-label="Select - No Cancel">
                     <option value=""></option>
                     <option value="Pizza">Pizza</option>
                     <option value="Crabs">Crabs</option>
@@ -158,16 +128,7 @@
                 </select>
                 <div class="mt-3 border p-2">
                     <div class="text-primary font-weight-bold mt-2 mb-2">Code</div>
-                    <code>
-                        &lt;select class="form-select form-select-no-cancel" data-label="Select - No Cancel">
-                            &lt;option value="">&lt;/option>
-                            &lt;option value="Pizza">Pizza&lt;/option>
-                            &lt;option value="Crabs">Crabs&lt;/option>
-                            &lt;option value="Burgers">Burgers&lt;/option>
-                            &lt;option value="Noodles">Noodles&lt;/option>
-
-                        &lt;/select>
-                    </code>
+                    <code></code>
                 </div>
             </div>
         </div>
@@ -179,36 +140,31 @@
         <div class="col-4">
             <div class="my-3 mx-2 sample-form-div">
                 <div class="text-primary font-weight-bold mt-2 mb-2">Checkbox - Checked</div>
-                <input type="checkbox" class="form-checkbox" id="checked_check" value="abcde" data-label="Checked" checked>
+                <input type="checkbox" class="custom-form-element form-checkbox" id="checked_check" value="abcde" data-label="Checked" checked>
                 <div class="mt-3 border p-2">
                     <div class="text-primary font-weight-bold mt-2 mb-2">Code</div>
-                    <code>
-                        &lt;input type="checkbox" class="form-checkbox" id="not_checked_check" value="abcde" data-label="Checked" checked>
-                    </code>
+                    <code></code>
                 </div>
             </div>
         </div>
         <div class="col-4">
             <div class="my-3 mx-2 sample-form-div">
                 <div class="text-primary font-weight-bold mt-2 mb-2">Checkbox - Disabled</div>
-                <input type="checkbox" class="form-checkbox" id="first_check" value="abcde" data-label="Disabled">
+                <input type="checkbox" class="custom-form-element form-checkbox" id="first_check" value="abcde" disabled data-label="Disabled">
                 <div class="mt-3 border p-2">
                     <div class="text-primary font-weight-bold mt-2 mb-2">Code</div>
-                    <code>
-                        <input type="checkbox" class="form-checkbox" id="disabeled_check" value="abcde" data-label="Disabled" disabled>
-                    </code>
+                    <code></code>
                 </div>
             </div>
         </div>
         <div class="col-4">
             <div class="my-3 mx-2 sample-form-div">
-                <div class="text-primary font-weight-bold mt-2 mb-2">Checkbox - Checked</div>
-                <input type="checkbox" class="form-checkbox" id="first_check" value="abcde" data-label="Checked" checked>
+                <div class="text-primary font-weight-bold mt-2 mb-2">radio - Checked</div>
+                <input type="radio" class="custom-form-element form-radio" id="checked_radio" name="radio_group" value="abcde" data-label="Checked" checked>
+                <input type="radio" class="custom-form-element form-radio" id="unchecked_radio" name="radio_group" value="abcdef" data-label="Un Checked">
                 <div class="mt-3 border p-2">
                     <div class="text-primary font-weight-bold mt-2 mb-2">Code</div>
-                    <code>
-                        &lt;input type="checkbox" class="form-checkbox" id="first_check" value="abcde" data-label="Checked" checked>
-                    </code>
+                    <code></code>
                 </div>
             </div>
         </div>
@@ -218,7 +174,21 @@
 @endsection
 @section('js')
 <script>
-    $(document).ready(function() {
+    $(function() {
+
+        $('.custom-form-element').each(function() {
+            $(this).wrap('<div class="form-element-input"></div>');
+            let html = $(this).parent('.form-element-input').html();
+            let replace = new RegExp('<', 'g');
+            html = html.replace(replace, '&lt;');
+            $(this).closest('.sample-form-div').find('code').html(html);
+        });
+
+        setTimeout(function() {
+            form_elements();
+        }, 500);
+
+
 
     });
 </script>

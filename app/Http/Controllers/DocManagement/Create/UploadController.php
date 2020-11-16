@@ -334,21 +334,15 @@ class UploadController extends Controller {
     public function save_file_edit(Request $request) {
         $file_id = $request -> edit_file_id;
         $file_name_display = $request -> edit_file_name_display;
-        $state = $request -> edit_state;
         $helper_text = $request -> edit_helper_text;
-        $form_group_id = $request -> edit_form_group_id;
         $form_categories = implode(',', $request -> edit_form_categories);
         $form_tags = $request -> edit_form_tags;
-        $checklist_group_id = $request -> edit_checklist_group_id;
 
         $upload = Upload::where('file_id', $file_id) -> first();
         $upload -> file_name_display = $file_name_display;
-        $upload -> state = $state;
         $upload -> helper_text = $helper_text;
         $upload -> form_categories = $form_categories;
         $upload -> form_tags = $form_tags;
-        $upload -> checklist_group_id = $checklist_group_id;
-        $upload -> form_group_id = $form_group_id;
         $upload -> save();
     }
 
@@ -365,7 +359,7 @@ class UploadController extends Controller {
         // remove images from pdf so easier to scan text
         exec('gs -o '.Storage::disk('public') -> path('tmp/tmp_'.$new_file_name_pdf).' -sDEVICE=pdfwrite -dFILTERIMAGE '.$upload);
         // convert to image
-        exec('convert '.Storage::disk('public') -> path('tmp/tmp_'.$new_file_name_pdf).'[0] -density 300 -flatten -trim -quality 100% -background white -font Arial '.Storage::disk('public') -> path('tmp/'.$new_file_name_image));
+        exec('convert '.Storage::disk('public') -> path('tmp/tmp_'.$new_file_name_pdf).'[0] -density 300 -flatten -trim -quality 100% -background white '.Storage::disk('public') -> path('tmp/'.$new_file_name_image));
         // scan text
         $text = (new TesseractOCR(Storage::disk('public') -> path('tmp/'.$new_file_name_image)))
             -> whitelist(range('a', 'z'), range('A', 'Z'), '-_/\'/')

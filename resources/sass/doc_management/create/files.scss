@@ -39,10 +39,6 @@
         padding: 0px !important
     }
 
-    .checklist-count-chip {
-        width: 50px;
-        text-align: center;
-    }
 
     .uploads-filter-sort, .uploads-filter-published, .uploads-filter-active {
         width: 100px;
@@ -95,10 +91,10 @@
     #add_to_checklists_table_filter {
         margin-right: 25px;
     }
-    #add_to_checklists_table .form-ele {
+    /* #add_to_checklists_table .form-ele {
         margin-top: 0px;
         margin-bottom: 0px;
-    }
+    } */
 
     #add_to_checklists_table td {
         vertical-align: middle;

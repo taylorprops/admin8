@@ -386,6 +386,7 @@ if (document.URL.match(/transaction_details/)) {
     function show_accept_contract() {
         $('#accept_contract_modal').modal();
         $('#save_accept_contract_button').off('click').on('click', save_accept_contract);
+        $('.our-agent-div').hide();
         $('#agent_search_div').on('show.bs.collapse', function () {
             setTimeout(function () {
                 $('#agent_search').focus().trigger('click');
@@ -394,10 +395,10 @@ if (document.URL.match(/transaction_details/)) {
 
         $('#accept_contract_BuyerRepresentedBy').on('change', function () {
 
-            $('.agent-details').val('').trigger('change');
+            $('.agent-details').val('');
             $('.buyer-agent-details, .our-agent-div').hide();
             $('.bright-search-row').hide();
-            $('#accept_contract_our_agent').removeClass('required')
+            $('#accept_contract_our_agent').removeClass('required');
 
             if($(this).val() == 'other_agent') {
                 $('.buyer-agent-details, .bright-search-row').show();
@@ -406,19 +407,19 @@ if (document.URL.match(/transaction_details/)) {
                 $('.buyer-agent-details').show();
                 $('.agent-details-required').addClass('required');
                 $('.agent-details').each(function() {
-                    $(this).val($(this).data('agent-detail')).trigger('change');
+                    $(this).val($(this).data('agent-detail'))/* .trigger('change') */;
                 });
             } else if($(this).val() == 'our_agent') {
                 $('.our-agent-div').show();
                 $('.agent-details-required').addClass('required');
                 $('#accept_contract_our_agent').addClass('required').on('change', function() {
                     if($(this).val() == '') {
-                        $('.agent-details').val('').trigger('change');
+                        $('.agent-details').val('')/* .trigger('change') */;
                         $('.buyer-agent-details').hide();
                     } else {
                         $('.buyer-agent-details').show();
                         $('.agent-details').each(function() {
-                            $(this).val($(this).data('agent-detail')).trigger('change');
+                            $(this).val($(this).data('agent-detail'))/* .trigger('change') */;
                         });
                         let option = $(this).find('option:selected');
                         $('#accept_contract_buyer_agent_company').val(option.data('company'));
@@ -438,7 +439,7 @@ if (document.URL.match(/transaction_details/)) {
         $('#accept_contract_using_heritage').on('change', function() {
             if($(this).val() == 'yes') {
                 $('.not-using-heritage').hide();
-                $('#accept_contract_title_company').val('').trigger('change');
+                $('#accept_contract_title_company').val('')/* .trigger('change') */;
             } else {
                 $('.not-using-heritage').show();
             }
@@ -459,12 +460,12 @@ if (document.URL.match(/transaction_details/)) {
         let office_state = ele.data('agent-state');
         let office_zip = ele.data('agent-zip');
 
-        $('#accept_contract_buyer_agent_first').val(agent_first).trigger('change');
-        $('#accept_contract_buyer_agent_last').val(agent_last).trigger('change');
-        $('#accept_contract_buyer_agent_email').val(agent_email).trigger('change');
-        $('#accept_contract_buyer_agent_phone').val(agent_phone).trigger('change');
-        $('#accept_contract_buyer_agent_mls_id').val(agent_mls_id).trigger('change');
-        $('#accept_contract_buyer_agent_company').val(agent_company).trigger('change');
+        $('#accept_contract_buyer_agent_first').val(agent_first)/* .trigger('change') */;
+        $('#accept_contract_buyer_agent_last').val(agent_last)/* .trigger('change') */;
+        $('#accept_contract_buyer_agent_email').val(agent_email)/* .trigger('change') */;
+        $('#accept_contract_buyer_agent_phone').val(agent_phone)/* .trigger('change') */;
+        $('#accept_contract_buyer_agent_mls_id').val(agent_mls_id)/* .trigger('change') */;
+        $('#accept_contract_buyer_agent_company').val(agent_company)/* .trigger('change') */;
         $('#accept_contract_buyer_agent_street').val(office_street);
         $('#accept_contract_buyer_agent_city').val(office_city);
         $('#accept_contract_buyer_agent_state').val(office_state);
@@ -559,6 +560,7 @@ if (document.URL.match(/transaction_details/)) {
         }
     }
 
+
     window.load_details_header = function () {
         let Listing_ID = $('#Listing_ID').val();
         let Contract_ID = $('#Contract_ID').val();
@@ -630,7 +632,7 @@ if (document.URL.match(/transaction_details/)) {
                     $('#UsingHeritage').on('change', function() {
                         if($(this).val() == 'yes') {
                             $('.not-using-heritage').hide();
-                            $('#TitleCompany').val('').trigger('change');
+                            $('#TitleCompany').val('')/* .trigger('change') */;
                         } else {
                             $('.not-using-heritage').show();
                         }
@@ -641,13 +643,17 @@ if (document.URL.match(/transaction_details/)) {
                     $(document).on('click', '.import-contact-button', function () {
                         show_import_modal($(this).data('ele'));
                     });
-                    $('#contacts_table').DataTable({
+                    let contacts_table = $('#contacts_table').DataTable({
                         "aaSorting": [],
                         columnDefs: [{
                             orderable: false,
                             targets: 0
-                        }]
+                        }],
+                        bAutoWidth: true
                     });
+
+
+
                     $('#add_member_button').off('click').on('click', show_add_member);
                     //$('.save-member-div').off('click').on('click', '.save-member-button', save_add_member);
                     $('.delete-member-button').off('click').on('click', confirm_delete_member);
@@ -685,6 +691,8 @@ if (document.URL.match(/transaction_details/)) {
 
 
                         $('.add-to-checklist-button').off('click').on('click', show_add_to_checklist);
+
+                        $('.documents-container').find('modal').appendTo('body');
 
                     }, 200);
 
@@ -795,7 +803,7 @@ if (document.URL.match(/transaction_details/)) {
                     // select and show form groups
                     $('.select-form-group').on('change', function () {
                         // clear search input
-                        $('.form-search').val('').trigger('change');
+                        $('.form-search').val('')/* .trigger('change') */;
 
                         // if all show everything or just the selected group
                         if ($(this).val() == 'all') {
@@ -811,30 +819,38 @@ if (document.URL.match(/transaction_details/)) {
                 } else if (tab == 'contracts') {
 
                     $('.contract-div').mouseenter(function () {
-                        $(this).addClass('z-depth-3').removeClass('z-depth-1');
+                        $(this).addClass('z-depth-3').removeClass('shadow');
                     });
                     $('.contract-div').mouseleave(function () {
-                        $(this).removeClass('z-depth-3').addClass('z-depth-1');
+                        $(this).removeClass('z-depth-3').addClass('shadow');
                     });
 
                 } else if(tab == 'commission') {
 
                     $('.popout').eq(0).show();
                     get_checks_in(Commission_ID);
+                    get_checks_out(Commission_ID);
                     get_commission_notes(Commission_ID);
                     get_income_deductions(Commission_ID);
                     get_commission_deductions(Commission_ID);
 
+                    show_title();
+                    $('#using_heritage').on('change', function() {
+                        show_title();
+                    });
+
                     $('.add-check-in-button').off('click').on('click', show_add_check_in);
+                    $('.add-check-out-button').off('click').on('click', show_add_check_out);
 
                     $('#save_add_check_in_button').off('click').on('click', save_add_check_in);
+                    $('#save_add_check_out_button').off('click').on('click', save_add_check_out);
 
                     $('#save_add_income_deduction_button').off('click').on('click', function() {
                         save_add_income_deduction();
                     });
 
                     $('#add_income_deduction_div').on('hidden.bs.collapse', function () {
-                        $('#income_deduction_description, #income_deduction_amount').val('').trigger('change');
+                        $('#income_deduction_description, #income_deduction_amount').val('')/* .trigger('change') */;
                     });
 
                     $('#save_add_commission_deduction_button').off('click').on('click', function() {
@@ -842,19 +858,32 @@ if (document.URL.match(/transaction_details/)) {
                     });
 
                     $('#add_commission_deduction_div').on('hidden.bs.collapse', function () {
-                        $('#commission_deduction_description, #commission_deduction_amount').val('').trigger('change');
+                        $('#commission_deduction_description, #commission_deduction_amount').val('')/* .trigger('change') */;
                     });
+
+                    $('.save-commission-notes-button').off('click').on('click', add_commission_notes)
 
                     $('.total').each(function() {
                         if($(this).val() == '') {
-                            $(this).val('0').trigger('change');
+                            $(this).val('0')/* .trigger('change') */;
                         }
-                        $(this).on('focus', function () {
+                        /* $(this).on('focus', function () {
                             $(this).select();
-                        });
+                        }); */
                     });
 
                 }
+
+
+                setTimeout(function() {
+                    select_refresh();
+                    global_loading_off();
+                    /* $('.page-transaction-details').find('.modal').each(function() {
+                        $(this).appendTo('body');
+                    }); */
+                }, 200);
+
+
 
 
                 if($('#required_fields_using_heritage').val() == 'no') {
@@ -866,7 +895,7 @@ if (document.URL.match(/transaction_details/)) {
                 $('#required_fields_using_heritage').on('change', function() {
                     if($(this).val() == 'yes') {
                         $('.not-using-heritage').hide();
-                        $('#required_fields_title_company').val('').trigger('change');
+                        $('#required_fields_title_company').val('')/* .trigger('change') */;
                         $('#required_fields_title_company').prop('required', false).removeClass('required');
                     } else {
                         $('.not-using-heritage').show();
@@ -874,41 +903,7 @@ if (document.URL.match(/transaction_details/)) {
                     }
                 });
 
-                $('.money, .money-decimal').each(function() {
-                    let val = $(this).val();
-                    if(val.match(/[a-zA-Z]+/)) {
-                        $(this).val(val.replace(/[a-zA-Z]+/,''));
-                    }
-                });
-                if($('.money').length > 0) {
-                    format_money($('.money'));
-                    $('.money').keyup(function () {
-                        let val = $(this).val();
-                        if(val.match(/[a-zA-Z]+/)) {
-                            $(this).val(val.replace(/[a-zA-Z]+/,''));
-                        }
-
-                        format_money($(this));
-                    });
-                }
-                if($('.money-decimal').length > 0) {
-                    $('.money-decimal').each(function() {
-                        if($(this).val() != '') {
-                            format_money_with_decimals($(this));
-                        }
-                        $('.money-decimal').on('change', function () {
-                            if($(this).val() != '') {
-                                format_money_with_decimals($(this));
-                            }
-                        })
-                        .on('keyup', function() {
-                            let val = $(this).val();
-                            if(val.match(/[a-zA-Z]+/)) {
-                                $(this).val(val.replace(/[a-zA-Z]+/,''));
-                            }
-                        });
-                    });
-                }
+                global_format_money();
 
 
                 // init tooltips and form elements
@@ -918,10 +913,7 @@ if (document.URL.match(/transaction_details/)) {
                     handle: '.draggable-handle'
                 });
 
-                setTimeout(function() {
-                    select_refresh();
-                    global_loading_off();
-                }, 200);
+
 
 
             })
@@ -1017,7 +1009,7 @@ if (document.URL.match(/transaction_details/)) {
             $('.hoa').show();
         } else {
             $('.hoa').hide();
-            $('[name=hoa_condo]').val('none').trigger('change').attr('required', false);
+            $('[name=hoa_condo]').val('none')/* .trigger('change') */.attr('required', false);
         }
 
         let listing_type = $('[name=listing_type]').val();

@@ -1,13 +1,24 @@
-.form-select, .form-checkbox, .form-input-color {
+.form-select,/*  .form-checkbox, */ .form-input-color {
     display: none;
 }
 
-
+.custom-form-element {
+    display: none;
+}
 
 .form-ele {
     position: relative;
     margin-top: .9rem;
     margin-bottom: .6rem;
+    &.mt-1 {
+        margin-top: .3rem;
+    }
+    &.mb-1 {
+        margin-bottom: .3rem;
+    }
+    &.mt-2 {
+        margin-top: .6rem;
+    }
 
     &.form-small {
         margin-top: .5rem !important;
@@ -18,9 +29,7 @@
         //color: $danger !important;
         border: 1px solid $danger !important;
     }
-    .invalid-input-file {
-        border-bottom: 1px solid $danger !important;
-    }
+
 
 
 
@@ -34,21 +43,21 @@
     }
     .datepicker-div {
         position: absolute;
-        top: 6px;
+        top: 4px;
         right: 6px;
         font-size: 1.1rem;
         color: $primary;
     }
     .form-datepicker-cancel {
         position: absolute;
-        top: 7px;
+        top: 5px;
         right: 23px;
         font-size: 1.1rem;
         cursor: pointer;
         color: $default;
     }
 
-    .form-input, .form-textarea, .form-select-value-input, .file-field {
+    .form-input, .form-textarea, .form-select-value-input, .custom-file-label {
         width: 100%;
         padding: 8px 20px 2px 5px;
         border: none;
@@ -65,9 +74,13 @@
             font-size: .8rem !important;
         }
 
-        &:focus {
+        &:focus:not(.readonly) {
             border-color: rgb(120, 196, 231);
             box-shadow: 0 0 5px rgb(120, 196, 231);
+        }
+
+        &.readonly {
+            opacity: 0.6;
         }
 
     }
@@ -91,7 +104,8 @@
         //background-color: rgb(252, 192, 192, 0.02) !important;
         border-bottom: 1px solid rgb(252, 192, 192) !important;
     }
-    .form-input:not([disabled]), .form-textarea:not([disabled]), .form-select-value-input:not([disabled]), .file-field:not([disabled]) {
+
+    .form-input:not([disabled]), .form-textarea:not([disabled]), .form-select-value-input:not([disabled]), .custom-file-label:not([disabled]) {
         background-color: #fdfeff;
 
         &.required {
@@ -106,15 +120,18 @@
         box-shadow: 0 0 5px rgb(120, 196, 231);
     }
 
+    .form-input-file-label {
+        overflow: hidden;
 
-    .file-field {
-        padding: 2px 2px 2px 5px;
+        &::after {
+            background: $blue-light;
+            color: $primary;
+            border: 1px solid $blue;
+        }
     }
-
-    .file-path {
-        border: none !important;
+    .form-input-file {
+        cursor: pointer;
     }
-
 
 
 
@@ -140,12 +157,13 @@
         white-space: nowrap;
         transition: all .1s;
         cursor: pointer;
-        z-index: 0;
+        z-index: 1;
 
         &.form-small {
             top: 4px !important;
         }
     }
+
 
     .form-input-label.active, .form-textarea-label.active, .form-select-label.active {
         position: absolute;
@@ -250,6 +268,10 @@
         font-size: .9rem;
         color: #162027;
         //border-bottom: 1px solid #e9e8e8;
+
+        .hidden {
+            display: none !important;
+        }
     }
     .form-select-li:hover {
 

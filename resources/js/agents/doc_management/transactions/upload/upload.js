@@ -28,11 +28,11 @@ window.upload_documents = function() {
         },
         onInit: function () {
             // Plugin is ready to use
-            console.log('upload initialized :)', 'info');
+            //console.log('upload initialized :)', 'info');
         },
         onComplete: function () {
             // All files in the queue are processed (success or error)
-            $('#upload_document_modal').modal('hide');
+            $('#upload_documents_modal').modal('hide');
             $('.modal-stack').remove();
             load_tabs('documents');
             load_tabs('checklist');
@@ -40,12 +40,12 @@ window.upload_documents = function() {
         },
         onNewFile: function (id, file) {
             // When a new file is added using the file selector or the DnD area
-            console.log('New file added #' + id);
+            //console.log('New file added #' + id);
             ui_multi_add_file(id, file);
         },
         onBeforeUpload: function (id) {
             // about tho start uploading a file
-            console.log('Starting the upload of #' + id);
+            //console.log('Starting the upload of #' + id);
             ui_multi_update_file_status(id, 'uploading', 'Uploading...');
             ui_multi_update_file_progress(id, 0, '', true);
         },

@@ -33,30 +33,30 @@ if($property -> Owner2 != '') {
     <div class="row">
         <div class="col-8 mb-5 mx-auto">
 
-            <div class="h3-responsive text-orange mt-3 mt-sm-4 text-center w-100">{{ $property -> FullStreetAddress }} {{ $property -> City.', '.$property -> StateOrProvince.' '.$property -> PostalCode }}</div>
+            <div class="h3 text-orange mt-3 mt-sm-4 text-center w-100">{{ $property -> FullStreetAddress }} {{ $property -> City.', '.$property -> StateOrProvince.' '.$property -> PostalCode }}</div>
 
-            <div class="h4-responsive text-primary mt-3 mb-4 text-center">Just a few more details</div>
+            <div class="h4 text-primary mt-3 mb-4 text-center">Just a few more details</div>
 
             <form id="details_form" autocomplete="off">
 
                 <input autocomplete="false" name="hidden" type="text" style="display:none;">
 
-                <div class="container z-depth-1 mb-4 py-3">
+                <div class="container shadow mb-4 py-3">
                     <div class="row">
 
                         <div class="col-12 buyer-container">
 
-                            <div class="h4-responsive step-title text-gray mb-4">{{ $for_sale ? 'Buyer' : 'Renter' }}(s)</div>
+                            <div class="h4 step-title text-gray mb-4">{{ $for_sale ? 'Buyer' : 'Renter' }}(s)</div>
 
                             <input type="checkbox" class="custom-form-element form-checkbox bank-trust" data-member="buyer" data-label="{{ $for_sale ? 'Buyer' : 'Renter' }} is a Trust, Company or other Entity">
 
                             <div class="buyer-div mb-3">
 
-                                <div class="h5-responsive text-orange buyer-header">{{ $for_sale ? 'Buyer' : 'Renter' }} 1</div>
+                                <div class="h5 text-orange buyer-header">{{ $for_sale ? 'Buyer' : 'Renter' }} 1</div>
 
                                 <a href="javascript: void(0)" class="btn btn-sm btn-primary ml-0 import-from-contacts-button" data-member="buyer" data-member-id="1"><i class="fad fa-user-friends mr-2"></i> Import from Contacts</a>
 
-                                <div class="row bank-trust-row hidden">
+                                <div class="row bank-trust-row hide">
                                     <div class="col-12>
                                         <input type="text" class="custom-form-element form-input required" name="buyer_entity_name" data-label="Trust, Company or other Entity Name">
                                     </div>
@@ -111,18 +111,18 @@ if($property -> Owner2 != '') {
                     </div>
                 </div>
 
-                <div class="container z-depth-1 mb-4 py-3">
+                <div class="container shadow mb-4 py-3">
                     <div class="row">
 
                         <div class="col-12 seller-container">
 
-                            <div class="h4-responsive step-title text-gray my-2">{{ $for_sale ? 'Seller' : 'Owner' }}(s)</div>
+                            <div class="h4 step-title text-gray my-2">{{ $for_sale ? 'Seller' : 'Owner' }}(s)</div>
 
                             <input type="checkbox" class="custom-form-element form-checkbox bank-trust" data-member="seller" data-label="{{ $for_sale ? 'Seller' : 'Owner' }} is a Trust, Company or other Entity">
 
                             <div class="seller-div mb-3">
-                                <div class="h5-responsive text-orange seller-header">{{ $for_sale ? 'Seller' : 'Owner' }} 1</div>
-                                <div class="row bank-trust-row hidden">
+                                <div class="h5 text-orange seller-header">{{ $for_sale ? 'Seller' : 'Owner' }} 1</div>
+                                <div class="row bank-trust-row hide">
                                     <div class="col-12">
                                         <input type="text" class="custom-form-element form-input required" name="seller_entity_name" data-label="Trust, Company or other Entity Name">
                                     </div>
@@ -140,7 +140,7 @@ if($property -> Owner2 != '') {
                             @if($property -> Owner2 != '')
                             <div class="seller-div mb-3">
                                 <div class="d-flex justify-content-between">
-                                    <div class="h5-responsive text-orange seller-header">{{ $for_sale ? 'Seller' : 'Owner' }} 2</div>
+                                    <div class="h5 text-orange seller-header">{{ $for_sale ? 'Seller' : 'Owner' }} 2</div>
                                     <div><a href="javascript: void(0)" class="member-delete text-danger" data-member="seller"><i class="fal fa-times fa-2x"></i></a></div>
                                 </div>
                                 <div class="row">
@@ -157,7 +157,7 @@ if($property -> Owner2 != '') {
                         </div>
 
                         <div class="col-12">
-                            <a href="javascript: void(0);" class="btn btn-sm btn-success add-member-button @if($property -> Owner2 != '') hidden @endif" data-type="contract" data-member="seller"><i class="fa fa-plus mr-2"></i> Add {{ $for_sale ? 'Seller' : 'Owner' }}</a>
+                            <a href="javascript: void(0);" class="btn btn-sm btn-success add-member-button @if($property -> Owner2 != '') hide @endif" data-type="contract" data-member="seller"><i class="fa fa-plus mr-2"></i> Add {{ $for_sale ? 'Seller' : 'Owner' }}</a>
                         </div>
 
                     </div>
@@ -165,12 +165,12 @@ if($property -> Owner2 != '') {
 
                 @if($property -> PropertySubType != $resource_items -> GetResourceID('For Sale By Owner', 'checklist_property_sub_types'))
 
-                <div class="container z-depth-1 mb-4 py-3">
+                <div class="container shadow mb-4 py-3">
                     <div class="row">
 
                         <div class="col-12">
 
-                            <div class="h4-responsive step-title text-gray my-2">List Agent</div>
+                            <div class="h4 step-title text-gray my-2">List Agent</div>
 
                             <div class="p-2">
 
@@ -234,20 +234,20 @@ if($property -> Owner2 != '') {
 
                 @if($property -> SaleRent != 'rental')
 
-                    <div class="container z-depth-1 mb-4 py-3">
+                    <div class="container shadow mb-4 py-3">
                         <div class="row">
                             <div class="col-12">
-                                <div class="h4-responsive step-title text-gray my-2">Dates</div>
+                                <div class="h4 step-title text-gray my-2">Dates</div>
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         <div class="p-3">
-                                            <div class="h5-responsive text-orange mb-3">Contract Date</div>
+                                            <div class="h5 text-orange mb-3">Contract Date</div>
                                             <input type="text" class="custom-form-element form-input datepicker required" name="ContractDate" id="ContractDate" data-label="Contract Date" value="{{ ($property -> ContractDate != '0000-00-00' ? $property -> ContractDate : '') }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <div class="p-3">
-                                            <div class="h5-responsive text-orange mb-3">Settlement Date</div>
+                                            <div class="h5 text-orange mb-3">Settlement Date</div>
                                             <input type="text" class="custom-form-element form-input datepicker required" name="CloseDate" id="CloseDate" data-label="Settlement Date" value="{{ ($property -> CloseDate != '0000-00-00' ? $property -> CloseDate : '') }}" readonly>
                                         </div>
                                     </div>
@@ -256,15 +256,15 @@ if($property -> Owner2 != '') {
                         </div>
                     </div>
 
-                    <div class="container z-depth-1 mb-4 py-3">
+                    <div class="container shadow mb-4 py-3">
                         <div class="row">
                             <div class="col-12">
 
-                                <div class="h4-responsive step-title text-gray my-2">Title and Earnest</div>
+                                <div class="h4 step-title text-gray my-2">Title and Earnest</div>
 
                                 <div class="p-3">
 
-                                    <div class="h5-responsive text-orange mb-3">Are the Buyer's using Heritage Title?</div>
+                                    <div class="h5 text-orange mb-3">Are the Buyer's using Heritage Title?</div>
                                     <div class="mr-2 using-heritage">
                                         <select class="custom-form-element form-select form-select-no-search form-select-no-cancel required" name="UsingHeritage" id="UsingHeritage" data-label="Using Heritage">
                                             <option value=""></option>
@@ -285,13 +285,13 @@ if($property -> Owner2 != '') {
                         <div class="row">
                             <div class="col-12 col-sm-6">
                                 <div class="p-3">
-                                    <div class="h5-responsive text-orange mb-3">Earnest Deposit Amount</div>
+                                    <div class="h5 text-orange mb-3">Earnest Deposit Amount</div>
                                     <input type="text" class="custom-form-element form-input money-decimal numbers-only" name="EarnestAmount" id="EarnestAmount" data-label="Amount">
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <div class="p-3">
-                                    <div class="h5-responsive text-orange mb-3">Earnest Held By</div>
+                                    <div class="h5 text-orange mb-3">Earnest Held By</div>
                                     <select class="custom-form-element form-select form-select-no-search form-select-no-cancel" name="EarnestHeldBy" id="EarnestHeldBy" data-label="Held By">
                                         <option value=""></option>
                                         <option value="us">Taylor/Anne Arundel Properties</option>
@@ -309,15 +309,15 @@ if($property -> Owner2 != '') {
 
 
 
-                    <div class="container z-depth-1 mb-4 py-3">
+                    <div class="container shadow mb-4 py-3">
 
                         <div class="row">
                             <div class="col-12 col-md-6">
 
-                                <div class="h4-responsive step-title text-gray my-2">Dates</div>
+                                <div class="h4 step-title text-gray my-2">Dates</div>
 
                                 <div class="p-3">
-                                    <div class="h5-responsive text-orange mb-3">Lease Date</div>
+                                    <div class="h5 text-orange mb-3">Lease Date</div>
                                     <input type="text" class="custom-form-element form-input datepicker required" name="CloseDate" id="CloseDate" data-label="Lease Date" value="{{ ($property -> CloseDate != '0000-00-00' ? $property -> CloseDate : '') }}">
                                 </div>
 

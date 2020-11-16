@@ -1,4 +1,4 @@
-<div class="row animated fadeIn">
+<div class="row animate__animated animate__fadeIn">
 
     <div class="col-12">
 
@@ -8,7 +8,7 @@
 
                 <div class="list-group-item bg-blue-light border border-primary border-left-0 border-right-0 d-flex justify-content-between align-items-center @if($loop -> first) mt-3 @else mt-5 @endif">
                     <div>
-                        <div class="h5-responsive text-primary">{{ $checklist_group -> resource_name }}</div>
+                        <div class="h5 text-primary">{{ $checklist_group -> resource_name }}</div>
                     </div>
                     <div>
                         <button type="button" class="btn btn-success btn-sm add-checklist-item-button" data-toggle="tooltip" data-group-id="{{ $checklist_group -> resource_id }}" title="Add Checklist Item"><i class="fal fa-plus"></i></button>
@@ -62,7 +62,7 @@
 
                     @endphp
 
-                    <div class="list-group-item p-0 mt-2 mx-2 border-top z-depth-1 rounded checklist-item-div {{ $notes_unread }} @if($status == 'Pending') pending @elseif($status == 'Required') required @endif" id="checklist_item_{{ $checklist_item_id }}">
+                    <div class="list-group-item p-0 mt-2 mx-2 border-top shadow rounded checklist-item-div {{ $notes_unread }} @if($status == 'Pending') pending @elseif($status == 'Required') required @endif" id="checklist_item_{{ $checklist_item_id }}">
 
                         <div class="d-flex justify-content-between align-content-around mb-1 p-1">
 

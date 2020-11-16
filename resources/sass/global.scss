@@ -12,9 +12,6 @@ html {
         font-size: .8rem;
     }
 
-    .h5-responsive {
-        font-size: 115%;
-    }
 }
 
 @media (max-width: 991.98px) {
@@ -30,22 +27,10 @@ html {
 }
 
 body {
-    padding-top: 50px;
+    padding-top: 57px;
 
 }
 
-// padding above main to clear nav
-/* NAVBAR: OLD .hidden-sn main {
-    padding-top: 1rem !important;
-} */
-
-/* body:not(.y-scroll-none) {
-    overflow-y: scroll;
-}
-
-body.y-scroll-none {
-    overflow-y: hidden;
-} */
 
 h1,
 h2,
@@ -89,9 +74,13 @@ a:hover {
     text-decoration: none;
 }
 
-input {
+/* input {
     border: 1px solid #ccc;
     color: #6e6d6d;
+} */
+
+ul {
+    list-style: none;
 }
 
 .nowrap {
@@ -122,9 +111,7 @@ input {
     opacity: 0.25;
 }
 
-.badge:not(.badge-pill) {
-    border-radius: 0px;
-}
+
 
 .container {
     max-width: 1500px !important;
@@ -145,9 +132,11 @@ input {
 .uppercase {
     text-transform: uppercase
 }
-
-.hidden {
+.hide {
     display: none;
+}
+.hidden {
+    display: none !important;
 }
 .font-14 {
     font-size: 1.4rem;
@@ -227,15 +216,13 @@ input {
 }
 
 
-ul {
-    list-style-type: none;
-}
 
 .draggable {
     touch-action: none;
     user-select: none;
 }
 
+/* text editor */
 .ck.ck-toolbar {
     background: $blue-light !important;
 }

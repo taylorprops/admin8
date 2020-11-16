@@ -44,16 +44,16 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                             <li class="list-group-item checklist-item w-100 pt-1 pb-0" data-form-id="{{ $checklist_item -> checklist_form_id ?? null }}" data-form-group-id="{{ $checklist_group -> resource_id }}"">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div class="d-flex justify-content-start my-1">
+                                        <div class="d-flex justify-content-start align-items-center">
                                             <div>
                                                 <i class="fas fa-sort fa-lg mx-3 text-primary checklist-item-handle ui-sortable-handle"></i>
                                             </div>
-                                            <div class="h5-responsive text-primary" title="{{ $form_name_orig }}"><a href="{{ $form_link }}" target="_blank">{{ $form_name }}</a></div>
+                                            <div class="h5 text-primary" title="{{ $form_name_orig }}"><a href="{{ $form_link }}" target="_blank">{{ $form_name }}</a></div>
                                         </div>
                                     </div>
                                     <div class="col-3">
-                                        <div class="d-flex justify-content-start my-1">
-                                            <span>Required:</span>
+                                        <div class="d-flex justify-content-start align-items-center">
+                                            <span class="mr-1">Required:</span>
                                             <input type="radio" class="custom-form-element form-radio checklist-item-required required" name="checklist_item_required_{{ $form_id }}" value="yes" data-label="Yes" @if( $checklist_item -> checklist_item_required == 'yes') checked @endif>
                                             <input type="radio" class="custom-form-element form-radio checklist-item-required required" name="checklist_item_required_{{ $form_id }}" value="no" data-label="No" @if( $checklist_item -> checklist_item_required == 'no') checked @endif>
                                         </div>
@@ -63,8 +63,8 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
                                             <option value="no" @if( $checklist_item -> checklist_item_required == 'no') selected @endif>No</option>
                                         </select> --}}
                                     </div>
-                                    <div class="col-1">
-                                        <a class="btn btn-sm btn-danger delete-checklist-item-button my-1"><i class="fa fa-trash"></i></a>
+                                    <div class="col-1 d-flex align-items-center">
+                                        <a class="btn btn-sm btn-danger delete-checklist-item-button"><i class="fa fa-trash"></i></a>
                                     </div>
                                 </div>
                             </li>

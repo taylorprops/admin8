@@ -17,6 +17,10 @@
 @import '~dm-file-uploader/src/css/jquery.dm-uploader.css';
 @import '~dragula/dist/dragula.min.css';
 
+@import '~pretty-checkbox/src/pretty-checkbox.scss';
+@import '~animate.css/animate.min.css';
+
+
 
 // SECTIONS
 
@@ -49,5 +53,8 @@
 
 // Document Review
 @import 'doc_management/review/review.scss';
+
+// Commission
+@import 'doc_management/commission/commission.scss';
 
 

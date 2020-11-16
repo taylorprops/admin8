@@ -1,5 +1,14 @@
 .page-document-review {
 
+    .bottom-line {
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        width: 100VW;
+        height: 5px;
+        background: $primary;
+    }
+
     .transactions-container {
         position: relative;
 
@@ -8,7 +17,7 @@
             position: absolute;
             top: -60px;
             left: 0;
-            height: 99VH;
+            height: 99.8VH;
             width: 100%;
             overflow-y: auto;
             overflow-x: hidden;
@@ -42,7 +51,7 @@
 
             .sticky {
                 position: sticky;
-                top: -12px;
+                top: -2px;
                 z-index: 100;
             }
 
@@ -98,17 +107,17 @@
         overflow: hidden;
 
         .documents-div {
-            height: 92VH;
+            height: 93VH;
             overflow: hidden;
         }
 
         .review-container {
             position: relative;
-            height: 92VH;
+            height: 93VH;
         }
 
         .review-image-container {
-            height: 85VH;
+            height: 88VH;
             overflow-y: auto;
             scroll-behavior: smooth;
             padding-bottom: 25px;

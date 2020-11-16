@@ -17,7 +17,7 @@ if(auth() -> user() -> group == 'agent') {
 
             <div class="row mb-5">
                 <div class="col-12">
-                    <div class="h1-responsive text-primary mt-4 mb-2">Add {{ $transaction_type_header }}</div>
+                    <div class="h1 text-primary mt-4 mb-2">Add {{ $transaction_type_header }}</div>
                 </div>
             </div>
 
@@ -25,7 +25,7 @@ if(auth() -> user() -> group == 'agent') {
                 <!-- address search container -->
                 <div class="d-flex justify-content-center w-100">
                     <div id="address_search_container" class="address-container mls-container collapse show">
-                        <div class="h3-responsive text-center text-orange mb-4">To Begin, Search By Property Address</div>
+                        <div class="h3 text-center text-orange mb-4">To Begin, Search By Property Address</div>
                         <div class="mt-5">
                             <div class="row">
                                 <div class="col-sm-9 col-lg-10">
@@ -45,12 +45,12 @@ if(auth() -> user() -> group == 'agent') {
                                 </div>
                             </div>
                         </div>
-                        <div class="address-search-error hidden">
+                        <div class="address-search-error hide">
                             <div class="alert alert-danger text-danger w-50 my-3 mx-auto text-center" role="alert">
                                 <i class="fad fa-exclamation-circle fa-lg mr-3"></i> Street Number not valid. Please enter the address manually
                             </div>
                         </div>
-                        <div class="address-search-continue-div text-center my-4 hidden">
+                        <div class="address-search-continue-div text-center my-4 hide">
                             <a class="btn btn-success btn-lg" id="address_search_continue" @if($transaction_type != 'referral') href=".property-container" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container" @else  href="javascript: void(0)" @endif>Continue <i class="fad fa-chevron-double-right ml-3"></i></a>
                         </div>
                         <div class="h5 text-center mt-4">
@@ -62,7 +62,7 @@ if(auth() -> user() -> group == 'agent') {
 
                 <!-- address enter container -->
                 <div id="address_enter_container" class="address-container collapse">
-                    <div class="h3-responsive text-center text-orange mb-4">To Begin, Enter The Address Details</div>
+                    <div class="h3 text-center text-orange mb-4">To Begin, Enter The Address Details</div>
                     <form id="enter_address_form">
                         <div class="container">
                             <div class="row">
@@ -126,7 +126,7 @@ if(auth() -> user() -> group == 'agent') {
 
                 <!-- mls search container -->
                 <div id="mls_search_container" class="mls-container mx-auto collapse">
-                    <div class="h3-responsive text-center text-orange mb-4">Search By Bright MLS ID</div>
+                    <div class="h3 text-center text-orange mb-4">Search By Bright MLS ID</div>
                     <div class="mt-5">
                         <div class="row">
                             <div class="col-12">
@@ -140,7 +140,7 @@ if(auth() -> user() -> group == 'agent') {
                             </div>
                         </div>
                     </div>
-                    <div class="mls-search-error hidden">
+                    <div class="mls-search-error hide">
                         <div class="alert alert-danger text-danger w-50 my-3 mx-auto text-center" role="alert">
                             <i class="fad fa-exclamation-circle fa-lg mr-3"></i> No Matching Results Found
                         </div>
@@ -159,17 +159,17 @@ if(auth() -> user() -> group == 'agent') {
 
                 <div class="property-loading-div"></div>
 
-                <div class="property-results-container hidden">
+                <div class="property-results-container hide">
 
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="h2-responsive text-gray mb-3 text-center">We found the following matching property</div>
+                                <div class="h2 text-gray mb-3 text-center">We found the following matching property</div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="border border-gray text-gray p-3 z-depth-1">
+                                <div class="border border-gray text-gray p-3 shadow">
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="d-flex justify-content-center">
@@ -177,33 +177,33 @@ if(auth() -> user() -> group == 'agent') {
                                             </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div class="h5-responsive mt-3 mt-md-0" id="property_details_address"></div>
+                                            <div class="h5 mt-3 mt-md-0" id="property_details_address"></div>
                                             <div class="row pt-2 mt-2 border-top property-details">
                                                 <div class="container">
                                                     <div class="row">
-                                                        <div class="col-sm-6 active-listing-div hidden">
+                                                        <div class="col-sm-6 active-listing-div hide">
                                                             List Date: <span id="property_details_list_date"></span>
                                                         </div>
-                                                        <div class="col-sm-6 active-listing-div hidden">
+                                                        <div class="col-sm-6 active-listing-div hide">
                                                             List Price: <span id="property_details_list_price"></span>
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-sm-6 active-listing-div hidden">
+                                                        <div class="col-sm-6 active-listing-div hide">
                                                             Listing Agent: <span id="property_details_listing_agent"></span>
                                                         </div>
-                                                        <div class="col-sm-6 active-listing-div hidden">
+                                                        <div class="col-sm-6 active-listing-div hide">
                                                             Listing Office: <span id="property_details_listing_office"></span>
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-sm-6 active-listing-div hidden">
+                                                        <div class="col-sm-6 active-listing-div hide">
                                                             Status: <span id="property_details_status"></span>
                                                         </div>
-                                                        <div class="col-sm-6 active-listing-div hidden">
+                                                        <div class="col-sm-6 active-listing-div hide">
                                                             Mls Id: <span id="property_details_mls_id"></span>
                                                         </div>
-                                                        <div class="col-sm-6 active-listing-div hidden">
+                                                        <div class="col-sm-6 active-listing-div hide">
                                                             Property Type: <span id="property_details_property_type"></span>
                                                         </div>
                                                         <div class="col-sm-6">
@@ -212,18 +212,18 @@ if(auth() -> user() -> group == 'agent') {
                                                     </div>
 
                                                     <div class="row">
-                                                        <div class="col-sm-6 beds-baths-div hidden">
+                                                        <div class="col-sm-6 beds-baths-div hide">
                                                             Beds: <span id="property_details_beds"></span>
                                                         </div>
-                                                        <div class="col-sm-6 beds-baths-div hidden">
+                                                        <div class="col-sm-6 beds-baths-div hide">
                                                             Baths: <span id="property_details_baths"></span>
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-sm-6 owner-div hidden">
+                                                        <div class="col-sm-6 owner-div hide">
                                                             Owner 1: <span id="property_details_owner1"></span>
                                                         </div>
-                                                        <div class="col-sm-6 owner-div hidden">
+                                                        <div class="col-sm-6 owner-div hide">
                                                             Owner 2: <span id="property_details_owner2"></span>
                                                         </div>
                                                     </div>

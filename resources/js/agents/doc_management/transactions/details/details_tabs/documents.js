@@ -19,6 +19,7 @@ if (document.URL.match(/transaction_details/)) {
         $(document).on('click', '#add_individual_template_button', show_add_individual_template);
 
         $(document).on('click', '#save_add_individual_template_button', function () {
+
             if($('.individual-template-form:checked').length > 0) {
                 $('#save_add_individual_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
                 save_add_template_documents('individual');
@@ -106,7 +107,7 @@ if (document.URL.match(/transaction_details/)) {
                         a.href = file_location;
                         a.download = filename;
                         document.body.appendChild(a);
-                        a.on('click', );
+                        a.click();
                         document.body.removeChild(a);
                     }
                 })
@@ -522,7 +523,7 @@ if (document.URL.match(/transaction_details/)) {
                 let button = $('#modal_info').find('.modal-footer').find('.btn');
                 button.text('Continue');
 
-                button.off('click').on('click', function() {
+                button.on('click', function() {
                     add_to_checklist_html(checklist_id, document_ids);
                 });
 
@@ -594,14 +595,21 @@ if (document.URL.match(/transaction_details/)) {
 
 
                     if(matches.length > 0) {
-                        $('#confirm_matches_modal').modal().find('#match_count').text(matches.length);
+                        setTimeout(function() {
+                            $('#confirm_matches_modal').modal();
+                        }, 500);
+                        $('#confirm_matches_modal').find('#match_count').text(matches.length);
                         $('#confirm_matches_button').off('click').on('click', confirm_matches);
                         $('#cancel_matches_button').on('click', function() {
-                            $('#add_to_checklist_modal').modal();
+                            setTimeout(function() {
+                                $('#add_to_checklist_modal').modal();
+                            }, 500);
                             disable_closing_docs();
                         });
                     } else {
-                        $('#add_to_checklist_modal').modal();
+                        setTimeout(function() {
+                            $('#add_to_checklist_modal').modal();
+                        }, 500);
                         disable_closing_docs();
                     }
 
@@ -629,13 +637,16 @@ if (document.URL.match(/transaction_details/)) {
             let release_submitted = false;
             $('.add-to-checklist-document-div').each(function() {
                 let doc = $(this);
+
                 let doc_name = doc.data('file-name');
                 if($('.assign-button[data-file-name="' + doc_name + '"]').length == 1) {
                     doc.trigger('click');
                     let id = 'rand_'+Math.floor(Math.random() * 10000000);
                     $('.assign-button[data-file-name="' + doc_name + '"]').prop('id', id).trigger('click');
                     setTimeout(function() {
-                        document.getElementById(id).scrollIntoView();
+                        if(document.getElementById(id)) {
+                            document.getElementById(id).scrollIntoView();
+                        }
                     }, 500);
                     if($('#'+id).hasClass('release') || $(id).hasClass('contract')) {
                         release_submitted = true;
@@ -643,7 +654,9 @@ if (document.URL.match(/transaction_details/)) {
                 }
             });
             $('#confirm_matches_modal').modal('hide');
-            $('#add_to_checklist_modal').modal();
+            setTimeout(function() {
+                $('#add_to_checklist_modal').modal();
+            }, 1000);
             $('.add-to-checklist-document-div').not('.assigned').first().trigger('click');
 
             if(release_submitted == true) {
@@ -662,11 +675,11 @@ if (document.URL.match(/transaction_details/)) {
         function arrows(new_active_item) {
 
             let active_item = $('.add-to-checklist-document-div.active');
-            active_item.removeClass('active z-depth-2 p-4').addClass('p-2').find('.helper').hide();
+            active_item.removeClass('active shadow p-4').addClass('p-2').find('.helper').hide();
 
             let wrapper = $('#add_to_checklist_documents_wrapper');
 
-            new_active_item.addClass('active z-depth-2 p-4').find('.helper').show();
+            new_active_item.addClass('active shadow p-4').find('.helper').show();
             if(new_active_item.hasClass('assigned')) {
                 $('.assign-button').prop('disabled', true);
             } else {
@@ -787,6 +800,7 @@ if (document.URL.match(/transaction_details/)) {
                             load_details_header();
                         }
                     }
+                    $('#save_add_to_checklist_button').show();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -938,7 +952,7 @@ if (document.URL.match(/transaction_details/)) {
             if (validate == 'yes') {
 
                 let loading_html = ' \
-                <div class="h5-responsive text-white mb-3">Importing Documents...</div> \
+                <div class="h5 text-white mb-3">Importing Documents...</div> \
                 <div class="w-100 text-left document-loading-container"> \
                     <div id="loading_div"></div> \
                 </div> \
@@ -948,7 +962,7 @@ if (document.URL.match(/transaction_details/)) {
 
                 files.forEach(function(file, index) {
 
-                    let interval = file['file_size'] * 25000;
+                    let interval = file['file_size'] * 70000;
 
                     let file_html = ' \
                     <div class="text-white w-100 p-1"> \
@@ -1009,8 +1023,8 @@ if (document.URL.match(/transaction_details/)) {
 
         window.select_form_group = function () {
             // clear search input
-            $('.form-search').val('').trigger('change');
-            $('#form_categories_search').val('').trigger('change');
+            $('.form-search').val('')/* .trigger('change') */;
+            $('#form_categories_search').val('')/* .trigger('change') */;
             select_refresh();
             // if all show everything or just the selected group
             if ($('.select-form-group').val() == 'all') {
@@ -1177,7 +1191,7 @@ if (document.URL.match(/transaction_details/)) {
         function delete_documents() {
             $('.documents-container').fadeOut('1000');
             let document_ids = [];
-            $('.check-document:checked').each(function () {
+            $('.check-document:checked').not('.assigned').each(function () {
                 document_ids.push($(this).data('document-id'));
             });
 
@@ -1228,9 +1242,9 @@ if (document.URL.match(/transaction_details/)) {
                 $(this).closest('.folder-header').next('.collapse').collapse('show');
             }
             if ($(this).is(':checked')) {
-                $(this).closest('.folder-div').find('.document-div').find('input').prop('checked', true).trigger('change');
+                $(this).closest('.folder-div').find('.document-div').find('input').prop('checked', true)/* .trigger('change') */;
             } else {
-                $(this).closest('.folder-div').find('.document-div').find('input').prop('checked', false).trigger('change');
+                $(this).closest('.folder-div').find('.document-div').find('input').prop('checked', false)/* .trigger('change') */;
             }
         }
 
@@ -1249,7 +1263,7 @@ if (document.URL.match(/transaction_details/)) {
             setTimeout(function() {
                 wnd.print();
                 wnd.close();
-            }, 1000);
+            }, 500);
 
         }
 

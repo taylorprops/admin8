@@ -1,7 +1,7 @@
 <div class="container p-0 p-sm-1 p-md-2">
     <div class="row">
         <div class="col-12">
-            <div class="h5-responsive text-primary mb-3">Select the Document from the left and click "Assign" on the corresponding Checklist Item</div>
+            <div class="h5 text-primary mb-3">Select the Document from the left and click "Assign" on the corresponding Checklist Item</div>
         </div>
     </div>
 
@@ -9,7 +9,7 @@
 
         <div class="col-12 col-md-5">
 
-            <div class="h5-responsive text-orange">Documents</div>
+            <div class="h5 text-orange">Documents</div>
 
             <div class="border p-2 rounded">
 
@@ -31,15 +31,16 @@
 
                             @foreach($documents as $document)
 
-                                <div class="add-to-checklist-document-div list-group-item list-group-item-action border border-primary rounded my-2 @if($loop -> first) active z-depth-2 p-4 @else p-2 @endif" data-document-id="{{ $document -> id}}" data-file-name="{{ $document -> file_name_display }}">
+                                <div class="add-to-checklist-document-div list-group-item list-group-item-action border border-primary rounded my-2 @if($loop -> first) active shadow p-4 @else p-2 @endif" data-document-id="{{ $document -> id}}" data-file-name="{{ $document -> file_name_display }}">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <div>
+                                        <div class="doc-name">
                                             {{ $document -> file_name_display }}
                                         </div>
-                                        <div class="helper @if(!$loop -> first) hidden @endif">
+                                        <div class="helper @if(!$loop -> first) hide @endif">
                                             <i class="fad fa-arrow-right fa-2x text-white ml-3"></i>
                                         </div>
                                     </div>
+                                    <div class="assigned-div text-success">Assigned <i class="fal fa-check-circle"></i></div>
                                 </div>
 
                             @endforeach
@@ -57,7 +58,7 @@
 
         <div class="col-12 col-md-7">
 
-            <div class="h5-responsive text-orange mt-3 mt-sm-0">Checklist Items</div>
+            <div class="h5 text-orange mt-3 mt-sm-0">Checklist Items</div>
 
 
 
@@ -67,7 +68,7 @@
 
                     @foreach($checklist_groups as $checklist_group)
 
-                        {{-- <div class="h5-responsive text-primary mt-1 mb-0">~~~~~~~~~ {{ $checklist_group -> resource_name }} ~~~~~~~~~</div> --}}
+                        {{-- <div class="h5 text-primary mt-1 mb-0">~~~~~~~~~ {{ $checklist_group -> resource_name }} ~~~~~~~~~</div> --}}
 
                         @if(count($checklist_items -> where('checklist_item_group_id', $checklist_group -> resource_id)) > 0)
 
@@ -122,7 +123,7 @@
                                     </div>
 
 
-                                    <div class="submitted-docs-div bg-blue-light p-1 rounded m-1 @if(count($docs) == 0) hidden @endif">
+                                    <div class="submitted-docs-div bg-blue-light p-1 rounded m-1 @if(count($docs) == 0) hide @endif">
                                         <div class="d-flex justify-content-start align-items-center">
                                             <div class="mx-3"><i class="fad fa-file-alt fa-lg text-primary"></i></div>
                                             <div class="submitted-docs w-100">

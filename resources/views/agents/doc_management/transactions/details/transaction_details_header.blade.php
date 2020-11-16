@@ -34,13 +34,17 @@ $status = $resource_items -> GetResourceName($property -> Status);
             @if($property -> ListPictureURL)
                 <div class="d-none d-sm-block ml-2 mr-3">
                     <div class="property-image-div">
-                        <img loading="lazy" src="{{ str_replace('http:', 'https:', $property -> ListPictureURL) }}" class="img-fluid z-depth-2">
+                        <img loading="lazy" src="{{ str_replace('http:', 'https:', $property -> ListPictureURL) }}" class="img-fluid shadow">
                     </div>
                 </div>
             @endif
 
-            <div class="ml-2 ml-md-3">
-                <div class="h3-responsive mb-2 text-gray text-uppercase">{!! $property -> FullStreetAddress.' '.$property -> Street.' '.$property -> City.', '.$property -> StateOrProvince.' '.$property -> PostalCode !!}</div>
+            <div>
+
+                <div class="h3 mb-2 ml-2 text-gray {{-- text-uppercase --}}">
+                    {!! $property -> FullStreetAddress.' '.$property -> Street.' '.$property -> City.', '.$property -> StateOrProvince.' '.$property -> PostalCode !!}
+                </div>
+
                 <div class="mb-1 mb-md-3">
                     <span class="badge {{ $transaction_type_bg }} my-1"><span class="transaction-type text-white">{!! $header_transaction_type !!}</span></span>
                     @if($transaction_type != 'referral')

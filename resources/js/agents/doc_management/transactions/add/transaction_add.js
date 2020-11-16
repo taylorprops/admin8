@@ -126,7 +126,7 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
 
 
             $('#property_details_photo').prop('src', ListPictureURL);
-            $('#property_details_address').html(FullStreetAddress+'<br>'+City+', '+StateOrProvince+' '+PostalCode+'<br><span class="h5-responsive mt-1 text-secondary">'+County.toUpperCase()+'</span>');
+            $('#property_details_address').html(FullStreetAddress+'<br>'+City+', '+StateOrProvince+' '+PostalCode+'<br><span class="h5 mt-1 text-secondary">'+County.toUpperCase()+'</span>');
             $('#property_details_year_built').text(YearBuilt);
             if(Owner1) {
                 $('.owner-div').show();
@@ -229,8 +229,8 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
             })
             .then(function (response) {
                 let data = response.data;
-                $('#enter_city').val(data.city).trigger('change');
-                $('#enter_state').val(data.state).trigger('change');
+                $('#enter_city').val(data.city)/* .trigger('change') */;
+                $('#enter_state').val(data.state)/* .trigger('change') */;
                 update_county_select(data.state);
                 setTimeout(function() {
                     $('#enter_county').val(data.county);
@@ -247,7 +247,7 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
     function show_loader() {
         // clear current data and show loader
         $('.property-loading-div').fadeIn();
-        global_loading_on('.property-loading-div', '<div class="h3-responsive text-primary"><i class="fad fa-home-lg-alt mr-3"></i> Searching Properties</div>');
+        global_loading_on('.property-loading-div', '<div class="h3 text-primary"><i class="fad fa-home-lg-alt mr-3"></i> Searching Properties</div>');
         $('.property-results-container').hide();
         $('#property_details_photo').prop('src', '');
         $('#property_details_address').text('');
@@ -362,7 +362,7 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
         let address_search_street = document.getElementById('address_search_street');
 
         // select all text on focus
-        $(address_search_street).focus(function () { $(this).select(); });
+        $(address_search_street).on('focus', function () { $(this).select(); });
         // google address search
         let places = new google.maps.places.Autocomplete(address_search_street);
         google.maps.event.addListener(places, 'place_changed', function () {
@@ -398,6 +398,7 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
             // show continue button once address selected
             $('.address-search-error').hide();
             if (street_number != '') {
+                console.log('show');
                 $('.address-search-continue-div').show();
             } else {
                 $('.address-search-continue-div').hide();
@@ -406,7 +407,7 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
                 $(address_search_street).val(search_val)
             }
 
-            $('#address_search_street').bind('keyup change', function () {
+            $('#address_search_street').on('keyup change', function () {
                 if ($(this).val() == '') {
                     $('.address-search-continue-div').hide();
                 }
@@ -492,10 +493,10 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
 
     function autofill_manual_entry(street_number, street_name, zip) {
         let unit = $('#address_search_unit').val();
-        $('#enter_street_number').val(street_number).trigger('change');
-        $('#enter_street_name').val(street_name).trigger('change');
-        $('#enter_zip').val(zip).trigger('change');
-        $('#enter_unit').val(unit).trigger('change');
+        $('#enter_street_number').val(street_number)/* .trigger('change') */;
+        $('#enter_street_name').val(street_name)/* .trigger('change') */;
+        $('#enter_zip').val(zip)/* .trigger('change') */;
+        $('#enter_unit').val(unit)/* .trigger('change') */;
         setTimeout(function() {
             fill_location($('#enter_zip').val());
         }, 500);

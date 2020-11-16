@@ -1,7 +1,7 @@
 @if(count($documents_available) > 0)
     @foreach($folders as $folder)
         @if(count($documents_available -> where('folder', $folder -> id)) > 0)
-            <div class="h5-responsive text-orange">{{ $folder -> folder_name }}</div>
+            <div class="h5 text-orange">{{ $folder -> folder_name }}</div>
             @foreach($documents_available -> where('folder', $folder -> id) as $document_available)
                 <div class="d-flex justify-content-start align-items-center border-bottom">
                     <div>

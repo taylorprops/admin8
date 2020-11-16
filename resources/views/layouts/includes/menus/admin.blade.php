@@ -59,6 +59,21 @@
             </ul>
         </li>
 
+        <li class="nav-item">
+            <a href="/doc_management/commission" class="dropdown-item"> Commission Breakdowns</a>
+        </li>
+        {{-- <li class="nav-item dropdown">
+            <a class="dropdown-item dropdown-toggle" href="javascript: void(0)" id="commission_dropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Commission Breakdowns
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="commission_dropdown">
+                <li>
+                    <a href="/doc_management/commission/checks_queue" class="dropdown-item">Checks Queue</a>
+                </li>
+            </ul>
+        </li> --}}
+
     </ul>
 
 </li>

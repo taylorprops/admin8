@@ -114,12 +114,17 @@
     /////// COMMISSION
     // get commission
     Route::get('/agents/doc_management/transactions/get_commission', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_commission');
-    // get check in details from pdf
-    Route::post('/agents/doc_management/transactions/get_check_in_details', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_check_in_details');
-    // get checks in
-    Route::get('/agents/doc_management/transactions/get_checks_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checks_in');
+    // get check details from pdf
+    Route::post('/agents/doc_management/transactions/get_check_details', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_check_details');
+
     // get commission notes
     Route::get('/agents/doc_management/transactions/get_commission_notes', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_commission_notes');
+
+    // save commission
+    Route::post('/agents/doc_management/transactions/save_commission', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_commission');
+
+    // get checks in
+    Route::get('/agents/doc_management/transactions/get_checks_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checks_in');
     // save add check in
     Route::post('/agents/doc_management/transactions/save_add_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_check_in');
     // delete check in
@@ -128,6 +133,18 @@
     Route::post('/agents/doc_management/transactions/undo_delete_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@undo_delete_check_in');
     // save edit check in
     Route::post('/agents/doc_management/transactions/save_edit_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_edit_check_in');
+
+
+    // get checks out
+    Route::get('/agents/doc_management/transactions/get_checks_out', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checks_out');
+    // save add check out
+    Route::post('/agents/doc_management/transactions/save_add_check_out', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_check_out');
+    // delete check out
+    Route::post('/agents/doc_management/transactions/save_delete_check_out', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_delete_check_out');
+    // undo delete check out
+    Route::post('/agents/doc_management/transactions/undo_delete_check_out', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@undo_delete_check_out');
+    // save edit check out
+    Route::post('/agents/doc_management/transactions/save_edit_check_out', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_edit_check_out');
 
     // get check deductions
     Route::get('/agents/doc_management/transactions/get_income_deductions', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_income_deductions');
@@ -142,8 +159,10 @@
     Route::post('/agents/doc_management/transactions/save_add_commission_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_commission_deduction');
     // delete check deduction
     Route::post('/agents/doc_management/transactions/delete_commission_deduction', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@delete_commission_deduction');
-
-
+    // get commission notes html
+    Route::get('/agents/doc_management/transactions/details/data/get_commission_notes_html', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_commission_notes_html');
+    // add commission notes
+    Route::post('/agents/doc_management/transactions/add_commission_notes', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@add_commission_notes');
 
 
 
