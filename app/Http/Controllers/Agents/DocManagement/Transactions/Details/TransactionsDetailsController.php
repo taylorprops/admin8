@@ -2567,7 +2567,7 @@ class TransactionsDetailsController extends Controller {
         } else {
             // if not one of our checks get number (4 or more numbers and no -)
             $check_number_preg = preg_match('/\b[0-9]{4,}(?!-)\b/', $text, $check_number_matches);
-            $check_number = $check_number_matches[0];
+            $check_number = $check_number_matches[0] ?? null;
         }
 
         // get check amount
