@@ -19,6 +19,25 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
 
 
 
+
+    window.show_form_group = function() {
+
+        let parent = $('#add_checklist_item_form');
+        let select = parent.find('.select-form-group');
+        // clear search input
+        parent.find('.form-search').val('');
+
+        // if all show everything or just the selected group
+        if (select.val() == 'all') {
+            parent.find('.form-group-div, .list-group-header, .form-name').show();
+        } else {
+            parent.find('.list-group-header, .form-name').show();
+            parent.find('.form-group-div').hide();
+            parent.find('[data-form-group-id="' + select.val() + '"]').show();
+        }
+
+    }
+
     window.delete_note = function(ele) {
 
         let note_id = ele.data('note-id');
@@ -264,18 +283,26 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
         let group_id = $(this).data('group-id');
         $('#add_checklist_item_group_id').val(group_id);
 
+        // select and show form groups
+        show_form_group();
+
+        $('.select-form-group').on('change', function () {
+            show_form_group();
+        });
+
         // hide all form-group-div and show the first (MAR)
-        $('.form-group-div').hide();
-        $('.form-group-div').eq(0).show();
+        /* $('.form-group-div').hide();
+        $('.form-group-div').eq(0).show(); */
 
         // search forms
-        $('.form-search').on('keyup', function() {
+        /* $('.form-search').on('keyup', function() {
             form_search($(this))
-        });
+        }); */
         // select and show form groups
-        $('.select-form-group').on('change', function () {
+        /* $('.select-form-group').on('change', function () {
+            alert('test');
             // clear search input
-            $('.form-search').val('')/* .trigger('change') */;
+            $('.form-search').val('');
 
             // if all show everything or just the selected group
             if ($(this).val() == 'all') {
@@ -285,11 +312,11 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
                 $('.form-group-div').hide();
                 $('[data-form-group-id="' + $(this).val() + '"]').show();
             }
-        });
+        }); */
 
-        if (page_type == 'review') {
+        /* if (page_type == 'review') {
             $('#add_checklist_item_modal').appendTo('body');
-        }
+        } */
         $('#add_checklist_item_modal').modal();
         select_refresh();
 
@@ -307,7 +334,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
 
         });
 
-        $('#add_checklist_item_name').keyup(function () {
+        $('#add_checklist_item_name').on('keyup', function () {
             if ($(this).val() != '') {
                 clear_selected_form();
             }
@@ -348,15 +375,15 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
             axios.post('/agents/doc_management/transactions/save_add_checklist_item', formData, axios_options)
                 .then(function (response) {
                     toastr['success']('Checklist Item Successfully Added');
-                    $('.modal-backdrop').remove();
                     if (page_type == 'checklist') {
                         load_tabs('checklist');
                     } else {
-                        $('#add_checklist_item_modal').remove();
+                        //$('#add_checklist_item_modal').remove();
                         let id = $('#property_id').val();
                         let type = $('#property_type').val();
                         get_checklist(id, type);
                     }
+                    $('#add_checklist_item_modal').modal('hide');
 
                 })
                 .catch(function (error) {

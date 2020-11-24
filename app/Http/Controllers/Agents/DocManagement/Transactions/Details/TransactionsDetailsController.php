@@ -571,7 +571,7 @@ class TransactionsDetailsController extends Controller {
                 }
             }
         } else if($transaction_type == 'contract') {
-            // set status if settle date has changed
+            // set status if settle date has changed???
 
         }
         if($new_status) {
@@ -814,6 +814,7 @@ class TransactionsDetailsController extends Controller {
         $Agent_ID = $request -> Agent_ID;
         $transaction_type = $request -> transaction_type;
 
+        $contracts = [];
         if($transaction_type == 'listing') {
 
             $property = Listings::find($Listing_ID);
@@ -2465,38 +2466,55 @@ class TransactionsDetailsController extends Controller {
 
         $Commission_ID = $request -> Commission_ID;
         $commission = Commission::find($Commission_ID);
-        $commission_checks_in = CommissionChecksIn::where('Commission_ID', $Commission_ID) -> get();
-        $commission_notes = CommissionNotes::where('Commission_ID', $Commission_ID) -> get();
 
-        $agent = Agents::find($commission -> Agent_ID);
-        $property = Contracts::find($commission -> Contract_ID);
-        $rep_both_sides = $property -> Listing_ID > 0 ? 'yes' : null;
-        $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? 'yes' : null;
-        $teams = new AgentsTeams();
-        $agent_notes = AgentsNotes::where('agent_id', $commission -> Agent_ID) -> get();
+        $agent_details = Agents::find($commission -> Agent_ID);
+
+        if($commission -> Contract_ID > 0) {
+
+            $property = Contracts::find($commission -> Contract_ID);
+            $rep_both_sides = $property -> Listing_ID > 0 ? 'yes' : null;
+            $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? 'yes' : null;
+
+        } else if($commission -> Referral_ID > 0) {
+            $property = Referrals::find($commission -> Referral_ID);
+            $rep_both_sides = null;
+            $for_sale = null;
+        }
+
+        $commission_percentages = Agents::select('commission_percent') -> groupBy('commission_percent') -> pluck('commission_percent');
         $agents = Agents::select('id', 'first_name', 'last_name', 'llc_name') -> where('active', 'yes') -> orderBy('last_name') -> get();
 
-        // get percentages for select menu
-        $commission_percentages = Agents::select('commission_percent') -> groupBy('commission_percent') -> pluck('commission_percent');
+        $type = 'sale';
 
-        return view('/agents/doc_management/transactions/details/data/get_commission', compact('commission', 'commission_checks_in', 'agent', 'property', 'rep_both_sides', 'for_sale', 'teams', 'agent_notes', 'commission_percentages', 'agents'));
+        return view('/agents/doc_management/transactions/details/data/get_commission', compact('commission', 'agent_details', 'property', 'rep_both_sides', 'for_sale', 'commission_percentages', 'agents', 'type'));
     }
 
     public function save_commission(Request $request) {
 
         $commission_fields = $request -> all();
-        $commission_id = $request -> commission_id;
-        $commission = Commission::find($commission_id);
+        $Commission_ID = $request -> Commission_ID;
+        $commission = Commission::find($Commission_ID);
+        $Agent_ID = $commission -> Agent_ID;
 
         foreach($commission_fields as $key => $val) {
-            if($key != 'commission_id') {
+            if($key != 'Commission_ID') {
                 $commission -> $key = $val;
             }
         }
         $commission -> save();
 
-        $close_price = preg_replace('/[\$,]+/', '', $request -> close_price);
-        $contract = Contracts::find($commission -> Contract_ID) -> update(['CloseDate' => $request -> close_date, 'ClosePrice' => $close_price, 'UsingHeritage' => $request -> using_heritage, 'TitleCompany' => $request -> title_company]);
+        // if a contract update the fields in transaction_docs_contracts
+        if($commission -> Contract_ID > 0) {
+            $close_price = preg_replace('/[\$,]+/', '', $request -> close_price);
+            $contract = Contracts::find($commission -> Contract_ID) -> update(['CloseDate' => $request -> close_date, 'ClosePrice' => $close_price, 'UsingHeritage' => $request -> using_heritage, 'TitleCompany' => $request -> title_company]);
+        }
+
+        // if a commission other - update the check's agent, address and client name if changed
+        if($commission -> commission_type == 'other') {
+            $agent = Agents::find($Agent_ID);
+            $agent_name = $agent -> first_name.' '.$agent -> last_name;
+            $update_checks = CommissionChecksIn::where('Commission_ID', $Commission_ID) -> update(['Agent_ID' => $Agent_ID, 'agent_name' => $agent_name, 'client_name' => $request -> other_client_name, 'street' => $request -> other_street, 'city' => $request -> other_city, 'state' => $request -> other_state, 'zip' => $request -> other_zip]);
+        }
 
         return response() -> json(['result' => 'success']);
     }
@@ -2519,6 +2537,20 @@ class TransactionsDetailsController extends Controller {
 
         return response() -> json(['response' => 'success']);
     }
+
+    public function get_agent_details(Request $request) {
+
+        $Agent_ID = $request -> Agent_ID;
+
+        $agent_details = Agents::find($Agent_ID);
+        $agent_notes = AgentsNotes::where('Agent_ID', $Agent_ID) -> get();
+        $teams = new AgentsTeams();
+
+        return view('agents/doc_management/transactions/details/data/get_agent_details_html', compact('agent_details', 'agent_notes', 'teams'));
+
+    }
+
+
 
     // Checks
 
@@ -2620,7 +2652,8 @@ class TransactionsDetailsController extends Controller {
 
         $Commission_ID = $request -> Commission_ID ?? null;
         $file = $request -> file('check_in_upload');
-        $page = $request -> page;
+        $page = $request -> page; // details or commission
+        $type = $request -> check_in_type; // commission or other
 
         $ext = $file -> getClientOriginalExtension();
         $file_name = $file -> getClientOriginalName();
@@ -2628,6 +2661,12 @@ class TransactionsDetailsController extends Controller {
         $file_name_no_ext = str_replace('.' . $ext, '', $file_name);
         $clean_file_name = sanitize($file_name_no_ext);
         $new_file_name = $clean_file_name . '.' . $ext;
+
+        $agent_name = null;
+        if($request -> check_in_agent_id != '') {
+            $agent = Agents::find($request -> check_in_agent_id);
+            $agent_name = $agent -> first_name.' '.$agent -> last_name;
+        }
 
 
         // create upload folder storage/commission/checks_in/commission_id/ or queue
@@ -2649,15 +2688,49 @@ class TransactionsDetailsController extends Controller {
         exec('convert -density 300 -quality 100 '.Storage::disk('public') -> path('commission/'.$path.'/'.$new_file_name).'[0] '.Storage::disk('public') -> path('commission/'.$path.'/'.$new_image_name));
 
         if($page == 'details') {
+
             $add_check = new CommissionChecksIn();
+            $add_check -> check_type = 'commission';
+
         } else {
-            $add_check = new CommissionChecksInQueue();
+
+            if($type == 'commission') {
+
+                $add_check = new CommissionChecksInQueue();
+
+            } else {
+
+                if(!$Commission_ID) {
+                    // if bpo or other add to commission first
+                    $commission = new Commission();
+                    $commission -> commission_type = 'other';
+                    $commission -> Agent_ID = $request -> check_in_agent_id;
+                    $commission -> other_street = $request -> check_in_street;
+                    $commission -> other_city = $request -> check_in_city;
+                    $commission -> other_state = $request -> check_in_state;
+                    $commission -> other_zip = $request -> check_in_zip;
+                    $commission -> other_client_name = $request -> check_in_client_name;
+                    $commission -> total_left = preg_replace('/[\$,]+/', '', $request -> check_in_amount);
+                    $commission -> save();
+                    $Commission_ID = $commission -> id;
+                }
+
+                $add_check = new CommissionChecksIn();
+                $add_check -> Commission_ID = $Commission_ID;
+                $add_check -> check_type = 'other';
+                $add_check -> client_name = $request -> check_in_client_name;
+
+            }
+
             $add_check -> street = $request -> check_in_street;
             $add_check -> city = $request -> check_in_city;
             $add_check -> state = $request -> check_in_state;
             $add_check -> zip = $request -> check_in_zip;
-            $add_check -> agent_id = $request -> check_in_agent_id;
+            $add_check -> Agent_ID = $request -> check_in_agent_id;
+            $add_check -> agent_name = $agent_name ?? null;
+
         }
+
         $add_check -> Commission_ID = $Commission_ID;
         $add_check -> file_location = $file_location;
         $add_check -> image_location = $image_location;
@@ -2667,6 +2740,9 @@ class TransactionsDetailsController extends Controller {
         $add_check -> date_received = $request -> check_in_date_received;
         $add_check -> date_deposited = $request -> check_in_date_deposited;
         $add_check -> save();
+
+        return response() -> json(['status' => 'success']);
+
     }
 
     public function save_edit_check_in(Request $request) {
@@ -2688,7 +2764,11 @@ class TransactionsDetailsController extends Controller {
 
     public function save_delete_check_in(Request $request) {
 
-        $check = CommissionChecksIn::find($request -> check_id) -> update(['active' => 'no']);
+        if($request -> type == 'sale') {
+            $check = CommissionChecksInQueue::find($request -> check_id) -> update(['active' => 'no']);
+        } else if($request -> type == 'other') {
+            $check = CommissionChecksIn::find($request -> check_id) -> update(['active' => 'no']);
+        }
 
         return response() -> json(['response' => 'success']);
 
@@ -2696,7 +2776,12 @@ class TransactionsDetailsController extends Controller {
 
     public function undo_delete_check_in(Request $request) {
 
-        $check = CommissionChecksIn::find($request -> check_id) -> update(['active' => 'yes']);
+        $type = $request -> type ?? null;
+        if($type && $type == 'sale') {
+            $check = CommissionChecksInQueue::find($request -> check_id) -> update(['active' => 'yes']);
+        } else {
+            $check = CommissionChecksIn::find($request -> check_id) -> update(['active' => 'yes']);
+        }
 
         return response() -> json(['response' => 'success']);
 
@@ -2792,6 +2877,81 @@ class TransactionsDetailsController extends Controller {
 
         return response() -> json(['response' => 'success']);
 
+    }
+
+    public function get_checks_in_queue(Request $request) {
+
+        $Agent_ID = $request -> Agent_ID;
+        $checks_in_queue = CommissionChecksInQueue::where('Agent_ID', $Agent_ID) -> where('active', 'yes') -> where('exported', 'no') -> get();
+
+        return view('agents/doc_management/transactions/details/data/get_checks_in_queue_html', compact('checks_in_queue'));
+    }
+
+    public function re_queue_check(Request $request) {
+
+        $check_id = $request -> check_id;
+        $check_in = CommissionChecksIn::find($check_id);
+
+        // update exported to no in queue
+        $check_in_queue = CommissionChecksInQueue::find($check_in -> queue_id) -> update(['exported' => 'no']);
+
+        // delete files from checks in
+        Storage::disk('public') -> delete([str_replace('/storage/', '', $check_in -> file_location), str_replace('/storage/', '', $check_in -> image_location)]);
+
+        // delete from checks in - actually delete, not make inactive
+        $check_in -> delete();
+
+        return response() -> json(['status' => 'success']);
+
+    }
+
+    public function import_check_in(Request $request) {
+
+        $check_id = $request -> check_id;
+        $Commission_ID = $request -> Commission_ID;
+
+        $check_in_queue = CommissionChecksInQueue::find($check_id);
+        $check_in_queue -> exported = 'yes';
+        $check_in_queue -> save();
+
+        $add_check = new CommissionChecksIn();
+
+        // copy files from commission/checks_in_queue/987897897989 to commission/checks_in/9
+        $old_file_location = str_replace('/storage/', '', $check_in_queue -> file_location);
+        $old_image_location = str_replace('/storage/', '', $check_in_queue -> image_location);
+
+        $path = 'commission/checks_in/'.$Commission_ID;
+        $new_file_location = $path.'/'.basename($check_in_queue -> file_location);
+        $new_image_location = $path.'/'.basename($check_in_queue -> image_location);
+
+        if(!Storage::disk('public') -> exists($path)) {
+            Storage::disk('public') -> makeDirectory($path);
+        }
+
+        Storage::disk('public') -> copy($old_file_location, $new_file_location);
+        Storage::disk('public') -> copy($old_image_location, $new_image_location);
+
+
+        $add_check -> Commission_ID = $Commission_ID;
+        $add_check -> file_location = '/storage/'.$new_file_location;
+        $add_check -> image_location = '/storage/'.$new_image_location;
+        $add_check -> check_type = 'commission';
+        $add_check -> queue_id = $check_in_queue -> id;
+        $add_check -> check_date = $check_in_queue -> check_date;
+        $add_check -> check_amount = $check_in_queue -> check_amount;
+        $add_check -> check_number = $check_in_queue -> check_number;
+        $add_check -> date_received = $check_in_queue -> date_received;
+        $add_check -> date_deposited = $check_in_queue -> date_deposited;
+        $add_check -> street = $check_in_queue -> street;
+        $add_check -> city = $check_in_queue -> city;
+        $add_check -> state = $check_in_queue -> state;
+        $add_check -> zip = $check_in_queue -> zip;
+        $add_check -> Agent_ID = $check_in_queue -> Agent_ID;
+        $add_check -> agent_name = $check_in_queue -> agent_name;
+
+        $add_check -> save();
+
+        return response() -> json(['status' => 'success']);
     }
 
     // Income Deductions

@@ -103,7 +103,7 @@ class CronController extends Controller
 
         foreach ($licenses as $license) {
             $add_license = new AgentsLicenses();
-            $add_license -> agent_id = $license -> agent_id;
+            $add_license -> Agent_ID = $license -> agent_id;
             $add_license -> state = $license -> lic_state;
             $add_license -> number = $license -> lic_number;
             $add_license -> expiration = $license -> lic_expire;
@@ -124,7 +124,7 @@ class CronController extends Controller
 
         foreach($notes as $note) {
             $add_note = new AgentsNotes();
-            $add_note -> agent_id = $note -> agent_id;
+            $add_note -> Agent_ID = $note -> agent_id;
             $add_note -> agent_name = $note -> agent_name;
             $add_note -> notes = $note -> notes;
             $add_note -> created_by = $note -> creator;

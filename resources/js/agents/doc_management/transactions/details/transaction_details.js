@@ -115,6 +115,8 @@ if (document.URL.match(/transaction_details/)) {
         $('#agent_search').on('keyup', search_bright_agents);
 
 
+
+
     });
 
     // TODO: remove this and undo_cancel
@@ -792,36 +794,20 @@ if (document.URL.match(/transaction_details/)) {
 
                     listing_options();
 
-                    // hide all form-group-div and show the first (MAR)
-                    $('.form-group-div').hide();
-                    $('.form-group-div').eq(0).show();
+
+
                     // search forms
                     $('.form-search').on('keyup', function() {
                         form_search($(this))
                     });
 
-                    // select and show form groups
-                    $('.select-form-group').on('change', function () {
-                        // clear search input
-                        $('.form-search').val('')/* .trigger('change') */;
-
-                        // if all show everything or just the selected group
-                        if ($(this).val() == 'all') {
-                            $('.form-group-div, .list-group-header, .form-name').show();
-                        } else {
-                            $('.list-group-header, .form-name').show();
-                            $('.form-group-div').hide();
-                            $('[data-form-group-id="' + $(this).val() + '"]').show();
-                        }
-                    });
-
 
                 } else if (tab == 'contracts') {
 
-                    $('.contract-div').mouseenter(function () {
+                    $('.contract-div').on('mouseenter', function () {
                         $(this).addClass('z-depth-3').removeClass('shadow');
                     });
-                    $('.contract-div').mouseleave(function () {
+                    $('.contract-div').on('mouseleave', function () {
                         $(this).removeClass('z-depth-3').addClass('shadow');
                     });
 
@@ -833,6 +819,8 @@ if (document.URL.match(/transaction_details/)) {
                     get_commission_notes(Commission_ID);
                     get_income_deductions(Commission_ID);
                     get_commission_deductions(Commission_ID);
+                    get_agent_details(Agent_ID);
+                    save_commission('no');
 
                     show_title();
                     $('#using_heritage').on('change', function() {
@@ -861,7 +849,7 @@ if (document.URL.match(/transaction_details/)) {
                         $('#commission_deduction_description, #commission_deduction_amount').val('')/* .trigger('change') */;
                     });
 
-                    $('.save-commission-notes-button').off('click').on('click', add_commission_notes)
+                    $('.save-commission-notes-button').off('click').on('click', add_commission_notes);
 
                     $('.total').each(function() {
                         if($(this).val() == '') {
@@ -872,18 +860,14 @@ if (document.URL.match(/transaction_details/)) {
                         }); */
                     });
 
-                }
 
+
+                }
 
                 setTimeout(function() {
                     select_refresh();
                     global_loading_off();
-                    /* $('.page-transaction-details').find('.modal').each(function() {
-                        $(this).appendTo('body');
-                    }); */
-                }, 200);
-
-
+                }, 100);
 
 
                 if($('#required_fields_using_heritage').val() == 'no') {
@@ -913,14 +897,13 @@ if (document.URL.match(/transaction_details/)) {
                     handle: '.draggable-handle'
                 });
 
-
-
-
             })
             .catch(function (error) {
 
             });
     }
+
+
 
     window.load_documents_on_tab_click = function() {
         $('#open_documents_tab').off().on('show.bs.tab', function (e) {

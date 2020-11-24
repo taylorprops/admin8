@@ -64,6 +64,7 @@
                                             <option value=""></option>
                                             <option value="listing">Listing</option>
                                             <option value="contract">Contract</option>
+                                            <option value="referral">Referral</option>
                                             <option value="both">Both</option>
                                         </select>
                                     </div>
@@ -101,7 +102,7 @@
 
                                     <span class="edit-resource-title list-item-handle float-left">@if($resources_item -> resource_state) {{ $resources_item -> resource_state }} | @endif {{ $resources_item -> resource_name }} @if($resources_item -> resource_county_abbr) | {{ $resources_item -> resource_county_abbr }}@endif</span>
 
-                                    <a href="javascript: void(0)" class="delete-deactivate-resource-button text-danger float-right ml-3" data-resource-id="{{ $resources_item -> resource_id }}" data-resource-name="{{ $resources_item -> resource_name }}" data-action="delete"><i class="fad fa-ban fa-lg"></i></a>
+                                    {{-- <a href="javascript: void(0)" class="delete-deactivate-resource-button text-danger float-right ml-3" data-resource-id="{{ $resources_item -> resource_id }}" data-resource-name="{{ $resources_item -> resource_name }}" data-action="delete"><i class="fad fa-ban fa-lg"></i></a> --}}
 
                                     <a href="javascript: void(0)" class="edit-resource-button text-primary float-right" data-resource-type="{{ $resources_item -> resource_type }}"><i class="fad fa-edit fa-lg"></i></a>
 
@@ -149,6 +150,7 @@
                                                     <option value=""></option>
                                                     <option value="listing" @if( $resources_item -> resource_form_group_type == 'listing') selected @endif>Listing</option>
                                                     <option value="contract" @if( $resources_item -> resource_form_group_type == 'contract') selected @endif>Contract</option>
+                                                    <option value="referral" @if( $resources_item -> resource_form_group_type == 'referral') selected @endif>Referral</option>
                                                     <option value="both" @if( $resources_item -> resource_form_group_type == 'both') selected @endif>Both</option>
                                                 </select>
                                             </div>

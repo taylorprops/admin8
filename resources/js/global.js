@@ -113,8 +113,80 @@ $(function() {
     }, 1000);
 
 
+    window.datatable_settings = {
+        bAutoWidth: true,
+        "destroy": true,
+        "language": {
+            search: '',
+            searchPlaceholder: 'Search'
+        }
+    }
 
+    window.data_table = function(table, sort_by, no_sort_cols, show_buttons, show_search, show_info, show_paging) {
 
+        /*
+        table = $('#table_id')
+        sort_by = [1, 'desc'] - col #, dir
+        no_sort_cols = [0, 8] - array of cols
+        show_buttons = true/false
+        show_search = true/false
+        show_info = true/false
+        show_paging = true/false
+        */
+        if(sort_by.length > 0) {
+            datatable_settings.order = [[sort_by[0], sort_by[1]]];
+        }
+
+        if(no_sort_cols.length > 0) {
+            datatable_settings.columnDefs = [{
+                orderable: false,
+                targets: no_sort_cols
+            }];
+        }
+
+        let buttons = '';
+        if(show_buttons == true) {
+            datatable_settings.buttons = ['excel', 'pdf'];
+            buttons = '<B>';
+        }
+
+        let search = '';
+        if(show_search == true) {
+            search = '<f>';
+        }
+
+        let info = '';
+        if(show_info == true) {
+            info = '<i>';
+        }
+
+        let paging = '';
+        let length = '';
+        if(show_paging == true) {
+            paging = '<p>';
+            datatable_settings.paging = false;
+            length = '<l>';
+        }
+
+        datatable_settings.dom = '<"d-flex justify-content-between align-items-center text-gray"'+search+length+buttons+'>rt<"d-flex justify-content-between align-items-center text-gray"'+info + paging+'>'
+
+        table.DataTable(datatable_settings);
+
+    }
+
+    window.format_date = function(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
 
     // confirm modals on enter | requires .modal-confirm and .modal-confirm-button
     /* $('.modal-confirm').on('show.bs.modal', function () {

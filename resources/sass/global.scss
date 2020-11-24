@@ -119,6 +119,9 @@ ul {
 .container-1200 {
     max-width: 1200px !important;
 }
+.container-1100 {
+    max-width: 1100px !important;
+}
 .container-1000 {
     max-width: 1000px !important;
 }
@@ -169,6 +172,8 @@ ul {
 .container {
     animation: fadeIn 0.5s;
 }
+
+
 
 @keyframes fadeIn {
     from {

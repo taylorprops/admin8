@@ -1,10 +1,57 @@
 /// MODALS /////
 .modal {
-    //overflow-y: scroll;
+
+    .modal-lg, .modal-xl {
+
+        .modal-content {
+            margin-bottom: 50px;
+        }
+    }
+
+    .modal-xxl {
+        max-width: 95% !important;
+    }
+    .modal-xl-1400 {
+        max-width: 1400px;
+    }
+
+    .modal-dialog .modal-content .modal-header {
+        border-top-left-radius: .6rem !important;
+        border-top-right-radius: .6rem !important;
+    }
+
+    .modal-dialog {
+        margin: 0 auto !important;
+    }
+
+
+    .modal-header {
+        background: $blue;
+        padding: .5rem .5rem .5rem 1rem !important;
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            color: white !important;
+        }
+
+        .fa-times {
+            margin-right: 15px;
+        }
+    }
+
+    .modal-dialog .modal-content {
+        border-top-left-radius: .7rem !important;
+        border-top-right-radius: .7rem !important;
+        border-bottom-left-radius: .7rem !important;
+        border-bottom-right-radius: .7rem !important;
+        border:  2px solid $blue-light !important;
+    }
+
 }
-.modal-xxl {
-    max-width: 95% !important;
-}
+
 /* body,
 body.modal-open {
     padding-right: 26px !important;
@@ -29,39 +76,7 @@ body.modal-open {
     scrollbar-color: rgba($primary, 0.4) $blue-light;
 }
 
-.modal-dialog .modal-content .modal-header {
-    border-top-left-radius: .2rem !important;
-    border-top-right-radius: .2rem !important;
-}
 
-.modal-dialog {
-    margin: 0 auto !important;
-}
-
-
-.modal-header {
-    background: $blue;
-    padding: .5rem .5rem .5rem 1rem !important;
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
-        color: white !important;
-    }
-
-    .fa-times {
-        margin-right: 15px;
-    }
-}
-
-.modal-dialog .modal-content {
-    border-top-left-radius: .5rem !important;
-    border-top-right-radius: .5rem !important;
-    border-bottom-left-radius: .2rem !important;
-    border-bottom-right-radius: .2rem !important;
-}
 
 .btn {
     margin: .2rem .5rem;
@@ -125,12 +140,24 @@ body.modal-open {
 }
 
 // datatables
-
-.table th {
-    background: $blue;
-    color: $blue-light;
+.dataTables_wrapper {
+    .dt-buttons .btn {
+        padding: .3rem;
+    }
+    .dataTable {
+        &.table th {
+            background: $blue;
+            color: $blue-light;
+            vertical-align: middle;
+        }
+        &.table td {
+            padding: 0.4rem;
+            vertical-align: middle;
+            font-size: .8rem;
+            color: $text-gray;
+        }
+    }
 }
-
 
 @media(max-width: 1200px) {
     .modal-xl {

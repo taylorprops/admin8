@@ -100,8 +100,9 @@ if (document.URL.match(/transaction_required_details/)) {
                     $.each(data, function (k, agents) {
                         if (agents.length > 0) {
                             $.each(agents, function (k, agent) {
+                                console.log(agent);
                                 let agent_div = ' \
-                                <div class="search-result list-group-item" data-type="'+type+'" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
+                                <div class="search-result list-group-item" data-type="'+type+'" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-office-phone="' + agent.OfficePhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
                                     <div class="row"> \
                                         <div class="col-6 col-md-3"> \
                                             <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
@@ -215,28 +216,36 @@ if (document.URL.match(/transaction_required_details/)) {
         let agent_first = ele.data('agent-first');
         let agent_last = ele.data('agent-last');
         let agent_company = ele.data('agent-company');
+        let agent_phone = ele.data('agent-phone');
+        let agent_email = ele.data('agent-email');
         let office_street = ele.data('agent-street');
         let office_city = ele.data('agent-city');
         let office_state = ele.data('agent-state');
         let office_zip = ele.data('agent-zip');
+        let office_phone = ele.data('office-phone');
 
-        if(type == 'receiving') {
-            $('#ReferringAgentFirstName').val(agent_first)/* .trigger('change') */;
-            $('#ReferringAgentLastName').val(agent_last)/* .trigger('change') */;
-            $('#ReferringAgentOfficeName').val(agent_company)/* .trigger('change') */;
-            $('#ReferringAgentOfficeStreet').val(office_street)/* .trigger('change') */;
-            $('#ReferringAgentOfficeCity').val(office_city)/* .trigger('change') */;
-            $('#ReferringAgentOfficeState').val(office_state)/* .trigger('change') */;
-            $('#ReferringAgentOfficeZip').val(office_zip)/* .trigger('change') */;
-        } else {
-            $('#ReceivingAgentFirstName').val(agent_first)/* .trigger('change') */;
-            $('#ReceivingAgentLastName').val(agent_last)/* .trigger('change') */;
-            $('#ReceivingAgentOfficeName').val(agent_company)/* .trigger('change') */;
-            $('#ReceivingAgentOfficeStreet').val(office_street)/* .trigger('change') */;
-            $('#ReceivingAgentOfficeCity').val(office_city)/* .trigger('change') */;
-            $('#ReceivingAgentOfficeState').val(office_state)/* .trigger('change') */;
-            $('#ReceivingAgentOfficeZip').val(office_zip)/* .trigger('change') */;
-        }
+        /* if(type == 'receiving') {
+            $('#ReferringAgentFirstName').val(agent_first);
+            $('#ReferringAgentLastName').val(agent_last);
+            $('#ReferringAgentEmail').val(agent_email);
+            $('#ReferringAgentPreferredPhone').val(agent_phone);
+            $('#ReferringAgentOfficeName').val(agent_company);
+            $('#ReferringAgentOfficeStreet').val(office_street);
+            $('#ReferringAgentOfficeCity').val(office_city);
+            $('#ReferringAgentOfficeState').val(office_state);
+            $('#ReferringAgentOfficeZip').val(office_zip);
+        } else { */
+            $('#ReceivingAgentFirstName').val(agent_first);
+            $('#ReceivingAgentLastName').val(agent_last);
+            $('#ReceivingAgentEmail').val(agent_email);
+            $('#ReceivingAgentPreferredPhone').val(agent_phone);
+            $('#ReceivingAgentOfficeName').val(agent_company);
+            $('#ReceivingAgentOfficeStreet').val(office_street);
+            $('#ReceivingAgentOfficeCity').val(office_city);
+            $('#ReceivingAgentOfficeState').val(office_state);
+            $('#ReceivingAgentOfficeZip').val(office_zip);
+            $('#ReceivingAgentOfficePhone').val(office_phone);
+        //}
         select_refresh();
 
         $('.search-results').fadeOut('slow');

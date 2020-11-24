@@ -176,6 +176,8 @@
                 <input type="hidden" name="Referral_ID" id="Referral_ID" value="{{ $referral -> Referral_ID }}">
                 <input type="hidden" name="Agent_ID" id="Agent_ID" value="{{ $referral -> Agent_ID }}">
                 <input type="hidden" name="ReceivingAgentOfficePhone" id="ReceivingAgentOfficePhone">
+                <input type="hidden" name="ReceivingAgentEmail" id="ReceivingAgentEmail">
+                <input type="hidden" name="ReceivingAgentPreferredPhone" id="ReceivingAgentPreferredPhone">
 
             </form>
 

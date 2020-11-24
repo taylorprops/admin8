@@ -8,7 +8,7 @@ use App\Models\CRM\CRMContacts;
 
 $factory -> define(CRMContacts::class, function (Faker $faker) {
     return [
-        'agent_id' => '3193',
+        'Agent_ID' => '3193',
         'contact_first' => $faker -> firstName,
         'contact_last' => $faker -> lastName,
         'contact_email' => $faker -> unique() -> safeEmail,

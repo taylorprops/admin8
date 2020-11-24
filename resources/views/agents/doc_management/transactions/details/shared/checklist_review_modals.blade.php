@@ -185,9 +185,9 @@
                                         </div>
                                         <div class="col-12 col-md-6">
                                             <select class="custom-form-element form-select form-select-no-cancel form-select-no-search select-form-group mt-3" data-label="Select Form Group">
-                                                <option value="all">All</option>
+                                                <option value="all" selected>All</option>
                                                 @foreach($form_groups as $form_group)
-                                                <option value="{{ $form_group -> resource_id }}" @if($loop -> first) selected @endif>{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
+                                                <option value="{{ $form_group -> resource_id }}" {{-- @if($loop -> first) selected @endif --}}>{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -254,7 +254,7 @@
             </div>
             <div class="modal-footer d-flex justify-content-around">
                 <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success" id="save_add_checklist_item_button"><i class="fad fa-check mr-2"></i> Save</a>
+                <a class="btn btn-success" id="save_add_checklist_item_button" data-toggle="modal"><i class="fad fa-check mr-2"></i> Save</a>
             </div>
         </div>
     </div>

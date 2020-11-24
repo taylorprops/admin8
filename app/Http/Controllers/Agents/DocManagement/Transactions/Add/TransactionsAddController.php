@@ -265,11 +265,19 @@ class TransactionsAddController extends Controller {
 
         $Referral_ID = $add_referral -> Referral_ID;
 
+        // add to commission and get commission id
+        $commission = new Commission();
+        $commission -> Referral_ID = $Referral_ID;
+        $commission -> Agent_ID = $request -> Agent_ID;
+        $commission -> save();
+        $Commission_ID = $commission -> id;
+
         // add email address
         $address = preg_replace(config('global.vars.bad_characters'), '', $request -> street_number . ucwords(strtolower($request -> street_name)) . $request -> street_dir . $request -> unit_number);
         $email = $address.'_R'.$Referral_ID.'@'.config('global.vars.property_email');
 
         $add_referral -> PropertyEmail = $email;
+        $add_referral -> Commission_ID = $Commission_ID;
         $add_referral -> save();
 
         return response() -> json(['Referral_ID' => $Referral_ID]);
@@ -490,14 +498,12 @@ class TransactionsAddController extends Controller {
             $code = 'L'.$new_transaction -> Listing_ID;
         } else if($transaction_type == 'contract') {
             $code = 'C'.$new_transaction -> Contract_ID;
-        } else if($transaction_type == 'referral') {
-            $code = 'R'.$new_transaction -> Referral_ID;
         }
 
         $street_address = ucwords(strtolower($property_details -> FullStreetAddress));
 
         $Commission_ID = '';
-        if($transaction_type == 'contract' || $transaction_type == 'referral') {
+        if($transaction_type == 'contract') {
             // add to commission and get commission id
             $commission = new Commission();
             if($transaction_type == 'contract') {
@@ -521,6 +527,7 @@ class TransactionsAddController extends Controller {
         // add default docs folders
         $Listing_ID = '';
         $Contract_ID = '';
+        $Referral_ID = '';
         if($transaction_type == 'listing') {
             $Listing_ID = $new_transaction -> Listing_ID;
             $new_folder = new TransactionDocumentsFolders();
@@ -530,28 +537,33 @@ class TransactionsAddController extends Controller {
             $new_folder -> folder_name = 'Listing Documents';
             $new_folder -> order = 0;
             $new_folder -> save();
-        } else {
+        } else if($transaction_type == 'contract') {
             $Contract_ID = $new_transaction -> Contract_ID;
+        } else if($transaction_type == 'referral') {
+            $Referral_ID = $new_transaction -> Referral_ID;
         }
 
+        $type = $transaction_type == 'referral' ? 'Referral' : 'Contract';
 
         $new_folder = new TransactionDocumentsFolders();
         $new_folder -> Listing_ID = $Listing_ID;
         $new_folder -> Contract_ID = $Contract_ID;
+        $new_folder -> Referral_ID = $Referral_ID;
         $new_folder -> Agent_ID = $agent -> id;
-        $new_folder -> folder_name = 'Contract Documents';
+        $new_folder -> folder_name = $type.' Documents';
         $new_folder -> order = 0;
         $new_folder -> save();
 
         $new_folder = new TransactionDocumentsFolders();
         $new_folder -> Listing_ID = $Listing_ID;
         $new_folder -> Contract_ID = $Contract_ID;
+        $new_folder -> Referral_ID = $Referral_ID;
         $new_folder -> Agent_ID = $agent -> id;
         $new_folder -> folder_name = 'Trash';
         $new_folder -> order = 100;
         $new_folder -> save();
 
-        return response() -> json(['id' => $Listing_ID.$Contract_ID]);
+        return response() -> json(['id' => $Listing_ID.$Contract_ID.$Referral_ID]);
 
     }
 

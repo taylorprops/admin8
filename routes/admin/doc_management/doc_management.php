@@ -143,11 +143,17 @@ Route::middleware('admin') -> group(function () {
     // commission
     Route::get('/doc_management/commission', 'DocManagement\Commission\CommissionController@commission');
     // get checks queue to add to commission
-    Route::get('/doc_management/commission/get_checks', 'DocManagement\Commission\CommissionController@get_checks');
-    // get checks queue to add to commission
-    /* Route::get('/doc_management/commission/checks_queue_html', function() {
-        return view('/doc_management/commission/checks_queue_html');
-    }); */
+    Route::get('/doc_management/commission/get_checks_queue', 'DocManagement\Commission\CommissionController@get_checks_queue');
+    // search deleted checks
+    Route::get('/doc_management/commission/search_deleted_checks', 'DocManagement\Commission\CommissionController@search_deleted_checks');
+
+    // commission page for checks with no property
+    Route::get('/doc_management/commission_other/{Commission_ID}', 'DocManagement\Commission\CommissionController@commission_other');
+    // get commission details
+    Route::get('/doc_management/commission_other/commission_other_details/{Commission_ID}', 'DocManagement\Commission\CommissionController@commission_other_details');
+    // save edit check in
+    Route::post('/doc_management/commission/save_edit_queue_check', 'DocManagement\Commission\CommissionController@save_edit_queue_check');
+
 
 
 

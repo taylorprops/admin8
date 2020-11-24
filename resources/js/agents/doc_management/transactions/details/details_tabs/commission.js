@@ -1,8 +1,12 @@
-if (document.URL.match(/transaction_details/)) {
+if (document.URL.match(/transaction_details/) || document.URL.match(/commission_other/)) {
 
+    let page = 'other';
+    if(document.URL.match(/transaction_details/)) {
+        page = 'details';
+    }
     $(function() {
 
-        $(document).on('click', '.show-view-add-button', popout);
+        $(document).on('click', '.show-view-add-button', popout_row);
 
         $(document).on('keyup change', '.total', total_commission);
 
@@ -10,9 +14,54 @@ if (document.URL.match(/transaction_details/)) {
             save_commission('yes');
         });
 
-
-
     });
+
+    window.get_agent_details = function(Agent_ID) {
+        axios.get('/agents/doc_management/transactions/details/data/get_agent_details', {
+            params: {
+                Agent_ID: Agent_ID
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+            $('.agent-details-div').html(response.data);
+            $('.show-soc-sec').on('click', function() {
+                $('.soc-sec').toggle();
+            });
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    window.import_check_in = function() {
+
+        let button = $(this);
+        let check_id = button.data('check-id');
+        let Commission_ID = $('#Commission_ID').val();
+
+        let formData = new FormData();
+        formData.append('Commission_ID', Commission_ID);
+        formData.append('check_id', check_id);
+
+        axios.post('/agents/doc_management/transactions/import_check_in', formData, axios_options)
+        .then(function (response) {
+            toastr['success']('Check Successfully Imported');
+            get_checks_in(Commission_ID);
+            $('#add_check_in_modal').modal('hide');
+            get_checks_in_queue();
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
 
     window.show_title = function() {
         $('#title_company_row').hide();
@@ -100,7 +149,9 @@ if (document.URL.match(/transaction_details/)) {
             if(show_toastr == 'yes') {
                 toastr['success']('Commission Details Successfully Saved');
             }
-            load_tabs('details');
+            if(page == 'details') {
+                load_tabs('details');
+            }
         })
         .catch(function (error) {
             console.log(error);
@@ -170,6 +221,9 @@ if (document.URL.match(/transaction_details/)) {
         .then(function (response) {
             get_income_deductions(Commission_ID);
             toastr['success']('Deduction Successfully Deleted');
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
         })
         .catch(function (error) {
             console.log(error);
@@ -198,6 +252,9 @@ if (document.URL.match(/transaction_details/)) {
 
                 toastr['success']('Deduction Successfully Added');
                 get_income_deductions(Commission_ID);
+                setTimeout(function() {
+                    save_commission('no');
+                }, 500);
             })
             .catch(function (error) {
                 console.log(error);
@@ -269,6 +326,9 @@ if (document.URL.match(/transaction_details/)) {
         .then(function (response) {
             get_commission_deductions(Commission_ID);
             toastr['success']('Deduction Successfully Deleted');
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
         })
         .catch(function (error) {
             console.log(error);
@@ -297,6 +357,9 @@ if (document.URL.match(/transaction_details/)) {
 
                 toastr['success']('Deduction Successfully Added');
                 get_commission_deductions(Commission_ID);
+                setTimeout(function() {
+                    save_commission('no');
+                }, 500);
             })
             .catch(function (error) {
                 console.log(error);
@@ -326,9 +389,10 @@ if (document.URL.match(/transaction_details/)) {
             $('#checks_in_total').val($('#checks_in_total_amount').val().toString());
             $('#checks_in_count').text($('#checks_in_total_count').val());
             $('.delete-check-in-button').off('click').on('click', show_delete_check_in);
-            $('.edit-check-in-button').off('click').on('click', show_edit_check_in);
+            $('.edit-check-in-button').on('click', show_edit_check_in);
+            $('.re-queue-check-button').on('click', re_queue_check);
             //$('#save_edit_check_in_button').off('click').on('click', save_edit_check_in);
-            $('.undo-delete-check-in-button').off('click').on('click', undo_delete_check_in)
+            $('.undo-delete-check-in-button').off('click').on('click', undo_delete_check_in);
             $('.show-deleted-in-button').off('click').on('click', function() {
                 $('.check-image-container.in.inactive').toggleClass('hidden');
             });
@@ -347,14 +411,47 @@ if (document.URL.match(/transaction_details/)) {
         // shared with commission js
         get_check_info();
 
+        $('#check_in_agent_id').val($('#Agent_ID').val());
+        $('#check_in_client_name').val($('#other_client_name').val());
+        $('#check_in_street').val($('#other_street').val());
+        $('#check_in_city').val($('#other_city').val());
+        $('#check_in_state').val($('#other_state').val());
+        $('#check_in_zip').val($('#other_zip').val());
+
+        if($('#other_street').length > 0) {
+            $('#add_check_in_address').text($('#other_street').val()+' '+$('#other_city').val()+' '+$('#other_state').val()+' '+$('#other_zip').val());
+        } else {
+            $('#add_check_in_address').text($('#address').val());
+        }
+
+        get_checks_in_queue();
+
     }
 
-
+    function get_checks_in_queue() {
+        let Agent_ID = $('#Agent_ID').val();
+        axios.get('/agents/doc_management/transactions/get_checks_in_queue', {
+            params: {
+                Agent_ID: Agent_ID
+            },
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+            $('.checks-queue-div').html(response.data);
+            $('.import-check-button').on('click', import_check_in);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
 
     window.show_edit_check_in = function() {
 
         $('#edit_check_in_modal').modal();
-        //$('#edit_check_in_modal').on('hidden.bs.modal', clear_add_check_form);
 
         $('.edit-check-in-preview-div').html('<div class="border border-primary mt-2 check-preview"><img src="'+$(this).data('image-location')+'" class="w-100"></div>');
         $('#edit_check_in_id').val($(this).data('check-id'));
@@ -379,6 +476,9 @@ if (document.URL.match(/transaction_details/)) {
         .then(function (response) {
             get_checks_in(Commission_ID);
             toastr['success']('Check Successfully Edited');
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
         })
         .catch(function (error) {
             console.log(error);
@@ -387,22 +487,27 @@ if (document.URL.match(/transaction_details/)) {
 
     window.show_delete_check_in = function() {
         let check_id = $(this).data('check-id');
+        let type = $(this).data('type');
         $('#confirm_modal').modal().find('.modal-body').html('<div class="d-flex justify-content-start align-items-center"><div class="mr-3"><i class="fad fa-exclamation-circle fa-2x text-danger"></i></div><div class="text-center">Are you sure you want to delete this check?</div></div>');
         $('#confirm_modal').modal().find('.modal-title').html('Delete Check');
         $('#confirm_button').off('click').on('click', function() {
-            save_delete_check_in(check_id);
+            save_delete_check_in(check_id, type);
         });
     }
 
-    window.save_delete_check_in = function(check_id) {
+    window.save_delete_check_in = function(check_id, type) {
 
         let Commission_ID = $('#Commission_ID').val();
         let formData = new FormData();
         formData.append('check_id', check_id);
+        formData.append('type', type);
         axios.post('/agents/doc_management/transactions/save_delete_check_in', formData, axios_options)
         .then(function (response) {
             get_checks_in(Commission_ID);
             toastr['success']('Check Successfully Deleted');
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
 
         })
         .catch(function (error) {
@@ -420,6 +525,9 @@ if (document.URL.match(/transaction_details/)) {
         .then(function (response) {
             get_checks_in(Commission_ID);
             toastr['success']('Check Successfully Reactivated');
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
         })
         .catch(function (error) {
             console.log(error);
@@ -427,6 +535,26 @@ if (document.URL.match(/transaction_details/)) {
 
     }
 
+    function re_queue_check() {
+
+        let check_id = $(this).data('check-id');
+        let Commission_ID = $('#Commission_ID').val();
+
+        let formData = new FormData();
+        formData.append('check_id', check_id);
+
+        axios.post('/agents/doc_management/transactions/re_queue_check', formData, axios_options)
+        .then(function (response) {
+            get_checks_in(Commission_ID);
+            toastr['success']('Check Successfully Re Queued');
+            setTimeout(function() {
+                save_commission('no');
+            }, 500);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
 
     window.get_checks_out = function(Commission_ID) {
 
@@ -462,7 +590,7 @@ if (document.URL.match(/transaction_details/)) {
 
     window.show_add_check_out = function() {
 
-        $('#add_check_out_modal').modal();
+        $('#add_check_out_modal').modal('show');
         $('#add_check_out_modal').on('hidden.bs.modal', clear_add_check_form);
 
         $('#check_out_upload').off('change').on('change', function () {
@@ -503,6 +631,8 @@ if (document.URL.match(/transaction_details/)) {
                 $('#check_out_recipient').val('')/* .trigger('change') */;
             }
         });
+
+        $('#check_out_agent_id').val($('#Agent_ID').val());
 
         $('.mail-to-div').hide();
         show_mail_to_address();
@@ -556,54 +686,56 @@ if (document.URL.match(/transaction_details/)) {
 
         $('#edit_check_out_modal').modal();
         //$('#edit_check_out_modal').on('hidden.bs.modal', clear_add_check_form);
+        let button = $(this);
+        setTimeout(function() {
+            $('.edit-check-out-preview-div').html('<div class="border border-primary mt-2 check-preview"><img src="'+button.data('image-location')+'" class="w-100"></div>');
 
-        $('.edit-check-out-preview-div').html('<div class="border border-primary mt-2 check-preview"><img src="'+$(this).data('image-location')+'" class="w-100"></div>');
+            $('#edit_check_out_id').val(button.data('check-id'));
+            $('#edit_check_out_date').val(button.data('check-date'));
+            $('#edit_check_out_number').val(button.data('check-number'));
+            $('#edit_check_out_amount').val(button.data('check-amount'));
 
-        $('#edit_check_out_id').val($(this).data('check-id'));
-        $('#edit_check_out_date').val($(this).data('check-date'));
-        $('#edit_check_out_number').val($(this).data('check-number'));
-        $('#edit_check_out_amount').val($(this).data('check-amount'));
-
-        if($(this).data('recipient-agent-id') > 0) {
-            $('#edit_check_out_agent_id').val($(this).data('recipient-agent-id'));
-        }
-
-        $('#edit_check_out_recipient').val($(this).data('recipient'));
-        $('#edit_check_out_delivery_method').val($(this).data('delivery-method'));
-        $('#edit_check_out_date_ready').val($(this).data('date-ready'));
-        $('#edit_check_out_mail_to_street').val($(this).data('mail-to-street'));
-        $('#edit_check_out_mail_to_city').val($(this).data('mail-to-city'));
-        $('#edit_check_out_mail_to_state').val($(this).data('mail-to-state'));
-        $('#edit_check_out_mail_to_zip').val($(this).data('mail-to-zip'));
-        $('.edit-mail-to-div').hide();
-        if($(this).data('delivery-method') == 'mail' || $(this).data('delivery-method') == 'fedex') {
-            $('.edit-mail-to-div').show();
-        }
-
-        $('#edit_check_out_modal').find('.custom-form-element').each(function() {
-            if($(this).val() != '') {
-                $(this)/* .trigger('change') */;
+            if(button.data('recipient-agent-id') > 0) {
+                $('#edit_check_out_agent_id').val(button.data('recipient-agent-id'));
             }
-        });
+
+            $('#edit_check_out_recipient').val(button.data('recipient'));
+            $('#edit_check_out_delivery_method').val(button.data('delivery-method'));
+            $('#edit_check_out_date_ready').val(button.data('date-ready'));
+            $('#edit_check_out_mail_to_street').val(button.data('mail-to-street'));
+            $('#edit_check_out_mail_to_city').val(button.data('mail-to-city'));
+            $('#edit_check_out_mail_to_state').val(button.data('mail-to-state'));
+            $('#edit_check_out_mail_to_zip').val(button.data('mail-to-zip'));
+            $('.edit-mail-to-div').hide();
+            if(button.data('delivery-method') == 'mail' || button.data('delivery-method') == 'fedex') {
+                $('.edit-mail-to-div').show();
+            }
+
+            $('#edit_check_out_modal').find('.custom-form-element').each(function() {
+                if(button.val() != '') {
+                    button/* .trigger('change') */;
+                }
+            });
 
 
-        $('#save_edit_check_out_button').off('click').on('click', save_edit_check_out);
+            $('#save_edit_check_out_button').off('click').on('click', save_edit_check_out);
 
-        $('.edit-mail-to-div').hide();
-        show_edit_mail_to_address();
-        $('#edit_check_out_delivery_method').on('change', function() {
+            $('.edit-mail-to-div').hide();
             show_edit_mail_to_address();
-        });
+            $('#edit_check_out_delivery_method').on('change', function() {
+                show_edit_mail_to_address();
+            });
 
-        $('#edit_check_out_agent_id').on('change', function() {
-            if($(this).val() > 0) {
-                $('#edit_check_out_recipient').val($(this).find('option:selected').data('recipient'))/* .trigger('change') */;
-            } else {
-                $('#edit_check_out_recipient').val('');
-            }
-        });
+            $('#edit_check_out_agent_id').on('change', function() {
+                if(button.val() > 0) {
+                    $('#edit_check_out_recipient').val(button.find('option:selected').data('recipient'))/* .trigger('change') */;
+                } else {
+                    $('#edit_check_out_recipient').val('');
+                }
+            });
 
-        select_refresh();
+            select_refresh();
+        }, 100);
 
     }
 
@@ -733,7 +865,7 @@ if (document.URL.match(/transaction_details/)) {
 
 
 
-    function popout() {
+    window.popout_row = function() {
 
         if($(this).hasClass('toggle-agent-info')) {
             $('.agent-info-toggle').hide();

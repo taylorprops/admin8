@@ -13,7 +13,7 @@ $deleted = 0;
     }
     @endphp
     <div class="p-2 mr-2 border bg-white mb-3 shadow rounded check-image-container in {{ $classes }}">
-        <div class="row">
+        <div class="row ">
             <div class="col-12 col-md-3">
                 <div class="list-group font-8 text-gray">
                     <div class="list-group-item check-details">
@@ -42,9 +42,9 @@ $deleted = 0;
                 </div>
             </div>
             @if($check -> active == 'yes')
-                <div class="col-2">
+                <div class="col-2 pl-0">
                     <div class="pr-2">
-                        <a href="{{ $check -> file_location }}" target="_blank" class="btn btn-block btn-sm btn-primary"><i class="fad fa-eye mr-1"></i> View</a>
+                        <a href="{{ $check -> file_location }}" target="_blank" class="btn btn-block btn-sm btn-primary"><i class="fad fa-eye mr-2"></i> View</a>
                         <a href="javascript: void(0)"
                         class="btn btn-block btn-sm btn-default edit-check-in-button"
                         data-check-id="{{ $check -> id }}"
@@ -53,16 +53,21 @@ $deleted = 0;
                         data-check-date="{{ $check -> check_date }}"
                         data-check-number="{{ $check -> check_number }}"
                         data-check-amount="{{ $check -> check_amount }}"
-                        data-image-location="{{ $check -> image_location }}
-                        "><i class="fad fa-edit mr-1"></i> Edit</a>
-                        <a href="javascript: void(0)" class="btn btn-block btn-sm btn-danger delete-check-in-button" data-check-id="{{ $check -> id }}"><i class="fad fa-trash mr-1"></i> Delete</a>
+                        data-image-location="{{ $check -> image_location }}">
+                            <i class="fad fa-edit mr-2"></i> Edit
+                        </a>
+                        <a href="javascript: void(0)" class="btn btn-block btn-sm btn-danger delete-check-in-button" data-check-id="{{ $check -> id }}" data-type="other"><i class="fad fa-trash mr-2"></i> Delete</a>
+
+                        @if($check -> queue_id > 0)
+                            <a href="javascript: void(0)" class="btn btn-block btn-sm btn-danger re-queue-check-button" data-check-id="{{ $check -> id }}"><i class="fad fa-recycle mr-2"></i> Re Queue</a>
+                        @endif
                     </div>
                 </div>
             @else
                 @php $deleted += 1; @endphp
                 <div class="col-2 text-center">
                     <span class="text-danger font-weight-bold"><i class="fad fa-ban mr-2"></i> Deleted</span>
-                    <a href="javascript: void(0)" class="btn btn-sm btn-default undo-delete-check-in-button" data-check-id="{{ $check -> id }}"><i class="fad fa-undo-alt mr-1"></i> Undo</a>
+                    <a href="javascript: void(0)" class="btn btn-sm btn-default undo-delete-check-in-button" data-check-id="{{ $check -> id }}"><i class="fad fa-undo-alt mr-2"></i> Undo</a>
                 </div>
             @endif
         </div>

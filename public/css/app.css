@@ -1661,15 +1661,15 @@ a.text-green:hover {
 }
 
 .btn-primary {
-  background: #4c9bdb !important;
+  background: #4c9bdb;
 }
 
 .btn-danger {
-  background: #b64341 !important;
+  background: #b64341;
 }
 
 .btn-secondary {
-  background: #df7935 !important;
+  background: #df7935;
 }
 
 .border-orange {
@@ -12953,8 +12953,6 @@ a.text-primary-dark:focus {
   }
 }
 
-/* @import 'page-transitions.scss'; */
-
 * {
   font-family: "Lato";
 }
@@ -13081,6 +13079,10 @@ ul {
 
 .container-1200 {
   max-width: 1200px !important;
+}
+
+.container-1100 {
+  max-width: 1100px !important;
 }
 
 .container-1000 {
@@ -13224,8 +13226,51 @@ a.ck.ck-button {
   box-shadow: 0 0 5px #78c4e7 !important;
 }
 
-.modal-xxl {
+.modal .modal-lg .modal-content,
+.modal .modal-xl .modal-content {
+  margin-bottom: 50px;
+}
+
+.modal .modal-xxl {
   max-width: 95% !important;
+}
+
+.modal .modal-xl-1400 {
+  max-width: 1400px;
+}
+
+.modal .modal-dialog .modal-content .modal-header {
+  border-top-left-radius: 0.6rem !important;
+  border-top-right-radius: 0.6rem !important;
+}
+
+.modal .modal-dialog {
+  margin: 0 auto !important;
+}
+
+.modal .modal-header {
+  background: #4c9bdb;
+  padding: 0.5rem 0.5rem 0.5rem 1rem !important;
+}
+
+.modal .modal-header h1,
+.modal .modal-header h2,
+.modal .modal-header h3,
+.modal .modal-header h4,
+.modal .modal-header h5 {
+  color: white !important;
+}
+
+.modal .modal-header .fa-times {
+  margin-right: 15px;
+}
+
+.modal .modal-dialog .modal-content {
+  border-top-left-radius: 0.7rem !important;
+  border-top-right-radius: 0.7rem !important;
+  border-bottom-left-radius: 0.7rem !important;
+  border-bottom-right-radius: 0.7rem !important;
+  border: 2px solid #f8fcff !important;
 }
 
 /* body,
@@ -13250,39 +13295,6 @@ body.modal-open {
   scrollbar-width: thin;
   /* "auto" or "thin"  */
   scrollbar-color: rgba(76, 155, 219, 0.4) #f8fcff;
-}
-
-.modal-dialog .modal-content .modal-header {
-  border-top-left-radius: 0.2rem !important;
-  border-top-right-radius: 0.2rem !important;
-}
-
-.modal-dialog {
-  margin: 0 auto !important;
-}
-
-.modal-header {
-  background: #4c9bdb;
-  padding: 0.5rem 0.5rem 0.5rem 1rem !important;
-}
-
-.modal-header h1,
-.modal-header h2,
-.modal-header h3,
-.modal-header h4,
-.modal-header h5 {
-  color: white !important;
-}
-
-.modal-header .fa-times {
-  margin-right: 15px;
-}
-
-.modal-dialog .modal-content {
-  border-top-left-radius: 0.5rem !important;
-  border-top-right-radius: 0.5rem !important;
-  border-bottom-left-radius: 0.2rem !important;
-  border-bottom-right-radius: 0.2rem !important;
 }
 
 .btn {
@@ -13342,9 +13354,21 @@ body.modal-open {
   border-width: 3px !important;
 }
 
-.table th {
+.dataTables_wrapper .dt-buttons .btn {
+  padding: 0.3rem;
+}
+
+.dataTables_wrapper .dataTable.table th {
   background: #4c9bdb;
   color: #f8fcff;
+  vertical-align: middle;
+}
+
+.dataTables_wrapper .dataTable.table td {
+  padding: 0.4rem;
+  vertical-align: middle;
+  font-size: 0.8rem;
+  color: #7a7979;
 }
 
 @media (max-width: 1200px) {
@@ -16035,12 +16059,26 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   } */
 }
 
+.page-transaction-details .btn-block {
+  text-align: left !important;
+}
+
 .page-transaction-details .header-section {
   max-width: 300px;
 }
 
 .page-transaction-details .listing-header-details .btn {
   padding: 0.1rem 0.2rem;
+}
+
+.page-transaction-details .commission-container .btn-lg,
+.page-transaction-details .commission-container .btn-group-lg > .btn {
+  padding: 1.5rem 3rem;
+}
+
+.page-transaction-details .checks-queue-div {
+  max-height: 60VH;
+  overflow: auto;
 }
 
 .page-transaction-details .nav-link:not(.add-to-checklist):not(.options-tab) {
@@ -16100,6 +16138,10 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .page-transaction-details .using-heritage {
   width: 130px;
+}
+
+.page-transaction-details .soc-sec:first-of-type {
+  display: none;
 }
 
 .page-transaction-details #agent_search_div {
@@ -16361,91 +16403,6 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   display: none;
 }
 
-.page-transaction-details .commission-container .popout-div {
-  position: relative;
-}
-
-.page-transaction-details .commission-container .popout {
-  display: none;
-  position: absolute;
-  padding: 10px;
-  z-index: -1;
-  left: 0px;
-  border-radius: 8px;
-  min-height: 150px;
-}
-
-.page-transaction-details .commission-container .popout.top {
-  top: -3rem;
-}
-
-.page-transaction-details .commission-container .popout.bottom {
-  bottom: -7rem;
-}
-
-.page-transaction-details .commission-container .popout.active {
-  z-index: 1000;
-}
-
-.page-transaction-details .commission-container .popout .view-add-div {
-  max-height: 400px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.page-transaction-details .commission-container .popout .check-image-container.inactive .check-image-div,
-.page-transaction-details .commission-container .popout .check-image-container.inactive .list-group {
-  opacity: 0.5;
-}
-
-.page-transaction-details .commission-container .popout .check-image-div {
-  width: 400px;
-  height: 150px;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.page-transaction-details .commission-container .popout .check-image-div img {
-  width: 400px;
-}
-
-.page-transaction-details .commission-container .popout .check-details {
-  width: 100%;
-  padding: 2px 4px;
-}
-
-.page-transaction-details .commission-container .popout-action {
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-}
-
-.page-transaction-details .commission-container .show-view-add-button {
-  cursor: pointer;
-}
-
-.page-transaction-details .commission-container .check-deductions-div,
-.page-transaction-details .commission-container .commission-deductions-div {
-  max-width: 500px;
-}
-
-.page-transaction-details .commission-container .agent-commission.percent {
-  width: 170px;
-}
-
-.page-transaction-details .commission-container .notes-container {
-  height: 220px;
-  overflow: auto;
-}
-
-.page-transaction-details .commission-container .commission-notes-div {
-  max-height: 220px;
-  overflow: auto;
-}
-
-.page-transaction-details .commission-container .commission-notes-div .list-group-item + .list-group-item {
-  border-top-width: thin !important;
-}
-
 .page-transaction-details .agent-info-container {
   position: relative;
 }
@@ -16596,6 +16553,91 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   }
 }
 
+.commission-container .popout-div {
+  position: relative;
+}
+
+.commission-container .popout {
+  display: none;
+  position: absolute;
+  padding: 10px;
+  z-index: -1;
+  left: -3px;
+  border-radius: 8px;
+  min-height: 150px;
+}
+
+.commission-container .popout.top {
+  top: -3rem;
+}
+
+.commission-container .popout.bottom {
+  bottom: -7rem;
+}
+
+.commission-container .popout.active {
+  z-index: 1000;
+}
+
+.commission-container .popout .view-add-div {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.commission-container .popout .check-image-container.inactive .check-image-div,
+.commission-container .popout .check-image-container.inactive .list-group {
+  opacity: 0.5;
+}
+
+.commission-container .popout .check-image-div {
+  width: 400px;
+  height: 150px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.commission-container .popout .check-image-div img {
+  width: 400px;
+}
+
+.commission-container .popout .check-details {
+  width: 100%;
+  padding: 2px 4px;
+}
+
+.commission-container .popout-action {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.commission-container .show-view-add-button {
+  cursor: pointer;
+}
+
+.commission-container .check-deductions-div,
+.commission-container .commission-deductions-div {
+  max-width: 500px;
+}
+
+.commission-container .agent-commission.percent {
+  width: 170px;
+}
+
+.commission-container .notes-container {
+  height: 220px;
+  overflow: auto;
+}
+
+.commission-container .commission-notes-div {
+  max-height: 220px;
+  overflow: auto;
+}
+
+.commission-container .commission-notes-div .list-group-item + .list-group-item {
+  border-top-width: thin !important;
+}
+
 .document-loading-container {
   max-height: 80VH;
   overflow: auto;
@@ -16607,6 +16649,11 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 }
 
 .check-preview {
+  height: 200px;
+  overflow: auto;
+}
+
+.page-commission-breakdowns .check-preview {
   height: 300px;
   overflow: auto;
 }
@@ -16767,6 +16814,21 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 .add-to-checklist-item-list-group {
   max-height: 52VH;
   overflow-y: auto;
+}
+
+.checks-queue-div {
+  max-height: 600px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.view-queue-check-div .view-queue-check-holder {
+  max-height: 300px;
+  overflow: auto;
+}
+
+.view-queue-check-div .view-queue-check-holder img {
+  width: 100%;
 }
 
 #files_queue {
@@ -17284,5 +17346,13 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .rejected-reason {
   cursor: pointer;
+}
+
+.page-commission-breakdowns .btn-block {
+  text-align: left !important;
+}
+
+.add-check-in-form-div {
+  display: none;
 }
 

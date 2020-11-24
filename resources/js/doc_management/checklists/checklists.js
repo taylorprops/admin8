@@ -497,8 +497,7 @@ if (document.URL.match(/checklists/)) {
             },
         })
         .then(function (response) {
-            //select_refresh();
-            form_elements();
+            select_refresh();
             forms_status();
         })
         .catch(function (error) {

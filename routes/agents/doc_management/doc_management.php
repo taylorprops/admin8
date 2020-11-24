@@ -125,6 +125,8 @@
 
     // get checks in
     Route::get('/agents/doc_management/transactions/get_checks_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checks_in');
+    // get checks in queue
+    Route::get('/agents/doc_management/transactions/get_checks_in_queue', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checks_in_queue');
     // save add check in
     Route::post('/agents/doc_management/transactions/save_add_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_add_check_in');
     // delete check in
@@ -133,6 +135,10 @@
     Route::post('/agents/doc_management/transactions/undo_delete_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@undo_delete_check_in');
     // save edit check in
     Route::post('/agents/doc_management/transactions/save_edit_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_edit_check_in');
+    // import check in
+    Route::post('/agents/doc_management/transactions/import_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@import_check_in');
+    // send check in back to queue
+    Route::post('/agents/doc_management/transactions/re_queue_check', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@re_queue_check');
 
 
     // get checks out
@@ -163,7 +169,8 @@
     Route::get('/agents/doc_management/transactions/details/data/get_commission_notes_html', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_commission_notes_html');
     // add commission notes
     Route::post('/agents/doc_management/transactions/add_commission_notes', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@add_commission_notes');
-
+    // get agent details
+    Route::get('/agents/doc_management/transactions/details/data/get_agent_details', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_agent_details');
 
 
     // get earnest

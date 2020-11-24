@@ -105,7 +105,7 @@ if(document.URL.match(/document_review/)) {
 
     window.get_checklist = function(id, type) {
 
-        $('#add_checklist_item_modal').remove();
+        $('#add_checklist_item_modal').modal('hide');
 
         axios.get('/doc_management/get_checklist', {
             params: {

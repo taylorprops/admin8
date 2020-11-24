@@ -411,7 +411,12 @@ window.form_elements = function () {
         } else {
             label.removeClass('active');
         }
+    });
 
+    $('.form-select').on('change', function() {
+        if($(this).val() != '' && $(this).closest('.form-ele').find('.form-select-value-input').val() == '') {
+            select_refresh();
+        }
     });
 
     // activate labels on focus and hide on blur if empty
@@ -419,7 +424,7 @@ window.form_elements = function () {
         $(this).next('label').addClass('active');
     });
 
-    $('.custom-form-element').on('blur', function () {
+    $('.custom-form-element').off('blur').on('blur', function () {
         if($(this).val() == '') {
             $(this).next('label').removeClass('active');
         }
@@ -428,7 +433,7 @@ window.form_elements = function () {
     // show file name in input
     $(document).on('change', '.custom-file-input', function() {
         let file_name = $(this).val().split('\\').pop();
-        if(file_name != '') {
+        if($(this).val() != '') {
             $(this).siblings('.custom-file-label').addClass('selected').html(file_name);
             $(this).siblings('.form-input-label').addClass('active');
         } else {
@@ -552,8 +557,6 @@ function dropdown_search(wrapper, input, element, multiple) {
 
         // if tab pressed
         if (e.key == 'Tab') {
-
-
 
             if(wrapper.find('.form-select-matched-option').length > 0) {
 

@@ -2,12 +2,28 @@
 
     min-height: 90VH;
 
+    .btn-block {
+        text-align: left !important;
+    }
+
     .header-section {
         max-width: 300px;
     }
     .listing-header-details .btn {
         padding: 0.1rem 0.2rem;
     }
+
+    .commission-container {
+        .btn-lg {
+            padding: 1.5rem 3rem;
+        }
+    }
+
+    .checks-queue-div {
+        max-height: 60VH;
+        overflow: auto;
+    }
+
 
     .nav-link:not(.add-to-checklist):not(.options-tab) {
         text-transform: uppercase;
@@ -67,6 +83,9 @@
         width: 130px;
     }
 
+    .soc-sec:first-of-type {
+        display: none;
+    }
     // bright mls agent search
     #agent_search_div {
         background: rgba($blue, 0.1);
@@ -347,93 +366,7 @@
         display: none;
     }
 
-    .commission-container {
 
-        .popout-div {
-            position: relative;
-        }
-
-        .popout {
-
-            display: none;
-            position: absolute;
-            padding: 10px;
-            z-index: -1;
-            left: 0px;
-            border-radius: 8px;
-            min-height: 150px;
-
-            &.top {
-                top: -3rem;
-            }
-
-            &.bottom {
-                bottom: -7rem;
-            }
-
-            &.active {
-                z-index: 1000;
-            }
-
-            .view-add-div {
-                max-height: 400px;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
-
-            .check-image-container.inactive .check-image-div, .check-image-container.inactive .list-group {
-                opacity: 0.5;
-            }
-
-            .check-image-div {
-                width: 400px;
-                height: 150px;
-                overflow-x: hidden;
-                overflow-y: auto;
-
-                img {
-                    width: 400px;
-                }
-            }
-
-            .check-details {
-                width: 100%;
-                padding: 2px 4px;
-            }
-
-        }
-
-        .popout-action {
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-        }
-
-        .show-view-add-button {
-            cursor: pointer;
-        }
-
-        .check-deductions-div, .commission-deductions-div {
-            max-width: 500px;
-        }
-
-        .agent-commission.percent {
-            width: 170px;
-        }
-
-        .notes-container {
-            height: 220px;
-            overflow: auto;
-        }
-        .commission-notes-div {
-            max-height: 220px;
-            overflow: auto;
-
-            .list-group-item + .list-group-item {
-                border-top-width: thin !important;
-            }
-        }
-
-    }
 
     .agent-info-container {
         position: relative;
@@ -598,6 +531,94 @@
 
 }
 
+.commission-container {
+
+    .popout-div {
+        position: relative;
+    }
+
+    .popout {
+
+        display: none;
+        position: absolute;
+        padding: 10px;
+        z-index: -1;
+        left: -3px;
+        border-radius: 8px;
+        min-height: 150px;
+
+        &.top {
+            top: -3rem;
+        }
+
+        &.bottom {
+            bottom: -7rem;
+        }
+
+        &.active {
+            z-index: 1000;
+        }
+
+        .view-add-div {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .check-image-container.inactive .check-image-div, .check-image-container.inactive .list-group {
+            opacity: 0.5;
+        }
+
+        .check-image-div {
+            width: 400px;
+            height: 150px;
+            overflow-x: hidden;
+            overflow-y: auto;
+
+            img {
+                width: 400px;
+            }
+        }
+
+        .check-details {
+            width: 100%;
+            padding: 2px 4px;
+        }
+
+    }
+
+    .popout-action {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+
+    .show-view-add-button {
+        cursor: pointer;
+    }
+
+    .check-deductions-div, .commission-deductions-div {
+        max-width: 500px;
+    }
+
+    .agent-commission.percent {
+        width: 170px;
+    }
+
+    .notes-container {
+        height: 220px;
+        overflow: auto;
+    }
+    .commission-notes-div {
+        max-height: 220px;
+        overflow: auto;
+
+        .list-group-item + .list-group-item {
+            border-top-width: thin !important;
+        }
+    }
+
+}
+
 .document-loading-container {
     max-height: 80VH;
     overflow: auto;
@@ -606,9 +627,16 @@
 .progress {
     height: 10px;
 }
+
 .check-preview {
-    height: 300px;
+    height: 200px;
     overflow: auto;
+}
+.page-commission-breakdowns {
+    .check-preview {
+        height: 300px;
+        overflow: auto;
+    }
 }
 
 #add_to_checklist_documents_wrapper {
@@ -769,4 +797,21 @@
 .add-to-checklist-item-list-group {
     max-height: 52VH;
     overflow-y: auto;
+}
+
+.checks-queue-div {
+    max-height: 600px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+.view-queue-check-div {
+
+    .view-queue-check-holder {
+        max-height: 300px;
+        overflow: auto;
+
+        img {
+            width: 100%;
+        }
+    }
 }

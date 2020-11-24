@@ -276,10 +276,10 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input money-decimal numbers-only" id="EarnestAmount" name="EarnestAmount" value="{{ $property -> EarnestAmount > 0 ? $property -> EarnestAmount : '' }}" data-label="Earnest Amount">
+                                        <input type="text" class="custom-form-element form-input money-decimal numbers-only" id="EarnestAmount" name="EarnestAmount" value="{{ $property -> EarnestAmount > 0 ? $property -> EarnestAmount : '' }}" data-label="Earnest Amount" disabled>
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <select class="custom-form-element form-select" id="EarnestHeldBy" name="EarnestHeldBy" data-label="Earnest Held By">
+                                        <select class="custom-form-element form-select" id="EarnestHeldBy" name="EarnestHeldBy" data-label="Earnest Held By" disabled>
                                             <option value=""></option>
                                             <option value="us" @if($property -> EarnestHeldBy == 'us') selected @endif>Taylor/Anne Arundel Properties</option>
                                             <option value="other_company" @if($property -> EarnestHeldBy == 'other_company') selected @endif>Other Real Estate Company</option>
