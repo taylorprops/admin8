@@ -259,40 +259,9 @@ window.form_elements = function () {
 
                         set_multiple_select_value(wrapper, input);
 
-                        // when a checkbox in a multiple select is changed
-                        wrapper.find('.form-check-input').off('change').on('change', function (e) {
+                        /* // when a checkbox in a multiple select is changed
+                        set_multiple_select(wrapper, input); */
 
-                            let checkbox = $(this);
-                            let form_ele = wrapper.closest('.form-ele');
-
-                            let selected_checks = [];
-                            wrapper.find('.form-select-li').removeClass('active');
-                            form_ele.find('option').prop('selected', false);
-                            wrapper.find('.form-check-input:checked').each(function () {
-                                let checked = $(this);
-                                let index = checked.data('index');
-                                selected_checks.push(checked.data('value'));
-                                checked.closest('li').addClass('active');
-                                // to show selected first use below
-                                // $(this).closest('li').addClass('active').prependTo('.form-select-ul');
-
-                                // set select element value
-                                form_ele.find('option').eq(index).prop('selected', true).trigger('change');
-                                console.log(index, form_ele.find('option').length);
-                            });
-
-                            form_ele.trigger('change');
-
-                            if (form_ele.val() == '') {
-                                form_ele.closest('.form-ele').find('.form-select-value-cancel').hide();
-                                wrapper.find('.form-select-value-input').addClass('caret');
-                                input.val('');
-                            }
-
-                            // shorten input value if too long
-                            set_multiple_select_value(wrapper, input);
-
-                        });
                     }
 
                     // remove cancel option if class form-select-no-cancel is set
@@ -348,7 +317,10 @@ window.form_elements = function () {
                             element.trigger('change');
 
                             // reset_select();
+                        } else {
+                            set_multiple_select($(this));
                         }
+
                         if (!element.hasClass('form-select-no-cancel')) {
                             input.siblings('.form-select-value-cancel').show();
                             wrapper.find('.form-select-value-input').removeClass('caret');
@@ -404,24 +376,26 @@ window.form_elements = function () {
 
 
     // FORM INPUT CHANGES
-    $('.custom-form-element').on('change', function() {
+    $('.custom-form-element').not('.form-input-checkbox').on('change', function() {
         let label = $(this).closest('.form-ele').find('label');
         if($(this).val() != '') {
             label.addClass('active');
         } else {
             label.removeClass('active');
         }
-    });
-
-    $('.form-select').on('change', function() {
-        if($(this).val() != '' && $(this).closest('.form-ele').find('.form-select-value-input').val() == '') {
-            select_refresh();
+        if($(this).hasClass('form-select')) {
+            if($(this).val() != '' && $(this).closest('.form-ele').find('.form-select-value-input').val() == '') {
+                select_refresh();
+            }
         }
     });
 
+
+
     // activate labels on focus and hide on blur if empty
-    $('input.custom-form-element, textarea.custom-form-element').on('focus', function (e) {
+    $('input.custom-form-element, textarea.custom-form-element').not('.form-input-file').off('focus').on('focus', function (e) {
         $(this).next('label').addClass('active');
+        hide_dropdowns();
     });
 
     $('.custom-form-element').off('blur').on('blur', function () {
@@ -431,7 +405,7 @@ window.form_elements = function () {
     });
 
     // show file name in input
-    $(document).on('change', '.custom-file-input', function() {
+    $('.custom-file-input').on('change', function() {
         let file_name = $(this).val().split('\\').pop();
         if($(this).val() != '') {
             $(this).siblings('.custom-file-label').addClass('selected').html(file_name);
@@ -477,6 +451,40 @@ window.form_elements = function () {
 
 }
 
+window.set_multiple_select = function(li) {
+
+    let wrapper = li.closest('.form-select-ul');
+    let form_ele = li.closest('.form-ele');
+    let input = form_ele.find('.form-select-value-input');
+    let selected_checks = [];
+    wrapper.find('.form-select-li').removeClass('active');
+    form_ele.find('option').prop('selected', false);
+    wrapper.find('.form-check-input:checked').each(function () {
+        let checked = $(this);
+        let index = checked.data('index');
+        selected_checks.push(checked.data('value'));
+        checked.closest('li').addClass('active');
+        // to show selected first use below
+        // $(this).closest('li').addClass('active').prependTo('.form-select-ul');
+
+        // set select element value
+        form_ele.find('option').eq(index).prop('selected', true).trigger('change');
+        //console.log(index, form_ele.find('option').length);
+    });
+
+    form_ele.trigger('change');
+
+    if (form_ele.val() == '') {
+        form_ele.closest('.form-ele').find('.form-select-value-cancel').hide();
+        wrapper.find('.form-select-value-input').addClass('caret');
+        input.val('');
+    }
+
+    // shorten input value if too long
+    set_multiple_select_value(wrapper, input);
+
+}
+
 window.show_cancel_date = function(wrapper, element) {
 
     if(element.val() == '') {
@@ -506,13 +514,13 @@ function show_dropdown(input) {
     if(wrapper.find('select').prop('disabled') == false) {
         // close dropdown if already open
         if(dropdown.hasClass('active')) {
-            dropdown.removeClass('active').hide();
+            dropdown.removeClass('active');
             if(input.val() == '') {
                 input.prev('label').removeClass('active');
             }
         } else {
             hide_dropdowns();
-            dropdown.addClass('active').show();
+            dropdown.addClass('active');
             input.addClass('form-select-value-input-focus');
             dropdown.find('.form-select-search-input').focus();
         }
@@ -524,7 +532,7 @@ function show_dropdown(input) {
 
 function hide_dropdowns() {
     if($('.form-select-dropdown.active').length > 0) {
-        $('.form-select-dropdown.active').removeClass('active').hide().find('.form-select-search-input').val('').trigger('change');
+        $('.form-select-dropdown.active').removeClass('active').find('.form-select-search-input').val('').trigger('change');
         $('.form-select-value-input-focus').removeClass('form-select-value-input-focus');
 
         $('.form-select-value-input').each(function() {
@@ -564,14 +572,16 @@ function dropdown_search(wrapper, input, element, multiple) {
 
                 if (!multiple) {
 
-                    input.val(wrapper.find('.form-select-matched-option').text()).trigger('change');
+                    wrapper.find('.form-select-matched-option').trigger('click');
+                    /* input.val(wrapper.find('.form-select-matched-option').text()).trigger('change');
                     element.find('option').attr('selected', false);
-                    element.find('option').eq($('.form-select-matched-option').data('index')).attr('selected', true);
+                    //element.find('option').eq($('.form-select-matched-option').data('index')).attr('selected', true);
+                    element.find('option[value='+$('.form-select-matched-option').data('value')+']').attr('selected', true);
                     element.trigger('change');
                     // remove active from all li and add to selected
                     wrapper.find('.form-select-li').removeClass('active');
                     $('.form-select-matched-option').addClass('active');
-                    hide_dropdowns();
+                    hide_dropdowns(); */
 
                 } else {
 
@@ -710,7 +720,7 @@ window.validate_form = function (form) {
                     has_val = 'yes';
                 }
             } else {
-                if (required.val() != '') {
+                if (required.val() != '' || required.find('option:selected').length > 0) {
                     has_val = 'yes';
                 }
             }

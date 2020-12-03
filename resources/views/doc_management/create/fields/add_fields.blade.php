@@ -80,6 +80,7 @@
 
                                 <?php $c = $image -> page_number; ?>
 
+                                <a name="page_{{$c }}"></a>
                                 <div class="file-view-page-info bg-primary text-white p-2" id="page_{{ $c }}">
                                     Page <?php echo $c.' of '.$total_pages; ?>
                                 </div>

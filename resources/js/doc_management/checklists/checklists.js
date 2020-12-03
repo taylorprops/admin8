@@ -5,6 +5,7 @@ if (document.URL.match(/checklists/)) {
         load_checklists();
 
         let show_checklist_id = global_get_url_parameters('checklist_id');
+
         if (show_checklist_id) {
             add_checklist_items(show_checklist_id);
             let checklist_location_id = global_get_url_parameters('checklist_location_id');
@@ -24,6 +25,8 @@ if (document.URL.match(/checklists/)) {
             $('.referral-tab-data').find('.non-referral-checklist-div').show();
             $('.referral-tab-data').find('.referral-checklist-div').hide();
         }); */
+
+
 
     });
 
@@ -55,11 +58,16 @@ if (document.URL.match(/checklists/)) {
             copy_checklist($(this).data('location-id'));
         });
 
-        // toggle listing and contract checklists
-        checklist_type();
-        $('.checklist-type-option').unbind('change').on('change', function () {
-            checklist_type();
+        $(document).on('change', function(e) {
+            if(e.target.classList.contains('select-form-group')) {
+                show_form_group();
+            // toggle listing and contract checklists
+            } else if(e.target.classList.contains('checklist-type-option')) {
+                checklist_type();
+            }
+
         });
+
 
         sortable_checklists();
 
@@ -305,7 +313,7 @@ if (document.URL.match(/checklists/)) {
 
     // search forms in add items modal
     function form_search() {
-        let v = $('#form_search').val();
+        let v = $('.form-search').val();
         if (v.length == 0) {
             // hide all containers with header and name inside
             $('.form-group-div').hide();
@@ -353,25 +361,9 @@ if (document.URL.match(/checklists/)) {
 
             // add title to modal
             $('#checklist_items_modal_title').html('Checklist Items | <span class="text-yellow-light">' + $('#checklist_header_val').val() + '</span>');
-            // hide all form-group-div and show the first (MAR)
-            $('.form-group-div').hide();
-            $('.form-group-div').eq(0).show();
-            // search forms
-            $('#form_search').keyup(form_search);
-            // select and show form groups
-            $('.select-form-group').on('change', function () {
-                // clear search input
-                $('#form_search').val('')/* .trigger('change') */;
-                // if all show everything or just the selected group
-                if ($(this).val() == 'all') {
-                    $('.form-group-div, .list-group-header, .form-name').show();
-                } else {
-                    $('.list-group-header, .form-name').show();
-                    $('.form-group-div').hide();
-                    $('[data-form-group-id="' + $(this).val() + '"]').show();
-                }
-            });
 
+            // search forms
+            $('.form-search').on('keyup', form_search);
 
             // delete checklist items
             $('.delete-checklist-item-button').on('click', delete_checklist_item);
@@ -382,12 +374,33 @@ if (document.URL.match(/checklists/)) {
 
             sortable_checklist_items();
             forms_status();
-            form_elements();
+            select_refresh();
+
+            show_form_group();
+
 
         })
         .catch(function (error) {
 
         });
+    }
+
+    function show_form_group() {
+
+        let parent = $('.forms-container');
+        let select = parent.find('.select-form-group');
+        // clear search input
+        parent.find('.form-search').val('');
+
+        // if all show everything or just the selected group
+        if (select.val() == 'all') {
+            parent.find('.form-group-div, .list-group-header, .form-name').show();
+        } else {
+            parent.find('.list-group-header, .form-name').show();
+            parent.find('.form-group-div').hide();
+            parent.find('[data-form-group-id="' + select.val() + '"]').show();
+        }
+
     }
 
     function save_checklist_items() {

@@ -59,6 +59,7 @@ if (document.URL.match(/transaction_details/)) {
                 .then(function (response) {
                     let data = response.data;
                     $('.search-results').html('');
+                    $('.search-results-container').show();
                     $.each(data, function (k, agents) {
                         if (agents.length > 0) {
                             $.each(agents, function (k, agent) {
@@ -114,7 +115,11 @@ if (document.URL.match(/transaction_details/)) {
 
         $('#agent_search').on('keyup', search_bright_agents);
 
-
+        // open tabs from url parameters
+        let tab = global_get_url_parameters('tab');
+        if(tab == 'commission') {
+            $('#open_commission_tab').trigger('click');
+        }
 
 
     });
@@ -645,14 +650,9 @@ if (document.URL.match(/transaction_details/)) {
                     $(document).on('click', '.import-contact-button', function () {
                         show_import_modal($(this).data('ele'));
                     });
-                    let contacts_table = $('#contacts_table').DataTable({
-                        "aaSorting": [],
-                        columnDefs: [{
-                            orderable: false,
-                            targets: 0
-                        }],
-                        bAutoWidth: true
-                    });
+
+                    let contacts_table = data_table($('#contacts_table'), [1, 'desc'], [0], false, true, true, true);
+
 
 
 
@@ -660,11 +660,11 @@ if (document.URL.match(/transaction_details/)) {
                     //$('.save-member-div').off('click').on('click', '.save-member-button', save_add_member);
                     $('.delete-member-button').off('click').on('click', confirm_delete_member);
 
-                    setTimeout(function () {
+                    /* setTimeout(function () {
                         show_hide_fields();
                         $('.member-type-id').on('change', show_hide_fields);
                         $('.bank-trust').on('click', show_bank_trust);
-                    }, 1000);
+                    }, 200); */
 
                     $('a[data-toggle="list"]').on('shown.bs.tab', function (e) {
                         show_hide_fields();
@@ -823,9 +823,9 @@ if (document.URL.match(/transaction_details/)) {
                     save_commission('no');
 
                     show_title();
-                    $('#using_heritage').on('change', function() {
+                    /* $('#using_heritage').on('change', function() {
                         show_title();
-                    });
+                    }); */
 
                     $('.add-check-in-button').off('click').on('click', show_add_check_in);
                     $('.add-check-out-button').off('click').on('click', show_add_check_out);

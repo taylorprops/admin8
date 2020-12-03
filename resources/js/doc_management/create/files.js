@@ -9,7 +9,7 @@ if (document.URL.match(/create\/upload\/files/)) {
     function init() {
         // get forms for each form group
         let data_count = $('.forms-data').length;
-        global_loading_on('', '<div class="h3 text-white">Loading...</div>');
+        //global_loading_on('', '<div class="h3 text-white">Loading...</div>');
 
         // load first form group
         let form_group = $('.forms-data').eq(0);
@@ -26,7 +26,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
     function get_forms(form_group_id, state, order=null) {
 
-        global_loading_on('', '<div class="h3 text-white">Loading...</div>');
+        //global_loading_on('', '<div class="h3 text-white">Loading...</div>');
 
         let form_group = $('#list_div_'+form_group_id+'_files');
         let options = {
@@ -57,7 +57,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
                 //$('.add-non-form-item-button').hide();
 
-                global_loading_off();
+                //global_loading_off();
 
                 form_elements();
 
@@ -762,7 +762,7 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         setTimeout(function () {
 
-            $('#file_upload').off('change').on('change', function () {
+            $(document).on('change', '#file_upload', function () {
 
                 if($(this).val() != '') {
 

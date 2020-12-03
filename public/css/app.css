@@ -1585,6 +1585,10 @@ a.ui-button:active,
   color: #7a7979;
 }
 
+.text-gray-dark {
+  color: #5d5a5a;
+}
+
 a.text-orange:hover {
   color: #943d31;
 }
@@ -13097,6 +13101,22 @@ ul {
   max-width: 600px !important;
 }
 
+.wp-75 {
+  width: 75px;
+}
+
+.wp-80 {
+  width: 80px;
+}
+
+.wp-100 {
+  width: 100px;
+}
+
+.wp-125 {
+  width: 125px;
+}
+
 .uppercase {
   text-transform: uppercase;
 }
@@ -13302,16 +13322,29 @@ body.modal-open {
   text-transform: uppercase;
 }
 
+.dropdown-menu {
+  padding: 0.6rem !important;
+}
+
 .dropdown-item {
   margin-top: 5px;
   padding: 0.4rem;
+  color: #4c9bdb;
+}
+
+.dropdown-item i {
+  color: #4c9bdb;
 }
 
 .dropdown-item:hover {
-  color: #fff !important;
-  background: #4c9bdb;
+  color: #4c9bdb;
+  background: #f8fcff;
   border-radius: 5px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.dropdown-item:hover i {
+  color: #4c9bdb;
 }
 
 .list-group-item-action:not(.active):hover {
@@ -13343,7 +13376,7 @@ body.modal-open {
 }
 
 .badge-pill {
-  padding: 0.45em 0.55em 0.32rem 0.55em !important;
+  padding: 0.45em 0.55em 0.32rem 0.55em;
 }
 
 .border-2 {
@@ -13393,15 +13426,17 @@ body.modal-open {
   }
 }
 
-/* .popover {
-    max-width: 400px;
+.popover {
+  left: 3px !important;
 }
 
 .popover-header {
-    background-color: $orange;
-    border-bottom: none;
-    color: white;
+  background-color: #f8e5e3;
+  border-bottom: none;
+  color: #df7935;
 }
+
+/*
 
 .popover-body {
     //font-size: 1rem;
@@ -13893,8 +13928,13 @@ body.modal-open {
   color: #b9b5b5;
   white-space: nowrap;
   transition: all 0.1s;
-  cursor: pointer;
   z-index: 1;
+}
+
+.form-ele .form-input-label:not(:disabled),
+.form-ele .form-textarea-label:not(:disabled),
+.form-ele .form-select-label:not(:disabled) {
+  cursor: pointer;
 }
 
 .form-ele .form-input-label.form-small,
@@ -13963,6 +14003,10 @@ body.modal-open {
   width: 100%;
   border-top: none;
   z-index: 2000;
+}
+
+.form-ele .form-select-dropdown.active {
+  display: block;
 }
 
 .form-ele .form-select-save-div {
@@ -15536,10 +15580,9 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   top: -70px;
   width: auto;
   background: transparent;
-}
-
-.page-add-fields .field-div .field-options-holder .close-field-options {
-  background: rgba(255, 255, 255, 0.9);
+  /* .close-field-options {
+      background: rgba(255, 255, 255, 0.9);
+  } */
 }
 
 .page-add-fields .field-div .btn-group .btn:not(button) {
@@ -15784,8 +15827,8 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .page-checklists .bg-orange-sortable-big {
   border: 2px dashed #df7935;
-  height: 60px !important;
-  padding: 20px !important;
+  height: 40px !important;
+  padding: 5px !important;
 }
 
 .page-checklists .modal-xl {
@@ -16144,37 +16187,6 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   display: none;
 }
 
-.page-transaction-details #agent_search_div {
-  background: rgba(76, 155, 219, 0.1);
-}
-
-.page-transaction-details #agent_search {
-  max-width: 300px;
-}
-
-.page-transaction-details .search-results-container {
-  position: relative;
-}
-
-.page-transaction-details .search-results {
-  display: none;
-  position: absolute;
-  top: -10px;
-  left: 0;
-  max-height: 400px;
-  overflow: auto;
-  font-size: 0.9em;
-  z-index: 5000;
-}
-
-.page-transaction-details .search-result {
-  cursor: pointer;
-}
-
-.page-transaction-details .search-result:hover {
-  color: #df7935;
-}
-
 .page-transaction-details .get-members-tabs {
   border: none;
 }
@@ -16310,7 +16322,6 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 }
 
 .page-transaction-details .add-buttons-div {
-  float: right;
   /* .btn-block {
       padding-right: 1.5rem;
   } */
@@ -16398,11 +16409,6 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   font-size: 0.8rem;
 }
 
-.page-transaction-details .buyer-agent-details,
-.page-transaction-details .our-agent-div {
-  display: none;
-}
-
 .page-transaction-details .agent-info-container {
   position: relative;
 }
@@ -16487,6 +16493,10 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
   .page-transaction-details label.btn input[type=checkbox] + label {
     padding-left: 25px;
   }
+
+  .page-transaction-details .button-text {
+    display: none;
+  }
 }
 
 @media (max-width: 576px) {
@@ -16551,6 +16561,42 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
     margin-left: 0.1rem;
     margin-right: 0.1rem;
   }
+}
+
+.buyer-agent-details,
+.our-agent-div {
+  display: none;
+}
+
+#agent_search_div {
+  background: rgba(76, 155, 219, 0.1);
+}
+
+#agent_search {
+  max-width: 300px;
+}
+
+.search-results-container {
+  display: none;
+  position: relative;
+}
+
+.search-results {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  max-height: 400px;
+  overflow: auto;
+  font-size: 0.9em;
+  z-index: 5000;
+}
+
+.search-result {
+  cursor: pointer;
+}
+
+.search-result:hover {
+  color: #df7935;
 }
 
 .commission-container .popout-div {
@@ -16871,6 +16917,10 @@ header .dropdown-menu .dropdown .dropdown-menu.left {
 
 .page-fill-fields .btn-group {
   z-index: 500;
+}
+
+.page-fill-fields input[type=checkbox] {
+  display: none;
 }
 
 .page-fill-fields .file-viewer-container {

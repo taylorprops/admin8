@@ -156,8 +156,11 @@
         color: #b9b5b5;
         white-space: nowrap;
         transition: all .1s;
-        cursor: pointer;
         z-index: 1;
+
+        &:not(:disabled) {
+            cursor: pointer;
+        }
 
         &.form-small {
             top: 4px !important;
@@ -220,6 +223,9 @@
         width: 100%;
         border-top: none;
         z-index: 2000;
+    }
+    .form-select-dropdown.active {
+        display: block;
     }
     .form-select-save-div {
         background: $blue-light;

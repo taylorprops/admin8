@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-5"></div>
                     <div class="col-7">
-                        <div class="h5 text-orange mb-2 mt-3 w-100 border-bottom">Commission Details</div>
+                        <div class="h5 text-orange mb-2 mt-3 w-100 border-bottom">@if($type == 'referral') Receiving Agent @else Commission @endif Details </div>
                     </div>
                 </div>
 
@@ -139,6 +139,30 @@
                         </div>
 
                     </div>
+
+                @elseif($type == 'referral')
+
+                <div class="row">
+                    <div class="col-5"></div>
+                    <div class="col-7">
+                        <div class="text-gray-dark font-weight-bold">Office</div>
+                        <div class="text-gray">
+                            <strong>{{ $property -> ReceivingAgentOfficeName }}</strong><br>
+                            {{ $property -> ReceivingAgentOfficeStreet }}<br>
+                            {{ $property -> ReceivingAgentOfficeCity }}, {{ $property -> ReceivingAgentOfficeState }} {{ $property -> ReceivingAgentOfficeZip }}<br>
+                            {{ format_phone($property -> ReceivingAgentOfficePhone) }}
+                        </div>
+
+                        <div class="text-gray-dark font-weight-bold mt-3">Agent</div>
+                        <div class="text-gray">
+                            <strong>{{ $property -> ReceivingAgentFirstName }} {{ $property -> ReceivingAgentLastName }}</strong><br>
+                            {{ format_phone($property -> ReceivingAgentPreferredPhone) }}<br>
+                            <a href="mailto:{{ $property -> ReceivingAgentEmail }}">{{ $property -> ReceivingAgentEmail }}</a>
+                        </div>
+                    </div>
+                </div>
+
+
 
                 @else
 
@@ -590,7 +614,7 @@
 
                                     <div class="col-12 col-md-6">
 
-                                        @if($type == 'sale')
+                                        @if($type == 'sale' || $type == 'referral')
                                             <div class="d-flex justify-content-between">
                                                 <div>Admin Fee Amount</div>
                                                 <div>${{ $for_sale ? $agent_details -> admin_fee : $agent_details -> admin_fee_rentals }}</div>
@@ -789,7 +813,7 @@
                                                 <div class="row">
 
                                                     <div class="col-12">
-                                                        @if($type == 'sale')
+                                                        @if($type == 'sale' || $type == 'referral')
                                                             <div class="d-flex justify-content-between">
                                                                 <div>Admin Fee Amount</div>
                                                                 <div>${{ $for_sale ? $agent_details -> admin_fee : $agent_details -> admin_fee_rentals }}</div>

@@ -166,8 +166,8 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12 text-center mt-3 mb-5">
-                            <a href="javascript: void(0)" class="btn btn-lg btn-success" id="save_details_button"><i class="fa fa-save mr-2"></i> Save Details</a>
+                        <div class="col-12 text-center mt-5 mb-5">
+                            <a href="javascript: void(0)" class="btn btn-lg btn-success py-3 px-5" id="save_details_button"> Continue <i class="fa fa-arrow-circle-right ml-2"></i></a>
                         </div>
                     </div>
 

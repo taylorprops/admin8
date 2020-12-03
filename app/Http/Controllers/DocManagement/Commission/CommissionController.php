@@ -19,7 +19,7 @@ class CommissionController extends Controller
     public function commission(Request $request) {
 
         // pending - where checks in and checks out = 0 - where checks in more than checks out
-        $agents = Agents::select('id', 'first_name', 'last_name', 'llc_name') -> where('active', 'yes') -> orderBy('last_name') -> get();
+        $agents = Agents::select('id', 'first_name', 'last_name', 'full_name', 'llc_name') -> where('active', 'yes') -> orderBy('last_name') -> get();
         $states = LocationData::AllStates();
         $type = 'sale';
 
@@ -27,19 +27,45 @@ class CommissionController extends Controller
 
     }
 
+    public function get_commissions_pending(Request $request) {
+
+        $select = ['id', 'commission_type','Agent_ID', 'Contract_ID', 'Referral_ID', 'close_date', 'total_left'];
+        $commission_contracts = Commission::select($select)
+            -> where('total_left', '>', '0')
+            -> where('Contract_ID', '>', '0')
+            -> with('property_contract:Contract_ID,FullStreetAddress,City,StateOrProvince,PostalCode,created_at')
+            -> with('agent:id,first_name,last_name,full_name')
+            -> get();
+
+        $commission_referrals = Commission::select($select)
+            -> where('total_left', '>', '0')
+            -> where('Referral_ID', '>', '0')
+            -> with('property_referral:Referral_ID,FullStreetAddress,City,StateOrProvince,PostalCode,ClientFirstName,ClientLastName,created_at')
+            -> with('agent:id,first_name,last_name,full_name')
+            -> get();
+
+        $commissions = $commission_contracts -> merge($commission_referrals);
+
+        return view('/doc_management/commission/get_commissions_pending_html', compact('commissions'));
+
+    }
+
     public function get_checks_queue(Request $request) {
 
         $checks = CommissionChecksInQueue::whereNull('Commission_ID')
             -> where('exported', 'no')
-            -> with('agent:id,first_name,last_name') -> get();
+            -> with('agent:id,first_name,last_name,full_name')
+            -> orderBy('created_at', 'DESC')
+            -> get();
 
         $checks_other = Commission::where('commission_type', 'other')
             -> where(function($q) {
                 $q -> whereNull('total_left')
                 -> orWhere('total_left', '>', '0');
             })
-            -> with('agent:id,first_name,last_name')
+            -> with('agent:id,first_name,last_name,full_name')
             -> with('other_checks')
+            -> orderBy('created_at', 'DESC')
             -> get();
 
         return view('/doc_management/commission/get_checks_html', compact('checks', 'checks_other'));
@@ -78,7 +104,7 @@ class CommissionController extends Controller
 
         $commission = Commission::find($Commission_ID);
         $Agent_ID = $commission['Agent_ID'];
-        $agents = Agents::select('id', 'first_name', 'last_name', 'llc_name') -> where('active', 'yes') -> orderBy('last_name') -> get();
+        $agents = Agents::select('id', 'first_name', 'last_name', 'full_name', 'llc_name') -> where('active', 'yes') -> orderBy('last_name') -> get();
         $states = LocationData::AllStates();
         $type = 'other';
 
@@ -93,7 +119,7 @@ class CommissionController extends Controller
         $commission_percentages = Agents::select('commission_percent') -> groupBy('commission_percent') -> pluck('commission_percent');
         $teams = new AgentsTeams();
         $agent_notes = AgentsNotes::where('Agent_ID', $commission -> Agent_ID) -> get();
-        $agents = Agents::select('id', 'first_name', 'last_name', 'llc_name') -> where('active', 'yes') -> orderBy('last_name') -> get();
+        $agents = Agents::select('id', 'first_name', 'last_name', 'full_name', 'llc_name') -> where('active', 'yes') -> orderBy('last_name') -> get();
         $states = LocationData::AllStates();
 
         $agent_details = Agents::find($commission -> Agent_ID);
@@ -132,7 +158,7 @@ class CommissionController extends Controller
         $agent_name = '';
         if($request -> edit_queue_check_agent_id) {
             $agent = Agents::find($request -> edit_queue_check_agent_id);
-            $agent_name = $agent -> first_name . ' ' . $agent -> last_name;
+            $agent_name = $agent -> full_name;
         }
 
         $check -> check_date = $request -> edit_queue_check_date;

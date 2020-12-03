@@ -375,7 +375,7 @@ class UploadController extends Controller {
         }
         fclose($fn);
 
-        $titles = [];
+        $titles = [$upload -> getClientOriginalName()];
         foreach($lines as $line) {
             // clean lines
             $line = trim(urldecode($line));
@@ -488,7 +488,7 @@ class UploadController extends Controller {
             exec('rm '.$storage_path.'/'.$storage_dir_pages.'/doc_data.txt');
 
             // add individual images to images directory
-            $create_images = exec('convert -density 300 -gaussian-blur 0.05 -quality 80% '.$input_file.' -background white -alpha remove -strip '.$output_images, $output, $return);
+            $create_images = exec('convert -density 300 -gaussian-blur 0.05 -quality 80% -resize 1200 '.$input_file.' -background white -alpha remove -strip '.$output_images, $output, $return);
 
             // get all image files images_storage_path to use as file location
             $saved_images_directory = Storage::files('public/'.$storage_dir.'/images');

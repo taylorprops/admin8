@@ -1,17 +1,23 @@
-<div class="row">
+<div class="row mt-5">
     <div class="col-12">
-        <h4 class="text-orange">Commission Checks Queue</h4>
+
+        <div class="d-flex justify-content-start">
+            <div class="mr-2">
+                <h4 class="text-orange">Commission Checks Queue</h4>
+            </div>
+            <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Commission Checks" data-content="These are checks for commissions paid on Sales Contracts, Lease Agreements and Referral Agreements.<br><br>Checks in this list are waiting for a property to be added to the system. Once the property has been added you can easily import this check by adding a check in the Commission tab."><i class="fad fa-question-circle ml-2"></i></a>
+        </div>
         <table class="table table-bordered table-sm checks-queue-table">
             <thead>
                 <tr>
-                    <th></th>
+                    <th class="wp-80"></th>
                     <th>Received</th>
                     <th>Agent</th>
                     <th>Property Address</th>
                     <th>Check #</th>
                     <th>Check Date</th>
                     <th>Amount</th>
-                    <th></th>
+                    <th class="wp-80"></th>
                 </tr>
             </thead>
             <tbody>
@@ -35,12 +41,12 @@
                                     <i class="fal fa-edit mr-2"></i> Edit
                                 </a>
                             </td>
-                            <td>{{ $check -> date_received }}</td>
+                            <td class="text-center">{{ $check -> date_received }}</td>
                             <td>@if($check -> agent){{ $check -> agent -> first_name.' '.$check -> agent -> last_name }}@endif</td>
                             <td>{{ $check -> street.' '.$check -> city.', '.$check -> state.' '.$check -> zip }}</td>
-                            <td>{{ $check -> check_number }}</td>
-                            <td>{{ $check -> check_date }}</td>
-                            <td>${{ number_format($check -> check_amount, 2) }}</td>
+                            <td class="text-right">{{ $check -> check_number }}</td>
+                            <td class="text-center">{{ $check -> check_date }}</td>
+                            <td class="text-right">${{ number_format($check -> check_amount, 2) }}</td>
                             <td><a href="javascript: void(0)" class="btn btn-danger btn-sm btn-block m-0 delete-check-button" data-check-id="{{ $check -> id }}" data-type="sale"><i class="fal fa-times mr-2"></i> Delete</a></td>
                         </tr>
                     @endif
@@ -54,11 +60,17 @@
 
 <div class="row mt-5">
     <div class="col-12">
-        <h4 class="text-orange">BPO, Agent Fee and Other Checks Queue</h4>
+
+        <div class="d-flex justify-content-start">
+            <div class="mr-2">
+                <h4 class="text-orange">BPO, Agent Fee and Other Checks Queue</h4>
+            </div>
+            <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Other Checks" data-content="These are checks for anything not involving commission for a property that was for sale or lease.<br><br>Once the Agent has been added an option to open the Commission Breakdown will be available.<br><br>Once the checks out have been written and the remainder of this check is $0, it will no longer appear in this list."><i class="fad fa-question-circle ml-2"></i></a>
+        </div>
         <table class="table table-bordered table-sm checks-queue-table">
             <thead>
                 <tr>
-                    <th></th>
+                    <th class="wp-100"></th>
                     <th>Received</th>
                     <th>Agent</th>
                     <th>Client</th>
@@ -66,7 +78,7 @@
                     <th>Check #</th>
                     <th>Check Date</th>
                     <th>Amount</th>
-                    <th></th>
+                    <th class="wp-80"></th>
                 </tr>
             </thead>
             <tbody>
@@ -97,7 +109,7 @@
                                     </a>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     @foreach($check_other -> other_checks as $other_check)
                                         {{ $other_check -> date_received }}
                                         @if(!$loop -> last) <br> @endif
@@ -116,19 +128,19 @@
                                         @if(!$loop -> last) <br> @endif
                                     @endforeach
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     @foreach($check_other -> other_checks as $other_check)
                                         {{ $other_check -> check_number }}
                                         @if(!$loop -> last) <br> @endif
                                     @endforeach
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     @foreach($check_other -> other_checks as $other_check)
                                         {{ $other_check -> check_date }}
                                         @if(!$loop -> last) <br> @endif
                                     @endforeach
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     @foreach($check_other -> other_checks as $other_check)
                                         ${{ number_format($other_check -> check_amount, 2) }}
                                         @if(!$loop -> last) <br> @endif

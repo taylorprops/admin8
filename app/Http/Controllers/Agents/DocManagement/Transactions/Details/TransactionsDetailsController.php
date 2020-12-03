@@ -755,9 +755,21 @@ class TransactionsDetailsController extends Controller {
             if($c == 0) {
                 $property -> SellerOneFirstName = $seller -> first_name;
                 $property -> SellerOneLastName = $seller -> last_name;
+                $property -> SellerOneEmail = $seller -> email;
+                $property -> SellerOneCellPhone = $seller -> cell_phone;
+                $property -> SellerOneFullStreetAddress = $seller -> address_home_street;
+                $property -> SellerOneCity = $seller -> address_home_city;
+                $property -> SellerOneStateOrProvince = $seller -> address_home_state;
+                $property -> SellerOnePostalCode = $seller -> address_home_zip;
             } else if($c == 1) {
                 $property -> SellerTwoFirstName = $seller -> first_name;
                 $property -> SellerTwoLastName = $seller -> last_name;
+                $property -> SellerTwoEmail = $seller -> email;
+                $property -> SellerTwoCellPhone = $seller -> cell_phone;
+                $property -> SellerTwoFullStreetAddress = $seller -> address_home_street;
+                $property -> SellerTwoCity = $seller -> address_home_city;
+                $property -> SellerTwoStateOrProvince = $seller -> address_home_state;
+                $property -> SellerTwoPostalCode = $seller -> address_home_zip;
             }
             $c += 1;
         }
@@ -770,9 +782,21 @@ class TransactionsDetailsController extends Controller {
             if($c == 0) {
                 $property -> BuyerOneFirstName = $buyer -> first_name;
                 $property -> BuyerOneLastName = $buyer -> last_name;
+                $property -> BuyerOneEmail = $buyer -> email;
+                $property -> BuyerOneCellPhone = $buyer -> cell_phone;
+                $property -> BuyerOneFullStreetAddress = $buyer -> address_home_street;
+                $property -> BuyerOneCity = $buyer -> address_home_city;
+                $property -> BuyerOneStateOrProvince = $buyer -> address_home_state;
+                $property -> BuyerOnePostalCode = $buyer -> address_home_zip;
             } else if($c == 1) {
                 $property -> BuyerTwoFirstName = $buyer -> first_name;
                 $property -> BuyerTwoLastName = $buyer -> last_name;
+                $property -> BuyerTwoEmail = $buyer -> email;
+                $property -> BuyerTwoCellPhone = $buyer -> cell_phone;
+                $property -> BuyerTwoFullStreetAddress = $buyer -> address_home_street;
+                $property -> BuyerTwoCity = $buyer -> address_home_city;
+                $property -> BuyerTwoStateOrProvince = $buyer -> address_home_state;
+                $property -> BuyerTwoPostalCode = $buyer -> address_home_zip;
             }
             $c += 1;
         }
@@ -782,9 +806,13 @@ class TransactionsDetailsController extends Controller {
         if($buyer_agent) {
             $property -> BuyerAgentFirstName = $buyer_agent -> first_name;
             $property -> BuyerAgentLastName = $buyer_agent -> last_name;
-            $property -> BuyerOfficeName = $buyer_agent -> company;
             $property -> BuyerAgentEmail = $buyer_agent -> email;
             $property -> BuyerAgentPreferredPhone = $buyer_agent -> cell_phone;
+            $property -> BuyerOfficeName = $buyer_agent -> company;
+            $property -> BuyerOfficeFullStreetAddress = $buyer_agent -> address_office_street;
+            $property -> BuyerOfficeCity = $buyer_agent -> address_office_city;
+            $property -> BuyerOfficeStateOrProvince = $buyer_agent -> address_office_state;
+            $property -> BuyerOfficePostalCode = $buyer_agent -> address_office_zip;
         }
 
         $list_agent = Members::where($field, $id) -> where('member_type_id', ResourceItems::ListingAgentResourceId()) -> first();
@@ -792,9 +820,13 @@ class TransactionsDetailsController extends Controller {
         if($list_agent) {
             $property -> ListAgentFirstName = $list_agent -> first_name;
             $property -> ListAgentLastName = $list_agent -> last_name;
-            $property -> ListOfficeName = $list_agent -> company;
             $property -> ListAgentEmail = $list_agent -> email;
             $property -> ListAgentPreferredPhone = $list_agent -> cell_phone;
+            $property -> ListOfficeName = $list_agent -> company;
+            $property -> ListOfficeFullStreetAddress = $list_agent -> address_office_street;
+            $property -> ListOfficeCity = $list_agent -> address_office_city;
+            $property -> ListOfficeStateOrProvince = $list_agent -> address_office_state;
+            $property -> ListOfficePostalCode = $list_agent -> address_office_zip;
         }
 
         $property -> save();
@@ -2474,17 +2506,17 @@ class TransactionsDetailsController extends Controller {
             $property = Contracts::find($commission -> Contract_ID);
             $rep_both_sides = $property -> Listing_ID > 0 ? 'yes' : null;
             $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? 'yes' : null;
+            $type = 'sale';
 
         } else if($commission -> Referral_ID > 0) {
             $property = Referrals::find($commission -> Referral_ID);
             $rep_both_sides = null;
             $for_sale = null;
+            $type = 'referral';
         }
 
         $commission_percentages = Agents::select('commission_percent') -> groupBy('commission_percent') -> pluck('commission_percent');
         $agents = Agents::select('id', 'first_name', 'last_name', 'llc_name') -> where('active', 'yes') -> orderBy('last_name') -> get();
-
-        $type = 'sale';
 
         return view('/agents/doc_management/transactions/details/data/get_commission', compact('commission', 'agent_details', 'property', 'rep_both_sides', 'for_sale', 'commission_percentages', 'agents', 'type'));
     }

@@ -1,12 +1,9 @@
 <div class="p-1 p-md-4 documents-container">
 
     <div class="row mb-3 mb-sm-2 mb-md-1">
-        <div class="col-12 col-sm-5">
-            <div class="h4 text-primary ml-3 mt-2 mb-3"><i class="fad fa-copy mr-2"></i> Documents</div>
-        </div>
-        <div class="col-12 col-sm-7">
-            <div class="add-buttons-div">
-                <div class="d-flex justify-content-start align-items-center">
+        <div class="col-12">
+            <div class="add-buttons-div mb-3">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <a class="btn btn-sm btn-primary" data-toggle="collapse" href="#add_documents_div" aria-expanded="false" aria-controls="add_documents_div"><i class="fa fa-plus mr-2"></i> Add Documents </a>
                     </div>
@@ -78,12 +75,12 @@
             <div class="h5 text-orange d-none d-md-block">Bulk Options</div>
             <div class="d-flex justify-content-between justify-content-xl-start">
 
-                <button type="button" class="btn btn-sm btn-primary rounded-pill add-to-checklist-button" title="Assign To Checklist" data-toggle="tooltip" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-tasks mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Assign To Checklist</span></button>
+                <button type="button" class="btn btn-sm btn-primary rounded-pill add-to-checklist-button" title="Assign To Checklist" data-toggle="tooltip" data-checklist-id="{{ $checklist_id }}"><i class="fad fa-tasks mr-0 mr-md-2 add-to-checklist-button"></i><span class="button-text add-to-checklist-button"> Assign To Checklist</span></button>
 
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="sign_documents_button" title="Get Signed" data-toggle="tooltip"><i class="fad fa-signature mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Get Signed</span></button>
+                <button type="button" class="btn btn-sm btn-primary rounded-pill sign-documents-button" title="Get Signed" data-toggle="tooltip"><i class="fad fa-signature mr-0 mr-md-2 sign-documents-button"></i><span class="button-text sign-documents-button"> Get Signed</span></button>
 
                 <div class="dropright" title="Print Documents">
-                    <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-envelope mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Email</span></button>
+                    <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-envelope mr-0 mr-md-2"></i><span class="button-text"> Email</span></button>
                     <div class="dropdown-menu">
                         <a class="text-primary dropdown-item docs-email-button" data-docs-type="merged" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> As One Document</a>
                         <a class="text-primary dropdown-item docs-email-button" data-docs-type="single" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> As Individual Documents</a>
@@ -91,24 +88,24 @@
                 </div>
 
                 <div class="dropright" title="Print Documents">
-                    <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-print mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Print</span></button>
+                    <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-print mr-0 mr-md-2"></i><span class="button-text"> Print</span></button>
                     <div class="dropdown-menu">
-                        <a class="text-primary dropdown-item docs-print-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Print Filled</a>
-                        <a class="text-primary dropdown-item docs-print-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Print Blank</a>
+                        <a class="text-primary dropdown-item docs-print-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg docs-print-button" data-type="filled"></i> Print Filled</a>
+                        <a class="text-primary dropdown-item docs-print-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg docs-print-button" data-type="blank"></i> Print Blank</a>
                     </div>
                 </div>
 
                 <div class="dropright" title="Download Documents">
-                    <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-download mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Download</span></button>
+                    <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-download mr-0 mr-md-2"></i><span class="button-text"> Download</span></button>
                     <div class="dropdown-menu">
-                        <a class="text-primary dropdown-item docs-download-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg"></i> Download Filled</a>
-                        <a class="text-primary dropdown-item docs-download-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg"></i> Download Blank</a>
+                        <a class="text-primary dropdown-item docs-download-button" data-type="filled" href="javascript: void(0)"><i class="fad fa-file-alt mr-2 fa-lg docs-download-button" data-type="filled"></i> Download Filled</a>
+                        <a class="text-primary dropdown-item docs-download-button" data-type="blank" href="javascript: void(0)"><i class="fal fa-file mr-2 fa-lg docs-download-button" data-type="blank"></i> Download Blank</a>
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="move_documents_button" title="Move Documents" data-toggle="tooltip"><i class="fad fa-exchange mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Move</span></button>
+                <button type="button" class="btn btn-sm btn-primary rounded-pill move-documents-button" title="Move Documents" data-toggle="tooltip"><i class="fad fa-exchange mr-0 mr-md-2 move-documents-button"></i><span class="button-text move-documents-button"> Move</span></button>
 
-                <button type="button" class="btn btn-sm btn-danger rounded-pill" id="delete_documents_button" title="Move Documents To Trash" data-toggle="tooltip"><i class="fad fa-trash mr-0 mr-md-2"></i><span class="d-none d-md-inline-block"> Trash</span></button>
+                <button type="button" class="btn btn-sm btn-danger rounded-pill delete-documents-button"  title="Move Documents To Trash" data-toggle="tooltip"><i class="fad fa-trash mr-0 mr-md-2 delete-documents-button"></i><span class="button-text delete-documents-button"> Trash</span></button>
             </div>
         </div>
     </div>
@@ -153,7 +150,7 @@
                     </div>
                     <div class="h5 mt-2">
                         <a class="folder-collapse text-orange" data-toggle="collapse" href="#documents_folder_{{ $loop -> index }}" aria-expanded="false" aria-controls="documents_folder_{{ $loop -> index }}">
-                            <i class="fal @if($folder_name == 'Trash' || $show_folder == '') fa-angle-right @else fa-angle-down @endif fa-lg mr-3"></i>
+                            <i class="fal fa-angle-right fa-lg mr-3"></i>
                             <i class="fad fa-folder mr-1 mr-sm-3 fa-lg"></i>
                             {{ $folder_name }}
                         </a>
@@ -162,7 +159,7 @@
                 </div>
                 @if($deletable_folder && $documents -> where('folder', $folder -> id) -> where('assigned', 'yes') -> count() == 0)
                 <div class="pt-1">
-                    <a href="javascript: void(0)" class="btn btn-sm btn-danger delete-folder-button" data-folder-id="{{ $folder -> id }}"><i class="fa fa-trash"></i> <span class="d-none d-sm-inline-block ml-2">Delete Folder</span></a>
+                    <a href="javascript: void(0)" class="btn btn-sm btn-danger delete-folder-button" data-folder-id="{{ $folder -> id }}"><i class="fa fa-trash"></i> <span class="d-none d-sm-inline-block ml-2 delete-folder-button" data-folder-id="{{ $folder -> id }}">Delete Folder</span></a>
                 </div>
                 @endif
             </div>
@@ -245,9 +242,9 @@
 
 
 
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
+                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0 doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
 
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
+                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0 doc-email-button" data-document-id="'.$document -> id.'"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
 
                                             $menu_options .= '
                                             <div class="dropdown-submenu">

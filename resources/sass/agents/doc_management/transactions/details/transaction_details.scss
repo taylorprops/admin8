@@ -86,32 +86,7 @@
     .soc-sec:first-of-type {
         display: none;
     }
-    // bright mls agent search
-    #agent_search_div {
-        background: rgba($blue, 0.1);
-    }
-    #agent_search {
-        max-width: 300px;
-    }
-    .search-results-container {
-        position: relative;
-    }
-    .search-results {
-        display: none;
-        position: absolute;
-        top: -10px;
-        left: 0;
-        max-height: 400px;
-        overflow: auto;
-        font-size: .9em;
-        z-index: 5000;
-    }
-    .search-result {
-        cursor: pointer;
-    }
-    .search-result:hover {
-        color: $orange;
-    }
+
     .get-members-tabs {
         border: none;
     }
@@ -254,7 +229,7 @@
     }
 
     .add-buttons-div {
-        float: right;
+        //float: right;
 
         /* .btn-block {
             padding-right: 1.5rem;
@@ -362,9 +337,7 @@
 
     }
 
-    .buyer-agent-details, .our-agent-div {
-        display: none;
-    }
+
 
 
 
@@ -453,6 +426,10 @@
             padding-left: 25px;
         }
 
+        .button-text {
+            display: none;
+        }
+
     }
 
 
@@ -529,6 +506,36 @@
         }
     }
 
+}
+
+// bright mls agent search
+.buyer-agent-details, .our-agent-div {
+    display: none;
+}
+#agent_search_div {
+    background: rgba($blue, 0.1);
+}
+#agent_search {
+    max-width: 300px;
+}
+.search-results-container {
+    display: none;
+    position: relative;
+}
+.search-results {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    max-height: 400px;
+    overflow: auto;
+    font-size: .9em;
+    z-index: 5000;
+}
+.search-result {
+    cursor: pointer;
+}
+.search-result:hover {
+    color: $orange;
 }
 
 .commission-container {

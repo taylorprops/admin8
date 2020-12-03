@@ -239,7 +239,7 @@
                                         <input type="text" class="custom-form-element form-input" id="ReceivingAgentOfficeName" name="ReceivingAgentOfficeName" value="{{ $other_agent_office }}" data-label="Office Name">
                                     </div>
                                     <div class="col-12 col-sm-6">
-                                        <input type="text" class="custom-form-element form-input phone" id="ReceivingAgentOfficPhone" name="ReceivingAgentOfficPhone" value="{{ $other_agent_office_phone }}" data-label="Office Phone">
+                                        <input type="text" class="custom-form-element form-input phone" id="ReceivingAgentOfficePhone" name="ReceivingAgentOfficePhone" value="{{ $other_agent_office_phone }}" data-label="Office Phone">
                                     </div>
                                 </div>
                                 <div class="row">

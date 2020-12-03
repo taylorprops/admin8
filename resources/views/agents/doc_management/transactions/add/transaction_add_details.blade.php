@@ -140,7 +140,7 @@
                                 <div class="row mt-5">
                                     <div class="col-12">
                                         <div class="d-flex justify-content-center w-100">
-                                            <button id="submit_details_form_button" class="waves-effect waves-light btn btn-lg btn-success">CONTINUE <i class="fad fa-chevron-double-right ml-2"></i></button>
+                                            <button id="submit_details_form_button" class="waves-effect waves-light btn btn-lg btn-success">Continue <i class="fa fa-arrow-circle-right ml-3"></i></button>
                                         </div>
                                     </div>
                                 </div>

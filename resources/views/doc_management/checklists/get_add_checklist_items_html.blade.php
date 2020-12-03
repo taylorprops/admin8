@@ -77,15 +77,15 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
 
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-4 forms-container">
 
         <h4 class="mb-3">Forms</h4>
 
         <div>
             <select class="custom-form-element form-select form-select-no-cancel form-select-no-search select-form-group mt-3" data-label="Select Form Group">
-                <option value="all">All</option>
+                <option value="all" selected>All</option>
                 @foreach($form_groups as $form_group)
-                <option value="{{ $form_group -> resource_id }}" @if($loop -> first) selected @endif>{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
+                <option value="{{ $form_group -> resource_id }}">{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
                 @endforeach
             </select>
         </div>
@@ -93,7 +93,7 @@ $location = $resource_items -> getLocation($checklist -> checklist_location_id);
         <div class="mt-3">
             <div class="d-flex justify-content-start">
                 <i class="fal fa-search text-primary mt-4 mr-3 fa-2x"></i>
-                <input type="text" class="custom-form-element form-input mr-5" id="form_search" data-label="Search">
+                <input type="text" class="custom-form-element form-input mr-5 form-search" data-label="Search">
             </div>
         </div>
 

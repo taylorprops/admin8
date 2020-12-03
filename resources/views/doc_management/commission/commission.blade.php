@@ -15,9 +15,15 @@
             <div class="col-12">
                 <div class="row">
                     <div class="col-12">
-                        <a class="btn btn-lg btn-success float-right" href="javascript: void(0)" id="add_check_button">
+                        <a class="btn btn-lg btn-success" href="javascript: void(0)" id="add_check_button">
                             Add Check <i class="fal fa-plus ml-2"></i>
                         </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="commissions-pending animate__animated animate__fadeIn"></div>
                     </div>
                 </div>
 

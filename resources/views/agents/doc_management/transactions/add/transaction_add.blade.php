@@ -51,7 +51,7 @@ if(auth() -> user() -> group == 'agent') {
                             </div>
                         </div>
                         <div class="address-search-continue-div text-center my-4 hide">
-                            <a class="btn btn-success btn-lg" id="address_search_continue" @if($transaction_type != 'referral') href=".property-container" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container" @else  href="javascript: void(0)" @endif>Continue <i class="fad fa-chevron-double-right ml-3"></i></a>
+                            <a class="btn btn-success btn-lg py-3 px-5" id="address_search_continue" @if($transaction_type != 'referral') href=".property-container" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container" @else  href="javascript: void(0)" @endif>Continue <i class="fa fa-arrow-circle-right ml-3"></i></a>
                         </div>
                         <div class="h5 text-center mt-4">
                             <a href=".address-container" id="enter_manually_button" class="btn btn-sm btn-secondary" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".address-container">Or Enter Manually</a>
@@ -113,8 +113,8 @@ if(auth() -> user() -> group == 'agent') {
                             </div>
                         </div>
                         <div class="address-enter-continue-div text-center my-4">
-                            <button id="address_enter_continue" class="btn btn-success btn-lg" type="button" @if($transaction_type != 'referral') data-toggle="collapse" data-target=".property-container" aria-expanded="false" aria-controls="address_search_container address_enter_container" @endif disabled>
-                                Continue <i class="fad fa-chevron-double-right ml-3"></i>
+                            <button id="address_enter_continue" class="btn btn-success btn-lg py-3 px-5" type="button" @if($transaction_type != 'referral') data-toggle="collapse" data-target=".property-container" aria-expanded="false" aria-controls="address_search_container address_enter_container" @endif disabled>
+                                Continue <i class="fa fa-arrow-circle-right ml-3"></i>
                             </button>
                         </div>
                     </form>
@@ -146,7 +146,7 @@ if(auth() -> user() -> group == 'agent') {
                         </div>
                     </div>
                     <div class="mls-search-continue-div text-center my-4">
-                        <a href=".property-container" class="btn btn-success btn-lg" id="mls_search_continue" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container">Continue <i class="fad fa-chevron-double-right ml-3"></i></a>
+                        <a href=".property-container" class="btn btn-success btn-lg" id="mls_search_continue" data-toggle="collapse" role="button" aria-expanded="false" aria-controls=".property-container">Continue <i class="fa fa-arrow-circle-right ml-3"></i></a>
                     </div>
                 </div>
                 <!-- end mls search container -->
@@ -155,7 +155,7 @@ if(auth() -> user() -> group == 'agent') {
 
             <div id="mls_match_container" class="property-container collapse mx-auto">
 
-                <a class="btn-floating btn-primary" data-toggle="collapse" href=".property-container" role="button" aria-expanded="false" aria-controls="#mls_match_container #address_container"><i class="fad fa-chevron-double-left"></i></a>
+                <a class="btn btn-floating btn-primary" data-toggle="collapse" href=".property-container" role="button" aria-expanded="false" aria-controls="#mls_match_container #address_container"><i class="fad fa-chevron-double-left"></i></a>
 
                 <div class="property-loading-div"></div>
 
@@ -280,7 +280,7 @@ if(auth() -> user() -> group == 'agent') {
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-around">
-                <a class="btn btn-success" id="save_add_agent_id_button"><i class="fad fa-check mr-2"></i> Save</a>
+                <a class="btn btn-success btn-lg" id="save_add_agent_id_button">Continue <i class="fa fa-arrow-circle-right ml-3"></i></a>
             </div>
         </div>
     </div>

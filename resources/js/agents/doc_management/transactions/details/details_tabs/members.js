@@ -1,7 +1,20 @@
 if (document.URL.match(/transaction_details/)) {
 
     $(function() {
-        $(document).on('click', '.save-member-button', save_add_member);
+        $(document).on('click', function(e) {
+            if(e.target.classList.contains('save-member-button')) {
+                save_add_member($(this));
+            } else if(e.target.classList.contains('bank-trust')) {
+                show_bank_trust();
+            }
+        });
+
+        $(document).on('change', function(e) {
+            if(e.target.classList.contains('member-type-id')) {
+                show_hide_fields();
+            }
+        });
+
     });
 
     window.show_hide_fields = function() {
@@ -62,8 +75,10 @@ if (document.URL.match(/transaction_details/)) {
         }
     }
 
-    window.save_add_member = function() {
-        let form = $(this).closest('.member-div');
+    window.save_add_member = function(ele) {
+        console.log('working');
+        let form = $('.member-div.active');
+        console.log(form.length);
         let validate = validate_form(form);
 
         if(validate == 'yes') {
@@ -166,11 +181,13 @@ if (document.URL.match(/transaction_details/)) {
                 }
             });
 
-            setTimeout(function() {
+            select_refresh();
+
+            /* setTimeout(function() {
                 $('.member-type-id').on('change', show_hide_fields);
                 $('.bank-trust').on('click', show_bank_trust);
-                form_elements();
-            }, 500);
+
+            }, 500); */
 
 
 

@@ -142,6 +142,8 @@ Route::middleware('admin') -> group(function () {
     /********* Commission ************/
     // commission
     Route::get('/doc_management/commission', 'DocManagement\Commission\CommissionController@commission');
+    // get commissions pending
+    Route::get('/doc_management/commission/get_commissions_pending', 'DocManagement\Commission\CommissionController@get_commissions_pending');
     // get checks queue to add to commission
     Route::get('/doc_management/commission/get_checks_queue', 'DocManagement\Commission\CommissionController@get_checks_queue');
     // search deleted checks
@@ -161,6 +163,9 @@ Route::middleware('admin') -> group(function () {
     Route::get('/form_elements', function() {
         return view('/tests/form_elements');
     });
+
+    // Test Controller
+    Route::get('/tests/test', 'TestController@test');
 
 
 });

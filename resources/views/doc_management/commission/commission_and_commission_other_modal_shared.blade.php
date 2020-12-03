@@ -392,7 +392,7 @@
                                 <select class="custom-form-element form-select" id="edit_queue_check_agent_id" name="edit_queue_check_agent_id" data-label="Agent">
                                     <option value=""></option>
                                     @foreach($agents as $agent)
-                                        <option value="{{ $agent -> id }}">{{ $agent -> first_name.' '.$agent -> last_name }}</option>
+                                        <option value="{{ $agent -> id }}">{{ $agent -> full_name }}</option>
                                     @endforeach
                                 </select>
                             </div>

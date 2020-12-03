@@ -210,7 +210,7 @@
             </div>
             <div class="modal-footer d-flex justify-content-around">
                 <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                <a class="btn btn-success" id="save_import_contact_button"><i class="fad fa-check mr-2"></i> Add Contact</a>
+                {{-- <a class="btn btn-success" id="save_import_contact_button"><i class="fad fa-check mr-2"></i> Add Contact</a> --}}
             </div>
         </div>
     </div>
@@ -274,7 +274,7 @@
                                             @if(!$loop -> first)
                                             <div class="col-1">
                                                 <div class="h-100 d-flex justify-content-end align-items-center">
-                                                    <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times"></i></button>
+                                                    <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times delete-address-button"></i></button>
                                                 </div>
                                             </div>
                                             @endif
@@ -939,7 +939,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-around">
                     <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times mr-2"></i> Cancel</a>
-                    <a class="btn btn-success" id="save_rename_document_button"><i class="fad fa-check mr-2"></i> Save</a>
+                    <a class="btn btn-success" id="save_rename_document_button" data-dismiss="modal"><i class="fad fa-check mr-2"></i> Save</a>
                 </div>
             </form>
         </div>

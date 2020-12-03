@@ -84,23 +84,14 @@ $(function() {
         handle: '.draggable-handle'
     });
 
-    /* let c = 0;
+
     let format_phone = setInterval(function() {
-        $('.phone').each(function() {
+        $('.phone').not('.formatted').each(function() {
             global_format_phone(this);
-            $(this).attr('maxlength', 14);
+            $(this).attr('maxlength', 14).addClass('formatted');
         });
-        c += 1;
-        if(c == 5) {
-            clearInterval(format_phone);
-        }
-    }, 1000); */
-    setTimeout(function() {
-        $('.phone').each(function() {
-            global_format_phone(this);
-            $(this).attr('maxlength', 14);
-        });
-    }, 1500);
+    }, 1000);
+
 
     $(document).on('keyup change', '.phone', function () {
         global_format_phone(this);
@@ -162,9 +153,10 @@ $(function() {
 
         let paging = '';
         let length = '';
+        datatable_settings.paging = false;
         if(show_paging == true) {
             paging = '<p>';
-            datatable_settings.paging = false;
+            datatable_settings.paging = true;
             length = '<l>';
         }
 

@@ -6,9 +6,9 @@
                 <div class="row">
                     <div class="col-12 col-sm-6">
                         <div class="d-flex justify-content-start align-items-center">
-                            <div class="h4 text-primary ml-3"><i class="fad fa-tasks mr-3"></i> {{ $checklist_type }} Checklist</div>
+                            <div class="font-14 text-primary ml-3"><i class="fad fa-tasks mr-3"></i> {{ $checklist_type }} Checklist</div>
                             @if(auth() -> user() -> group == 'admin')
-                            <div class="d-flex justify-content-start ml-4">
+                            <div class="ml-4">
                                 <button type="button" class="btn btn-sm btn-primary email-agent-button"><i class="fal fa-envelope mr-2"></i> Email Agent</button>
                             </div>
                             @endif

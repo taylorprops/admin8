@@ -14,6 +14,12 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/commission_
             save_commission('yes');
         });
 
+        $(document).on('change', '#using_heritage', function() {
+            show_title();
+        });
+
+
+
     });
 
     window.get_agent_details = function(Agent_ID) {
@@ -64,6 +70,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/commission_
     }
 
     window.show_title = function() {
+
         $('#title_company_row').hide();
         //$('#title_company').removeClass('required');
         if($('#using_heritage').val() == 'no') {

@@ -46,6 +46,7 @@ $danger-color: $red;
 $border-color: #dee2e6;
 
 $text-gray: #7a7979;
+$text-gray-dark: #5d5a5a;
 
 .text-primary-dark {
     color: $blue-dark;
@@ -67,6 +68,9 @@ $text-gray: #7a7979;
 }
 .text-gray {
     color: $text-gray;
+}
+.text-gray-dark {
+    color: $text-gray-dark;
 }
 a.text-orange:hover {
     color: $orange-dark;

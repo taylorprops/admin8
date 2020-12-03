@@ -13,9 +13,12 @@ if (document.URL.match(/commission/) || document.URL.match(/transaction_details/
             form_elements();
             global_format_money();
             get_check_info();
+            get_commissions_pending();
             get_checks();
-            show_fields();
+
+
             $('#add_check_button').off('click').on('click', function() {
+                show_fields();
                 $('#add_check_in_modal').modal('show');
                 $('#add_check_in_modal').on('hide.bs.modal', function() {
                     clear_add_check_form();
@@ -25,6 +28,8 @@ if (document.URL.match(/commission/) || document.URL.match(/transaction_details/
             $('#search_deleted_checks').on('keyup', search_deleted_checks);
             $(document).on('click', '.undo-delete-queue-check', undo_delete_queue_check);
 
+            $(document).on('click', '#save_edit_queue_check_button', save_edit_queue_check);
+
             data_table($('#deleted_checks_table'), [1, 'desc'], [0, 8], false, false, false, false);
 
         }
@@ -32,6 +37,25 @@ if (document.URL.match(/commission/) || document.URL.match(/transaction_details/
         $('#save_add_check_in_button').off('click').on('click', save_add_check_in);
 
     });
+
+    function get_commissions_pending() {
+
+        axios.get('/doc_management/commission/get_commissions_pending', {
+            headers: {
+                'Accept-Version': 1,
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(function (response) {
+
+            $('.commissions-pending').html(response.data);
+            data_table($('.commissions-pending-table').eq(0), [1, 'desc'], [0], true, true, true, true);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
 
     function get_checks() {
 
@@ -45,6 +69,7 @@ if (document.URL.match(/commission/) || document.URL.match(/transaction_details/
         .then(function (response) {
 
             $('.commission-checks-queue').html(response.data);
+
             data_table($('.checks-queue-table').eq(0), [1, 'desc'], [0, 7], true, true, true, true);
             data_table($('.checks-queue-table').eq(1), [1, 'desc'], [0, 8], true, true, true, true);
 
@@ -156,7 +181,7 @@ if (document.URL.match(/commission/) || document.URL.match(/transaction_details/
             $('.edit-queue-check-preview-div').html('<div class="border border-primary mt-2 check-preview"><img src="'+button.data('image-location')+'" class="w-100"></div>');
             $('#edit_queue_commission_id').val(button.data('commission-id'));
             $('#edit_queue_check_id').val(button.data('check-id'));
-            $('#edit_queue_check_agent_id').val(button.data('check-agent-id')).trigger('change');
+            $('#edit_queue_check_agent_id').val(button.data('check-agent-id'));
             $('#edit_queue_check_date').val(button.data('check-date'));
             $('#edit_queue_check_number').val(button.data('check-number'));
             $('#edit_queue_check_amount').val(button.data('check-amount'));
@@ -179,13 +204,14 @@ if (document.URL.match(/commission/) || document.URL.match(/transaction_details/
 
             select_refresh();
 
-            $('#save_edit_queue_check_button').off('click').on('click', save_edit_queue_check);
         }, 100);
+
+
 
     }
 
     window.save_edit_queue_check = function() {
-        console.log($('#edit_queue_check_agent_id').val());
+
         if($('#edit_queue_check_type').val() == 'other') {
             if($('#edit_queue_check_client_name').val() == '' && $('#edit_queue_check_street').val() == '') {
                 $('#modal_danger').modal('show').find('.modal-body').html('You must enter either the Client\'s Name or a Street Address');
@@ -363,6 +389,7 @@ if (document.URL.match(/commission/) || document.URL.match(/transaction_details/
     }
 
     window.show_fields = function() {
+
         // show sale or BPO sections
         $('[name=check_in_type]').on('change', function() {
 

@@ -83,17 +83,31 @@ body.modal-open {
     text-transform: uppercase;
 }
 
+.dropdown-menu {
+    padding: .6rem !important;
+}
 
 .dropdown-item {
     margin-top: 5px;
     padding: .4rem;
+    color: $primary;
+
+    i {
+        color: $primary;
+    }
 
     &:hover {
-        color: $white !important;
-        background: $primary;
+        color: $primary;
+        background: $blue-light;
         border-radius: 5px;
         box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+
+        i {
+            color: $primary;
+        }
+
     }
+
 }
 
 
@@ -128,7 +142,7 @@ body.modal-open {
 }
 
 .badge-pill {
-    padding: 0.45em 0.55em 0.32rem 0.55em !important;
+    padding: 0.45em 0.55em 0.32rem 0.55em;
 }
 
 .border-2 {
@@ -185,15 +199,16 @@ body.modal-open {
 }
 
 // popovers
-/* .popover {
-    max-width: 400px;
+.popover {
+    left: 3px !important;
+}
+.popover-header {
+    background-color: $orange-light;
+    border-bottom: none;
+    color: $orange;
 }
 
-.popover-header {
-    background-color: $orange;
-    border-bottom: none;
-    color: white;
-}
+/*
 
 .popover-body {
     //font-size: 1rem;

@@ -5,77 +5,68 @@ if (document.URL.match(/transaction_details/)) {
 
     $(function() {
 
-        $(document).on('click', '.add-folder-button', show_add_folder);
 
-        $(document).on('click', '#upload_documents_button', show_upload_documents);
+        $(document).on('click', '.btn, .dropdown-item', function(e) {
 
-        $(document).on('click', '#add_checklist_template_button', show_add_checklist_template);
+            let classes = e.target.classList;
+            let id = e.target.id;
 
-        $(document).on('click', '#save_add_checklist_template_button', function () {
-            $('#save_add_checklist_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
-            save_add_template_documents('checklist');
-        });
+            console.log(e.target);
 
-        $(document).on('click', '#add_individual_template_button', show_add_individual_template);
+            let ele = $(e.target);
 
-        $(document).on('click', '#save_add_individual_template_button', function () {
-
-            if($('.individual-template-form:checked').length > 0) {
-                $('#save_add_individual_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
-                save_add_template_documents('individual');
-            } else {
-                $('#modal_danger').modal().find('.modal-body').html('You must select at least one form to add');
+            if(classes.contains('add-folder-button')) {
+                show_add_folder();
+            } else if(classes.contains('check-all')) {
+                check_all(ele);
+            } else if(classes.contains('doc-delete-button')) {
+                show_delete_one_document(ele);
+            }  else if(classes.contains('delete-folder-button')) {
+                confirm_delete_folder(ele.data('folder-id'));
+            }  else if(classes.contains('doc-rename-button')) {
+                show_rename_document(ele);
+            }  else if(classes.contains('doc-split-button')) {
+                show_split_document((ele));
+            }  else if(classes.contains('doc-duplicate-button')) {
+                duplicate_document(ele);
+            }  else if(classes.contains('doc-print-button')) {
+                print_pdf(ele.data('link'));
+            }  else if(classes.contains('docs-download-button')) {
+                print_download_documents('download', ele.data('type'));
+            }  else if(classes.contains('docs-print-button')) {
+                print_download_documents('print', ele.data('type'));
+            }  else if(classes.contains('doc-email-button')) {
+                email_get_documents(ele);
+            }  else if(classes.contains('docs-email-button')) {
+                email_get_documents(ele);
+            }  else if(classes.contains('delete-address-button')) {
+                ele.closest('.row').remove();
+            } else if(classes.contains('move-documents-button')) {
+                show_move_documents();
+            } else if(classes.contains('delete-documents-button')) {
+                show_delete_documents();
+            } else if(id == 'upload_documents_button') {
+                show_upload_documents();
+            } else if(id == 'add_checklist_template_button') {
+                show_add_checklist_template();
+            } else if(id == 'save_add_checklist_template_button') {
+                $('#save_add_checklist_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
+                save_add_template_documents('checklist');
+            } else if(id == 'add_individual_template_button') {
+                show_add_individual_template();
+            } else if(id == 'save_add_individual_template_button') {
+                if($('.individual-template-form:checked').length > 0) {
+                    $('#save_add_individual_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
+                    save_add_template_documents('individual');
+                } else {
+                    $('#modal_danger').modal().find('.modal-body').html('You must select at least one form to add');
+                }
+            } else if(id == 'send_email_button') {
+                email_documents();
             }
         });
 
-        $(document).on('click', '.check-all', check_all);
-
         $(document).on('change', '.check-document', show_bulk_options);
-
-        $(document).on('click', '#delete_documents_button', show_delete_documents);
-
-        $(document).on('click', '#move_documents_button', show_move_documents);
-
-        $(document).on('click', '.folder-collapse', toggle_caret);
-
-        $(document).on('click', '.doc-delete-button', show_delete_one_document);
-
-        $(document).on('click', '.delete-folder-button', function () {
-            confirm_delete_folder($(this).data('folder-id'));
-        });
-
-
-
-        $(document).on('click', '.doc-rename-button', show_rename_document);
-
-        $(document).on('click', '.doc-split-button', show_split_document);
-
-        $(document).on('click', '.doc-duplicate-button', duplicate_document);
-
-        $(document).on('click', '.doc-print-button', function () {
-            print_pdf($(this).data('link'));
-        });
-
-        $(document).on('click', '.docs-print-button', function() {
-            print_download_documents('print');
-        });
-
-        $(document).on('click', '.docs-download-button', function() {
-            print_download_documents('download', $(this).data('type'));
-        });
-
-        $(document).on('click', '.docs-print-button', function() {
-            print_download_documents('print', $(this).data('type'));
-        });
-
-        $(document).on('click', '.doc-email-button', email_get_documents);
-        $(document).on('click', '.docs-email-button', email_get_documents);
-        $(document).on('click', '#send_email_button', email_documents);
-
-        $(document).on('click', '.delete-address-button', function() {
-            $(this).closest('.row').remove();
-        });
-
 
         function print_download_documents(task, type) {
             let document_ids = [];
@@ -160,9 +151,9 @@ if (document.URL.match(/transaction_details/)) {
             });
         }
 
-        function email_get_documents() {
+        function email_get_documents(ele) {
 
-            let docs_type = $(this).data('docs-type') ? $(this).data('docs-type') : '';
+            let docs_type = ele.data('docs-type') ? ele.data('docs-type') : '';
             let document_ids = [];
             if(docs_type) {
                 $('.check-document:checked').each(function () {
@@ -227,7 +218,7 @@ if (document.URL.match(/transaction_details/)) {
                             </div> \
                             <div class="col-1"> \
                                 <div class="h-100 d-flex justify-content-end align-items-center"> \
-                                    <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times"></i></button> \
+                                    <button class="btn btn-sm btn-danger delete-address-button"><i class="fal fa-times delete-address-button"></i></button> \
                                 </div> \
                             </div> \
                         </div> \
@@ -244,9 +235,9 @@ if (document.URL.match(/transaction_details/)) {
                 });
         }
 
-        function duplicate_document() {
-            let document_id = $(this).data('document-id');
-            let file_type = $(this).data('file-type');
+        function duplicate_document(ele) {
+            let document_id = ele.data('document-id');
+            let file_type = ele.data('file-type');
             let Listing_ID = $('#Listing_ID').val();
             let Contract_ID = $('#Contract_ID').val();
             let Referral_ID = $('#Referral_ID').val();
@@ -269,15 +260,17 @@ if (document.URL.match(/transaction_details/)) {
                 });
         }
 
-        function show_split_document() {
-            $('#folder_id').val($(this).data('folder'));
-            let document_id = $(this).data('document-id');
-            let checklist_id = $(this).data('checklist-id');
-            let file_type = $(this).data('file-type');
-            let file_name = $(this).data('file-name');
+        function show_split_document(ele) {
+
+            $('#folder_id').val(ele.data('folder'));
+            let document_id = ele.data('document-id');
+            let checklist_id = ele.data('checklist-id');
+            let file_type = ele.data('file-type');
+            let file_name = ele.data('file-name');
             let transaction_type = $('#transaction_type').val();
 
             $('#split_document_modal').modal();
+
             axios.get('/agents/doc_management/transactions/get_split_document_html', {
                 params: {
                     document_id: document_id,
@@ -419,9 +412,9 @@ if (document.URL.match(/transaction_details/)) {
             }
         }
 
-        function show_rename_document() {
-            let document_id = $(this).data('document-id');
-            let document_name = $(this).data('document-name');
+        function show_rename_document(ele) {
+            let document_id = ele.data('document-id');
+            let document_name = ele.data('document-name');
             $('#rename_document_modal').modal();
             $('#new_document_name').val(document_name);
             $('#save_rename_document_button').on('click', function () {
@@ -999,6 +992,8 @@ if (document.URL.match(/transaction_details/)) {
                         reorder_documents(sortables);
                         global_loading_off();
                         $('.progress-bar').css({ width: '0%' });
+                        $('.individual-template-form').prop('checked', false);
+                        $('#save_add_individual_template_button').html('<i class="fad fa-check mr-2"></i> Add Documents');
 
                     })
                     .catch(function (error) {
@@ -1078,6 +1073,7 @@ if (document.URL.match(/transaction_details/)) {
                 axios.post('/agents/doc_management/transactions/add_folder', formData, axios_options)
                     .then(function (response) {
                         load_tabs('documents', false);
+                        $('.modal').modal('hide');
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -1088,7 +1084,8 @@ if (document.URL.match(/transaction_details/)) {
         function confirm_delete_folder(folder_id) {
             $('#confirm_delete_folder_modal').modal();
             $('#confirm_delete_folder_button').on('click', function () {
-                delete_folder(folder_id)
+                delete_folder(folder_id);
+                $('#confirm_delete_folder_modal').modal('hide');
             });
         }
 
@@ -1141,15 +1138,16 @@ if (document.URL.match(/transaction_details/)) {
                 .then(function (response) {
                     load_tabs('documents');
                     load_checklist_on_tab_click();
+                    $('#move_documents_modal').modal('hide');
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
         }
 
-        function show_delete_one_document() {
-            let document_id = $(this).data('document-id');
-            let document_name = $(this).data('document-name');
+        function show_delete_one_document(ele) {
+            let document_id = ele.data('document-id');
+            let document_name = ele.data('document-name');
             $('#confirm_delete_document_modal').modal();
             $('#delete_document_name').text(document_name);
             $('#confirm_delete_document_button').off('click').on('click', function () {
@@ -1212,6 +1210,7 @@ if (document.URL.match(/transaction_details/)) {
                     load_tabs('documents', false);
                     load_checklist_on_tab_click();
                     toastr['success']('Documents Moved To Trash');
+                    $('#confirm_delete_documents_modal').modal('hide');
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1234,35 +1233,37 @@ if (document.URL.match(/transaction_details/)) {
 
         }
 
-        function check_all() {
+        function check_all(ele) {
             if ($('#add_documents_div').hasClass('show')) {
                 $('#add_documents_div').collapse('hide');
             }
-            if (!$(this).closest('.folder-header').next('.collapse').hasClass('show')) {
-                $(this).closest('.folder-header').next('.collapse').collapse('show');
+            if (!ele.closest('.folder-header').next('.collapse').hasClass('show')) {
+                ele.closest('.folder-header').next('.collapse').collapse('show');
             }
-            if ($(this).is(':checked')) {
-                $(this).closest('.folder-div').find('.document-div').find('input').prop('checked', true)/* .trigger('change') */;
+            if (ele.is(':checked')) {
+                ele.closest('.folder-div').find('.document-div').find('input').prop('checked', true)/* .trigger('change') */;
             } else {
-                $(this).closest('.folder-div').find('.document-div').find('input').prop('checked', false)/* .trigger('change') */;
+                ele.closest('.folder-div').find('.document-div').find('input').prop('checked', false)/* .trigger('change') */;
             }
+            show_bulk_options();
         }
 
-        function toggle_caret() {
-            let i = $(this).find('i');
+        /* function toggle_caret(ele) {
+            console.log('toggling');
+            let i = ele.find('i');
             if (i.hasClass('fa-angle-right')) {
                 i.removeClass('fa-angle-right').addClass('fa-angle-down');
             } else if (i.hasClass('fa-angle-down')) {
                 i.removeClass('fa-angle-down').addClass('fa-angle-right');
             }
-        }
+        } */
 
         function print_pdf(url) {
 
             var wnd = window.open(url);
             setTimeout(function() {
                 wnd.print();
-                wnd.close();
+                //wnd.close();
             }, 500);
 
         }

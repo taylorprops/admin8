@@ -231,6 +231,7 @@ if (document.URL.match(/transaction_details/) || document.URL.match(/document_re
                 let status_badge = parent.find('.status-badge');
 
                 parent.find('.mark-required').removeClass('d-block').removeClass('d-none');
+
                 if(required == 'yes') {
                     parent.find('.checklist-item-unused').removeClass('checklist-item-unused');
                 } else {
