@@ -124,8 +124,9 @@ if (document.URL.match(/create\/add_fields/)) {
 
                 $('#field_'+field_id).find('.focused').show();
 
-                get_edit_properties_html(field_id, field_id, field_type, rect, container, $('#field_'+field_id));
-
+                if(field_type != 'checkbox') {
+                    get_edit_properties_html(field_id, field_id, field_type, rect, container, $('#field_'+field_id));
+                }
 
             }
         });
@@ -244,9 +245,9 @@ if (document.URL.match(/create\/add_fields/)) {
                 if (!$(e.target).is('.custom-name-results *')) {
                     $('.custom-name-results').hide();
                 }
-                if (!$(e.target).is('.edit-properties-div *')) {
-                    $('.edit-properties-div').hide();
-                }
+                /* if (!$(e.target).is('.edit-properties-container *')) {
+                    $('.edit-properties-container').collapse('hide');
+                } */
                 if(!$(e.target).is('.mini-slider-div.active *')) {
                     $('.mini-slider-div.active').hide().removeClass('active');
                 }
@@ -277,7 +278,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 toastr['success']('Page Successfully Removed')
             })
             .catch(function (error) {
-                //console.log(error);
+                console.log(error);
             });
         }
 
@@ -427,14 +428,18 @@ if (document.URL.match(/create\/add_fields/)) {
             let edit_div = ele.closest('.field-div').find('.edit-properties-div');
             let inputs_container = edit_div.find('.field-inputs-div');
 
+            /* if(edit_div.css('display') === 'block') {
+                edit_div.hide();
+            } else {
+                edit_div.show();
+            } */
+
 
             //store inputs html in input to be restored on cancel
             $('#inputs_html').val(inputs_container.html());
 
             let x = $('#field_'+field_id).position().left;
             position_edit_properties_div(x);
-
-            edit_div.show();
 
             // prevent new field being created
             $('.edit-properties-div *').off('dblclick').on('dblclick', function (event) {
@@ -462,7 +467,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
                     })
                     .catch(function (error) {
-                        //console.log(error);
+                        console.log(error);
                     });
 
                 } else {
@@ -481,7 +486,7 @@ if (document.URL.match(/create\/add_fields/)) {
                 let form = $(this).find('.form-div');
                 form.find('.field-inputs-div').html($('#inputs_html').val());
 
-                edit_div.hide();
+                //edit_div.hide();
 
             });
         }
@@ -754,20 +759,21 @@ if (document.URL.match(/create\/add_fields/)) {
 
         function add_address_inputs(field_id, inputs_container, select) {
 
-            //console.log('running add_address_inputs');
+            console.log('running add_address_inputs');
 
             inputs_container.html('');
 
             //let standard_addresses = ['Property Address', 'Seller One Home Address', 'Seller Two Home Address', 'Buyer One Home Address', 'Buyer Two Home Address'];
             //if (standard_addresses.includes(select.val().trim())) {
 
-                let values = ['Street Address', 'City', 'State', 'Zip Code', 'County'];
+                let values = ['Street', 'City', 'State', 'Zip Code', 'County'];
+                let address_type = select.val().replace(/\sAddress/, '').trim();
                 let input_id = new Date().getTime();
                 let c = 0;
                 values.forEach(function(value) {
                     c += 1;
                     input_id = input_id + c;
-                    inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="' + value + '" data-default-value="' + value + '" data-id="'+input_id+'">');
+                    inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="'+address_type+' '+value+'" data-default-value="'+address_type+' '+value+'" data-id="'+input_id+'">');
                 });
 
             //}
@@ -850,7 +856,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
             })
             .catch(function (error) {
-                //console.log(error);
+                console.log(error);
             });
         }
 

@@ -8,7 +8,7 @@ use App\Models\DocManagement\Create\Fields\CommonFields;
 use App\Models\DocManagement\Create\Fields\Fields;
 use App\Models\DocManagement\Create\Fields\FieldTypes;
 use App\Models\DocManagement\Create\Fields\FieldInputs;
-use App\Models\DocManagement\Create\FilledFields\FilledFields;
+//use App\Models\DocManagement\Create\FilledFields\FilledFields;
 use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Create\Upload\UploadImages;
 use App\Models\DocManagement\Create\Upload\UploadPages;
@@ -169,7 +169,7 @@ class FieldsController extends Controller
 
     }
 
-    public function fill_fields(Request $request) {
+    /* public function fill_fields(Request $request) {
 
         $file_id = $request -> file_id;
         $file = Upload::whereFileId($file_id) -> get();
@@ -181,9 +181,10 @@ class FieldsController extends Controller
         //$file_id = $file_id;
         return view('/doc_management/fill/fill_fields', compact('file', 'images', 'fields', 'field_inputs', 'file_id', 'field_values'));
 
-    }
+    } */
 
-    public function save_fill_fields(Request $request) {
+    /* public function save_fill_fields(Request $request) {
+
         // delete all field input values for this file
         $file_id = $request[0]['file_id'];
         $delete_filled_fields = FilledFields::where('file_id', $file_id) -> delete();
@@ -198,7 +199,7 @@ class FieldsController extends Controller
         }
 
 
-    }
+    } */
 
     public function save_pdf_client_side(Request $request) {
         if($request) {

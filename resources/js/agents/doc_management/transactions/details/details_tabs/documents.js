@@ -6,12 +6,10 @@ if (document.URL.match(/transaction_details/)) {
     $(function() {
 
 
-        $(document).on('click', '.btn, .dropdown-item', function(e) {
+        $(document).on('click', '.btn, .dropdown-item, .check-all', function(e) {
 
             let classes = e.target.classList;
             let id = e.target.id;
-
-            console.log(e.target);
 
             let ele = $(e.target);
 
@@ -993,7 +991,16 @@ if (document.URL.match(/transaction_details/)) {
                         global_loading_off();
                         $('.progress-bar').css({ width: '0%' });
                         $('.individual-template-form').prop('checked', false);
-                        $('#save_add_individual_template_button').html('<i class="fad fa-check mr-2"></i> Add Documents');
+                        $('#save_add_individual_template_button').html('<i class="fad fa-check mr-2"></i> Add Documents').on('click', function() {
+                            if($('.individual-template-form:checked').length > 0) {
+                                $('#save_add_individual_template_button').html('<i class="fas fa-spinner fa-pulse mr-2"></i> Adding Documents...').prop('disabled', true);
+                                save_add_template_documents('individual');
+                            } else {
+                                $('#modal_danger').modal().find('.modal-body').html('You must select at least one form to add');
+                            }
+                        });
+
+
 
                     })
                     .catch(function (error) {

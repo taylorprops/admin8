@@ -25,6 +25,8 @@ use App\Models\Resources\LocationData;
 use App\Models\CRM\CRMContacts;
 use App\Models\BrightMLS\Offices;
 
+use App\Http\Controllers\Agents\DocManagement\Transactions\Details\TransactionsDetailsController;
+
 
 class TransactionsAddController extends Controller {
 
@@ -316,14 +318,14 @@ class TransactionsAddController extends Controller {
         $docs_folder -> Referral_ID = $Referral_ID;
         $docs_folder -> Agent_ID = $Agent_ID;
         $docs_folder -> folder_name = 'Referral Documents';
-        $docs_folder -> order = 0;
+        $docs_folder -> doc_order = 0;
         $docs_folder -> save();
 
         $trash_folder = new TransactionDocumentsFolders();
         $trash_folder -> Referral_ID = $Referral_ID;
         $trash_folder -> Agent_ID = $Agent_ID;
         $trash_folder -> folder_name = 'Trash';
-        $trash_folder -> order = 100;
+        $trash_folder -> folder_order = 100;
         $trash_folder -> save();
 
         // Add checklist
@@ -535,7 +537,7 @@ class TransactionsAddController extends Controller {
             $new_folder -> Contract_ID = $Contract_ID;
             $new_folder -> Agent_ID = $agent -> id;
             $new_folder -> folder_name = 'Listing Documents';
-            $new_folder -> order = 0;
+            $new_folder -> folder_order = 0;
             $new_folder -> save();
         } else if($transaction_type == 'contract') {
             $Contract_ID = $new_transaction -> Contract_ID;
@@ -551,7 +553,7 @@ class TransactionsAddController extends Controller {
         $new_folder -> Referral_ID = $Referral_ID;
         $new_folder -> Agent_ID = $agent -> id;
         $new_folder -> folder_name = $type.' Documents';
-        $new_folder -> order = 0;
+        $new_folder -> folder_order = 0;
         $new_folder -> save();
 
         $new_folder = new TransactionDocumentsFolders();
@@ -560,7 +562,7 @@ class TransactionsAddController extends Controller {
         $new_folder -> Referral_ID = $Referral_ID;
         $new_folder -> Agent_ID = $agent -> id;
         $new_folder -> folder_name = 'Trash';
-        $new_folder -> order = 100;
+        $new_folder -> folder_order = 100;
         $new_folder -> save();
 
         return response() -> json(['id' => $Listing_ID.$Contract_ID.$Referral_ID]);
@@ -834,6 +836,8 @@ class TransactionsAddController extends Controller {
 
             }
         }
+
+        $update_transaction_members = (new TransactionsDetailsController) -> update_transaction_members($id, $transaction_type);
 
         if($transaction_type == 'listing') {
 

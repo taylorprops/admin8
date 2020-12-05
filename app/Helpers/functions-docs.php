@@ -3,7 +3,6 @@
 function get_value($values, $id) {
 
     foreach ($values as $value) {
-
         if ($value['input_id'] == $id) {
             return $value['input_value'];
         }
@@ -32,17 +31,17 @@ function get_value_radio_checkbox($values, $id) {
 
 function address_type($val) {
 
-    if ($val == 'Full Address') {
+    if (stristr($val, 'Full Address')) {
         return 'full';
-    } elseif ($val == 'Street Address') {
+    } elseif (stristr($val, 'Street')) {
         return 'street';
-    } elseif ($val == 'City') {
+    } elseif (stristr($val, 'City')) {
         return 'city';
-    } elseif ($val == 'State') {
+    } elseif (stristr($val, 'State')) {
         return 'state';
-    } elseif ($val == 'County') {
+    } elseif (stristr($val, 'County')) {
         return 'county';
-    } elseif ($val == 'Zip Code') {
+    } elseif (stristr($val, 'Zip Code')) {
         return 'zip';
     }
 
@@ -50,16 +49,17 @@ function address_type($val) {
 function name_type($val) {
 
     if ($val == 'Seller or Landlord One Name') {
-        return 'one';
+        $type = 'one';
     } else if ($val == 'Seller or Landlord Two Name') {
-        return 'two';
-    } else if ($val == 'Buyer Or Renter One Name') {
-        return 'one';
-    } else if ($val == 'Buyer Or Renter Two Name') {
-        return 'two';
+        $type = 'two';
+    } else if ($val == 'Buyer or Renter One Name') {
+        $type = 'one';
+    } else if ($val == 'Buyer or Renter Two Name') {
+        $type = 'two';
     } else {
-        return 'both';
+        $type = 'both';
     }
+    return $type;
 
 }
 

@@ -59,7 +59,8 @@ if (document.URL.match(/edit_files/)) {
             field_count += 1;
             if(field_count == field_div_count) {
                 setTimeout(function() {
-                    save_field_input_values('yes');
+                    // TODO: undo this comment
+                    //save_field_input_values('yes');
                 }, 1000);
             }
         });
@@ -917,6 +918,7 @@ if (document.URL.match(/edit_files/)) {
             });
 
             $('.group_' + group_id).each(function () {
+
                 let group = $(this);
                 let name_type = $(this).data('name-type');
 
@@ -928,7 +930,7 @@ if (document.URL.match(/edit_files/)) {
                     names = names + ', ' + name2;
                 }
 
-                if (!names.match(/undefined/)) {
+                if (names && typeof names !== 'undefined') {
 
                     /* group.find('.data-div').html(names);
                     split_lines(group_id, names); */
@@ -948,7 +950,7 @@ if (document.URL.match(/edit_files/)) {
                                 group.find('.data-div').html(name_values[index]);
                             }
                         } else {
-                            let full_names = name_values[0]+' '+name_values[1];
+                            //let full_names = name_values[0]+' '+name_values[1];
                             group.find('.data-div').html(names);
                             split_lines(group_id, names);
                         }

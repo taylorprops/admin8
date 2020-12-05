@@ -110,7 +110,7 @@
                             <?php $c = $image -> page_number; ?>
 
                                 <div class="h5 bg-primary p-2 text-center mb-0" id="page_{{ $c }}">
-                                    <span class="badge">Page <?php echo $c.' of '.$total_pages; ?></span>
+                                    <span class="badge text-white font-10">Page <?php echo $c.' of '.$total_pages; ?></span>
                                 </div>
                                 <div class="file-view-page-container border border-primary w-100 @if($loop -> first) active @endif" data-id="{{ $c }}">
                                     <div class="field-container w-100 h-100">

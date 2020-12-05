@@ -71,6 +71,7 @@ class CommonFields extends Model
             } else {
 
                 $member = null;
+
                 if($common_name == 'Seller or Landlord One Name') {
                     $member = $members -> where('member_type_id', $members_modal -> GetMemberTypeID('Seller'));
                     if(count($member) > 0) {
@@ -107,18 +108,6 @@ class CommonFields extends Model
                     $value = $property -> ListOfficeName;
                 } else if($common_name == 'Selling Agent Company') {
                     $value = $property -> BuyerOfficeName;
-                } else if($common_name == 'Full Address') {
-                    $value = $property -> FullStreetAddress . ' ' . $property -> City . ' ' . $property -> StateOrProvince .' '.$property -> PostalCode;
-                } else if($common_name == 'Street Address') {
-                    $value = $property -> FullStreetAddress;
-                } else if($common_name == 'City') {
-                    $value = $property -> City;
-                } else if($common_name == 'State') {
-                    $value = $property -> StateOrProvince;
-                } else if($common_name == 'Zip Code') {
-                    $value = $property -> PostalCode;
-                } else if($common_name == 'County') {
-                    $value = $property -> County;
                 } else if($common_name == 'Listing Agent Name') {
                     $value = $property -> ListAgentFirstName . ' ' . $property -> ListAgentLastName;
                 } else if($common_name == 'Buyers Agent Name') {
@@ -127,6 +116,48 @@ class CommonFields extends Model
 
                 if($member) {
                     $value = $member -> first_name . ' ' . $member -> last_name;
+                } else {
+
+                    $common_address_fields = $this -> where('field_type', 'address') -> pluck('field_name');
+
+                    foreach($common_address_fields as $address_field) {
+
+                        if($value == '') {
+
+                            $address_field = trim($address_field);
+                            $address_type = str_replace(' Address', '', $address_field);
+                            $address_type = str_replace('Property', '', $address_type);
+                            $address_type = str_replace('or Renter ', '', $address_type);
+                            $address_type = str_replace('or Landlord ', '', $address_type);
+                            $address_type = str_replace(' ', '', $address_type);
+
+
+                            $field_street = $address_type.'FullStreetAddress';
+                            $field_city = $address_type.'City';
+                            $field_state = $address_type.'StateOrProvince';
+                            $field_zip = $address_type.'PostalCode';
+                            $field_county = $address_type.'County';
+
+
+                            if(stristr($common_name, 'Full Address')) {
+                                $value = $property -> $field_street . ' ' . $property -> $field_city . ' ' . $property -> $field_state .' '.$property -> $field_zip;
+                            } else if(stristr($common_name, 'Street')) {
+                                $value = $property -> $field_street;
+                            } else if(stristr($common_name, 'City')) {
+                                $value = $property -> $field_city;
+                            } else if(stristr($common_name, 'State')) {
+                                $value = $property -> $field_state;
+                            } else if(stristr($common_name, 'Zip Code')) {
+                                $value = $property -> $field_zip;
+                            } else if(stristr($common_name, 'County')) {
+                                $value = $property -> $field_county;
+                            }
+
+                        }
+
+                    }
+
+
                 }
 
             }

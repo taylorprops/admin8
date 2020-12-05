@@ -131,9 +131,9 @@ class TransactionsDetailsController extends Controller {
             $folders = TransactionDocumentsFolders::where('Agent_ID', $Agent_ID) -> where(function ($query) use ($Listing_ID, $Contract_ID) {
                 $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
             })
-            -> orderBy('order') -> get();
+            -> orderBy('folder_order') -> get();
         } else {
-            $folders = TransactionDocumentsFolders::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
+            $folders = TransactionDocumentsFolders::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('folder_order') -> get();
         }
 
         $transaction_checklist = TransactionChecklists::where($field, $id) -> first();
@@ -881,17 +881,17 @@ class TransactionsDetailsController extends Controller {
             $folders = TransactionDocumentsFolders::where('Agent_ID', $Agent_ID) -> where(function ($query) use ($Listing_ID, $Contract_ID) {
                 $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
             })
-            -> orderBy('order') -> get();
+            -> orderBy('folder_order') -> get();
 
             $documents = TransactionDocuments::where('Agent_ID', $Agent_ID) -> where(function ($query) use ($Listing_ID, $Contract_ID) {
                 $query -> where('Contract_ID', $Contract_ID) -> orWhere('Listing_ID', $Listing_ID);
             })
-            -> orderBy('order') -> orderBy('created_at', 'DESC') -> get();
+            -> orderBy('doc_order', 'ASC') -> orderBy('created_at', 'DESC') -> get();
 
         } else {
 
-            $folders = TransactionDocumentsFolders::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> get();
-            $documents = TransactionDocuments::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('order') -> orderBy('created_at', 'DESC') -> get();
+            $folders = TransactionDocumentsFolders::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('folder_order') -> get();
+            $documents = TransactionDocuments::where($field, $id) -> where('Agent_ID', $Agent_ID) -> orderBy('doc_order', 'ASC') -> orderBy('created_at', 'DESC') -> get();
 
         }
 
@@ -930,7 +930,7 @@ class TransactionsDetailsController extends Controller {
         $order += 1;
         $folder = new TransactionDocumentsFolders();
         $folder -> folder_name = $folder_name;
-        $folder -> order = $order;
+        $folder -> folder_order = $order;
         $folder -> Listing_ID = $Listing_ID ?? 0;
         $folder -> Contract_ID = $Contract_ID ?? 0;
         $folder -> Referral_ID = $Referral_ID ?? 0;
@@ -1232,7 +1232,7 @@ class TransactionsDetailsController extends Controller {
             $folder = $item['folder_id'];
             $document_order = $item['document_index'];
             $reorder = TransactionDocuments::where('id', $document_id) -> first();
-            $reorder -> order = $document_order;
+            $reorder -> doc_order = $document_order;
             $reorder -> folder = $folder;
             $reorder -> save();
         }
@@ -1268,7 +1268,7 @@ class TransactionsDetailsController extends Controller {
             }
 
             $add_documents -> folder = $folder;
-            $add_documents -> order = $file['order'];
+            $add_documents -> doc_order = $file['order'];
             $add_documents -> orig_file_id = $file_id;
             $add_documents -> file_type = 'system';
             $add_documents -> file_name = $file['file_name'];
@@ -1784,7 +1784,7 @@ class TransactionsDetailsController extends Controller {
             $add_documents -> file_name = $new_file_name;
             $add_documents -> file_name_display = $file_name_display;
             $add_documents -> pages_total = $pages_total;
-            $add_documents -> order = 0;
+            $add_documents -> doc_order = 0;
             $add_documents -> save();
             $Transaction_Docs_ID = $add_documents -> id;
 
@@ -1997,7 +1997,7 @@ class TransactionsDetailsController extends Controller {
             $trash_folder = TransactionDocumentsFolders::where('Listing_ID', $property -> Listing_ID) -> where('folder_name', 'Trash') -> first();
         }
         $documents_model = new TransactionDocuments();
-        $documents_checklist = $documents_model -> where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
+        $documents_checklist = $documents_model -> where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('doc_order', 'ASC') -> orderBy('created_at', 'DESC') -> get();
 
 
         $resource_items = new ResourceItems();
@@ -2034,7 +2034,7 @@ class TransactionsDetailsController extends Controller {
             $id = $Referral_ID;
         }
 
-        $folders = TransactionDocumentsFolders::where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('folder_name', '!=', 'Trash') -> orderBy('order') -> get();
+        $folders = TransactionDocumentsFolders::where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('folder_name', '!=', 'Trash') -> orderBy('folder_order') -> get();
 
         $trash_folder = TransactionDocumentsFolders::where($field, $id) -> where('folder_name', 'Trash') -> first();
         // if the contract was released just use the folder from the listing
@@ -2043,7 +2043,7 @@ class TransactionsDetailsController extends Controller {
         }
 
         $documents_model = new TransactionDocuments();
-        $documents_available = $documents_model -> where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('order') -> get();
+        $documents_available = $documents_model -> where($field, $id) -> where('Agent_ID', $Agent_ID) -> where('folder', '!=', $trash_folder -> id) -> where('assigned', 'no') -> orderBy('doc_order', 'ASC') -> orderBy('created_at', 'DESC') -> get();
 
         return view('/agents/doc_management/transactions/details/data/get_add_document_to_checklist_documents_html', compact('documents_available', 'folders'));
 
@@ -2141,7 +2141,7 @@ class TransactionsDetailsController extends Controller {
         $checklist_items = $transaction_checklist_items_modal -> where('checklist_id', $checklist_id) -> orderBy('checklist_item_order') -> get();
         $transaction_checklist_item_documents = TransactionChecklistItemsDocs::where('checklist_id', $checklist_id) -> get();
         $transaction_documents_model = new TransactionDocuments();
-        $documents = $transaction_documents_model -> whereIn('id', $document_ids) -> orderBy('order') -> get();
+        $documents = $transaction_documents_model -> whereIn('id', $document_ids) -> orderBy('doc_order', 'ASC') -> orderBy('created_at', 'DESC') -> get();
 
         $checklist_types = ['listing', 'both'];
 

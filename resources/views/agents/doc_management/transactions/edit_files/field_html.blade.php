@@ -211,6 +211,7 @@ if($transaction_type == 'listing') {
                                 @php
                                 $input_id = $field_user -> field_id;
                                 $value = get_value($field_values, $input_id);
+
                                 if(!$value) {
                                     $value = $common_fields -> GetCommonNameValue($common_name, $field_user -> field_id, 'system', $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type, $Agent_ID);
                                 }
@@ -240,10 +241,21 @@ if($transaction_type == 'listing') {
 
                                             if(!$value) {
                                                 $value = $common_fields -> GetCommonNameValue($common_name_input, $user_input -> input_id, 'system', $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type, $Agent_ID);
+                                                /* if($field_type == 'address' && stristr($common_name_input, 'buyer')) {
+                                                    dd($common_name_input, $value);
+                                                } */
                                             }
 
-                                            $address_type = address_type($common_name_input);
-                                            $name_type = name_type($common_name_input);
+                                            $address_type = '';
+                                            $name_type = '';
+                                            if($field_type == 'address') {
+                                                $address_type = address_type($common_name_input);
+                                                /* if(stristr($common_name_input, 'buyer')) {
+                                                dd($common_name_input, $address_type, $value);
+                                                } */
+                                            } else if($field_type == 'name') {
+                                                $name_type = name_type($common_name_input);
+                                            }
 
                                             @endphp
 
