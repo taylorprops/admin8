@@ -13,11 +13,11 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
             update_county_select($(this).val());
         });
 
-        $('#enter_zip').keyup(function() {
+        $('#enter_zip').on('keyup', function() {
             fill_location($(this).val());
         });
 
-        $('.required').bind('change keyup', function () {
+        $('.required').on('change keyup', function () {
             setTimeout(function () {
                 enter_address_form_check();
             }, 100);
@@ -45,12 +45,22 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
     });
 
     function show_add_agent() {
-        $('#add_agent_id_modal').modal();
+        $('#add_agent_id_modal').modal('show');
+
+        $(document).on('keyup', function (e) {
+            if(e.key == 'Enter') {
+                $('#save_add_agent_id_button').trigger('click');
+            }
+        });
+
         $('#save_add_agent_id_button').off('click').on('click', function() {
             $('#Agent_ID').val($('#add_agent_id').val());
             $('#add_agent_id_modal').modal('hide');
             toastr['success']('Agent Successfully Added')
         });
+        setTimeout(function() {
+            $('.form-select-label').trigger('click');
+        }, 500);
     }
 
     function create_transaction() {

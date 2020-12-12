@@ -6,10 +6,96 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Resources\LocationData;
 use App\Models\DocManagement\Resources\ResourceItems;
+use App\Models\DocManagement\Create\Fields\CommonFields;
+use App\Models\DocManagement\Create\Fields\CommonFieldsGroups;
+use App\Models\DocManagement\Create\Fields\CommonFieldsSubGroups;
 
+
+use Illuminate\Support\Facades\DB;
 
 class ResourcesController extends Controller
 {
+
+    public function common_fields(Request $request) {
+
+        $common_fields_groups = CommonFieldsGroups::orderBy('group_order')
+            -> with('sub_groups')
+            -> get();
+
+        $common_fields_sub_groups = CommonFieldsSubGroups::orderBy('sub_group_order')
+            -> get();
+
+        $db_fields_listing = DB::getSchemaBuilder() -> getColumnListing('docs_transactions_listings');
+        $db_fields_contract = DB::getSchemaBuilder() -> getColumnListing('docs_transactions_contracts');
+        $db_fields = array_unique(array_merge($db_fields_listing,$db_fields_contract));
+
+        return view('/doc_management/resources/common_fields', compact('common_fields_groups', 'common_fields_sub_groups', 'db_fields'));
+    }
+
+    public function get_common_fields(Request $request) {
+
+        $common_fields_groups = CommonFieldsGroups::with('common_fields:id,field_type,group_id,sub_group_id,field_name,db_column_name')
+            -> with('sub_groups')
+            -> orderBy('group_order')
+            -> get();
+
+        $common_fields_sub_groups = CommonFieldsSubGroups::orderBy('sub_group_order')
+            -> get();
+
+        $db_fields_listing = DB::getSchemaBuilder() -> getColumnListing('docs_transactions_listings');
+        $db_fields_contract = DB::getSchemaBuilder() -> getColumnListing('docs_transactions_contracts');
+        $db_fields = array_unique(array_merge($db_fields_listing,$db_fields_contract));
+
+        return view('/doc_management/resources/common_fields_html', compact('common_fields_groups', 'common_fields_sub_groups', 'db_fields'));
+
+    }
+
+    public function save_add_common_field(Request $request) {
+
+        $field_name = $request -> field_name;
+        $field_type = $request -> field_type;
+        $group_id = $request -> group_id;
+        $sub_group_id = $request -> sub_group_id;
+        $db_column_name = $request -> db_column_name;
+
+        $add_common_field = new CommonFields();
+        $add_common_field -> field_name = $field_name;
+        $add_common_field -> field_type = $field_type;
+        $add_common_field -> group_id = $group_id;
+        $add_common_field -> sub_group_id = $sub_group_id;
+        $add_common_field -> db_column_name = $db_column_name;
+        $add_common_field -> save();
+
+        return response() -> json(['success' => true]);
+    }
+
+    public function save_edit_common_field(Request $request) {
+        $id = $request -> id;
+        $field_name = $request -> field_name;
+        $field_type = $request -> field_type;
+        $group_id = $request -> group_id;
+        $sub_group_id = $request -> sub_group_id;
+        $db_column_name = $request -> db_column_name;
+
+        $common_field = CommonFields::find($id) -> update([
+            'field_name' => $field_name,
+            'field_type' => $field_type,
+            'group_id' => $group_id,
+            'sub_group_id' => $sub_group_id,
+            'db_column_name' => $db_column_name
+        ]);
+    }
+
+    public function reorder_common_fields(Request $request) {
+
+        $fields = json_decode($request -> fields, true);
+
+        foreach ($fields as $field) {
+            $field = CommonFields::find($field['field_id']) -> update(['field_order' => $field['order']]);
+        }
+
+        return response() -> json(['status' => 'success']);
+    }
 
     public function resources() {
         $states = LocationData::ActiveStates();

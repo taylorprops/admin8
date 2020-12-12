@@ -14,6 +14,18 @@ Route::middleware('admin') -> group(function () {
     Route::get('/doc_management/resources/resources', 'DocManagement\Resources\ResourcesController@resources');
     // Admin resources
     Route::get('/admin/resources/resources_admin', 'Admin\Resources\ResourceItemsAdminController@resources_admin');
+    /* Resources | Common Fields */
+    Route::get('/doc_management/resources/common_fields', 'DocManagement\Resources\ResourcesController@common_fields');
+    /* Resources | Get Common Fields */
+    Route::get('/doc_management/resources/get_common_fields', 'DocManagement\Resources\ResourcesController@get_common_fields');
+    /* Resources | Save Add Common Fields */
+    Route::post('/doc_management/resources/save_add_common_field', 'DocManagement\Resources\ResourcesController@save_add_common_field');
+    /* Resources | Save Edit Common Fields */
+    Route::post('/doc_management/resources/save_edit_common_field', 'DocManagement\Resources\ResourcesController@save_edit_common_field');
+    /* Resources | Reorder Common Fields */
+    Route::post('/doc_management/resources/reorder_common_fields', 'DocManagement\Resources\ResourcesController@reorder_common_fields');
+
+
     /* Checklists  */
     Route::get('/doc_management/checklists/{checklist_id?}/{checklist_location_id?}/{checklist_type?}', 'DocManagement\Checklists\ChecklistsController@checklists');
 
@@ -119,7 +131,7 @@ Route::middleware('admin') -> group(function () {
 
 
 
-    Route::get('/doc_management/common_fields', 'DocManagement\Fill\FieldsController@get_common_fields');
+    //Route::get('/doc_management/common_fields', 'DocManagement\Fill\FieldsController@get_common_fields');
 
     // get custom names for autofill when adding a form
     Route::get('/doc_management/get_custom_names', 'DocManagement\Fill\FieldsController@get_custom_names');

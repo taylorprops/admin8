@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\DocManagement\Create\Fields\CommonFields;
 use App\Models\DocManagement\Create\Fields\Fields;
-use App\Models\DocManagement\Create\Fields\FieldTypes;
+//use App\Models\DocManagement\Create\Fields\FieldTypes;
 use App\Models\DocManagement\Create\Fields\FieldInputs;
 
 use App\Models\DocManagement\Create\Upload\Upload;

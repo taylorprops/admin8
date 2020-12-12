@@ -12,17 +12,7 @@
                     <div class="py-2 d-flex justify-content-center align-items-center field-select-container">
                         <div class="field-wrapper px-3" data-type="textline">
                             <div class="textline-div-field rounded my-auto">
-                                <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-text fa-lg mr-2"></i> General Text</div>
-                            </div>
-                        </div>
-                        <div class="field-wrapper px-3" data-type="name">
-                            <div class="textline-div-field rounded my-auto">
-                                <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-user-alt fa-lg mr-2"></i> Name</div>
-                            </div>
-                        </div>
-                        <div class="field-wrapper px-3" data-type="address">
-                            <div class="textline-div-field rounded my-auto">
-                                <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-map-marker-alt fa-lg mr-2"></i> Address</div>
+                                <div class="textline-html text-white ml-3 pt-1"><i class="fal fa-text fa-lg mr-2"></i> Textbox</div>
                             </div>
                         </div>
                         <div class="field-wrapper px-3" data-type="date">
@@ -32,7 +22,7 @@
                         </div>
                         <div class="field-wrapper px-3" data-type="number">
                             <div class="textline-div-field rounded my-auto">
-                                <div class="textline-html text-white ml-3 pt-1"><span class="text-white mr-2">0-9</span> Number</div>
+                                <div class="textline-html text-white ml-3 pt-1"><span class="text-white mr-2">$0-9</span> Price/Number</div>
                             </div>
                         </div>
                         <div class="field-wrapper px-3 d-flex justify-content-center" data-type="checkbox">
@@ -59,16 +49,16 @@
 
             <?php $total_pages = count($images); ?>
 
-            <div class="col-2 p-0 edit-file-sidebar">
+            {{-- <div class="col-2 p-0 edit-file-sidebar">
 
                 <div class="file-view">
                     <div class="h5 text-white bg-primary-dark p-2"><i class="fal fa-align-left mr-3"></i> Fields</div>
                     <div class="field-list-container"></div>
                 </div>
 
-            </div>
+            </div> --}}
 
-            <div class="col-12 col-xl-8 p-0 mx-auto">
+            <div class="col-12 col-xl-10 p-0">
 
                 <div class="container-fluid p-0">
 
@@ -110,7 +100,7 @@
 
             </div>
 
-            <div class="col-2 p-0 edit-file-sidebar">
+            <div class="col-2 p-0 edit-file-sidebar bg-blue-light">
 
                 <div class="file-view" id="thumb_viewer">
 
@@ -118,7 +108,7 @@
 
                     @foreach($images as $image)
                         <?php $c = $image -> page_number; ?>
-                        <div class="file-view-thumb-container  w-50 mx-auto" <?php echo($c == 1) ? 'active' : ''; ?>" id="thumb_{{ $c }}" data-id="{{ $c }}">
+                        <div class="file-view-thumb-container  w-50 mx-auto {{ ($c == 1) ? 'active' : '' }}" id="thumb_{{ $c }}" data-id="{{ $c }}">
                             <div class="file-view-thumb">
                                 <a href="javascript: void(0)"><img class="file-thumb w-100 h-100" src="{{ $image -> file_location }}"></a>
                             </div>
@@ -153,7 +143,7 @@
 <input type="hidden" id="active_page" value="1">
 <input type="hidden" id="active_field">
 
-@foreach($field_types as $field_type)
+{{-- @foreach($field_types as $field_type)
 
     @php
     $field = $field_type -> field_type;
@@ -179,12 +169,12 @@
 
     <input type="hidden" id="{{$field}}_select_options">
 
-@endforeach
+@endforeach --}}
 
 
 
-<input type="hidden" id="inputs_html">
+{{-- <input type="hidden" id="inputs_html">
 
-<div class="modals-div"></div>
+<div class="modals-div"></div> --}}
 
 @endsection

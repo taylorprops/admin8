@@ -20,7 +20,7 @@ class CommonFields extends Model
     public $timestamps = false;
     protected $guarded = [];
 
-    public function scopeGetCommonFields() {
+    /* public function scopeGetCommonFields() {
         $common_fields = CommonFields::select('field_name', 'field_type') -> orderBy('field_order', 'ASC') -> get();
         $common_field_types = $common_fields -> mapToGroups(function ($item, $key) {
             return [ $item['field_type'] => [ $item['field_name'] ] ];
@@ -37,7 +37,7 @@ class CommonFields extends Model
             }
         }
         return $common;
-    }
+    } */
 
     public function ScopeGetCommonNameValue($query, $common_name, $input_id, $field_type, $Listing_ID = null, $Contract_ID = null, $Referral_ID = null, $transaction_type, $Agent_ID) {
 

@@ -31,6 +31,15 @@
 
         }
 
+        /* $('.dropdown-input').on('click', function() {
+            console.log('clicked');
+            $(this).addClass('show');
+            $(this).find('.dropdown-menu').first().addClass('show');
+            if (settings.animation) {
+                $(this).find('.dropdown-menu').first().addClass('animate__animated animate__' + settings.animateIn);
+            }
+        }); */
+
         $('.dropdown-menu a.dropdown-toggle').on('click', function (e) {
             /* if (!$(this).next().hasClass('show')) {
                 $(this).parents('.dropdown-menu').first().find('.show').removeClass('show');

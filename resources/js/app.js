@@ -18,10 +18,13 @@ require('./dashboard/admin.js');
 require('./dashboard/agent.js');
 
 // Document Management
+
+require('./doc_management/resources/resources.js');
+require('./doc_management/resources/common_fields.js');
+require('./admin/resources/resources.js');
+
 require('./doc_management/create/add_fields.js');
 require('./doc_management/create/files.js');
-require('./doc_management/resources/resources.js');
-require('./admin/resources/resources.js');
 require('./doc_management/fill/fill_fields.js');
 require('./doc_management/checklists/checklists.js');
 

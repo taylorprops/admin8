@@ -1,0 +1,18 @@
+.page-common-fields {
+
+    .common-field-input-div *[contentEditable="true"]:focus {
+        outline: 2px solid $blue;
+        background: $blue-light;
+    }
+    .common-field-input-div *[contentEditable="true"]:hover {
+        background: $blue-light;
+    }
+    .save-edit-common-field-button {
+        display: none;
+    }
+
+    .sortable-handle {
+        cursor: pointer;
+    }
+
+}

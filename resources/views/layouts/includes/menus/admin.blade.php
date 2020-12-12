@@ -17,6 +17,7 @@
             <ul class="dropdown-menu" aria-labelledby="resources_dropdown">
                 @if(session('super_user') == true)
                 <li><a href="/doc_management/resources/resources" class="dropdown-item"> Site Resources</a></li>
+                <li><a href="/doc_management/resources/common_fields" class="dropdown-item"> Common Fields</a></li>
                 @endif
                 <li><a href="/admin/resources/resources_admin" class="dropdown-item"> Admin Resources</a></li>
             </ul>

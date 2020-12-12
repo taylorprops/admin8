@@ -1,46 +1,46 @@
-
-* {
+/*
+.mce-content-body * {
     font-family: "Nunito", sans-serif;
     font-size: .9rem;
 }
-td {
+.mce-content-body td {
     padding: 5px;
     font-size: .9rem;
 }
 
-.text-primary {
+.mce-content-body .text-primary {
     color: #4c9bdb;
 }
-.text-success {
+.mce-content-body.text-success {
     color: #12eb12;
 }
-.text-red {
+.mce-content-body .text-red {
     color: #b64341;
 }
-.text-center {
+.mce-content-body .text-center {
     text-align: center;
 }
-.font-12 {
+.mce-content-body .font-12 {
     font-size: 1.2rem;
 }
 
 
-*::-webkit-scrollbar {
+.mce-content-body *::-webkit-scrollbar {
     width: .6em;
 }
 
-*::-webkit-scrollbar-track {
+.mce-content-body *::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(99, 128, 153, 0.3);
 }
 
-*::-webkit-scrollbar-thumb {
+.mce-content-body *::-webkit-scrollbar-thumb {
     background-color: #4c9bdb;
     outline: 1px solid #1972bb;
 }
-* {
+.mce-content-body * {
     scrollbar-width: thin;          /* "auto" or "thin"  */
     scrollbar-color: #1972bb rgba(99, 128, 153, 0.3);
-}
+} */
 
 /* Email Agent */
 

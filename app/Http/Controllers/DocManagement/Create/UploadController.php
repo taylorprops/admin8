@@ -332,18 +332,28 @@ class UploadController extends Controller {
     }
 
     public function save_file_edit(Request $request) {
+
         $file_id = $request -> edit_file_id;
+        $form_group_id = $request -> edit_form_group_id;
+        $checklist_group_id = $request -> edit_checklist_group_id;
         $file_name_display = $request -> edit_file_name_display;
         $helper_text = $request -> edit_helper_text;
         $form_categories = implode(',', $request -> edit_form_categories);
         $form_tags = $request -> edit_form_tags;
 
         $upload = Upload::where('file_id', $file_id) -> first();
+
+        if($upload -> published == 'no') {
+            $upload -> form_group_id = $form_group_id;
+            $upload -> checklist_group_id = $checklist_group_id;
+        }
+
         $upload -> file_name_display = $file_name_display;
         $upload -> helper_text = $helper_text;
         $upload -> form_categories = $form_categories;
         $upload -> form_tags = $form_tags;
         $upload -> save();
+
     }
 
     public function get_upload_text(Request $request) {

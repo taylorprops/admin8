@@ -17,6 +17,12 @@
     #address_search_street, #address_search_unit, #mls_search {
         padding: 10px;
         font-size: 1.2rem;
+        border: 1px solid $border-color;
+
+        &:focus {
+            border-color: rgb(120, 196, 231);
+            box-shadow: 0 0 5px rgb(120, 196, 231);
+        }
     }
     #mls_search {
         text-transform: uppercase;

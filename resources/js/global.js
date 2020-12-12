@@ -25,17 +25,20 @@ $(function() {
     $('#main_nav_bar').bootnavbar({});
 
     toastr.options = {
-        "timeOut": 3000
+        "timeOut": 4000
     }
 
     window.text_editor = function(options) {
-        options.selector = '.text-editor';
+        if(options.selector == '') {
+            options.selector = '.text-editor';
+        }
         options.content_css = '/css/tinymce.css';
         options.force_p_newlines = false;
         options.forced_root_block = '';
 
         tinymce.init(options);
     }
+
 
 
     // send csrf with every ajax request
@@ -163,6 +166,8 @@ $(function() {
         datatable_settings.dom = '<"d-flex justify-content-between align-items-center text-gray"'+search+length+buttons+'>rt<"d-flex justify-content-between align-items-center text-gray"'+info + paging+'>'
 
         table.DataTable(datatable_settings);
+
+        //$('.dt-buttons .btn-secondary span').css({ color: 'white' });
 
     }
 

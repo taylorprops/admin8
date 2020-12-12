@@ -1,135 +1,39 @@
 if (document.URL.match(/create\/add_fields/)) {
 
+    /* TODO:
+    set all default values
+    restore default values when not saved
+    on add field - get common/custom name and other details from group
+
+    delete docs_create_field_types table
+    remove FieldTypes model
+    */
     $(function() {
 
-        // TODO run field_status() after any add or remove
-
-        set_common_fields();
-        /* setTimeout(function () {
-            field_list();
-        }, 200); */
-
         // Show active field
-        $('.field-wrapper').on('click', function () {
+        $(document).on('click', '.field-wrapper', function () {
             $('.field-wrapper').removeClass('active');
             $(this).addClass('active');
             $('#active_field').val($(this).data('type'));
         });
 
-        // set field options on load
-        if ($('.field-div').length > 0) {
-
-            $('.field-div').each(function () {
-
-                let group_id = $(this).data('group-id');
-                let field_type = $(this).data('type');
-
-                $(this).find('.field-properties').data('field-type', field_type);
-
-                // add grouped class
-                if ($('.group_' + group_id).length > 1) {
-                    $('.group_' + group_id).removeClass('standard').addClass('group');
-                };
-                // hide add item on all fields of group but last
-                $('.group_' + group_id).find('.add-item-container').hide();
-                $('.group_' + group_id).find('.add-item-container').last().show();
-
-                set_field_options(field_type, $(this));
-                set_hwxy($(this), $(this).data('group-id'), field_type);
-
-            });
-
-            $('.focused').hide();
-
-            field_status();
-            setTimeout(function () {
-                field_list();
-                global_loading_off();
-            }, 10);
-
-
-        }
-
-        $('#save_add_fields').off('click').on('click', save_add_fields);
-
-
-        // on page double click add field
-        // changed from just .file-view-page-container.active - adding .file-image prevents new field being created when double clicking in edit properties div
-        //$('.file-view-page-container.active .file-image').on('dblclick', function (e) {
-        $('#file_viewer').off('dblclick').on('dblclick', '.file-view-page-container.active .file-image', function (e) {
-
-            // get container so easier to find elements
-            let container = $(e.target.parentNode);
-
-            let field_type = $('#active_field').val();
-
-            // only if a field has been selected
-            if (field_type != '') {
-
-                // get bounding box coordinates
-                let rect = e.target.getBoundingClientRect();
-                // get target coordinates
-                let x = parseInt(Math.round(e.clientX - rect.left));
-                let y = parseInt(Math.round(e.clientY - rect.top));
-
-                let x_perc = pix_2_perc_xy('x', x, container);
-                let y_perc = pix_2_perc_xy('y', y, container);
-
-                let ele_h_perc = 1.3;
-                if (field_type == 'radio' || field_type == 'checkbox') {
-                    ele_h_perc = 1.1;
-                }
-                // remove element height from top position
-                y_perc = y_perc - ele_h_perc;
-
-                // set w and h for new field
-                let h_perc, w_perc;
-                if (field_type == 'radio' || field_type == 'checkbox') {
-                    h_perc = 1.1;
-                    w_perc = 1.45;
-                } else {
-                    h_perc = $('#field_' + field_type + '_heightp').val();
-                    //w_perc = $('#field_' + field_type + '_widthp').val();
-                    w_perc = 10;
-                }
-                h_perc = parseFloat(h_perc);
-                w_perc = parseFloat(w_perc);
-                // let h = perc_2_pix('height', h_perc, container);
-                // let w = perc_2_pix('width', w_perc, container);
-
-                // hide all handles and buttons
-                $('.focused').hide();
-
-                // create unique id for field
-                let field_id = Date.now();
-
-                //create field and attach to container
-                let field = field_html(h_perc, w_perc, x_perc, y_perc, field_id, field_id, $('#active_page').val(), field_type);
-
-                // append new field
-                $(container).append(field);
-
-                $('.draggable').draggable({
-                    handle: '.draggable-handle'
-                });
-
-                $('.field-div').removeClass('active');
-                $('#field_' + field_id).addClass('active');
-
-                set_hwxy($('#field_' + field_id), field_id, field_type);
-
-                keep_in_view($('#field_' + field_id), w_perc, x_perc, y_perc, field_type);
-                /* let field_div_x = $('#field_'+field_id).position().left;
-                position_edit_properties_div(field_div_x); */
-
-                $('#field_'+field_id).find('.focused').show();
-
-                if(field_type != 'checkbox') {
-                    get_edit_properties_html(field_id, field_id, field_type, rect, container, $('#field_'+field_id));
-                }
-
-            }
+        // open field when clicked
+        $(document).on('click', '.field-div', function() {
+            hide_active_field();
+            $(this).closest('.field-div-container').addClass('show');
         });
+
+        // remove field
+        $(document).on('click', '.remove-field', function() {
+            $(this).closest('.field-div-container').remove();
+        });
+
+        // hide all active fields when page clicked
+        $('.field-select-container div, .file-image').on('click', function() {
+            hide_active_field();
+        });
+
+        //$('#save_add_fields').off('click').on('click', save_add_fields);
 
         $('.delete-page-button').on('click', delete_page);
 
@@ -174,91 +78,582 @@ if (document.URL.match(/create\/add_fields/)) {
 
         });
 
-        let show_field_name_running = 'no';
-        // remove common name when custom name is type in
-        $(document).on('change', '.field-data-name', function(e) {
+        // add new field on dblclick
+        $('#file_viewer').off('dblclick').on('dblclick', '.file-view-page-container.active .file-image', function (e) {
 
-            if(e.target.classList.contains('field-data-name')) {
+            let field_type = $('#active_field').val();
+            let active_page = $('#active_page').val();
 
-                let select = $(this);
-                if(show_field_name_running == 'no') {
-                    show_field_name(select);
+            // only if a field has been selected
+            if (field_type != '') {
+
+                hide_active_field();
+
+                let container = $(e.target.parentNode);
+
+                let coords = set_and_get_field_coordinates(e, null, field_type);
+                let x_perc = coords.x;
+                let y_perc = coords.y;
+                let h_perc = coords.h;
+                let w_perc = coords.w;
+
+                // create unique id for field
+                let field_id = Date.now();
+
+                //create field and attach to container
+                let field = field_html(h_perc, w_perc, x_perc, y_perc, field_id, field_id, active_page, field_type);
+
+                // append new field
+                container.append(field);
+
+                let ele = $('.field-div-container.show');
+
+                // run this again in case it was placed out of bounds
+                set_and_get_field_coordinates(null, ele, field_type);
+
+                set_field_options(ele);
+
+
+
+            }
+        });
+
+        function set_field_options(ele) {
+
+            let field_type = ele.find('.field-div').data('type');
+            let container = ele.closest('.field-container');
+
+            if(field_type != 'checkbox') {
+                get_edit_properties_html($('.field-div-container.show .field-div'));
+            }
+
+            let handles = {
+                'e': '.ui-resizable-e', 'w': '.ui-resizable-w'
+            };
+            let aspect_ratio = '';
+            // not resizable
+            if (field_type == 'checkbox' || field_type == 'radio') {
+                aspect_ratio = '4 / 4';
+            }
+
+            // make field resizable
+            if (field_type != 'checkbox' && field_type != 'radio') {
+                ele.resizable({
+                    containment: container,
+                    handles: handles,
+                    aspectRatio: aspect_ratio,
+                    stop: function (e, ui) {
+                        let resized_ele = $(e.target);
+                        set_and_get_field_coordinates(null, resized_ele, field_type);
+                    }
+                });
+            }
+
+            // make field draggable
+            ele.draggable({
+                containment: container,
+                handle: '.field-handle',
+                cursor: 'grab',
+                stop: function (e, ui) {
+                    let dragged_ele = $(e.target);
+                    set_and_get_field_coordinates(null, dragged_ele, field_type);
                 }
+            });
 
-                let field_div = select.closest('.field-div');
-                let field_id = field_div.data('field-id');
-                let edit_div = field_div.find('.edit-properties-div');
-                let inputs_container = edit_div.find('.field-inputs-div');
+            // add additional fields to group
+            if (field_type != 'date') {
+                // add items to group
+                ele.find('.add-field-button').off('click').on('click', function () {
+                    add_item(ele, field_type);
+                });
+            }
 
-                if(field_div.data('type') == 'address') {
+            // adjust y_perc with slider
+            $('.mini-slider-option').on('click', function () {
+                mini_slider($(this));
+            });
 
-                    add_address_inputs(field_id, inputs_container, select);
-                    name_required(select.closest('.form-div'));
+        }
 
-                } else if (field_div.data('type')  == 'name') {
-                    add_name_inputs(field_id, inputs_container, select);
+        function field_html(h_perc, w_perc, x_perc, y_perc, field_id, group_id, page, field_type) {
+
+            //console.log('running field_html');
+
+            let handles = ' \
+            <div class="ui-resizable-handle ui-resizable-e focused field-div-options"></div> \
+            <div class="ui-resizable-handle ui-resizable-w focused field-div-options"></div> \
+            ';
+            let field_class = '';
+            let field_data = '';
+            let hide_add_option = '';
+
+            let position = x_perc > 50 ? 'right' : '';
+            let field_div_properties = ' \
+            <div class="field-div-properties bg-white border shadow pt-0 pb-2 px-2  '+position+'"> \
+                <div class="field-div-properties-html"></div> \
+            </div> \
+            ';
+
+            if (field_type == 'textline' || field_type == 'number') {
+                field_class = 'textline-div standard';
+                field_data = '<div class="textline-html"></div>';
+            } else if (field_type == 'radio') {
+                handles = '';
+                field_class = 'radio-div standard';
+                field_data = '<div class="radio-html"></div>';
+            } else if (field_type == 'checkbox') {
+                handles = '';
+                field_class = 'checkbox-div standard';
+                field_data = '<div class="checkbox-html"></div>';
+                field_div_properties = '';
+            } else if (field_type == 'date') {
+                field_class = 'textline-div standard';
+                field_data = '<div class="textline-html"></div>';
+                hide_add_option = 'hidden';
+            }
+
+            let field_div_html = ' \
+            <div class="field-div-container show" id="field_container_' + field_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;"> \
+                <div class="field-div '+ field_class + ' group_' + group_id + '" id="field_' + field_id + '" data-field-id="' + field_id + '" data-group-id="' + group_id + '" data-type="' + field_type + '" data-page="' + page + '"> \
+                    <div class="field-status-name-div"></div> \
+                </div> \
+                <div class="field-div-options"> \
+                    <div class="d-flex justify-content-start field-div-controls '+position+'"> \
+                        <a type="button" href="javascript: void(0)" class="btn btn-primary ml-0 mr-1 field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
+                        <a type="button" href="javascript: void(0)" class="btn btn-primary ml-0 mr-1 mini-slider-option" data-direction="up"><i class="fal fa-arrow-up fa-lg"></i></a> \
+                        <a type="button" href="javascript: void(0)" class="btn btn-primary ml-0 mr-1 mini-slider-option" data-direction="down"><i class="fal fa-arrow-down fa-lg"></i></a> \
+                        <a type="button" href="javascript: void(0)" class="btn btn-primary ml-0 mr-1 add-field-button '+hide_add_option+'"><i class="fal fa-plus fa-lg"></i></a> \
+                    </div> \
+                    '+field_div_properties+' \
+                </div> \
+                '+handles+' \
+                '+field_data+' \
+            </div> \
+            ';
+
+            return field_div_html;
+        }
+
+        function get_edit_properties_html(ele) {
+
+            //console.log('running get_edit_properties_html');
+
+            let field_id = ele.data('field-id');
+            let group_id = ele.data('group-id');
+            let field_type = ele.data('type');
+
+            let common_name = $('.group_' + group_id).data('commonname');
+            let custom_name = $('.group_' + group_id).data('customname');
+
+            axios.get('/doc_management/get_edit_properties_html', {
+                params: {
+                    file_id: $('#file_id').val(),
+                    field_id: field_id,
+                    field_type: field_type,
+                    group_id: group_id
+                },
+                headers: {
+                    'Accept-Version': 1,
+                    'Accept': 'text/html',
+                    'Content-Type': 'text/html'
+                }
+            })
+            .then(function (response) {
+
+                let edit_properties_html = response.data;
+                let field_container = $('#field_container_'+field_id);
+                field_container.find('.field-div-properties-html').html(edit_properties_html);
+
+                // dropdowns for common fields
+                field_container.find('.dropdown').not('.dropdown-input').on('mouseenter', function() {
+                    $(this).addClass('show').find('.dropdown-menu').first().addClass('show');
+                })
+                .on('mouseleave', function() {
+                    $(this).removeClass('show').find('.dropdown-menu').first().removeClass('show');
+                });
+                field_container.find('.dropdown-input').on('click', function(e) {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    $(this).addClass('show').find('.dropdown-menu').first().addClass('show');
+                }).on('mouseleave', function() {
+                    $(this).removeClass('show').find('.dropdown-menu').first().removeClass('show');
+                });
+
+                $('.save-field-properties-button').on('click', function() {
+                    save_edit_properties($(this));
+                });
+
+                // when the common field name is clicked add to input and add ID to hidden input
+                $('.field-name').on('click', function() {
+
+                    let field_name = $(this).text();
+                    let field_id = $(this).data('field-id');
+                    let field_sub_type = $(this).data('field-sub-type');
+
+                    let parent = $(this).closest('.edit-properties-div');
+                    // clear custom name input
+                    parent.find('.custom-field-name').val('').removeClass('required');
+                    // add field name
+                    parent.find('.common-field-name-input, .common-field-name').val(field_name).addClass('required');
+                    // add field id
+                    parent.find('.common-field-id').val(field_id);
+                    parent.find('.common-field-sub-type').val(field_sub_type);
+                    // hide dropdown
+                    setTimeout(function() {
+                        $('.dropdown-input, .dropdown-menu').removeClass('show');
+                    }, 100);
+
+                });
+
+                // clear common name if custom name entered
+                field_container.find('.custom-field-name').on('change', function() {
+                    if($(this).val() != '') {
+                        $(this).addClass('required');
+                        field_container.find('.common-field-name-input, .common-field-name').val('').removeClass('required');
+                    }
+                });
+
+                // show list of custom names already added
+                field_container.find('.field-data-name').on('keyup', show_custom_names);
+
+                // clear button on dropdown to remove value from input
+                $('.clear-common-field-name').on('click', function() {
+                    $(this).closest('.edit-properties-div').find('.common-field-name-input, .common-field-name').val('');
+                    setTimeout(function() {
+                        $('.dropdown-input, .dropdown-menu').removeClass('show');
+                    }, 200);
+                });
+
+                // close field options button
+                $('.close-field-options').on('click', function() {
+                    hide_active_field();
+                });
+
+                ele.find('.form-select.field-data-name').val(common_name).data('default-value', common_name);
+                ele.find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name);
+
+                select_refresh();
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        function save_edit_properties(button) {
+
+            //console.log('running save_edit_properties');
+
+            // TODO: need to validate form
+
+
+            let field_div_container = button.closest('.field-div-container');
+            let field_div = field_div_container.find('.field-div');
+            let group_id = button.data('group-id');
+            let field_id = button.data('field-id');
+            let field_type = button.data('field-type');
+
+            let common_name = field_div_container.find('.common-field-name').val();
+            let custom_name = field_div_container.find('.custom-field-name').val();
+            let common_field_id = field_div_container.find('.common-field-id').val();
+            let common_field_sub_type = field_div_container.find('.common-field-sub-type').val();
+
+
+            if (field_type != 'checkbox') {
+
+                // set default values of field
+                field_div_container.find('input').not('[type=radio]').each(function () {
+                    $(this).data('default-value', $(this).val());
+                });
+
+                // set values and default values of any other fields in group.
+                $('.group_' + group_id).each(function () {
+
+                    $(this).data('commonname', common_name).data('customname', custom_name);
+
+                    let group_div_container = $(this).closest('.field-div-container');
+                    // radio will always be a custom name
+                    if (field_type != 'radio') {
+                        // add field name to display
+                        group_div_container.find('.field-status-name-div').text(custom_name+common_name);
+                        group_div_container.find('.common-field-name-input, .common-field-name').val(common_name).data('default-value', common_name);
+                        group_div_container.find('.common-field-id').val(common_field_id).data('default-value', common_field_id);
+                        group_div_container.find('.common-field-sub-type').val(common_field_sub_type).data('default-value', common_field_sub_type);
+                    }
+                    group_div_container.find('.custom-field-name').val(custom_name).data('default-value', custom_name);
+
+                });
+
+                if(field_type == 'number') {
+                    // set default values for number inputs
+                    let number_type_radio = field_div_container.find('.number-type');
+                    number_type_radio.data('default-value', '');
+                    number_type_radio.filter(':checked').data('default-value', 'checked');
+                    let number_type = number_type_radio.filter(':checked').val();
+
+                    // update other number types to written if this is numeric. There will be one numeric and possibly multiple written
+                    if (number_type == 'numeric') {
+                        $('.group_' + group_id).each(function() {
+                            if($(this).prop('id') != 'field_'+field_id) {
+                                // uncheck all and clear default value
+                                $(this).closest('.field-div-container').find('.number-type').prop('checked', false).data('default-value', '');
+                                // set written field as checked and update default value
+                                $(this).closest('.field-div-container').find('[value=written]').prop('checked', true).data('default-value', 'checked');
+                            }
+                        });
+                    }
+
                 }
 
             }
-            return;
 
-        });
+            field_div_container.find('.alert').removeClass('hide').addClass('show');
+            field_div_container.find('input').on('change', function() {
+                field_div_container.find('.alert').removeClass('show').addClass('hide');
+            });
 
 
 
-        // on page click hide all focused els
-        $(document).on('mousedown', '.file-view-container *', function (e) {
 
-            // save edit properties for each field
-            if(e.target.classList.contains('field-save-properties')) {
+        }
 
-                let button = $(e.target);
-                save_field_properties(button);
+        function add_item(ele, field_type) {
 
-            // closed edit fields for all when close button clicked, clicked outside of edit field area or options at top clicked
-            } else if(e.target.classList.contains('close-field-options') || e.target.classList.contains('field-wrapper') || e.target.closest('.field-wrapper')) {
+            //console.log('running add_item');
 
-                if($('.field-div.active').length > 0) {
-                    $('.field-div.active').find('.focused').hide();
-                    $('.field-div.active').find('.collapse').removeClass('show');
-                    $('.field-div.active').removeClass('active');
+            hide_active_field();
+
+            // assign group id for original field
+            let group_id = ele.find('.field-div').data('group-id');
+
+            // get original field input values
+            let common_name, common_field_id, common_field_sub_type, custom_name, number_type;
+
+            if (field_type != 'radio') {
+                common_name = ele.find('.common-field-name').val();
+                common_field_id = ele.find('.common-field-id').val();
+                common_field_sub_type = ele.find('.common-field-sub-type').val();
+            }
+            custom_name = ele.find('.custom-field-name').val();
+
+            if(field_type == 'number') {
+                number_type = ele.find('.number-type:checked').val();
+            }
+
+
+            let coords = set_and_get_field_coordinates(null, ele, field_type);
+            let x_perc = coords.x;
+            let y_perc = coords.y;
+            let h_perc = coords.h;
+            let w_perc = coords.w;
+            // add spacing
+            y_perc = y_perc + (h_perc * 1.5);
+
+            if ((parseFloat(y_perc) + parseFloat(h_perc)) > 99) {
+                toastr['error']('Field must be on the page');
+                return false;
+            }
+
+            // create new id for new field in group
+            field_id = Date.now();
+            let field = field_html(h_perc, w_perc, x_perc, y_perc, field_id, group_id, $('#active_page').val(), field_type);
+            // append new field
+            ele.closest('.field-container').append(field);
+
+            let new_ele = $('.field-div-container.show');
+
+            set_and_get_field_coordinates(null, new_ele, field_type);
+            set_field_options(new_ele);
+
+            setTimeout(function() {
+                // assign group field_id to new field
+                new_ele.find('.field-div').data('group-id', group_id).addClass('group_' + group_id);
+                $('.group_' + group_id).removeClass('standard').addClass('group');
+
+                // add field values and default data values from other fields in group
+                if (field_type != 'radio') {
+                    // add field name to display
+                    new_ele.find('.field-status-name-div').text(custom_name+common_name);
+                    new_ele.find('.common-field-name-input, .common-field-name').val(common_name).data('default-value', common_name);
+                    new_ele.find('.common-field-id').val(common_field_id).data('default-value', common_field_id);
+                    new_ele.find('.common-field-sub-type').val(common_field_sub_type).data('default-value', common_field_sub_type);
                 }
+                new_ele.find('.custom-field-name').val(custom_name).data('default-value', custom_name);
 
-            } else if(e.target.classList.contains('remove-field') || e.target.closest('.remove-field')) {
+                // if a number and previous field is numeric this has to be written
+                if(field_type == 'number') {
+                    if(number_type == 'numeric') {
+                        new_ele.find('.number-type[value=written]').prop('checked', true).data('default-value', 'checked');
+                    }
+                }
+            }, 200);
 
-                remove_field();
+        }
 
-            } else if(e.target.classList.contains('field-name-result')) {
+        function mini_slider(ele) {
 
+            let dir = ele.data('direction');
+            let operator = (dir == 'up') ? '-' : '+';
+            let field_div_container = ele.closest('.field-div-container');
+            let field_div = ele.closest('.field-div');
+            let field_type = field_div.data('type');
+            field_div_container.css({ top: operator + '=.05%' });
+            // set new h,w,x,y after moving up and down
+            set_and_get_field_coordinates(null, field_div_container, field_type);
 
-                let edit_div = $(this).closest('.field-div').find('.edit-properties-div');
-                edit_div.find('.form-input.field-data-name').val($(this).text());
-                edit_div.find('.custom-name-results').hide();
-                e.stopPropagation();
+        }
 
+        function set_and_get_field_coordinates(e, ele, field_type) {
 
+            let container, x, y;
+
+            // if from dblclick to add field
+            if(e) {
+
+                // get container
+                container = $(e.target.parentNode);
+                ele = $(e.target);
+                // get bounding box coordinates
+                let target_boundaries = e.target.getBoundingClientRect();
+
+                // get target coordinates
+                // subtract bounding box coordinates from target coordinates to get top and left positions
+                // coordinates are relative to bounding box coordinates
+                x = parseInt(Math.round(e.clientX - target_boundaries.left));
+                y = parseInt(Math.round(e.clientY - target_boundaries.top));
+
+            // coordinates of existing field
             } else {
 
-                if (!$(e.target).is('.field-div *')) {
-                    $('.collapse').removeClass('show');
-                }
-                if (!$(e.target).is('.custom-name-results *')) {
-                    $('.custom-name-results').hide();
-                }
-                /* if (!$(e.target).is('.edit-properties-container *')) {
-                    $('.edit-properties-container').collapse('hide');
-                } */
-                if(!$(e.target).is('.mini-slider-div.active *')) {
-                    $('.mini-slider-div.active').hide().removeClass('active');
-                }
+                container = ele.parent();
+                x = ele.position().left;
+                y = ele.position().top;
 
             }
 
-        });
+            // convert to percent
+            let x_perc = pix_2_perc_xy('x', x, container);
+            let y_perc = pix_2_perc_xy('y', y, container);
+
+            //set heights
+            let ele_h_perc = 1.3;
+            if (field_type == 'radio' || field_type == 'checkbox') {
+                ele_h_perc = 1.1;
+            }
+            if(e) {
+                // remove element height from top position
+                y_perc = y_perc - ele_h_perc;
+            }
+
+            // set w and h for new field
+            let h_perc, w_perc;
+            if (field_type == 'radio' || field_type == 'checkbox') {
+                h_perc = 1.1;
+                w_perc = 1.45;
+            } else {
+                h_perc = 1.3;
+                w_perc = 15;
+            }
+            h_perc = parseFloat(h_perc);
+            w_perc = parseFloat(w_perc);
+
+            // field data percents
+            let field_div = ele.find('.field-div');
+            field_div.data('hp', h_perc);
+            field_div.data('wp', w_perc);
+            field_div.data('xp', x_perc);
+            field_div.data('yp', y_perc);
 
 
+            // keep in view
+            if (x_perc < 0) {
+                ele.animate({ left: 0 + '%' }).find('field-div').data('wp', '0');
+            }
+            if ((x_perc + w_perc) > 100) {
+                let pos = 100 - w_perc;
+                ele.animate({ left: pos + '%' }).find('field-div').data('wp', pos);
+            }
 
+            if (y_perc < 0) {
+                ele.animate({ top: '0%' }).find('field-div').data('yp', '0');
+            }
 
+            setTimeout(function() {
+                ele.find('.dropdown, .field-div-properties, .field-div-controls').removeClass('right');
+                if(x_perc > 50) {
+                    ele.find('.dropdown, .field-div-properties, .field-div-controls').addClass('right');
+                }
+            }, 300);
+
+            return {
+                h: h_perc,
+                w: w_perc,
+                x: x_perc,
+                y: y_perc
+            }
+
+        }
+
+        function hide_active_field() {
+
+            // reset all fields to default values
+            let field_div_container = $('.field-div-container.show');
+
+            field_div_container.find('input[type="text"]').each(function() {
+                $(this).val($(this).data('default-value'));
+            });
+            field_div_container.find('input[type="radio"]').each(function() {
+                if($(this).data('default-value') == 'checked') {
+                    $(this).prop('checked', true);
+                }
+            });
+
+            field_div_container.removeClass('show');
+        }
+
+        function pix_2_perc_xy(type, px, container) {
+            if (type == 'x') {
+                return (100 * parseFloat(px / parseFloat(container.width())));
+            } else {
+                return (100 * parseFloat(px / parseFloat(container.height())));
+            }
+        }
+
+        function show_custom_names() {
+            let input = $(this);
+            let field_div = input.closest('.field-div-container');
+
+            if(input.val() != '') {
+
+                axios.get('/doc_management/get_custom_names', {
+                    params: {
+                        val: input.val()
+                    }
+                })
+                .then(function (response) {
+
+                    field_div.find('.dropdown-results-div').html('');
+                    response.data.custom_names.forEach(function (result) {
+                        field_div.find('.dropdown-results-div').append('<a href="javascript: void(0)" class="list-group-item list-group-item-action field-name-result">'+result['field_name_display']+'</a>');
+                    });
+                    field_div.find('.custom-name-results').show();
+
+                    $('.field-name-result').on('click', function() {
+                        let edit_div = $(this).closest('.field-div-container').find('.edit-properties-div');
+                        edit_div.find('.form-input.field-data-name').val($(this).text());
+                        edit_div.find('.custom-name-results').hide();
+                    });
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            } else {
+                field_div.find('.custom-name-results').hide();
+
+            }
+        }
 
         function delete_page() {
 
@@ -282,926 +677,45 @@ if (document.URL.match(/create\/add_fields/)) {
             });
         }
 
-        function reset_field_properties(field_id) {
+/*
 
-            //console.log('running reset_field_properties');
+        // set field options on load
+        if ($('.field-div').length > 0) {
 
-            // reset name fields
-            $('#field_'+field_id).find('select, input').not('input.form-select-search-input, input.form-select-value-input').each(function () {
-                $(this).val($(this).data('default-value'));
-            });
-            select_refresh();
+            $('.field-div').each(function () {
 
-        }
+                let group_id = $(this).data('group-id');
+                let field_type = $(this).data('type');
 
-        function set_field_options(field_type, ele) {
+                $(this).find('.field-properties').data('field-type', field_type);
 
-            //console.log('running set_field_options');
-
-            let field_id = ele.data('field-id');
-
-            // get bounding box coordinates
-            let rect = ele[0].getBoundingClientRect();
-            let container = ele.closest('.field-container');
-
-            let handles = {
-                'e': '.ui-resizable-e', 'w': '.ui-resizable-w'
-            };
-            let aspect_ratio = '';
-            if (field_type == 'checkbox' || field_type == 'radio') {
-                aspect_ratio = '4 / 4';
-            }
-
-            ele.off('click').on('click', function (e) {
-
-                if (e.target === e.currentTarget) {
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                }
-
-
-                //$('.edit-properties-container').removeClass('show');
-
-                $('.focused').hide();
-                ele.find('.focused').show();
-                $('.field-div').removeClass('active');
-                ele.addClass('active');
-                //let group_id = ele.data('group-id');
-
-                //set_hwxy(ele, group_id, field_type);
-
-                /* let x = $('#field_'+field_id).position().left;
-                position_edit_properties_div(x); */
-
-
-
-            });
-
-            if (field_type != 'checkbox' && field_type != 'radio') {
-                ele.resizable({
-                    containment: container,
-                    handles: handles,
-                    aspectRatio: aspect_ratio,
-                    stop: function (e, ui) {
-                        let resized_ele = $(e.target);
-                        setTimeout(function() {
-                            set_hwxy(resized_ele, '', field_type);
-                        }, 500);
-
-                    }
-                });
-
-
-            }
-
-            ele.draggable({
-                containment: container,
-                handle: '.field-handle',
-                cursor: 'grab',
-                stop: function (e, ui) {
-                    let dragged_ele = $(e.target);
-                    let dragged_x = ui.position.left;
-                    let dragged_y = ui.position.top;
-                    /* let dragged_x_perc = pix_2_perc_xy('x', dragged_x, container);
-                    let dragged_y_perc = pix_2_perc_xy('y', dragged_y,container); */
-                    let dragged_h = dragged_ele.height();
-                    let dragged_w = dragged_ele.width();
-                    /* let dragged_h_perc = pix_2_perc_hw('height', dragged_h, container);
-                    let dragged_w_perc = pix_2_perc_hw('width', dragged_w, container);
-                    let dragged_group_id = dragged_ele.data('group-id'); */
-
-                    /* let x = dragged_x;
-                    position_edit_properties_div(x); */
-
-                    setTimeout(function() {
-                        set_hwxy(dragged_ele, '', field_type);
-                        //keep_in_view(dragged_ele, dragged_w_perc, dragged_x_perc, dragged_y_perc, field_type);
-                    }, 200);
-
-                }
-            });
-
-
-            // add additional fields to group
-            if (field_type != 'date') {
-                // add items to group
-                ele.find('.field-add-item').off('click').on('click', function () {
-
-                    add_item(ele, container, field_type, rect);
-
-                });
-            }
-
-
-
-            // mini-slider
-            $('.mini-slider-button').off('click').on('click', function () {
-                let minislider = $(this).closest('.field-options-holder').find('.mini-slider-div');
-                minislider.show().addClass('active');
-                $('.mini-slider-option').off('click').on('click', function () {
-                    let dir = $(this).data('direction');
-                    let operator = (dir == 'up') ? '-' : '+';
-                    let field_div = $(this).closest('.field-div');
-                    let field_type = field_div.data('type');
-                    field_div.css({ top: operator + '=.05%' });
-                    // set new h,w,x,y after moving up and down
-                    set_hwxy(field_div, '', field_type);
-                });
-
-            });
-
-            // add properties
-            $('.field-properties').off('click').on('click', function () {
-                show_edit_properties($(this));
-            });
-
-            form_elements();
-
-        }
-
-        function show_edit_properties(ele) {
-
-            //console.log('running show_edit_properties');
-
-            let field_type = ele.data('field-type');
-            let field_id = ele.data('field-id');
-            let edit_div = ele.closest('.field-div').find('.edit-properties-div');
-            let inputs_container = edit_div.find('.field-inputs-div');
-
-            /* if(edit_div.css('display') === 'block') {
-                edit_div.hide();
-            } else {
-                edit_div.show();
-            } */
-
-
-            //store inputs html in input to be restored on cancel
-            $('#inputs_html').val(inputs_container.html());
-
-            let x = $('#field_'+field_id).position().left;
-            position_edit_properties_div(x);
-
-            // prevent new field being created
-            $('.edit-properties-div *').off('dblclick').on('dblclick', function (event) {
-                event.stopPropagation();
-            });
-
-            let select = edit_div.find('.form-select.field-data-name');
-
-            edit_div.find('.form-input.field-data-name').on('keyup', function () {
-
-                if($(this).val() != '') {
-
-                    axios.get('/doc_management/get_custom_names', {
-                        params: {
-                            val: $(this).val()
-                        }
-                    })
-                    .then(function (response) {
-
-                        edit_div.find('.dropdown-results-div').html('');
-                        response.data.custom_names.forEach(function (result) {
-                            edit_div.find('.dropdown-results-div').append('<a href="javascript: void(0)" class="list-group-item list-group-item-action field-name-result">'+result['field_name_display']+'</a>');
-                        });
-                        edit_div.find('.custom-name-results').show();
-
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-
-                } else {
-                    edit_div.find('.custom-name-results').hide();
-
-                }
-
-            });
-
-
-            // clear fields on cancel
-            $('.edit-properties-container').off().on('hidden.bs.collapse', function (e) {
-
-                reset_field_properties(field_id);
-
-                let form = $(this).find('.form-div');
-                form.find('.field-inputs-div').html($('#inputs_html').val());
-
-                //edit_div.hide();
-
-            });
-        }
-
-        function add_item(ele, container, field_type, rect) {
-
-            //console.log('running add_item');
-
-            $('.collapse').removeClass('show');
-
-            // assign group id for original field
-            let group_id = $(this).data('group-id');
-
-            /* let common_name = $('.group_' + group_id).data('commonname');
-            let custom_name = $('.group_' + group_id).data('customname'); */
-            $('.group_' + group_id).removeClass('standard').addClass('group');
-
-            // get h,w, x, y etc. incase it was changed during a drag or resize
-            let field_div = ele.closest('.field-div');
-            let h = field_div.height();
-            let w = field_div.width();
-            let h_perc = pix_2_perc_hw('height', h, container);
-            let w_perc = pix_2_perc_hw('width', w, container);
-            let x = field_div.position().left;
-            let y = field_div.position().top;
-            let x_perc = pix_2_perc_xy('x', x, container);
-            let y_perc = pix_2_perc_xy('y', y,container);
-
-            // drop the new line height of ele below the original
-            let spacing = 1.5;
-            if (field_type == 'radio' || field_type == 'checkbox') {
-                spacing = 1.5;
-            }
-            y_perc = y_perc + (h_perc * spacing);
-
-
-            // create new id for new field in group
-            field_id = Date.now();
-            let field = field_html(h_perc, w_perc, x_perc, y_perc, field_id, group_id, $('#active_page').val(), field_type);
-            // append new field
-            ele.closest('.field-container').append(field);
-
-            let new_ele = $('#field_' + field_id);
-
-            $('.focused').fadeOut();
-
-            setTimeout(function() {
-
-                $('.field-div').removeClass('active');
-                new_ele.addClass('active').find('.focused').fadeIn();
-
-                let new_h = new_ele.height();
-                let new_w = new_ele.width();
-                let new_h_perc = pix_2_perc_hw('height', new_h, container);
-                let new_w_perc = pix_2_perc_hw('width', new_w, container);
-                let new_x = new_ele.position().left;
-                let new_y = new_ele.position().top;
-                let new_x_perc = pix_2_perc_xy('x', new_x, container);
-                let new_y_perc = pix_2_perc_xy('y', new_y,container);
-
-                if ((parseFloat(new_y_perc) + parseFloat(new_h_perc)) > 99) {
-                    new_ele.css({ border: '3px dotted #900' });
-                    setTimeout(function () {
-                        new_ele.remove();
-                    }, 1000);
-                    return false;
-                }
-
-                set_hwxy(new_ele, '', field_type);
-
-                // assign group field_id to new field
-                new_ele.data('group-id', group_id).removeClass('standard').addClass('group').addClass('group_' + group_id);
-
-                // move add line option to last line
+                // add grouped class
+                if ($('.group_' + group_id).length > 1) {
+                    $('.group_' + group_id).removeClass('standard').addClass('group');
+                };
+                // hide add item on all fields of group but last
                 $('.group_' + group_id).find('.add-item-container').hide();
                 $('.group_' + group_id).find('.add-item-container').last().show();
 
-                get_edit_properties_html(field_id, group_id, field_type, rect, container, new_ele);
+                set_field_options(field_type, $(this));
+                set_hwxy($(this), $(this).data('group-id'), field_type);
 
-            }, 100);
-        }
-
-        function remove_field() {
-
-            //console.log('running remove_field');
-
-            let remove_group_id = $('.field-div.active').data('group-id');
-            $('.field-div.active').remove();
-
-            let group = $('.group_' + remove_group_id);
-            if (group.length > 1) {
-                // hide add line option for all but last
-                group.find('.add-item-container').hide();
-                group.find('.add-item-container').last().show();
-            } else {
-                group.find('.add-item-container').show();
-            }
-            // see if other divs in a group and if just one remove group class and group icon from field-status-group-div
-            if (group.length == 1) {
-                group.removeClass('group').addClass('standard').find('.field-status-group-div').html('');
-            }
-
-            field_status();
-            setTimeout(function () {
-                field_list();
-            }, 200);
-        }
-
-        function show_field_name(ele) {
-
-            //console.log('running show_field_name');
-
-            if(show_field_name_running == 'no') {
-
-                show_field_name_running = 'yes';
-                let field = ele;
-                let form_div = field.closest('.form-div');
-                let inputs_container = form_div.find('.field-inputs-div');
-                if(field.val() != '') {
-                    if(field.hasClass('form-input')) {
-                        form_div.find('.form-select.field-data-name').val('');
-                        select_refresh();
-                        inputs_container.html('');
-                    } else if(field.hasClass('form-select')) {
-                        form_div.find('.form-input.field-data-name').val('');
-                    }
-                }
-                show_field_name_running = 'no';
-
-            }
-
-        }
-
-        function position_edit_properties_div(x) {
-
-            //console.log('running position_edit_properties_div');
-
-            let width = $('#file_viewer').width();
-            if(x < (width / 4)) {
-                $('.edit-properties-container').css({ left: '0px', right: '' });
-                $('.field-options-holder').css({ left: '-8px', right: '' });
-            } else if(x > (width / 4) && x < (width / 2)) {
-                $('.edit-properties-container').css({ left: '-150px', right: '' });
-                $('.field-options-holder').css({ left: '-8px', right: '' });
-            } else if(x > (width / 2) && x < (width - (width * .35))) {
-                $('.edit-properties-container').css({ left: '', right: '-150px' });
-                $('.field-options-holder').css({ left: '', right: '0px' });
-            } else if(x > (width - (width * .35))) {
-                $('.edit-properties-container').css({ left: '', right: '0px' });
-                $('.field-options-holder').css({ left: '', right: '0px' });
-
-            }
-        }
-
-        function name_required(form_div) {
-
-            //console.log('running name_required');
-
-            let has_value = 'no';
-            form_div.find('.field-data-name').each(function() {
-                if($(this).val() != '') {
-                    has_value = 'yes';
-                }
             });
-            if(has_value == 'yes') {
-                form_div.find('.field-data-name').removeClass('required');
-            } else {
-                form_div.find('.field-data-name').addClass('required');
-            }
-            select_refresh();
-        }
 
-        function save_field_properties(button) {
-
-            //console.log('running save_field_properties');
-
-            //$('#properties_container_'+field_id).collapse('hide');
-            $('.edit-properties-container.show').removeClass('show');
-
-            setTimeout(function() {
-
-                let field_div = button.closest('.field-div');
-                let inputs_container = field_div.find('.field-inputs-div');
-                let group_id = button.data('group-id');
-                let field_id = button.data('field-id');
-                let type = button.data('type');
-                let form = button.closest('.form-div');
-                let common_name = form.find('.form-select.field-data-name').val();
-                let custom_name = form.find('.form-input.field-data-name').val();
-                let inputs_div = form.find('.field-inputs-div');
-
-                $('#inputs_html').val(inputs_container.html());
-                field_div.find('input, select').each(function () {
-                    $(this).data('default-value', $(this).val());
-                });
+            $('.focused').hide();
 
 
-                /* let address_select = form.find('select.field-data-address-type');
-                address_select.each(function () {
-                    let address_type = $(this).val();
-                    $(this).data('default-value', address_type);
-                });
+            setTimeout(function () {
 
-                let textline_select = form.find('select.field-data-textline-type');
-                textline_select.each(function () {
-                    let textline_type = $(this).val();
-                    $(this).data('default-value', textline_type);
-                });
-
-                let name_select = form.find('select.field-data-name-type');
-                name_select.each(function () {
-                    let name_type = $(this).val();
-                    $(this).data('default-value', name_type);
-                }); */
-
-
-
-                let number_select = form.find('select.field-data-number-type');
-                let number_type = number_select.val();
-                number_select.data('default-value', number_type);
-                // update other number types to written if this is numeric. There will be one numeric and possibly multiple written
-                if (number_type == 'numeric') {
-                    if ($('.group_' + group_id).length > 1) {
-                        $('.group_' + group_id).each(function() {
-                            $(this).find('select.field-data-number-type').not(number_select).val('written').data('default-value', 'written');
-                        });
-                    }
-                }
-
-                if (type == 'radio') {
-
-                    let radio_input = form.find('input.field-data-radio-value');
-                    let radio_value = radio_input.val();
-                    radio_input.data('default-value', radio_value);
-
-                    $('.group_' + group_id).each(function () {
-
-                        $(this).data('customname', custom_name);
-                        $(this).find('.form-input.field-data-name').each(function () {
-                            $(this).val(custom_name).data('default-value', custom_name);
-                        });
-                    });
-
-                } else if (type != 'checkbox') {
-
-                    $('.group_' + group_id).each(function () {
-
-                        $(this).data('commonname', common_name).data('customname', custom_name);
-                        $(this).find('.form-select.field-data-name').each(function () {
-                            $(this).val(common_name).data('default-value', common_name);
-                        });
-                        $(this).find('.form-input.field-data-name').each(function () {
-                            $(this).val(custom_name).data('default-value', custom_name);
-                        });
-
-                    });
-
-                }
-
-                field_status();
-                field_list();
-                select_refresh();
-
-                $('.group_' + group_id).removeClass('field-error');
-
+                global_loading_off();
             }, 10);
 
 
         }
 
-        function add_address_inputs(field_id, inputs_container, select) {
 
-            console.log('running add_address_inputs');
 
-            inputs_container.html('');
 
-            //let standard_addresses = ['Property Address', 'Seller One Home Address', 'Seller Two Home Address', 'Buyer One Home Address', 'Buyer Two Home Address'];
-            //if (standard_addresses.includes(select.val().trim())) {
-
-                let values = ['Street', 'City', 'State', 'Zip Code', 'County'];
-                let address_type = select.val().replace(/\sAddress/, '').trim();
-                let input_id = new Date().getTime();
-                let c = 0;
-                values.forEach(function(value) {
-                    c += 1;
-                    input_id = input_id + c;
-                    inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="'+address_type+' '+value+'" data-default-value="'+address_type+' '+value+'" data-id="'+input_id+'">');
-                });
-
-            //}
-
-        }
-
-        function add_name_inputs(field_id, inputs_container, select) {
-
-            //console.log('running add_name_inputs');
-
-            let name_type = select.val().replace(/\sName/, '');
-            let input_id = new Date().getTime();
-            let input_id2 = input_id + 1;
-
-            inputs_container.html('');
-
-            if (name_type == 'Seller or Landlord' || name_type == 'Buyer or Renter') {
-
-                inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="' + name_type + ' One Name" data-default-value="' + name_type + ' One Name" data-id="'+input_id+'">');
-                inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id2+'" value="' + name_type + ' Two Name" data-default-value="' + name_type + ' Two Name" data-id="'+input_id2+'">');
-
-            } else {
-
-                inputs_container.append('<input type="hidden" class="field-data-input" id="input_name_'+field_id+'_'+input_id+'" value="' + name_type + ' Name" data-default-value="' + name_type + ' Name" data-id="'+input_id+'">');
-
-            }
-
-        }
-
-
-        function get_edit_properties_html(field_id, group_id, field_type, rect, container, ele) {
-
-            //console.log('running get_edit_properties_html');
-
-            let common_name = $('.group_' + group_id).data('commonname');
-            let custom_name = $('.group_' + group_id).data('customname');
-
-            axios.get('/doc_management/get_edit_properties_html', {
-                params: {
-                    file_id: $('#file_id').val(),
-                    field_id: field_id,
-                    field_type: field_type,
-                    group_id: group_id
-                },
-                headers: {
-                    'Accept-Version': 1,
-                    'Accept': 'text/html',
-                    'Content-Type': 'text/html'
-                }
-            })
-            .then(function (response) {
-
-                // set values for field name
-                if (field_type != 'checkbox') {
-
-                    let edit_properties_html = response.data;
-                    $('#field_'+field_id).find('.edit-properties-container').html(edit_properties_html);
-
-                    if(ele) {
-
-                        ele.find('.form-select.field-data-name').val(common_name).data('default-value', common_name);
-                        ele.find('.form-input.field-data-name').val(custom_name).data('default-value', custom_name);
-
-                        let inputs_container = $('#field_' + field_id).find('.field-inputs-div');
-
-                        if(field_type == 'name') {
-                            add_name_inputs(field_id, inputs_container, ele.find('.form-select.field-data-name'));
-                        } else if(field_type == 'address') {
-                            add_address_inputs(field_id, inputs_container, ele.find('.form-select.field-data-name'));
-                        }
-                    }
-
-                }
-
-                set_field_options(field_type, $('#field_' + field_id), field_id);
-
-                //setTimeout(function() {
-                    select_refresh();
-                //}, 500);
-
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-        }
-
-        function field_html(h_perc, w_perc, x_perc, y_perc, field_id, group_id, page, type) {
-
-            //console.log('running field_html');
-
-
-            let field_class = '';
-            let field_data = '';
-            let hide_add_option = '';
-            let handles = ' \
-            <div class="ui-resizable-handle ui-resizable-e focused"></div> \
-            <div class="ui-resizable-handle ui-resizable-w focused"></div> \
-            ';
-            let width_class = 'w-600';
-            if (type == 'textline' || type == 'name' || type == 'address' || type == 'number') {
-                field_class = 'textline-div standard';
-                field_data = '<div class="textline-html"></div>';
-                w_perc = 10;
-
-            } else if (type == 'radio') {
-                handles = '';
-                field_class = type + '-div standard';
-                field_data = '<div class="radio-html"></div>';
-                width_class = 'w-400';
-            } else if (type == 'checkbox') {
-                handles = '';
-                field_class = type + '-div standard';
-                field_data = '<div class="checkbox-html"></div>';
-            } else if (type == 'date') {
-                field_class = 'textline-div standard';
-                field_data = '<div class="textline-html"></div>';
-                hide_add_option = 'hidden';
-                width_class = 'w-400';
-            }
-
-            let field_div_html = ' \
-            <div class="field-div '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;" id="field_' + field_id + '" data-field-id="' + field_id + '" data-group-id="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
-                <div class="field-status-div d-flex justify-content-left"> \
-                    <div class="field-status-name-div"></div> \
-                    <div class="field-status-group-div float-right"></div> \
-                </div> \
-                <div class="field-options-holder focused"> \
-                    <div> \
-                        <a href="javascript: void(0)" class="btn btn-sm btn-danger m-0 ml-2 close-field-options"><i class="fa fa-times fa-lg mr-2"></i> Hide</a> \
-                    </div> \
-                    <div class="btn-group" role="group" aria-label="Field Options"> \
-                        <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a> \
-                        <a type="button" class="btn btn-primary mini-slider-button"><i class="fal fa-arrows-v fa-lg"></i></a> \
-                        <a type="button" class="btn btn-primary field-add-item ' + hide_add_option + '" data-group-id="'+ group_id + '"><i class="fal fa-plus fa-lg"></i></a> \
-                ';
-                if(type != 'checkbox') {
-                        field_div_html += ' \
-                        <a type="button" class="btn btn-primary field-properties" data-group-id="'+ group_id + '" data-field-id="' + field_id +'" data-field-type="' + type +'" data-toggle="collapse" href="#properties_container_'+field_id+'" role="button" aria-expanded="false" aria-controls="properties_container_'+field_id+'"><i class="fal fa-info-circle fa-lg"></i></a> \
-                        ';
-                }
-                        field_div_html += ' \
-                        <a type="button" class="btn btn-primary remove-field"><i class="fal fa-times-circle fa-lg"></i></a> \
-                    </div> \
-                    <div class="mini-slider-div"> \
-                        <ul class="mini-slider list-group list-group-flush border border-primary p-0"> \
-                            <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="up"><i class="fal fa-arrow-up text-primary"></i></a></li> \
-                            <li class="list-group-item text-center p-0"><a href="javascript:void(0);" class="mini-slider-option w-100 h-100 d-block p-2" data-direction="down"><i class="fal fa-arrow-down text-primary"></i></a></li> \
-                        </ul> \
-                    </div> \
-                </div> \
-                <div id="properties_container_'+field_id+'" class="collapse edit-properties-container bg-white border rounded shadow '+width_class+'" data-field-id="'+field_id+'" data-parent="#file_viewer"></div> \
-                '+ handles + ' \
-                '+ field_data + ' \
-            </div> \
-            ';
-
-            return field_div_html;
-        }
-
-
-        function field_status() {
-
-            //console.log('running field_status');
-
-            let group_ids = [];
-            $('.field-div').each(function () {
-                group_ids.push($(this).data('group-id'));
-            });
-            group_ids = group_ids.filter(global_filter_array);
-
-            for (let i = 0; i < group_ids.length; i++) {
-
-                // find out if grouped and add icon
-                let grouped = false;
-                let field_divs = $('.field-div[data-group-id="' + group_ids[i] + '"]');
-                if (field_divs.length > 1) {
-                    grouped = true;
-                }
-                if (grouped == true) {
-                    // remove all group icons
-                    field_divs.find('.field-status-group-div').html('');
-                    // add group icon to last of all
-                    field_divs.last().find('.field-status-group-div').html('<i class="fal fa-layer-group"></i>');
-                }
-
-
-                // add field names
-                let cont = 'yes';
-                $('.field-div[data-group-id="' + group_ids[i] + '"]').each(function () {
-
-                    let field_div = $(this);
-                    let field_name = '';
-
-                    // all but checkbox get names added only to the last
-                    if ($(this).data('type') != 'checkbox') {
-
-                        $(this).find('.field-status-name-div').html('');
-                        field_div.find('.field-data-name').each(function () {
-
-                            if ($(this).val() != '') {
-                                field_div.find('.field-data-name').removeClass('required');
-                                field_name = $(this).val();
-                                // add field name to last of each group
-                                if(field_div.data('type') == 'number') {
-                                    if(cont == 'yes') {
-                                        if(field_div.find('.field-data-number-type option:checked').val() == 'written') {
-                                            field_div.find('.field-status-name-div').html(field_name);
-                                            cont = 'no';
-                                        } else {
-                                            field_div.find('.field-status-name-div').first().html(field_name);
-                                            cont = 'no';
-                                        }
-                                    }
-                                } else {
-                                    $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-name-div').last().html(field_name);
-                                }
-                            }
-
-                        });
-                    } else {
-                        // checkboxes get name for each since not really a group
-                        field_name = field_div.find('.field-data-name').val();
-                        $(this).find('.field-status-name-div').html(field_name);
-                    }
-                });
-
-
-            }
-
-        }
-
-        function pix_2_perc_hw(type, px, container) {
-            if (type == 'width') {
-                return (100 * parseFloat(px / parseFloat(container.width())));
-            } else {
-                return (100 * parseFloat(px / parseFloat(container.height())));
-            }
-        }
-
-        function pix_2_perc_xy(type, px, container) {
-            if (type == 'x') {
-                return (100 * parseFloat(px / parseFloat(container.width())));
-            } else {
-                return (100 * parseFloat(px / parseFloat(container.height())));
-            }
-        }
-
-        function perc_2_pix(type, perc, container) {
-            if (type == 'width') {
-                return parseFloat((perc / 100) * parseFloat(container.width()));
-            } else {
-                return parseFloat((perc / 100) * parseFloat(container.height()));
-            }
-        }
-
-        function set_hwxy(ele, group_id, type) {
-
-            //console.log('running set_hwxy');
-
-            let container = ele.closest('.field-container');
-
-            let h = ele.height();
-            let w = ele.width();
-            let h_perc = pix_2_perc_hw('height', h, container);
-            let w_perc = pix_2_perc_hw('width', w, container);
-
-            let x = ele.position().left;
-            let y = ele.position().top;
-            let x_perc = pix_2_perc_xy('x', x, container);
-            let y_perc = pix_2_perc_xy('y', y,container);
-
-            if (h_perc) {
-                ele.data('hp', h_perc);
-                ele.data('wp', w_perc);
-                $('#field_' + type + '_heightp').val(h_perc);
-                $('#field_' + type + '_widthp').val(w_perc);
-            }
-            if (x) {
-                ele.data('x', x);
-                ele.data('y', y);
-                ele.data('xp', x_perc);
-                ele.data('yp', y_perc);
-                $('#field_' + type + '_x').val(x);
-                $('#field_' + type + '_y').val(y);
-                $('#field_' + type + '_xp').val(x_perc);
-                $('#field_' + type + '_yp').val(y_perc);
-            }
-            if (group_id) {
-                $('#field_' + type + '_group_id').val(group_id);
-            }
-            ele.data('page', ele.data('page'));
-
-        }
-
-        function keep_in_view(ele, w_perc, x_perc, y_perc, type) {
-
-            //console.log('running keep_in_view');
-
-            // adjust fields if placed out of bounds
-            let dist = '';
-            let cw = 100;
-            let cd_adjusted = '';
-            if (type == 'textline' || type == 'name' || type == 'address' || type == 'date' || type == 'number') {
-                dist = 0;
-                cd_adjusted = cw;
-            } else if (type == 'radio' || type == 'checkbox') {
-                dist = 0;
-                cd_adjusted = cw;
-            }
-
-            /* let x_pos = ele.position().left;
-            let doc_width = $('#file_viewer').width();
-
-            if(x_pos > (doc_width * .75)) {
-                ele.find('.field-options-holder').css({ left: '' }).animate({ right: '0px' });
-            } else {
-                ele.find('.field-options-holder').css({ right: '' }).animate({ left: '0px' });
-            } */
-
-            if (x_perc < dist) {
-                ele.animate({ left: dist + '%' });
-            }
-            if ((x_perc + w_perc) > cd_adjusted) {
-                let pos = cw - w_perc - dist;
-                ele.animate({ left: pos + '%' });
-            }
-
-            if (y_perc < 2) {
-                ele.animate({ top: '2%' });
-            }
-
-            setTimeout(function () {
-                let group_id = ele.data('group-id');
-                set_hwxy(ele, group_id, type);
-            }, 100);
-
-        }
-
-        function set_common_fields() {
-
-            //console.log('running set_common_fields');
-
-            $.ajax({
-                type: 'get',
-                url: '/doc_management/common_fields',
-                dataType: "json",
-                success: function (data) {
-                    $.each(data, function (k) {
-                        let type = k;
-                        let select_options = '';
-                        $.each(this, function (k, v) {
-                            select_options = select_options + '<option value="' + v + '">' + v + '</option>';
-                        });
-                        $('#' + type + '_select_options').val(select_options);
-                    });
-                    setTimeout(select_refresh, 500);
-
-                }
-            });
-        }
-
-        function field_list() {
-
-            //console.log('running field_list');
-
-            $('.field-list-container').html('');
-
-            $('.file-view-page-container').each(function () {
-
-                let page_number = $(this).data('id');
-
-                $('.field-list-container').append('<div class="font-weight-bold text-white bg-primary p-1 pl-2 mb-2">Page ' + page_number + '</div>');
-
-                // get unique group ids
-                let group_ids = [];
-
-                $(this).find('.field-div').each(function () {
-                    group_ids.push($(this).data('group-id'));
-                });
-                group_ids = group_ids.filter(global_filter_array);
-                // get all field names and add to field list
-                $.each(group_ids, function (index, group_id) {
-                    let name = $('.group_' + group_id).data('customname');
-                    if($('.group_' + group_id).data('type') == 'radio') {
-                        name = 'Radio - ' + name;
-                    }
-                    if ($('.group_' + group_id).data('commonname') != undefined && $('.group_' + group_id).data('commonname') != '') {
-                        name = $('.group_' + group_id).data('commonname');
-                    }
-                    if (name == undefined || name == '') {
-                        if($('.group_' + group_id).data('type') == 'checkbox') {
-                            name = 'Checkbox';
-                        } else {
-                            name = '<span class="text-danger">Not Named</span>';
-                        }
-                    }
-                    $('.field-list-container').append('<div class="mb-1 border-bottom border-primary"><a href="javascript: void(0)" class="field-list-link pl-2" data-group-id="' + group_id + '">' + name + '</a></div>');
-                });
-
-            });
-
-            $('.field-list-link').off('click').on('click', function () {
-                let group_id = $(this).data('group-id');
-                let ele = $('.field-div[data-group-id="' + group_id + '"]').first();
-                $('.focused').hide();
-                ele.find('.focused').show();
-                $('.field-div').removeClass('active');
-                ele.addClass('active');
-
-                let container = ele.parent();
-                // let h = ele.height();
-                // let w = ele.width();
-                // let h_perc = pix_2_perc_hw('height', h, container);
-                // let w_perc = pix_2_perc_hw('width', w, container);
-                // let y = ele.position().top;
-                // let x = ele.position().left;
-                let type = ele.data('type');
-                set_hwxy(ele, group_id, type);
-
-                let $container = $('#file_viewer'),
-                    $scrollTo = $('#field_' + group_id).first();
-                $container.animate({
-                    scrollTop: ($scrollTo.offset().top - $container.offset().top + $container.scrollTop()) - 200
-                });
-
-            });
-
-        }
 
         function check_fields() {
 
@@ -1266,10 +780,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
             });
 
-            field_status();
-            setTimeout(function () {
-                field_list();
-            }, 200);
+
 
             if (errors == 'yes') {
                 return false;
@@ -1385,7 +896,7 @@ if (document.URL.match(/create\/add_fields/)) {
 
 
         }
-
+*/
 
     });
 

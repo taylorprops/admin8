@@ -78,6 +78,7 @@ window.form_elements = function () {
                 }
 
                 let small = $(this).hasClass('form-small') ? 'form-small' : '';
+                let wide = $(this).hasClass('form-wide') ? 'form-wide' : '';
 
                 element.show();
 
@@ -167,9 +168,9 @@ window.form_elements = function () {
                     let select_html = ' \
                     <div class="form-select-wrapper"> \
                         ' + clear_value + ' \
-                        <label class="' + form_type + '-label" for="select_value_' + select_input_id + '">' + label + '</label> \
+                        <label class="' + form_type + '-label ' + small + '" for="select_value_' + select_input_id + '">' + label + '</label> \
                         <input type="text" class="form-select-value-input caret '+ disabled + '" id="select_value_' + select_input_id + '" readonly ' + disabled + '> \
-                        <div class="form-select-dropdown shadow"> \
+                        <div class="form-select-dropdown shadow '+wide+'"> \
                     ';
                     //if(!element.hasClass('form-select-no-search')) {
                         select_html += ' \

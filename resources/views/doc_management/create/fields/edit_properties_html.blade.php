@@ -1,4 +1,201 @@
-<div class="edit-properties-div p-2" id="edit_properties_div_{{ $field_id }}">
+<div class="edit-properties-div">
+
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="font-10 my-2 text-orange">{{ strtoupper($field_type) }}</div>
+        <a type="button" class="btn btn-danger btn-sm close-field-options"><i class="fa fa-times"></i></a>
+    </div>
+
+    <div class="pt-0 pb-1 px-2 form-div">
+
+        <div class="p-3 mt-2 bg-blue-light text-gray rounded">
+
+            <div class="text-primary">Field Name</div>
+
+            <div class="row">
+
+                @if($field_type != 'radio')
+
+                    <div class="col-12">
+
+                        <ul class="navbar-nav-dropdown p-0">
+
+                            <li class="nav-item dropdown dropdown-input">
+                                @php $id = date('YmdHis'); @endphp
+                                <input type="text" class="custom-form-element form-input dropdown-toggle common-field-name-input required" href="javascript: void(0)" id="group_dropdown_{{ $id }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-label="Shared Field Name" readonly>
+
+
+                                <ul class="dropdown-menu dropdown-parent" aria-labelledby="group_dropdown_{{ $id }}">
+
+                                    <li><a href="javascript: void(0)" class="small text-danger clear-common-field-name">Clear <i class="fal fa-times-circle ml-1"></i></a></li>
+
+                                    @php
+                                    if($field_type == 'number') {
+                                        $common_fields_groups = $common_fields_groups -> whereIn('id', ['4']);
+                                    } else if($field_type == 'date') {
+                                        $common_fields_groups = $common_fields_groups -> whereIn('id', ['3']);
+                                    } else {
+                                        $common_fields_groups = $common_fields_groups -> whereNotIn('id', ['3', '4']);
+                                    }
+                                    @endphp
+                                    @foreach($common_fields_groups as $common_fields_group)
+
+                                        @if($field_type != 'number' && $field_type != 'date')
+
+                                        <li class="nav-item dropdown">
+                                            <a class="dropdown-item dropdown-toggle" href="javascript: void(0)" id="sub_group_dropdown_{{ $loop -> index }}" role="button" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                {{ $common_fields_group -> group_name }}
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="sub_group_dropdown_{{ $loop -> index }}">
+
+                                        @endif
+
+                                                @if(count($common_fields_group -> sub_groups) > 0)
+
+                                                    @foreach($common_fields_group -> sub_groups as $common_fields_sub_group)
+                                                        <li class="nav-item dropdown">
+                                                            <a href="javascript: void(0)" class="dropdown-item dropdown-toggle" id="sub_group_dropdown_{{ $loop -> index }}" role="button" data-toggle="dropdown"
+                                                                aria-haspopup="true" aria-expanded="false">
+                                                                {{ $common_fields_sub_group -> sub_group_name }}
+                                                            </a>
+                                                            <ul class="dropdown-menu" aria-labelledby="sub_group_dropdown_{{ $loop -> index }}">
+
+                                                                @foreach($common_fields_group -> common_fields -> where('group_id', $common_fields_group -> id) -> where('sub_group_id', $common_fields_sub_group -> id) as $common_field)
+                                                                    <li class="nav-item">
+                                                                        <a href="javascript: void(0)"
+                                                                        class="nav-link dropdown-item field-name"
+                                                                        data-field-id="{{ $common_field -> id }}"
+                                                                        data-field-sub-type="{{ $common_field -> field_type }}"
+                                                                        >{{ $common_field -> field_name }}</a>
+                                                                    </li>
+                                                                @endforeach
+
+                                                            </ul>
+                                                        </li>
+                                                    @endforeach
+
+                                                @else
+                                                    @foreach($common_fields -> where('group_id', $common_fields_group -> id) as $common_field)
+                                                        <li class="nav-item">
+                                                            <a href="javascript: void(0)"
+                                                            class="nav-link dropdown-item field-name"
+                                                            data-field-id="{{ $common_field -> id }}"
+                                                            data-field-sub-type="{{ $common_field -> field_type }}"
+                                                            >{{ $common_field -> field_name }}</a>
+                                                        </li>
+                                                    @endforeach
+
+                                                @endif
+
+                                            @if($field_type != 'number' && $field_type != 'date')
+                                                </ul>
+                                            </li>
+                                            @endif
+                                    @endforeach
+                                </ul>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    <div class="col-12">
+                        <div class="w-100 text-center font-weight-bold text-gray">OR</div>
+                    </div>
+
+                @endif
+
+                <div class="col-12">
+                    <input type="text" class="custom-form-element form-input field-data-name custom-field-name required" data-field-type="custom" value="{{ $custom_name }}" data-default-value="{{ $custom_name }}" data-label="{{ $label }}">
+
+                    <div class="custom-name-wrapper">
+                        <div class="custom-name-results">
+                            <div class="list-group dropdown-results-div"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" class="field-data-name common-field-name" data-field-type="common" data-default-value="{{$common_name}}">
+                <input type="hidden" class="common-field-id" data-default-value="{{$common_field_id}}">
+                <input type="hidden" class="common-field-sub-type" data-default-value="{{$common_field_sub_type}}">
+
+            </div>
+
+        </div>
+
+        @if($field_type == 'number')
+
+            <div class="p-3 mt-2 bg-blue-light text-gray rounded">
+
+                <div class="text-primary">Number Type</div>
+
+                <div class="row">
+
+                    <div class="col-12">
+
+                        <div class="d-flex justify-content-around align-items-center">
+                            <div>
+                                <input type="radio" class="custom-form-element form-radio number-type required" name="number_type_{{ $field_id }}" value="written" data-label="Written">
+                            </div>
+                            <div>
+                                <input type="radio" class="custom-form-element form-radio number-type required" name="number_type_{{ $field_id }}" value="numeric" data-label="Numeric">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        @endif
+
+        <div class="row">
+
+            <div class="col-12">
+                <div class="d-flex justify-content-around mt-3">
+                    <a type="button"
+                    class="btn btn-success save-field-properties-button"
+                    data-group-id="{{ $group_id }}"
+                    data-field-id="{{ $field_id }}"
+                    data-field-type="{{ $field_type }}"
+                    >
+                        <i class="fal fa-save fa-lg mr-2"></i> Save
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="alert alert-success hide mt-3 mb-2" role="alert">
+                    <div class="d-flex justify-content-around">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <div><i class="fal fa-check fa-lg mr-2"></i></div>
+                            <div>Successfully Saved!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <hr>
+            </div>
+            <div class="col-12">
+                <div class="d-flex justify-content-around">
+                    <a href="javascript: void(0)" class="text-danger remove-field"><i class="fal fa-times-circle mr-2"></i> Remove Field</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+{{-- <div class="edit-properties-div p-2" id="edit_properties_div_{{ $field_id }}">
 
     @php
     $cols = $field_type == 'date' || $field_type == 'radio' ? 'col-12' : 'col-12 col-sm-6';
@@ -37,11 +234,7 @@
 
                         <input type="text" class="custom-form-element form-input field-data-name required" id="name_input_{{ $field_id }}" data-field-type="custom" value="{{ $custom_name }}" data-default-value="{{ $custom_name }}" data-label="{{ $label }}">
 
-                        <div class="custom-name-wrapper">
-                            <div class="custom-name-results">
-                                <div class="list-group dropdown-results-div"></div>
-                            </div>
-                        </div>
+
 
                     </div>
 
@@ -137,4 +330,4 @@
 
     </div>
 
-</div>
+</div> --}}
