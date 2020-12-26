@@ -22,7 +22,7 @@ class Upload extends Model
 
     public function fields()
     {
-        return $this->hasMany('App\Models\DocManagement\Create\Fields\Fields', 'file_id');
+        return $this->hasMany(\App\Models\DocManagement\Create\Fields\Fields::class, 'file_id');
     }
 
     public function scopeIsContract($query, $checklist_form_id)
