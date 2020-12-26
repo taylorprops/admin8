@@ -24,12 +24,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule -> command('doc_management:check_emailed_documents') -> everyMinute() -> withoutOverlapping(1);
+        $schedule->command('doc_management:check_emailed_documents')->everyMinute()->withoutOverlapping(1);
 
         // clear temp files
-        $schedule -> exec('sudo find /var/www/admin/storage/app/public/doc_management/transactions/contracts/*/emailed_docs/* -mtime +2 -exec rm -rf {} \\') -> daily();
-        $schedule -> exec('sudo find /var/www/admin/storage/app/public/tmp* -maxdepth 1 -type f -mtime +1 -exec rm -rf {} \\') -> daily();
-        $schedule -> exec('sudo find /var/www/tmp* -mtime +1 -exec rm -rf {} \\') -> daily();
+        $schedule->exec('sudo find /var/www/admin/storage/app/public/doc_management/transactions/contracts/*/emailed_docs/* -mtime +2 -exec rm -rf {} \\')->daily();
+        $schedule->exec('sudo find /var/www/admin/storage/app/public/tmp* -maxdepth 1 -type f -mtime +1 -exec rm -rf {} \\')->daily();
+        $schedule->exec('sudo find /var/www/tmp* -mtime +1 -exec rm -rf {} \\')->daily();
     }
 
     /**
@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this -> load(__DIR__.'/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }

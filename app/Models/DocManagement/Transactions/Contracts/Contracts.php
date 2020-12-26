@@ -2,9 +2,9 @@
 
 namespace App\Models\DocManagement\Transactions\Contracts;
 
+use App\Models\DocManagement\Transactions\Listings\Listings;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\DocManagement\Transactions\Listings\Listings;
 use Schema;
 
 class Contracts extends Model
@@ -16,20 +16,23 @@ class Contracts extends Model
     public $timestamps = false;
     protected $guarded = [];
 
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
         static::addGlobalScope(function ($query) {
-            if(auth() -> user()) {
-                if(auth() -> user() -> group == 'agent') {
-                    $query -> where('Agent_ID', auth() -> user() -> user_id);
+            if (auth()->user()) {
+                if (auth()->user()->group == 'agent') {
+                    $query->where('Agent_ID', auth()->user()->user_id);
                 }
             }
         });
     }
 
-    public function ScopeContractColumnsNotInListings() {
+    public function ScopeContractColumnsNotInListings()
+    {
         $listing_columns = Schema::getColumnListing('docs_transactions_listings');
         $contract_columns = Schema::getColumnListing('docs_transactions_contracts');
+
         return array_diff($contract_columns, $listing_columns);
     }
 }

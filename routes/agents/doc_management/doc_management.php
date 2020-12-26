@@ -5,7 +5,6 @@
     // Global functions
     Route::get('/agents/doc_management/global_functions/get_location_details', 'Agents\DocManagement\Functions\GlobalFunctionsController@get_location_details');
 
-
     // all transactions page
     Route::get('/agents/doc_management/transactions', 'Agents\DocManagement\Transactions\TransactionsController@get_transactions');
 
@@ -23,8 +22,6 @@
     Route::get('/agents/doc_management/transactions/add/transaction_required_details/{id}/{transaction_type}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_required_details');
     // Required Details page referral
     Route::get('/agents/doc_management/transactions/add/transaction_required_details_referral/{Referral_ID}', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@transaction_required_details_referral');
-
-
 
     // axios calls
     // save add listing
@@ -117,7 +114,6 @@
     // save required fields
     Route::post('/agents/doc_management/transactions/save_required_fields', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@save_required_fields');
 
-
     /////// COMMISSION
     // get commission
     Route::get('/agents/doc_management/transactions/get_commission', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_commission');
@@ -146,7 +142,6 @@
     Route::post('/agents/doc_management/transactions/import_check_in', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@import_check_in');
     // send check in back to queue
     Route::post('/agents/doc_management/transactions/re_queue_check', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@re_queue_check');
-
 
     // get checks out
     Route::get('/agents/doc_management/transactions/get_checks_out', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_checks_out');
@@ -179,11 +174,8 @@
     // get agent details
     Route::get('/agents/doc_management/transactions/details/data/get_agent_details', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_agent_details');
 
-
     // get earnest
     Route::get('/agents/doc_management/transactions/get_earnest', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_earnest');
-
-
 
     // Accept new contract for listing
     Route::post('/agents/doc_management/transactions/accept_contract', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@accept_contract');
@@ -203,12 +195,8 @@
     // search bright mls agents
     Route::get('/agents/doc_management/transactions/search_bright_agents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@search_bright_agents');
 
-
     Route::get('/agents/doc_management/transactions/get_property_info', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@get_property_info');
     Route::get('/agents/doc_management/transactions/update_county_select', 'Agents\DocManagement\Transactions\Add\TransactionsAddController@update_county_select');
-
-
-
 
     // ** FILL FIELDS
 
@@ -225,14 +213,12 @@
     Route::post('/agents/doc_management/transactions/edit_files/save_edit_user_fields', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@save_edit_user_fields');
 
     // Export filled fields to pdf
-    Route::post('/agents/doc_management/transactions/edit_files/convert_to_pdf', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@convert_to_pdf') -> name('convert_to_pdf');
-
-
+    Route::post('/agents/doc_management/transactions/edit_files/convert_to_pdf', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@convert_to_pdf')->name('convert_to_pdf');
 
 ///////////////////////////////// ADMIN ONLY //////////////////////////////////////////////
 /**********  File review /**********/
 
-Route::middleware('admin') -> group(function () {
+Route::middleware('admin')->group(function () {
 
     // accept reject checklist items
     Route::post('/agents/doc_management/transactions/set_checklist_item_review_status', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@set_checklist_item_review_status');
@@ -244,11 +230,4 @@ Route::middleware('admin') -> group(function () {
     Route::post('/agents/doc_management/transactions/remove_checklist_item', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@remove_checklist_item');
     // get email checklist html
     Route::get('/agents/doc_management/transactions/get_email_checklist_html', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_email_checklist_html');
-
-
-
-
 });
-
-
-

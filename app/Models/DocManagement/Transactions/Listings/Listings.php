@@ -2,11 +2,10 @@
 
 namespace App\Models\DocManagement\Transactions\Listings;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
 use App\Models\DocManagement\Transactions\Contracts\Contracts;
 use App\Models\DocManagement\Transactions\Referrals\Referrals;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Listings extends Model
 {
@@ -17,30 +16,30 @@ class Listings extends Model
     public $timestamps = false;
     protected $guarded = [];
 
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
         static::addGlobalScope(function ($query) {
-            if(auth() -> user() -> group == 'agent') {
-                $query -> where('Agent_ID', auth() -> user() -> user_id);
+            if (auth()->user()->group == 'agent') {
+                $query->where('Agent_ID', auth()->user()->user_id);
             }
         });
     }
 
-    public function ScopeGetPropertyDetails($request, $transaction_type, $id) {
-
-        if(is_array($id)) {
+    public function ScopeGetPropertyDetails($request, $transaction_type, $id)
+    {
+        if (is_array($id)) {
             $id = max($id);
         }
 
-        if($transaction_type == 'listing') {
-            $property = Listings::find($id);
-        } else if($transaction_type == 'contract') {
+        if ($transaction_type == 'listing') {
+            $property = self::find($id);
+        } elseif ($transaction_type == 'contract') {
             $property = Contracts::find($id);
-        } else if($transaction_type == 'referral') {
+        } elseif ($transaction_type == 'referral') {
             $property = Referrals::find($id);
         }
+
         return $property;
     }
-
-
 }
