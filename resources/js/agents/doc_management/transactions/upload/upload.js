@@ -1,6 +1,6 @@
 window.upload_documents = function() {
 
-    $('#file_upload').dmUploader({ //
+    $('#file_upload').dmUploader({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },

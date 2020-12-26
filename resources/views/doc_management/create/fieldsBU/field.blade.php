@@ -57,7 +57,7 @@ if($field -> field_type == 'textline' || $field -> field_type == 'address' || $f
     data-commonname="{{ $common_name }}"
     data-customname="{{ $custom_name }}">
     <div class="field-status-div d-flex justify-content-left">
-        <div class="field-status-name-div"></div>
+        <div class="field-name-display-div"></div>
         <div class="field-status-group-div float-right"></div>
     </div>
 

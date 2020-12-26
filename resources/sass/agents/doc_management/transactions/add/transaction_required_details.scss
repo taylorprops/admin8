@@ -52,10 +52,10 @@
         max-width: 300px;
     }
     .search-results-container {
+        display: none;
         position: relative;
     }
     .search-results {
-        display: none;
         position: absolute;
         top: -10px;
         left: 0;

@@ -897,7 +897,7 @@ if (document.URL.match(/create\/add_fields/)) {
             let field_div_html = ' \
             <div class="field-div '+ field_class + ' active group_' + group_id + '" style="position: absolute; top: ' + y_perc + '%; left: ' + x_perc + '%; height: ' + h_perc + '%; width: ' + w_perc + '%;" id="field_' + field_id + '" data-field-id="' + field_id + '" data-group-id="' + group_id + '" data-type="' + type + '" data-page="' + page + '"> \
                 <div class="field-status-div d-flex justify-content-left"> \
-                    <div class="field-status-name-div"></div> \
+                    <div class="field-name-display-div"></div> \
                     <div class="field-status-group-div float-right"></div> \
                 </div> \
                 <div class="field-options-holder focused"> \
@@ -970,7 +970,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     // all but checkbox get names added only to the last
                     if ($(this).data('type') != 'checkbox') {
 
-                        $(this).find('.field-status-name-div').html('');
+                        $(this).find('.field-name-display-div').html('');
                         field_div.find('.field-data-name').each(function () {
 
                             if ($(this).val() != '') {
@@ -980,15 +980,15 @@ if (document.URL.match(/create\/add_fields/)) {
                                 if(field_div.data('type') == 'number') {
                                     if(cont == 'yes') {
                                         if(field_div.find('.field-data-number-type option:checked').val() == 'written') {
-                                            field_div.find('.field-status-name-div').html(field_name);
+                                            field_div.find('.field-name-display-div').html(field_name);
                                             cont = 'no';
                                         } else {
-                                            field_div.find('.field-status-name-div').first().html(field_name);
+                                            field_div.find('.field-name-display-div').first().html(field_name);
                                             cont = 'no';
                                         }
                                     }
                                 } else {
-                                    $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-status-name-div').last().html(field_name);
+                                    $('.field-div[data-group-id="' + group_ids[i] + '"]').find('.field-name-display-div').last().html(field_name);
                                 }
                             }
 
@@ -996,7 +996,7 @@ if (document.URL.match(/create\/add_fields/)) {
                     } else {
                         // checkboxes get name for each since not really a group
                         field_name = field_div.find('.field-data-name').val();
-                        $(this).find('.field-status-name-div').html(field_name);
+                        $(this).find('.field-name-display-div').html(field_name);
                     }
                 });
 

@@ -179,8 +179,8 @@ if($property -> Owner2 != '') {
                                         <a class="btn btn-primary btn-sm my-3" data-toggle="collapse" href="#list_agent_search_div" role="button" aria-expanded="false" aria-controls="list_agent_search_div">
                                             <i class="fad fa-search mr-2"></i> Search Agents in Bright MLS
                                         </a>
-                                        <div class="collapse border" id="list_agent_search_div">
-                                            <div class="p-2 mb-4 bg-blue-light">
+                                        <div class="collapse" id="list_agent_search_div">
+                                            <div class="p-2 mb-4 font-8 bg-blue-light border">
                                                 <div class="mb-4">Type the Agent's Name, Email or BrightMLS ID</div>
                                                 <input type="text" class="custom-form-element form-input agent-search" data-type="list" data-label="Enter Agent's Name, Email or ID" autocomplete="agentsearch">
                                                 <div class="search-results-container">

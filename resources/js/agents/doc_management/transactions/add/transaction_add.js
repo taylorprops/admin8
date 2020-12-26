@@ -408,7 +408,6 @@ if (document.URL.match(/transactions\/add\/(contract|listing|referral)/)) {
             // show continue button once address selected
             $('.address-search-error').hide();
             if (street_number != '') {
-                console.log('show');
                 $('.address-search-continue-div').show();
             } else {
                 $('.address-search-continue-div').hide();

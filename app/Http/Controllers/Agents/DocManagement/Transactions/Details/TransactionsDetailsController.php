@@ -3,30 +3,39 @@
 namespace App\Http\Controllers\Agents\DocManagement\Transactions\Details;
 
 use App\Http\Controllers\Controller;
+
 use App\Mail\DefaultEmail;
 use App\Mail\DocManagement\Emails\Documents;
+
 use App\Models\Admin\Resources\ResourceItemsAdmin;
+
 use App\Models\BrightMLS\AgentRoster;
+
 use App\Models\CRM\CRMContacts;
+
 use App\Models\DocManagement\Checklists\Checklists;
 use App\Models\DocManagement\Checklists\ChecklistsItems;
-use App\Models\DocManagement\Create\Fields\FieldInputs;
+
 use App\Models\DocManagement\Create\Fields\Fields;
+use App\Models\DocManagement\Create\Fields\CommonFieldsSubGroups;
+use App\Models\DocManagement\Create\Fields\CommonFields;
 use App\Models\DocManagement\Create\Upload\Upload;
 use App\Models\DocManagement\Create\Upload\UploadImages;
 use App\Models\DocManagement\Create\Upload\UploadPages;
+
 use App\Models\DocManagement\Resources\ResourceItems;
+
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItems;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsDocs;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklistItemsNotes;
 use App\Models\DocManagement\Transactions\Checklists\TransactionChecklists;
 use App\Models\DocManagement\Transactions\Contracts\Contracts;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocuments;
+use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsEmailed;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsFolders;
 use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsImages;
 use App\Models\DocManagement\Transactions\EditFiles\UserFields;
 use App\Models\DocManagement\Transactions\EditFiles\UserFieldsInputs;
-use App\Models\DocManagement\Transactions\EditFiles\UserFieldsValues;
 use App\Models\DocManagement\Transactions\Listings\Listings;
 use App\Models\DocManagement\Transactions\Members\Members;
 use App\Models\DocManagement\Transactions\Members\TransactionCoordinators;
@@ -35,6 +44,7 @@ use App\Models\DocManagement\Transactions\Upload\TransactionUpload;
 use App\Models\DocManagement\Transactions\Upload\TransactionUploadImages;
 use App\Models\DocManagement\Transactions\Upload\TransactionUploadPages;
 use App\Models\DocManagement\Transactions\Data\ListingsData;
+
 use App\Models\Commission\Commission;
 use App\Models\Commission\CommissionChecksIn;
 use App\Models\Commission\CommissionChecksInQueue;
@@ -42,16 +52,21 @@ use App\Models\Commission\CommissionChecksOut;
 use App\Models\Commission\CommissionNotes;
 use App\Models\Commission\CommissionIncomeDeductions;
 use App\Models\Commission\CommissionCommissionDeductions;
+
 use App\Models\Employees\Agents;
 use App\Models\Employees\AgentsTeams;
 use App\Models\Employees\AgentsNotes;
+
 use App\Models\Resources\LocationData;
+
 use App\User;
 use Config;
 use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
+
 use thiagoalessio\TesseractOCR\TesseractOCR;
 
 class TransactionsDetailsController extends Controller {
@@ -751,61 +766,132 @@ class TransactionsDetailsController extends Controller {
         $sellers = Members::where($field, $id) -> where('member_type_id', ResourceItems::SellerResourceId()) -> get();
 
         $c = 0;
+        $seller_fullnames = [];
+
+        // clear second seller and buyers from property incase one was removed
+        $property -> SellerTwoFirstName = '';
+        $property -> SellerTwoLastName = '';
+        $property -> SellerTwoFullName = '';
+        $property -> SellerTwoEmail = '';
+        $property -> SellerTwoCellPhone = '';
+        $property -> SellerTwoFullStreetAddress = '';
+        $property -> SellerTwoCity = '';
+        $property -> SellerTwoStateOrProvince = '';
+        $property -> SellerTwoPostalCode = '';
+        $property -> SellerTwoFullAddress = '';
+
+        $property -> BuyerOneFirstName = '';
+        $property -> BuyerOneLastName = '';
+        $property -> BuyerOneFullName = '';
+        $property -> BuyerOneEmail = '';
+        $property -> BuyerOneCellPhone = '';
+        $property -> BuyerOneFullStreetAddress = '';
+        $property -> BuyerOneCity = '';
+        $property -> BuyerOneStateOrProvince = '';
+        $property -> BuyerOnePostalCode = '';
+        $property -> BuyerOneFullAddress = '';
+
+        $property -> BuyerTwoFirstName = '';
+        $property -> BuyerTwoLastName = '';
+        $property -> BuyerTwoFullName = '';
+        $property -> BuyerTwoEmail = '';
+        $property -> BuyerTwoCellPhone = '';
+        $property -> BuyerTwoFullStreetAddress = '';
+        $property -> BuyerTwoCity = '';
+        $property -> BuyerTwoStateOrProvince = '';
+        $property -> BuyerTwoPostalCode = '';
+        $property -> BuyerTwoFullAddress = '';
+
+
         foreach($sellers as $seller) {
             if($c == 0) {
+
+                $seller_fullname = $seller -> first_name.' '.$seller -> last_name;
+                $seller_fullnames[] = $seller_fullname;
+
                 $property -> SellerOneFirstName = $seller -> first_name;
                 $property -> SellerOneLastName = $seller -> last_name;
+                $property -> SellerOneFullName = $seller_fullname;
                 $property -> SellerOneEmail = $seller -> email;
                 $property -> SellerOneCellPhone = $seller -> cell_phone;
                 $property -> SellerOneFullStreetAddress = $seller -> address_home_street;
                 $property -> SellerOneCity = $seller -> address_home_city;
                 $property -> SellerOneStateOrProvince = $seller -> address_home_state;
                 $property -> SellerOnePostalCode = $seller -> address_home_zip;
+                $property -> SellerOneFullAddress = $seller -> address_home_street.' '.$seller -> address_home_city.', '.$seller -> address_home_state.' '.$seller -> address_home_zip;
+
             } else if($c == 1) {
+
+                $seller_fullname = $seller -> first_name.' '.$seller -> last_name;
+                $seller_fullnames[] = $seller_fullname;
+
                 $property -> SellerTwoFirstName = $seller -> first_name;
                 $property -> SellerTwoLastName = $seller -> last_name;
+                $property -> SellerTwoFullName = $seller_fullname;
                 $property -> SellerTwoEmail = $seller -> email;
                 $property -> SellerTwoCellPhone = $seller -> cell_phone;
                 $property -> SellerTwoFullStreetAddress = $seller -> address_home_street;
                 $property -> SellerTwoCity = $seller -> address_home_city;
                 $property -> SellerTwoStateOrProvince = $seller -> address_home_state;
                 $property -> SellerTwoPostalCode = $seller -> address_home_zip;
+                $property -> SellerTwoFullAddress = $seller -> address_home_street.' '.$seller -> address_home_city.', '.$seller -> address_home_state.' '.$seller -> address_home_zip;
+
             }
             $c += 1;
         }
+
+        $property -> SellerBothFullName = implode(', ', $seller_fullnames);
 
 
         $buyers = Members::where($field, $id) -> where('member_type_id', ResourceItems::BuyerResourceId()) -> get();
 
         $c = 0;
+        $buyer_fullnames = [];
         foreach($buyers as $buyer) {
             if($c == 0) {
+
+                $buyer_fullname = $buyer -> first_name.' '.$buyer -> last_name;
+                $buyer_fullnames[] = $buyer_fullname;
+
                 $property -> BuyerOneFirstName = $buyer -> first_name;
                 $property -> BuyerOneLastName = $buyer -> last_name;
+                $property -> BuyerOneFullName = $buyer_fullname;
                 $property -> BuyerOneEmail = $buyer -> email;
                 $property -> BuyerOneCellPhone = $buyer -> cell_phone;
                 $property -> BuyerOneFullStreetAddress = $buyer -> address_home_street;
                 $property -> BuyerOneCity = $buyer -> address_home_city;
                 $property -> BuyerOneStateOrProvince = $buyer -> address_home_state;
                 $property -> BuyerOnePostalCode = $buyer -> address_home_zip;
+                $property -> BuyerOneFullAddress = $buyer -> address_home_street.' '.$buyer -> address_home_city.', '.$buyer -> address_home_state.' '.$buyer -> address_home_zip;
+
             } else if($c == 1) {
+
+                $buyer_fullname = $buyer -> first_name.' '.$buyer -> last_name;
+                $buyer_fullnames[] = $buyer_fullname;
+
                 $property -> BuyerTwoFirstName = $buyer -> first_name;
                 $property -> BuyerTwoLastName = $buyer -> last_name;
+                $property -> BuyerTwoFullName = $buyer_fullname;
                 $property -> BuyerTwoEmail = $buyer -> email;
                 $property -> BuyerTwoCellPhone = $buyer -> cell_phone;
                 $property -> BuyerTwoFullStreetAddress = $buyer -> address_home_street;
                 $property -> BuyerTwoCity = $buyer -> address_home_city;
                 $property -> BuyerTwoStateOrProvince = $buyer -> address_home_state;
                 $property -> BuyerTwoPostalCode = $buyer -> address_home_zip;
+                $property -> BuyerTwoFullAddress = $buyer -> address_home_street.' '.$buyer -> address_home_city.', '.$buyer -> address_home_state.' '.$buyer -> address_home_zip;
             }
             $c += 1;
         }
+
+        $property -> BuyerBothFullName = implode(', ', $buyer_fullnames);
+
 
         $buyer_agent = Members::where($field, $id) -> where('member_type_id', ResourceItems::BuyerAgentResourceId()) -> first();
 
         if($buyer_agent) {
             $property -> BuyerAgentFirstName = $buyer_agent -> first_name;
             $property -> BuyerAgentLastName = $buyer_agent -> last_name;
+            $property -> BuyerAgentFullName = $buyer_agent -> first_name.' '.$buyer_agent -> last_name;
             $property -> BuyerAgentEmail = $buyer_agent -> email;
             $property -> BuyerAgentPreferredPhone = $buyer_agent -> cell_phone;
             $property -> BuyerOfficeName = $buyer_agent -> company;
@@ -813,6 +899,7 @@ class TransactionsDetailsController extends Controller {
             $property -> BuyerOfficeCity = $buyer_agent -> address_office_city;
             $property -> BuyerOfficeStateOrProvince = $buyer_agent -> address_office_state;
             $property -> BuyerOfficePostalCode = $buyer_agent -> address_office_zip;
+            $property -> BuyerOfficeFullAddress = $buyer_agent -> address_office_street.' '.$buyer_agent -> address_office_city.', '.$buyer_agent -> address_office_state.' '.$buyer_agent -> address_office_zip;
         }
 
         $list_agent = Members::where($field, $id) -> where('member_type_id', ResourceItems::ListingAgentResourceId()) -> first();
@@ -820,6 +907,7 @@ class TransactionsDetailsController extends Controller {
         if($list_agent) {
             $property -> ListAgentFirstName = $list_agent -> first_name;
             $property -> ListAgentLastName = $list_agent -> last_name;
+            $property -> ListAgentFullName = $list_agent -> first_name.' '.$list_agent -> last_name;
             $property -> ListAgentEmail = $list_agent -> email;
             $property -> ListAgentPreferredPhone = $list_agent -> cell_phone;
             $property -> ListOfficeName = $list_agent -> company;
@@ -827,6 +915,7 @@ class TransactionsDetailsController extends Controller {
             $property -> ListOfficeCity = $list_agent -> address_office_city;
             $property -> ListOfficeStateOrProvince = $list_agent -> address_office_state;
             $property -> ListOfficePostalCode = $list_agent -> address_office_zip;
+            $property -> ListOfficeFullAddress = $list_agent -> address_office_street.' '.$list_agent -> address_office_city.', '.$list_agent -> address_office_state.' '.$list_agent -> address_office_zip;
         }
 
         $property -> save();
@@ -958,6 +1047,92 @@ class TransactionsDetailsController extends Controller {
         $delete_folder = TransactionDocumentsFolders::where('id', $folder_id) -> delete();
     }
 
+    public function get_emailed_documents(Request $request) {
+
+        $transaction_type = $request -> transaction_type;
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
+        $Agent_ID = $request -> Agent_ID;
+
+        $emailed_documents = TransactionDocumentsEmailed::where('transaction_type', $transaction_type)
+            -> where('Listing_ID', $Listing_ID)
+            -> where('Contract_ID', $Contract_ID)
+            -> where('Referral_ID', $Referral_ID)
+            -> where('Agent_ID', $Agent_ID)
+            -> where('active', 'yes')
+            -> where('email_status', 'success')
+            -> get();
+
+        if(count($emailed_documents) == 0) {
+
+            $emailed_documents = null;
+
+        } else {
+
+            // add file size for loading
+            foreach($emailed_documents as $emailed_document) {
+                $emailed_document -> file_size = filesize(Storage::disk('public') -> path(str_replace('/storage/', '', $emailed_document -> file_location)));
+            }
+            $emailed_documents = $emailed_documents -> toJson();
+
+        }
+
+        return $emailed_documents;
+
+    }
+
+    public function add_emailed_documents(Request $request) {
+
+        $transaction_type = $request -> transaction_type;
+        $Listing_ID = $request -> Listing_ID ?? 0;
+        $Contract_ID = $request -> Contract_ID ?? 0;
+        $Referral_ID = $request -> Referral_ID ?? 0;
+        $Agent_ID = $request -> Agent_ID;
+        $folder = $request -> folder;
+
+        $document_ids = explode(',', $request -> document_ids);
+
+        foreach($document_ids as $document_id) {
+
+            $emailed_document = TransactionDocumentsEmailed::find($document_id);
+            $emailed_document -> update(['active' => 'no']);
+
+            $request = new \Illuminate\Http\Request();
+            $request -> setMethod('POST');
+
+            $file = Storage::disk('public') -> path(str_replace('/storage/', '', $emailed_document -> file_location));
+            $file_name = File::basename($file);
+            $file = new UploadedFile($file, $file_name);
+            $request -> files -> set('file', $file);
+
+            $request -> request -> add([
+                'Agent_ID' => $Agent_ID,
+                'Listing_ID' => $Listing_ID ?? 0,
+                'Contract_ID' => $Contract_ID ?? 0,
+                'Referral_ID' => $Referral_ID ?? 0,
+                'transaction_type' => $transaction_type,
+                'folder' => $folder
+            ]);
+
+            $this -> upload_documents($request);
+
+        }
+
+        return response() -> json(['status' => 'success']);
+
+    }
+
+    public function delete_emailed_document(Request $request) {
+
+        $document_id = $request -> document_id;
+        $emailed_document = TransactionDocumentsEmailed::find($document_id);
+        $emailed_document -> update(['active' => 'no']);
+
+        return response() -> json(['status' => 'success']);
+
+    }
+
     public function duplicate_document(Request $request) {
 
         $document_id = $request -> document_id;
@@ -1012,6 +1187,9 @@ class TransactionsDetailsController extends Controller {
 
         // copy original file
         File::copyDirectory(Storage::disk('public') -> path($orig_uploads_path), Storage::disk('public') -> path($new_uploads_path));
+
+        exec('chmod 0777 '.Storage::disk('public') -> path('doc_management/transactions/' . $path));
+
         // add file_location to upload
 
         $upload_copy -> file_location = '/storage/' . $new_uploads_path . '/' . $upload -> file_name;
@@ -1062,18 +1240,22 @@ class TransactionsDetailsController extends Controller {
             $copy = $user_field -> replicate();
             $copy -> file_id = $new_upload_id;
             $copy -> save();
+            $new_user_field_id = $copy -> id;
+
+            $user_fields_inputs = UserFieldsInputs::where('transaction_field_id', $user_field -> id) -> get();
+
+            foreach ($user_fields_inputs as $user_fields_input) {
+                $copy = $user_fields_input -> replicate();
+                $copy -> file_id = $new_upload_id;
+                $copy -> transaction_field_id = $new_user_field_id;
+                $copy -> save();
+            }
         }
 
-        $user_fields_inputs = UserFieldsInputs::where('file_id', $orig_upload_id) -> get();
 
-        foreach ($user_fields_inputs as $user_fields_input) {
-            $copy = $user_fields_input -> replicate();
-            $copy -> file_id = $new_upload_id;
-            $copy -> save();
-        }
 
         // add input values
-        $field_input_values = UserFieldsValues::where('file_id', $orig_upload_id) -> get();
+        /* $field_input_values = UserFieldsValues::where('file_id', $orig_upload_id) -> get();
 
         foreach ($field_input_values as $field_input_value) {
             $copy = $field_input_value -> replicate();
@@ -1084,7 +1266,7 @@ class TransactionsDetailsController extends Controller {
             $copy -> Contract_ID = $Contract_ID;
             $copy -> Referral_ID = $Referral_ID;
             $copy -> save();
-        }
+        } */
 
     }
 
@@ -1321,6 +1503,8 @@ class TransactionsDetailsController extends Controller {
             Storage::disk('public') -> makeDirectory($files_path . '_system/layers');
             Storage::disk('public') -> makeDirectory($files_path . '_system/combined');
 
+            exec('chmod 0777 '.Storage::disk('public') -> path('doc_management/transactions/' . $path));
+
             $copy = exec('cp -rp ' . $copy_from . ' ' . $copy_to);
             $copy_converted = exec('cp ' . $storage_path . $files_path . '_system/' . $file['file_name'] . ' ' . $copy_to . '/converted/' . $file['file_name']);
 
@@ -1363,34 +1547,268 @@ class TransactionsDetailsController extends Controller {
                 TransactionUploadPages::create($new);
             }
 
-            $fields = Fields::where('file_id', $file_id) -> get();
-            $field_inputs = FieldInputs::where('file_id', $file_id) -> get();
+
+            $fields = Fields::where('file_id', $file_id) -> with('common_field') -> get();
 
             foreach ($fields as $field) {
-                $copy = $field -> replicate();
-                $copy -> file_id = $new_file_id;
-                $copy -> Agent_ID = $Agent_ID;
-                $copy -> Listing_ID = $Listing_ID;
-                $copy -> Contract_ID = $Contract_ID;
-                $copy -> Referral_ID = $Referral_ID;
-                $copy -> file_type = 'system';
-                $copy -> field_inputs = 'yes';
-                $new = $copy -> toArray();
-                UserFields::create($new);
+
+                $this -> add_field_and_inputs($field, $new_file_id, $Agent_ID, $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type, 'system');
+
             }
 
-            foreach ($field_inputs as $field_input) {
-                $copy = $field_input -> replicate();
-                $copy -> file_id = $new_file_id;
-                $copy -> Agent_ID = $Agent_ID;
-                $copy -> Listing_ID = $Listing_ID;
-                $copy -> Contract_ID = $Contract_ID;
-                $copy -> Referral_ID = $Referral_ID;
-                $copy -> file_type = 'system';
-                $new = $copy -> toArray();
-                UserFieldsInputs::create($new);
+        }
+
+    }
+
+    public function add_field_and_inputs($field, $new_file_id, $Agent_ID, $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type, $file_type) {
+
+        $field_type = $field -> field_type;
+        $field_category = $field -> field_category;
+
+        $field_inputs = 'no';
+        if($field_type == 'address' || ($field_type == 'name' && preg_match('/(Renter|Owner)/', $field -> field_name))) {
+            $field_inputs = 'yes';
+        }
+
+        if($field_type == '') {
+            $field_type = $field_category;
+        }
+
+        $new_field = new UserFields();
+        $new_field -> file_id = $new_file_id;
+
+        $new_field -> common_field_id = $field -> common_field_id;
+        $new_field -> create_field_id = $field -> field_id;
+        $new_field -> group_id = $field -> group_id;
+        $new_field -> page = $field -> page;
+        $new_field -> field_category = $field_category;
+        $new_field -> field_type = $field_type;
+        //$new_field -> field_created_by = 'system'; this is the default value
+        $new_field -> field_name = $field -> field_name;
+        $new_field -> field_name_display = $field -> field_name_display;
+        $new_field -> field_name_type = $field -> field_name_type;
+        $new_field -> number_type = $field -> number_type;
+        $new_field -> field_sub_group_id = $field -> field_sub_group_id;
+        $new_field -> top_perc = $field -> top_perc;
+        $new_field -> left_perc = $field -> left_perc;
+        $new_field -> width_perc = $field -> width_perc;
+        $new_field -> height_perc = $field -> height_perc;
+
+        $new_field -> Agent_ID = $Agent_ID;
+        $new_field -> Listing_ID = $Listing_ID;
+        $new_field -> Contract_ID = $Contract_ID;
+        $new_field -> Referral_ID = $Referral_ID;
+        $new_field -> transaction_type = $transaction_type;
+        $new_field -> file_type = $file_type;
+        $new_field -> field_inputs = $field_inputs;
+
+        $new_field -> save();
+
+        $new_field_id = $new_field -> id;
+
+
+        $property = Listings::GetPropertyDetails($transaction_type, [$Listing_ID, $Contract_ID, $Referral_ID]);
+        $for_sale = $property -> SaleRent == 'sale' || $property -> SaleRent == 'both' ? 'yes' : 'no';
+
+        // add inputs
+        // if $field_inputs == 'yes' there will be 2 or 4/5 inputs, otherwise just one
+        if($field_inputs == 'yes') {
+
+            $sub_group_title = CommonFieldsSubGroups::GetSubGroupTitle($new_field -> field_sub_group_id);
+            if($sub_group_title == '') {
+                $sub_group_title = 'Property';
             }
 
+            if($new_field -> field_type == 'name') {
+
+                if(preg_match('/Buyer/', $sub_group_title)) {
+                    $name_type = $for_sale == 'yes' ? 'Buyer' : 'Renter';
+                    $input_name_one_display = $name_type.' One Name';
+                    $input_name_one_db_column = 'BuyerOneFullName';
+                    $input_name_two_display = $name_type.' Two Name';
+                    $input_name_two_db_column = 'BuyerTwoFullName';
+                } else if(preg_match('/Seller/', $sub_group_title)) {
+                    $name_type = $for_sale == 'yes' ? 'Seller' : 'Owner';
+                    $input_name_one_display = $name_type.' One Name';
+                    $input_name_one_db_column = 'SellerOneFullName';
+                    $input_name_two_display = $name_type.' Two Name';
+                    $input_name_two_db_column = 'SellerTwoFullName';
+                }
+
+                $input_one = new UserFieldsInputs();
+                $input_one -> file_id = $new_field -> file_id;
+                $input_one -> group_id = $new_field -> group_id;
+                $input_one -> file_type = $new_field -> file_type;
+                $input_one -> field_type = $new_field -> field_type;
+                $input_one -> transaction_field_id = $new_field -> id;
+                $input_one -> input_name_display = $input_name_one_display;
+                $input_one -> input_db_column = $input_name_one_db_column;
+                $input_one -> Agent_ID = $new_field -> Agent_ID;
+                $input_one -> Listing_ID = $new_field -> Listing_ID;
+                $input_one -> Contract_ID = $new_field -> Contract_ID;
+                $input_one -> Referral_ID = $new_field -> Referral_ID;
+                $input_one -> transaction_type = $new_field -> transaction_type;
+                $input_one -> save();
+
+                $input_two = $input_one -> replicate();
+                $input_two -> input_name_display = $input_name_two_display;
+                $input_two -> input_db_column = $input_name_two_db_column;
+                $input_two -> save();
+
+            } else if($new_field -> field_type == 'address') {
+
+                // using Renter and Owner to find Buyer or Renter/Seller or Owner because 'Buyer' matches Buyer Agent
+                if(preg_match('/Renter/', $sub_group_title)) {
+
+                    $name_type = $for_sale == 'yes' ? 'Buyer' : 'Renter';
+                    // get name type to match db columns
+                    if(preg_match('/One/', $sub_group_title)) {
+                        $db_type = 'BuyerOne';
+                    } else if(preg_match('/Two/', $sub_group_title)) {
+                        $db_type = 'BuyerTwo';
+                    } else if(preg_match('/Both/', $sub_group_title)) {
+                        $db_type = 'BuyerOne';
+                        $db_name = 'Buyer';
+                    }
+
+                } else if(preg_match('/Owner/', $sub_group_title)) {
+
+                    $name_type = $for_sale == 'yes' ? 'Seller' : 'Owner';
+
+                    // get name type to match db columns
+                    if(preg_match('/One/', $sub_group_title)) {
+                        $db_type = 'SellerOne';
+                    } else if(preg_match('/Two/', $sub_group_title)) {
+                        $db_type = 'SellerTwo';
+                    } else if(preg_match('/Both/', $sub_group_title)) {
+                        $db_type = 'SellerOne';
+                        $db_name = 'Seller';
+                    }
+
+                } else if(preg_match('/Office/', $sub_group_title)) {
+                    $name_type = 'List Agent Office';
+                    $db_type = 'ListOffice';
+                    if(preg_match('/Buyer/', $sub_group_title)) {
+                        $name_type = 'Buyer Agent Office';
+                        $db_type = 'BuyerOffice';
+                    }
+                } else {
+                    $name_type = $sub_group_title;
+                    $db_type = str_replace('Property', '', $sub_group_title);
+                }
+
+                /*
+                if(preg_match('/Both/', $sub_group_title)) {
+
+                    $input_address_display = $db_name.' Full Address';
+                    $input_address_db_column = $db_name.'OneFullAddress';
+
+
+
+                    $input_one = new UserFieldsInputs();
+                    $input_one -> file_id = $new_field -> file_id;
+                    $input_one -> group_id = $new_field -> group_id;
+                    $input_one -> file_type = $new_field -> file_type;
+                    $input_one -> field_type = $new_field -> field_type;
+                    $input_one -> transaction_field_id = $new_field -> id;
+                    $input_one -> input_name_display = $input_address_display;
+                    $input_one -> input_db_column = $input_address_db_column;
+                    $input_one -> Agent_ID = $new_field -> Agent_ID;
+                    $input_one -> Listing_ID = $new_field -> Listing_ID;
+                    $input_one -> Contract_ID = $new_field -> Contract_ID;
+                    $input_one -> Referral_ID = $new_field -> Referral_ID;
+                    $input_one -> transaction_type = $new_field -> transaction_type;
+                    $input_one -> save();
+
+                } else { */
+
+                    $input_address_one_display = $name_type.' Street Address';
+                    $input_address_one_db_column = $db_type.'FullStreetAddress';
+                    $input_address_two_display = $name_type.' City';
+                    $input_address_two_db_column = $db_type.'City';
+                    $input_address_three_display = $name_type.' State';
+                    $input_address_three_db_column = $db_type.'StateOrProvince';
+                    $input_address_four_display = $name_type.' Zip';
+                    $input_address_four_db_column = $db_type.'PostalCode';
+                    if($sub_group_title == 'Property') {
+                        $input_address_five_display = 'Property County';
+                        $input_address_five_db_column = $db_type.'County';
+                    }
+
+                    $input_one = new UserFieldsInputs();
+                    $input_one -> file_id = $new_field -> file_id;
+                    $input_one -> group_id = $new_field -> group_id;
+                    $input_one -> file_type = $new_field -> file_type;
+                    $input_one -> field_type = $new_field -> field_type;
+                    $input_one -> transaction_field_id = $new_field -> id;
+                    $input_one -> input_name_display = $input_address_one_display;
+                    $input_one -> input_db_column = $input_address_one_db_column;
+                    $input_one -> Agent_ID = $new_field -> Agent_ID;
+                    $input_one -> Listing_ID = $new_field -> Listing_ID;
+                    $input_one -> Contract_ID = $new_field -> Contract_ID;
+                    $input_one -> Referral_ID = $new_field -> Referral_ID;
+                    $input_one -> transaction_type = $new_field -> transaction_type;
+                    $input_one -> save();
+
+                    $input_two = $input_one -> replicate();
+                    $input_two -> input_name_display = $input_address_two_display;
+                    $input_two -> input_db_column = $input_address_two_db_column;
+                    $input_two -> save();
+
+                    $input_three = $input_one -> replicate();
+                    $input_three -> input_name_display = $input_address_three_display;
+                    $input_three -> input_db_column = $input_address_three_db_column;
+                    $input_three -> save();
+
+                    $input_four = $input_one -> replicate();
+                    $input_four -> input_name_display = $input_address_four_display;
+                    $input_four -> input_db_column = $input_address_four_db_column;
+                    $input_four -> save();
+
+                    if($sub_group_title == 'Property') {
+                        $input_five = $input_one -> replicate();
+                        $input_five -> input_name_display = $input_address_five_display;
+                        $input_five -> input_db_column = $input_address_five_db_column;
+                        $input_five -> save();
+                    }
+
+                //}
+
+            }
+
+        } else {
+
+            $common_field = CommonFields::find($new_field -> common_field_id);
+            $input_db_column = $common_field ? $common_field -> db_column_name : '';
+
+            $input = new UserFieldsInputs();
+            $input -> file_id = $new_field -> file_id;
+            $input -> group_id = $new_field -> group_id;
+            $input -> file_type = $new_field -> file_type;
+            $input -> field_type = $new_field -> field_type;
+            $input -> number_type = $new_field -> number_type;
+            $input -> transaction_field_id = $new_field -> id;
+            $input -> input_name_display = $new_field -> field_name_display;
+            $input -> input_db_column = $input_db_column;
+            $input -> Agent_ID = $new_field -> Agent_ID;
+            $input -> Listing_ID = $new_field -> Listing_ID;
+            $input -> Contract_ID = $new_field -> Contract_ID;
+            $input -> Referral_ID = $new_field -> Referral_ID;
+            $input -> transaction_type = $new_field -> transaction_type;
+            $input -> save();
+
+        }
+
+        // add values for common fields
+        $inputs = UserFieldsInputs::where('transaction_field_id', $new_field -> id)
+            -> whereNotNull('input_db_column')
+            -> get();
+
+        foreach($inputs as $input) {
+            $column = $input -> input_db_column;
+            $value = $property -> $column;
+            $input -> input_value = $value;
+            $input -> save();
         }
 
     }
@@ -1626,7 +2044,8 @@ class TransactionsDetailsController extends Controller {
             $field_ids = [];
 
             foreach ($add_user_fields as $add_user_field) {
-                $field_ids[] = $add_user_field -> field_id;
+                // TODO: field_id probably not right
+                $field_ids[] = $add_user_field -> common_field_id;
                 $add_user_fields_copy = $add_user_field -> replicate();
                 $add_user_fields_copy -> page = $page_number;
                 $add_user_fields_copy -> file_type = 'user';
@@ -1644,14 +2063,14 @@ class TransactionsDetailsController extends Controller {
             }
 
             // copy from docs_transaction_fields_inputs_values
-            $add_user_field_values = UserFieldsValues::whereIn('input_id', $field_ids) -> get();
+            /* $add_user_field_values = UserFieldsValues::whereIn('input_id', $field_ids) -> get();
 
             foreach ($add_user_field_values as $add_user_field_value) {
                 $add_user_field_values_copy = $add_user_field_value -> replicate();
                 $add_user_field_values_copy -> file_type = 'user';
                 $add_user_field_values_copy -> file_id = $new_file_id;
                 $add_user_field_values_copy -> save();
-            }
+            } */
 
             $page_number += 1;
 
@@ -1755,6 +2174,7 @@ class TransactionsDetailsController extends Controller {
             $ext = $file -> getClientOriginalExtension();
             $file_name = $file -> getClientOriginalName();
 
+
             $file_name_remove_numbers = preg_replace('/[0-9-_\s\.]+\.' . $ext . '/', '.' . $ext, $file_name);
             $file_name_remove_numbers = preg_replace('/^[0-9-_\s\.]+/', '', $file_name_remove_numbers);
             $file_name_display = preg_replace('/-/', ' ', $file_name_remove_numbers);
@@ -1825,13 +2245,20 @@ class TransactionsDetailsController extends Controller {
                 return ($fail);
             }
 
+            exec('chmod 0777 '.Storage::disk('public') -> path('doc_management/transactions/' . $path));
+
             Storage::disk('public') -> makeDirectory($storage_dir . '/converted');
 
-            // flatten
+
             $file_in = Storage::disk('public') -> path($storage_dir . '/' . $new_file_name);
             $file_out = Storage::disk('public') -> path($storage_dir . '/temp_' . $new_file_name);
+
+            // flatten
             exec('pdftk ' . $file_in . ' output ' . $file_out . ' flatten');
-            exec('rm ' . $file_in . ' && mv ' . $file_out . ' ' . $file_in);
+            exec('rm '.$file_in.' && mv '.$file_out.' '.$file_in);
+            // compress
+            /* exec('convert -compress Zip -density 150x150 '.$file_in.' '.$file_out);
+            exec('rm '.$file_in.' && mv '.$file_out.' '.$file_in); */
 
             // add to converted folder
             exec('cp ' . Storage::disk('public') -> path($storage_dir . '/' . $new_file_name) . ' ' . Storage::disk('public') -> path($storage_dir . '/converted/' . $new_file_name));
@@ -3153,7 +3580,7 @@ class TransactionsDetailsController extends Controller {
         // add email address
         $new_transaction = Contracts::find($Contract_ID);
 
-        $code = 'C' . $Contract_ID;
+        $code = $Contract_ID.'C';
         $address = preg_replace(config('global.vars.bad_characters'), '', $FullStreetAddress);
         $email = $address . '_' . $code . '@' . config('global.vars.property_email');
 
@@ -3399,6 +3826,7 @@ class TransactionsDetailsController extends Controller {
             -> orWhereRaw('CONCAT(MemberFirstName, " ", MemberLastName) like \'%' . $val . '%\'')
             -> orWhereRaw('CONCAT(MemberNickname, " ", MemberLastName) like \'%' . $val . '%\'')
             -> orderBy('MemberLastName')
+            -> limit(50)
             -> get();
 
         return compact('agents');

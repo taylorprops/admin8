@@ -13,10 +13,19 @@ use App\Models\Employees\Agents;
 use App\Models\Employees\AgentsTeams;
 use App\Models\Employees\AgentsLicenses;
 use App\Models\Employees\AgentsNotes;
-use App\User;
 
-class CronController extends Controller
-{
+use App\Models\DocManagement\Transactions\Listings\Listings;
+use App\Models\DocManagement\Transactions\Contracts\Contracts;
+use App\Models\DocManagement\Transactions\Referrals\Referrals;
+use App\Models\DocManagement\Transactions\Documents\TransactionDocumentsEmailed;
+
+use App\User;
+use Config;
+use Illuminate\Support\Facades\Storage;
+
+
+class CronController extends Controller {
+
     public function update_tables_agents(Request $request) {
 
         $delete_agents = Agents::truncate();
@@ -133,5 +142,6 @@ class CronController extends Controller
         }
 
     }
+
 
 }

@@ -1,321 +1,214 @@
+{{-- [$user_field, $c, $field_values, $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type, $Agent_ID, $common_fields, $fields_user_inputs] --}}
+
 <?php
+$field_id = $user_field -> create_field_id;
+$group_id = $user_field -> group_id;
 
-$field_type = $field_user -> field_type;
-$field_inputs = $field_user -> field_inputs;
-// $class = 'fillable-field-container';
-// $class .= ' standard ' . $field_type;
+$top_perc = $user_field -> top_perc;
+$left_perc = $user_field -> left_perc;
+$height_perc = $user_field -> height_perc;
+$width_perc = $user_field -> width_perc;
 
-if($field_inputs == 'no') {
-
-    $custom_name = 'User Field';
-    $common_name = '';
-
-    $top = $field_user -> top_perc;
-    $left = $field_user -> left_perc;
-    $height = $field_user -> height_perc;
-    $width = $field_user -> width_perc;
+$field_name = $user_field -> field_name;
+$field_type = $user_field -> field_type;
+$field_category = $user_field -> field_category;
+$field_inputs = $user_field -> field_inputs;
+$field_created_by = $user_field -> field_created_by;
+$inline_editor_class = $field_inputs == 'yes' ? '' : 'inline-editor';
+if($field_category == 'number' || $field_category == 'checkbox' || $field_category == 'radio' || $field_category == 'strikeout' || $field_category == 'highlight') {
+    $inline_editor_class = '';
+}
+if($field_created_by == 'user') {
 
     $data_div_classes = $field_type;
     $data_div_styles = '';
     $field_div_class = '';
-    if($field_type == 'user_text') {
-        $field_div_class = 'user-field-div textline-div';
+    $inline = '';
+    $field_html = '';
+    $handles = '
+    <div class="field-handle ui-resizable-handle ui-resizable-e"></div>
+    <div class="field-handle ui-resizable-handle ui-resizable-w"></div>
+    ';
+
+    if($field_category == 'user_text') {
+
+        $field_div_class = 'user-field-div textline-div standard';
+        $data_div_classes .= 'inline w-100 h-100';
+        $data_div_styles = 'font-family: Helvetica, Arial;';
+        /* $field_html = '
+            <div class="data-div textline-html inline-editor"></div>
+            <input type="hidden" class="field-input user-field-input" data-id="" data-field-id="'.$field_id.'" data-group-id="'.$group_id.'" data-field-type="'.$field_type.'">
+        '; */
+
+
+    } else if($field_category == 'strikeout') {
+
+        $field_div_class = 'user-field-div strikeout-div standard';
+        //$field_html = '<div class="data-div strikeout-html"></div>';
+
+    } else if($field_category == 'highlight') {
+
+        $field_div_class = 'user-field-div highlight-div standard';
         $data_div_classes .= ' w-100 h-100';
-        $data_div_styles = 'font-family: Helvetica, Arial; letter-spacing:0.03em;';
-    } else if($field_type == 'strikeout') {
-        $field_div_class = 'user-field-div strikeout-div ';
-    } else if($field_type == 'highlight') {
-        $field_div_class = 'user-field-div highlight-div ';
-        $data_div_classes .= ' w-100 h-100';
+        $handles = '
+            <div class="field-handle ui-resizable-handle ui-resizable-nw"></div>
+            <div class="field-handle ui-resizable-handle ui-resizable-ne"></div>
+            <div class="field-handle ui-resizable-handle ui-resizable-se"></div>
+            <div class="field-handle ui-resizable-handle ui-resizable-sw"></div>
+        ';
+        //$field_html = '<div class="data-div highlight-html"></div>';
+
     }
 
-} else {
+} else if($field_created_by == 'system') {
 
-    $field_div_class = 'fillable-field-container';
-    if ($field_type == 'number') {
-        // hide written field since automatically filled in after numeric typed in
-        if ($field_user -> number_type == 'written') {
-            $field_div_class = 'fillable-field-container-hidden';
-        }
-    }
-
-    $field_div_class .= ' standard ' . $field_type;
-
-    $common_name = '';
-    $custom_name = '';
-
-    if ($field_user -> field_name_type == 'common') {
-        $common_name = $field_user -> field_name_display;
-    } elseif ($field_user -> field_name_type == 'custom') {
-        $custom_name = $field_user -> field_name_display;
-    }
-
-    $top = $field_user -> top_perc;
-    $left = $field_user -> left_perc;
-    $height = $field_user -> height_perc;
-    $width = $field_user -> width_perc;
+    $field_div_class = ' ' . $field_category;
 
     $data_div_classes = '';
     $data_div_styles = '';
 
-    if($field_type == 'radio' || $field_type == 'checkbox') {
+    if($field_category == 'radio' || $field_category == 'checkbox') {
         $data_div_classes = 'data-div-radio-check data-div-radio';
-        if($field_type == 'checkbox') {
+        if($field_category == 'checkbox') {
             $data_div_classes = 'data-div-radio-check data-div-checkbox';
         }
     } else {
-        $data_div_styles = $data_div_styles.' letter-spacing:0.03em;';
+        $data_div_styles = $data_div_styles;
     }
 
 }
 
-if($transaction_type == 'listing') {
-    $field = 'Listing_ID';
-    $id = $Listing_ID;
-} else if($transaction_type == 'contract') {
-    $field = 'Contract_ID';
-    $id = $Contract_ID;
-} else if($transaction_type == 'referral') {
-    $field = 'Referral_ID';
-    $id = $Referral_ID;
-}
-
-
 ?>
 
-<div class="field-div {{ $field_div_class }} group_{{ $field_user -> group_id }}"
+<div class="field-div-container animate__animated animate__fadeIn"
     style="position: absolute;
-    top: {{ $top }}%;
-    left: {{ $left }}%;
-    height: {{ $height }}%;
-    width: {{ $width }}%;"
-    id="field_{{ $field_user -> field_id }}"
-    data-field-id="{{ $field_user -> field_id }}"
-    data-group-id="{{ $field_user -> group_id }}"
-    data-type="{{ $field_type }}"
-    data-address-type="{{ $field_user -> address_type }}"
-    data-name-type="{{ $field_user -> name_type }}"
-    data-number-type="{{ $field_user -> number_type }}"
-    data-page="{{ $field_user -> page }}"
-    data-x="{{ $field_user -> left }}"
-    data-y="{{ $field_user -> top }}"
-    data-h="{{ $field_user -> height }}"
-    data-w="{{ $field_user -> width }}"
-    data-xp="{{ $field_user -> left_perc }}"
-    data-yp="{{ $field_user -> top_perc }}"
-    data-hp="{{ $field_user -> height_perc }}"
-    data-wp="{{ $field_user -> width_perc }}"
-    data-field-name-type="{{ $field_user -> field_name_type }}"
-    data-commonname="{{ $common_name }}"
-    data-customname="{{ $custom_name }}">
+    top: {{ $top_perc }}%;
+    left: {{ $left_perc }}%;
+    height: {{ $height_perc }}%;
+    width: {{ $width_perc }}%;">
 
-    @if($field_type == 'radio')
-    <label class="data-div {{ $data_div_classes }}" style="{{ $data_div_styles }}" for="{{ $field_user -> field_id }}"></label>
-    @else
-    <div class="data-div {{ $data_div_classes }}" style="{{ $data_div_styles }}"></div>
-    @endif
 
-    @if($field_type == 'user_text')
 
-        <div class="modal fade draggable" id="fill_fields_div_modal_{{$field_user -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field_user -> field_id}}_title" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header draggable-handle">
-                        <h4 class="modal-title" id="fill_fields_div_modal_{{$field_user -> field_id}}_title">{{ strtoupper($field_user -> field_name_display) }}</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
+    <div class="field-div {{ $field_div_class }} group_{{ $group_id }} @if($inline_editor_class != '') inline @endif"
+        id="field_{{ $field_id }}"
+        style="position: absolute;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 100%;
+        display: block;"
+        data-field-id="{{ $field_id }}"
+        data-group-id="{{ $group_id }}"
+        data-type="{{ $field_type }}"
+        data-field-name="{{ $field_name }}"
+        data-category="{{ $field_category }}"
+        data-number-type="{{ $user_field -> number_type }}"
+        data-page="{{ $user_field -> page }}"
+        data-xp="{{ $left_perc }}"
+        data-yp="{{ $top_perc }}"
+        data-hp="{{ $height_perc }}"
+        data-wp="{{ $width_perc }}"
+        data-field-name-type="{{ $user_field -> field_name_type }}">
+    </div>
 
-                        <div class="container form-div">
+    @php
+    // add values to data-div for all fields with one input and a db field
+    $user_field_inputs = $user_field -> user_field_inputs;
 
-                            @php
-                            $input_id = $field_user -> field_id;
-                            $value = get_value($field_values, $input_id);
-                            $textline_class = $field_user -> textline_type ?? null;
-                            @endphp
+    $value = '';
+    $input = null;
+    if(count($user_field_inputs) == 1) {
+        $input = $user_field_inputs -> first();
+        $value = $input -> input_value;
+    }
+    /* if($user_field -> id == 8659) {
+        dd($value);
+    } */
 
-                            <div class="row p-3 mb-1">
-                                <div class="col-12">
-                                    <div class="my-3">
-                                        <textarea class="custom-form-element form-textarea fillable-field-input {{ $textline_class }}" id="{{ $input_id }}" data-label="{{ $field_user -> field_name_display }}" rows="3" data-default-value="{{ $value }}" data-common-name="">{{  $value }}</textarea>
-                                    </div>
-                                </div>
-                            </div>
+    if($field_category  == 'date') {
 
-                        </div> <!-- end container form-div -->
-
-                    </div> <!-- end modal-body -->
-                    <div class="modal-footer">
-                        <a href="javascript: void(0);" class="btn btn-success btn-sm shadow save-fillable-fields" data-group-id="{{ $field_user -> group_id }}" data-type="{{ $field_type }}" data-field-name-type="{{ $field_user -> field_name_type }}">Save</a>
-                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</a>
-                    </div>
-
-                </div> <!-- end modal-content -->
-
-            </div> <!-- end modal-dialog -->
-
-        </div> <!-- end modal -->
-
-    @elseif($field_type == 'date')
-
-        @php
-        $input_id = $field_user -> field_id;
-        $value = get_value($field_values, $input_id);
-
-        if(!$value) {
-            $value = $common_fields -> GetCommonNameValue($common_name, $field_user -> field_id, 'system', $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type,  $Agent_ID);
-        }
         if($value != '') {
             $value = date('n/j/Y', strtotime($value));
         }
-        @endphp
-        <input type="text" class="field-datepicker fillable-field-input" id="{{ $input_id }}" value="{{ $value }}" data-default-value="{{ $value }}" data-common-name="{{ $common_name }}">
 
-    @elseif($field_type == 'radio')
+    } else if($field_category  == 'radio' || $field_category  == 'checkbox') {
 
-        @php
-        $input_id = $field_user -> field_id;
-        $checked = get_value_radio_checkbox($field_values, $input_id);
-        @endphp
+        $checked = $value;
+        if($checked == 'checked') {
+            $value = 'x';
+        }
 
-        <input type="radio" class="fillable-field-input d-none" name="{{ $field_user -> field_name }}" value="" id="{{ $input_id }}" {{ $checked }} data-common-name="{{ $common_name }}">
+    }
+    @endphp
 
-    @elseif($field_type == 'checkbox')
+    @if($field_category == 'date')
 
-        @php
-        $input_id = $field_user -> field_id;
-        $checked = get_value_radio_checkbox($field_values, $input_id);
-        @endphp
+        <input type="text" class="field-datepicker field-input" id="field_{{ $field_id }}" data-id="{{ $input -> id }}" value="{{ $value }}" data-default-value="{{ $value }}">
 
-        <input type="checkbox" class="fillable-field-input" value="{{ $field_user -> checkbox_value }}" id="{{ $input_id }}" {{ $checked }} data-common-name="{{ $common_name }}">
+    @elseif($field_category == 'number')
 
-    @elseif($field_type != 'highlight' && $field_type != 'strikeout')
+        <div class="inputs-container bg-white px-3 shadow @if($left_perc > 50) right @endif">
 
-        <div class="modal fade draggable" id="fill_fields_div_modal_{{$field_user -> field_id}}" tabindex="-1" role="dialog" aria-labelledby="fill_fields_div_modal_{{$field_user -> field_id}}_title" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header draggable-handle">
-                        <h4 class="modal-title" id="fill_fields_div_modal_{{$field_user -> field_id}}_title">{{ strtoupper($field_user -> field_name_display) }}</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="text-white">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
+            <div class="input-div my-3">
+                <input type="text" class="custom-form-element form-input field-input numbers-only" data-id="{{ $input -> id }}" data-group-id="{{ $group_id }}" data-field-type="{{ $field_type }}" data-number-type="{{ $user_field -> number_type }}" data-db-column="{{ $input -> db_column }}" data-label="{{ $input -> input_name_display }}" value="{{ $input -> input_value }}">
+            </div>
 
-                        <div class="container form-div">
+            <div class="d-flex justify-content-around mb-2">
+                <a href="javascript: void(0);" class="btn btn-sm btn-success close-field-button"><i class="fa fa-check-circle mr-2"></i> Finished</a>
+            </div>
 
-                            @if($field_type == 'textline')
+        </div>
 
-                                @php
-                                $input_id = $field_user -> field_id;
-                                $value = get_value($field_values, $input_id);
+    @else
 
-                                if(!$value) {
-                                    $value = $common_fields -> GetCommonNameValue($common_name, $field_user -> field_id, 'system', $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type, $Agent_ID);
-                                }
-                                $textline_class = $field_user -> textline_type ?? null;
-                                @endphp
+        @if($field_inputs == 'yes')
 
-                                <div class="row p-3 mb-1">
-                                    <div class="col-12">
-                                        <div class="my-3">
-                                            <textarea class="custom-form-element form-textarea fillable-field-input {{ $textline_class }}" id="{{ $input_id }}" data-label="{{ $field_user -> field_name_display }}" rows="3" data-default-value="{{ $value }}" data-common-name="{{ $common_name }}">{{  $value }}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
+            <div class="inputs-container bg-white px-3 shadow @if($left_perc > 50) right @endif">
 
-                            @elseif($field_type == 'name' || $field_type == 'address')
+                @foreach($user_field -> user_field_inputs as $user_field_input)
 
-                                <div class="row p-3 mb-1">
-
-                                    @foreach($fields_user_inputs as $user_input)
-
-                                        @if($field_user -> field_id == $user_input -> field_id)
-
-                                            @php
-                                            $input_id = $field_user -> field_id.'_'.$user_input -> input_id;
-                                            $value = get_value($field_values, $input_id);
-                                            $common_name_input = $user_input -> input_name;
-
-                                            if(!$value) {
-                                                $value = $common_fields -> GetCommonNameValue($common_name_input, $user_input -> input_id, 'system', $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type, $Agent_ID);
-                                                /* if($field_type == 'address' && stristr($common_name_input, 'buyer')) {
-                                                    dd($common_name_input, $value);
-                                                } */
-                                            }
-
-                                            $address_type = '';
-                                            $name_type = '';
-                                            if($field_type == 'address') {
-                                                $address_type = address_type($common_name_input);
-                                                /* if(stristr($common_name_input, 'buyer')) {
-                                                dd($common_name_input, $address_type, $value);
-                                                } */
-                                            } else if($field_type == 'name') {
-                                                $name_type = name_type($common_name_input);
-                                            }
-
-                                            @endphp
-
-                                            <div class="col-12">
-                                                <div class=" my-3">
-
-                                                    <input type="text"
-                                                    class="custom-form-element form-input fillable-field-input"
-                                                    id="{{ $input_id }}"
-                                                    data-label="{{ $common_name_input }}"
-                                                    data-type="{{ $common_name_input }}"
-                                                    data-address-type="{{ $address_type }}"
-                                                    data-name-type="{{ $name_type }}"
-                                                    value="{{ $value }}"
-                                                    data-default-value="{{ $value }}"
-                                                    data-common-name="{{ $common_name_input }}">
-
-                                                </div>
-                                            </div>
-
-                                        @endif
-                                    @endforeach
-
-                                </div>
-
-                            @elseif($field_type == 'number')
-
-                                @php
-                                $input_id = $field_user -> field_id;
-                                $value = get_value($field_values, $input_id);
-                                if(!$value) {
-                                    $value = $common_fields -> GetCommonNameValue($common_name, $field_user -> field_id, 'system', $Listing_ID, $Contract_ID, $Referral_ID, $transaction_type, $Agent_ID);
-                                }
-                                @endphp
-
-                                <div class="row p-3 border border-secondary mb-1">
-                                    <div class="col-12">
-
-                                        <div class="my-1">
-                                            <input type="text" class="custom-form-element form-input numbers-only fillable-field-input" id="{{ $input_id }}" data-label="{{ $field_user -> field_name_display }}" value="{{ $value }}" data-common-name="{{ $common_name }}">
-                                        </div>
-                                    </div>
-                                </div>
-
-                            @endif
-
-                        </div> <!-- end container form-div -->
-
-                    </div> <!-- end modal-body -->
-                    <div class="modal-footer">
-                        <a href="javascript: void(0);" class="btn btn-success btn-sm shadow save-fillable-fields" data-group-id="{{ $field_user -> group_id }}" data-type="{{ $field_type }}" data-field-name-type="{{ $field_user -> field_name_type }}">Save</a>
-                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</a>
+                    <div class="input-div my-3">
+                        <input type="text" class="custom-form-element form-input field-input" data-id="{{ $user_field_input -> id }}" data-group-id="{{ $group_id }}" data-field-type="{{ $field_type }}" data-db-column="{{ $user_field_input -> db_column }}" data-label="{{ $user_field_input -> input_name_display }}" value="{{ $user_field_input -> input_value }}">
                     </div>
 
-                </div> <!-- end modal-content -->
+                @endforeach
 
-            </div> <!-- end modal-dialog -->
+                <div class="d-flex justify-content-around mb-2">
+                    <a href="javascript: void(0);" class="btn btn-sm btn-success close-field-button"><i class="fa fa-check-circle mr-2"></i> Finished</a>
+                </div>
 
-        </div> <!-- end modal -->
+            </div>
+
+        @else
+
+            @if($input)
+
+                <input type="hidden" class="field-input user-field-input" data-id="{{ $input -> id }}" data-group-id="{{ $group_id }}" data-field-type="{{ $field_type }}" data-number-type="{{ $user_field -> number_type }}" data-db-column="{{ $input -> db_column }}" value="{{ $input -> input_value }}">
+
+            @endif
+
+            @if($field_created_by == 'user')
+                <div class="field-options-holder w-100">
+                    <div class="d-flex justify-content-around">
+                        <div class="btn-group" role="group" aria-label="Field Options">
+                            <a type="button" class="btn btn-primary field-handle"><i class="fal fa-arrows fa-lg"></i></a>
+                            <a type="button" class="btn btn-danger remove-field"><i class="fal fa-times-circle fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- {!! $field_html !!} --}}
+                {!! $handles !!}
+            @endif
+
+        @endif
 
     @endif
 
-</div> <!-- end field-div -->
+    <div class="data-div {{ $inline_editor_class }} {{ $data_div_classes }}" style="{{ $data_div_styles }}">{{ $value }}</div>
+
+
+</div>
+
+
+

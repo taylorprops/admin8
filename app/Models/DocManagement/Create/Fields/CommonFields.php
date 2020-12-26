@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\DocManagement\Create\Fields\FieldInputs;
 
 use App\Models\DocManagement\Transactions\EditFiles\UserFieldsInputs;
-use App\Models\DocManagement\Transactions\EditFiles\UserFieldsValues;
+//use App\Models\DocManagement\Transactions\EditFiles\UserFieldsValues;
 use App\Models\DocManagement\Transactions\Listings\Listings;
 use App\Models\DocManagement\Transactions\Contracts\Contracts;
 use App\Models\DocManagement\Transactions\Referrals\Referrals;
@@ -43,7 +43,7 @@ class CommonFields extends Model
 
         if($field_type == 'system') {
 
-            $field_input = UserFieldsInputs::where('input_id', $input_id) -> where('field_type', 'common') -> get();
+            $field_input = UserFieldsInputs::where('id', $input_id) -> where('field_type', 'common') -> get();
             $common_name_search = $this -> where('field_name', $common_name) -> first();
 
             $members_modal = new Members();

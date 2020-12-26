@@ -276,7 +276,7 @@ class TransactionsAddController extends Controller {
 
         // add email address
         $address = preg_replace(config('global.vars.bad_characters'), '', $request -> street_number . ucwords(strtolower($request -> street_name)) . $request -> street_dir . $request -> unit_number);
-        $email = $address.'_R'.$Referral_ID.'@'.config('global.vars.property_email');
+        $email = $address.'_'.$Referral_ID.'R@'.config('global.vars.property_email');
 
         $add_referral -> PropertyEmail = $email;
         $add_referral -> Commission_ID = $Commission_ID;
@@ -497,9 +497,9 @@ class TransactionsAddController extends Controller {
         $new_transaction -> save();
 
         if($transaction_type == 'listing') {
-            $code = 'L'.$new_transaction -> Listing_ID;
+            $code = $new_transaction -> Listing_ID.'L';
         } else if($transaction_type == 'contract') {
-            $code = 'C'.$new_transaction -> Contract_ID;
+            $code = $new_transaction -> Contract_ID.'C';
         }
 
         $street_address = ucwords(strtolower($property_details -> FullStreetAddress));

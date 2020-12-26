@@ -59,6 +59,7 @@ body.modal-open {
 
 *::-webkit-scrollbar {
     width: .4em;
+    height: .4em;
 }
 
 *::-webkit-scrollbar-track {
@@ -67,7 +68,7 @@ body.modal-open {
 
 *::-webkit-scrollbar-thumb {
     background-color: rgba($primary, 0.4);
-    border-radius: 15px;
+    border-radius: 5px;
 }
 
 * {
@@ -126,7 +127,7 @@ body.modal-open {
 
 
 .list-group-item-action:not(.active):hover {
-    background-color: rgba($blue-light, 0.2);
+    background-color: rgba($blue-light, 0.4);
 }
 
 .badge:not(.badge-pill) {

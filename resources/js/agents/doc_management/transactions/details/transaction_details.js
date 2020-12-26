@@ -39,7 +39,9 @@ if (document.URL.match(/transaction_details/)) {
 
             let val = $(this).val();
 
-            if (val.length > 3) {
+            if (val.length > 4) {
+
+                $('.search-results').html('');
 
                 if (agent_search_request) {
                     agent_search_request.cancel();
@@ -57,44 +59,50 @@ if (document.URL.match(/transaction_details/)) {
                     }
                 })
                 .then(function (response) {
+
                     let data = response.data;
-                    $('.search-results').html('');
-                    $('.search-results-container').show();
+
                     $.each(data, function (k, agents) {
+
                         if (agents.length > 0) {
+
                             $.each(agents, function (k, agent) {
+
                                 let agent_div = ' \
-                                <div class="search-result list-group-item" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
-                                    <div class="row"> \
-                                        <div class="col-6 col-md-3"> \
-                                            <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
-                                        </div> \
-                                        <div class="col-6 col-md-3"> \
-                                        <span class="font-weight-bold">'+ agent.OfficeName + '</span><br><span class="small">' + agent.OfficeMlsId + '</span>\
-                                        </div> \
-                                        <div class="col-12 col-md-6"> \
-                                            '+ agent.OfficeAddress1 + '<br>' + agent.OfficeCity + ', ' + agent.OfficeStateOrProvince + ' ' + agent.OfficePostalCode + ' \
+                                    <div class="search-result list-group-item" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
+                                        <div class="row"> \
+                                            <div class="col-6 col-md-3"> \
+                                                <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
+                                            </div> \
+                                            <div class="col-6 col-md-3"> \
+                                            <span class="font-weight-bold">'+ agent.OfficeName + '</span><br><span class="small">' + agent.OfficeMlsId + '</span>\
+                                            </div> \
+                                            <div class="col-12 col-md-6"> \
+                                                '+ agent.OfficeAddress1 + '<br>' + agent.OfficeCity + ', ' + agent.OfficeStateOrProvince + ' ' + agent.OfficePostalCode + ' \
+                                            </div> \
                                         </div> \
                                     </div> \
-                                </div> \
-                            ';
-                                $('.search-results').show().append(agent_div);
+                                ';
+
+                                $('.search-results').append(agent_div);
+
                             });
+
+                            $('.search-results-container').show();
+
                         } else {
-                            $('.search-results').show().append('<div class="search-result list-group-item text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> No Matching Results</div>');
+
+                            $('.search-results-container').show();
+                            $('.search-results').append('<div class="search-result list-group-item text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> No Matching Results</div>');
+
                         }
+
                     });
 
                     $('.search-result').off('click').on('click', function () {
                         add_buyers_agent($(this));
                     });
 
-                    $(document).mouseup(function (e) {
-                        var container = $('.search-results');
-                        if (!container.is(e.target) && container.has(e.target).length === 0) {
-                            container.hide();
-                        }
-                    });
                 })
                 .catch(function (error) {
                     if (axios.isCancel(error)) {
@@ -107,13 +115,21 @@ if (document.URL.match(/transaction_details/)) {
 
             } else {
 
-                $('.search-results').hide().html('');
+                $('.search-results-container').hide();
+                $('.search-results').html('');
 
             }
 
         }
 
         $('#agent_search').on('keyup', search_bright_agents);
+
+        $(document).on('mouseup', function (e) {
+            var container = $('.search-results-container');
+            if (!container.is(e.target) && container.has(e.target).length === 0) {
+                container.hide();
+            }
+        });
 
         // open tabs from url parameters
         let tab = global_get_url_parameters('tab');
@@ -598,6 +614,7 @@ if (document.URL.match(/transaction_details/)) {
     }
 
     window.load_tabs = function (tab, reorder = true) {
+
         let Listing_ID = $('#Listing_ID').val();
         let Contract_ID = $('#Contract_ID').val();
         let Referral_ID = $('#Referral_ID').val();
@@ -696,13 +713,13 @@ if (document.URL.match(/transaction_details/)) {
 
                         $('.documents-container').find('modal').appendTo('body');
 
-                    }, 200);
-
-                    if(reorder) {
-                        setTimeout(function() {
+                        if(reorder) {
                             reorder_documents('yes');
-                        }, 1000);
-                    }
+                        }
+
+                        get_emailed_documents();
+
+                    }, 100);
 
                 } else if (tab == 'checklist') {
 
@@ -864,38 +881,37 @@ if (document.URL.match(/transaction_details/)) {
 
                 }
 
-                setTimeout(function() {
-                    select_refresh();
-                    global_loading_off();
-                }, 100);
 
 
-                if($('#required_fields_using_heritage').val() == 'no') {
-                    $('.not-using-heritage').show();
-                } else {
-                    $('#required_fields_title_company').prop('required', false).removeClass('required');
-                }
+                $('.nav-link[data-tab]').on('click', function() {
 
-                $('#required_fields_using_heritage').on('change', function() {
-                    if($(this).val() == 'yes') {
-                        $('.not-using-heritage').hide();
-                        $('#required_fields_title_company').val('')/* .trigger('change') */;
-                        $('#required_fields_title_company').prop('required', false).removeClass('required');
-                    } else {
-                        $('.not-using-heritage').show();
-                        $('#required_fields_title_company').prop('required', true).addClass('required');
+                    if(window.get_emailed_docs_interval) {
+                        clearInterval(get_emailed_docs_interval);
                     }
+                    if($(this).data('tab') == 'documents') {
+                        window.get_emailed_docs_interval = setInterval(get_emailed_documents, 5000);
+                    }
+
                 });
-
-                global_format_money();
-
-
-                // init tooltips and form elements
-                global_tooltip();
 
                 $('.draggable').draggable({
                     handle: '.draggable-handle'
                 });
+
+                setTimeout(show_title_fields, 500);
+                $('#required_fields_using_heritage').on('change', function() {
+                    show_title_fields();
+                });
+
+                global_format_money();
+
+                // init tooltips and form elements
+                global_tooltip();
+
+                setTimeout(function() {
+                    select_refresh();
+                    global_loading_off();
+                }, 100);
 
             })
             .catch(function (error) {
@@ -903,7 +919,18 @@ if (document.URL.match(/transaction_details/)) {
             });
     }
 
+    window.show_title_fields = function() {
 
+        if($('#required_fields_using_heritage').val() == 'yes') {
+            $('.not-using-heritage').hide();
+            $('#required_fields_title_company').val('');
+            $('#required_fields_title_company').prop('required', false).removeClass('required');
+        } else {
+            $('.not-using-heritage').show();
+            $('#required_fields_title_company').prop('required', true).addClass('required');
+        }
+
+    }
 
     window.load_documents_on_tab_click = function() {
         $('#open_documents_tab').off().on('show.bs.tab', function (e) {

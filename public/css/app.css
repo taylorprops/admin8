@@ -12965,6 +12965,15 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (max-width: 620px) {
+  .loading-spinner,
+  .loading-spinner-html {
+    width: 90% !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 @media (max-width: 767.98px) {
   body {
     font-size: 0.8rem;
@@ -13036,6 +13045,10 @@ input[type=number] {
 
 a:hover {
   text-decoration: none;
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 /* input {
@@ -13348,6 +13361,7 @@ body.modal-open {
 
 *::-webkit-scrollbar {
   width: 0.4em;
+  height: 0.4em;
 }
 
 *::-webkit-scrollbar-track {
@@ -13356,7 +13370,7 @@ body.modal-open {
 
 *::-webkit-scrollbar-thumb {
   background-color: rgba(76, 155, 219, 0.4);
-  border-radius: 15px;
+  border-radius: 5px;
 }
 
 * {
@@ -13411,7 +13425,7 @@ body.modal-open {
 }
 
 .list-group-item-action:not(.active):hover {
-  background-color: rgba(248, 252, 255, 0.2);
+  background-color: rgba(248, 252, 255, 0.4);
 }
 
 .badge:not(.badge-pill) {
@@ -15460,164 +15474,6 @@ header .main-search-input::placeholder {
 .page-add-fields {
   overflow-x: hidden;
   border: 1px solid #dee2e6;
-  /* .field-div {
-      position: relative;
-      z-index: 1;
-      resize: both;
-      overflow: visible;
-      z-index: 3;
-      cursor: default;
-
-
-      .field-options-holder {
-          position: absolute;
-          top: -70px;
-          width: auto;
-          background: transparent;
-
-      }
-
-      .btn-group .btn:not(button) {
-          margin-right: 2px;
-          width: 35px;
-          padding: 5px;
-      }
-
-      .field-handle {
-          cursor: move;
-      }
-      .field-close {
-          cursor: pointer;
-      }
-
-      // resizable handles
-      .ui-resizable-handle {
-          position: absolute;
-          width: 0;
-          height: 0;
-          border-top: 8px solid transparent;
-          border-bottom: 8px solid transparent;
-          border-left: 10px solid $primary-color;
-      }
-      .ui-resizable-e {
-          bottom: 5px;
-          right: -20px;
-          cursor: e-resize;
-      }
-      .ui-resizable-w {
-          bottom: 5px;
-          left: -20px;
-          cursor: w-resize;
-          transform: rotate(180deg);
-      }
-
-
-
-
-      .mini-slider-option:hover {
-          cursor: pointer;
-      }
-      .mini-slider-div {
-          position: absolute;
-          top: 100px;
-          left: 30%;
-          display: none;
-          width: 60px;
-          height: auto;
-          padding: 5px;
-          z-index: 1600;
-      }
-      .mini-slider-option {
-          width: 40px;
-          cursor: pointer;
-      }
-
-
-
-
-      .field-status-name-div {
-          display: none;
-          position: absolute;
-          bottom: 0px;
-          left: 2px;
-          //background: rgba(255, 255, 255, .9);
-          color: $primary-color;
-          font-size: .6rem;
-          //line-height: 1.0;
-          z-index: 0;
-      }
-
-      .field-status-name-div {
-          margin-right: 10px;
-          white-space: nowrap;
-      }
-
-      // edit properties  - limit height
-      .modal-body {
-          max-height: 75VH;
-          overflow: auto;
-
-      }
-
-
-
-  } */
-  /* .field-error-div {
-      background: $red;
-      color: $white;
-      padding: 15px;
-      margin: 0px 40px 20px 40px;
-      border-radius: 5px;
-  }
-  .field-error {
-      background: rgba($danger-color, .7) !important;
-  }
-  .field-error-item {
-      padding: 2px 0px 0px 5px;
-  }
-
-
-  .field-div.active {
-      z-index: 5;
-  } */
-  /* .field-data-inputs-container {
-      max-height: 200px;
-      overflow: auto;
-  }
-
-  .field-data-inputs-container .col-12 {
-      padding-left: 0px;
-      padding-right: 0px;
-  } */
-  /* .form-div h5 {
-      padding-bottom: 5px;
-  } */
-  /* .edit-properties-container {
-      position: absolute;
-      top: 30px;
-      height: auto;
-
-      &.w-400 {
-          width: 400px;
-      }
-      &.w-600 {
-          width: 600px;
-      }
-
-      h5 {
-          margin-top: 25px;
-          margin-bottom: 10px;
-      }
-
-      h6 {
-          margin-bottom: 1.5rem;
-      }
-
-      .form-ele {
-          margin-top: 1rem;
-          margin-bottom: 1rem;
-      }
-  } */
 }
 
 .page-add-fields .file-viewer-container {
@@ -15730,6 +15586,15 @@ header .main-search-input::placeholder {
   border: 4px solid #4c9bdb;
 }
 
+.page-add-fields #save_add_fields {
+  width: 120px;
+  text-align: center;
+}
+
+.page-add-fields .field-div-container a[type=button] {
+  z-index: 1;
+}
+
 .page-add-fields .field-div-container .field-div {
   position: absolute;
   top: 0%;
@@ -15739,20 +15604,25 @@ header .main-search-input::placeholder {
   cursor: pointer;
 }
 
-.page-add-fields .field-div-container .field-status-name-div {
+.page-add-fields .field-div-container .field-name-display-div {
   color: #4c9bdb;
   font-size: 0.7rem;
+  padding-left: 2px;
   line-height: 1.3rem;
   white-space: nowrap;
   overflow: hidden;
 }
 
 .page-add-fields .field-div-container .field-div.standard {
-  background: rgba(76, 155, 219, 0.4);
+  background: rgba(76, 155, 219, 0.2);
 }
 
 .page-add-fields .field-div-container .field-div.group {
-  background: rgba(149, 97, 226, 0.4);
+  background: rgba(149, 97, 226, 0.2);
+}
+
+.page-add-fields .field-div-container .field-div.error {
+  background: rgba(182, 67, 65, 0.7);
 }
 
 .page-add-fields .field-div-container .radio-div {
@@ -15779,6 +15649,18 @@ header .main-search-input::placeholder {
   display: none;
 }
 
+.page-add-fields .field-div-container .field-div-options .remove-field {
+  position: absolute;
+  left: 0px;
+  top: -100px;
+  right: auto;
+}
+
+.page-add-fields .field-div-container .field-div-options .remove-field.right {
+  right: 0px;
+  left: auto;
+}
+
 .page-add-fields .field-div-container .field-div-options .field-div-controls {
   position: absolute;
   left: 0px;
@@ -15803,6 +15685,10 @@ header .main-search-input::placeholder {
 .page-add-fields .field-div-container .field-div-options .field-div-properties.right {
   right: 0px;
   left: auto;
+}
+
+.page-add-fields .field-div-container .top-drop {
+  top: 30px !important;
 }
 
 .page-add-fields .field-div-container .dropdown-menu .dropdown .dropdown-menu {
@@ -15884,8 +15770,16 @@ header .main-search-input::placeholder {
   background: rgba(76, 155, 219, 0.7);
 }
 
+.page-add-fields .field-div-container.show .field-div.standard .field-name-display-div {
+  color: #fff;
+}
+
 .page-add-fields .field-div-container.show .field-div.group {
   background: rgba(149, 97, 226, 0.7);
+}
+
+.page-add-fields .field-div-container.show .field-div.group .field-name-display-div {
+  color: #fff;
 }
 
 @media (max-width: 1500px) {
@@ -15914,6 +15808,169 @@ header .main-search-input::placeholder {
   width: 254px;
   overflow: auto;
 }
+
+/* .field-div {
+    position: relative;
+    z-index: 1;
+    resize: both;
+    overflow: visible;
+    z-index: 3;
+    cursor: default;
+
+
+    .field-options-holder {
+        position: absolute;
+        top: -70px;
+        width: auto;
+        background: transparent;
+
+    }
+
+    .btn-group .btn:not(button) {
+        margin-right: 2px;
+        width: 35px;
+        padding: 5px;
+    }
+
+    .field-handle {
+        cursor: move;
+    }
+    .field-close {
+        cursor: pointer;
+    }
+
+    // resizable handles
+    .ui-resizable-handle {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+        border-left: 10px solid $primary-color;
+    }
+    .ui-resizable-e {
+        bottom: 5px;
+        right: -20px;
+        cursor: e-resize;
+    }
+    .ui-resizable-w {
+        bottom: 5px;
+        left: -20px;
+        cursor: w-resize;
+        transform: rotate(180deg);
+    }
+
+
+
+
+    .mini-slider-option:hover {
+        cursor: pointer;
+    }
+    .mini-slider-div {
+        position: absolute;
+        top: 100px;
+        left: 30%;
+        display: none;
+        width: 60px;
+        height: auto;
+        padding: 5px;
+        z-index: 1600;
+    }
+    .mini-slider-option {
+        width: 40px;
+        cursor: pointer;
+    }
+
+
+
+
+    .field-name-display-div {
+        display: none;
+        position: absolute;
+        bottom: 0px;
+        left: 2px;
+        //background: rgba(255, 255, 255, .9);
+        color: $primary-color;
+        font-size: .6rem;
+        //line-height: 1.0;
+        z-index: 0;
+    }
+
+    .field-name-display-div {
+        margin-right: 10px;
+        white-space: nowrap;
+    }
+
+    // edit properties  - limit height
+    .modal-body {
+        max-height: 75VH;
+        overflow: auto;
+
+    }
+
+
+
+} */
+
+/* .field-error-div {
+    background: $red;
+    color: $white;
+    padding: 15px;
+    margin: 0px 40px 20px 40px;
+    border-radius: 5px;
+}
+.field-error {
+    background: rgba($danger-color, .7) !important;
+}
+.field-error-item {
+    padding: 2px 0px 0px 5px;
+}
+
+
+.field-div.active {
+    z-index: 5;
+} */
+
+/* .field-data-inputs-container {
+    max-height: 200px;
+    overflow: auto;
+}
+
+.field-data-inputs-container .col-12 {
+    padding-left: 0px;
+    padding-right: 0px;
+} */
+
+/* .form-div h5 {
+    padding-bottom: 5px;
+} */
+
+/* .edit-properties-container {
+    position: absolute;
+    top: 30px;
+    height: auto;
+
+    &.w-400 {
+        width: 400px;
+    }
+    &.w-600 {
+        width: 600px;
+    }
+
+    h5 {
+        margin-top: 25px;
+        margin-bottom: 10px;
+    }
+
+    h6 {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-ele {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+} */
 
 .page-resources .list-item-handle {
   cursor: row-resize;
@@ -16268,11 +16325,11 @@ header .main-search-input::placeholder {
 }
 
 .page-required-details .search-results-container {
+  display: none;
   position: relative;
 }
 
 .page-required-details .search-results {
-  display: none;
   position: absolute;
   top: -10px;
   left: 0;
@@ -16329,15 +16386,26 @@ header .main-search-input::placeholder {
   overflow: auto;
 }
 
-.page-transaction-details .nav-link:not(.add-to-checklist):not(.options-tab) {
+.page-transaction-details .details-tabs .details-list-group {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+  } */
+}
+
+.page-transaction-details .details-list-group .nav-link {
   text-transform: uppercase;
-  font-size: 1.1rem;
+  font-size: 1rem;
   padding: 0.5rem 1.5rem;
   border-radius: 0px;
 }
 
-.page-transaction-details .nav-link.active {
-  color: #df7935;
+.page-transaction-details .details-list-group .nav-link.active {
+  background: #4c9bdb;
+  color: #fff;
 }
 
 .page-transaction-details #details_tabs {
@@ -16589,9 +16657,18 @@ header .main-search-input::placeholder {
   padding: 0.3rem 1.25rem !important;
 }
 
+.page-transaction-details #emailed_documents_container {
+  display: none;
+}
+
 .page-transaction-details #email_agent_checklist_details {
   height: 0px;
   display: none;
+}
+
+.page-transaction-details #emailed_documents_div {
+  max-height: 200px;
+  overflow: auto;
 }
 
 .page-transaction-details .property-options {
@@ -16640,8 +16717,8 @@ header .main-search-input::placeholder {
 }
 
 @media (max-width: 1200px) {
-  .page-transaction-details .details-list-group .nav-link {
-    font-size: 1rem;
+  .page-transaction-details .details-tabs .details-list-group .nav-link {
+    font-size: 0.9rem;
     text-transform: initial;
     padding: 0.5rem 1rem;
   }
@@ -16702,6 +16779,10 @@ header .main-search-input::placeholder {
   .page-transaction-details .button-text {
     display: none;
   }
+
+  .page-transaction-details .details-tabs .nav-item {
+    margin-left: 6px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -16729,7 +16810,7 @@ header .main-search-input::placeholder {
     } */
   }
 
-  .page-transaction-details .details-list-group .nav-link {
+  .page-transaction-details .details-tabs .details-list-group .nav-link {
     padding: 0.2rem 0.2rem;
     font-size: 0.8rem;
   }
@@ -16889,8 +16970,8 @@ header .main-search-input::placeholder {
   border-top-width: thin !important;
 }
 
-.document-loading-container {
-  max-height: 80VH;
+#loading_div {
+  max-height: 60VH;
   overflow: auto;
   font-size: 0.9rem;
 }
@@ -17105,18 +17186,18 @@ header .main-search-input::placeholder {
 
 .page-fill-fields {
   overflow-x: hidden;
-  border: 1px solid #dee2e6;
-  /* .user-field-div.textline-div {
-      background: rgba($primary, .1);
+  /* input.fillable-field-input {
+      width: 100%;
+      height: 100%;
   } */
-  /* .field-div.active {
-      cursor: default;
-      box-shadow: 0px 9px 0px -5px #FFFFFF,
-      0px -9px 0px -5px #FFFFFF,
-      9px 0px 0px -5px #FFFFFF,
-      -9px 0px 0px -5px  #FFFFFF,
-      0px 0px 0px 5px $blue,
-      5px 5px 10px 5px rgba(0, 0, 0, 0);
+  /* $min_width: 320px;
+  $max_width: 1000px;
+  $min_font: 6px;
+  $max_font: 13px; */
+  /* .data-div:not(.data-div-radio-check) {
+      //@include fluid-type($min_width, $max_width, $min_font, $max_font);
+      padding-left: 2px;
+      overflow: hidden;
   } */
 }
 
@@ -17130,7 +17211,7 @@ header .main-search-input::placeholder {
 
 .page-fill-fields .file-viewer-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1100px;
 }
 
 .page-fill-fields .file-view {
@@ -17138,6 +17219,7 @@ header .main-search-input::placeholder {
   width: 100%;
   height: calc(100vh - 130px);
   overflow-y: scroll;
+  overflow-x: hidden;
   -vendor-animation-duration: 2s;
   -webkit-animation-duration: 2s;
           animation-duration: 2s;
@@ -17157,6 +17239,7 @@ header .main-search-input::placeholder {
 .page-fill-fields .file-view-thumb-container {
   border: 2px solid rgba(76, 155, 219, 0.2);
   margin-bottom: 5px;
+  max-width: 100px;
 }
 
 .page-fill-fields .file-view-thumb-container.active {
@@ -17171,7 +17254,7 @@ header .main-search-input::placeholder {
   max-width: 100%;
 }
 
-.page-fill-fields .form-options-container > div {
+.page-fill-fields .form-options-div {
   width: 100px;
   text-align: center;
   white-space: nowrap;
@@ -17184,12 +17267,12 @@ header .main-search-input::placeholder {
   padding: 10px 0px;
 }
 
-.page-fill-fields .edit-options {
-  display: none;
-}
-
 .page-fill-fields .edit-form-action.active {
   background: #4c9bdb;
+}
+
+.page-fill-fields .edit-form-action.active:hover {
+  color: #ffed4a;
 }
 
 .page-fill-fields .textline-html {
@@ -17267,19 +17350,13 @@ header .main-search-input::placeholder {
   transform: rotate(135deg);
 }
 
-.page-fill-fields .field-container,
-.page-fill-fields .field-container-hidden {
+.page-fill-fields .fields-container {
   position: relative;
   padding: 0px;
   margin: 0px;
 }
 
-.page-fill-fields input.fillable-field-input {
-  width: 100%;
-  height: 100%;
-}
-
-.page-fill-fields .field-datepicker {
+.page-fill-fields .field-div-container .field-datepicker {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -17291,70 +17368,99 @@ header .main-search-input::placeholder {
   z-index: 1;
 }
 
-.page-fill-fields .data-div {
+.page-fill-fields .field-div-container .data-div {
   position: absolute;
   bottom: 0px;
   left: 0px;
   width: 100%;
   height: 100%;
+  font-size: 0.8rem;
   z-index: 0;
-  line-height: 1;
 }
 
-.page-fill-fields .data-div:not(.data-div-radio-check) {
-  padding-left: 5px;
-  padding-top: 0.3VH;
+.page-fill-fields .field-div-container .data-div:not(.data-div-radio-check) {
+  padding-left: 2px;
+  text-align: center;
 }
 
-.page-fill-fields .data-div:not(.data-div-radio-check) {
-  font-size: 6px;
+.page-fill-fields .field-div-container .inputs-container {
+  display: none;
 }
 
-@media screen and (min-width: 320px) {
-  .page-fill-fields .data-div:not(.data-div-radio-check) {
-    font-size: calc(6px + 7 * ((100vw - 320px) / 680));
-  }
+.page-fill-fields .field-div-container .inputs-container .form-ele {
+  margin: 0px;
 }
 
-@media screen and (min-width: 1000px) {
-  .page-fill-fields .data-div:not(.data-div-radio-check) {
-    font-size: 13px;
-  }
+.page-fill-fields .field-div-container .field-options-holder,
+.page-fill-fields .field-div-container .field-handle {
+  display: none !important;
+}
+
+.page-fill-fields .field-div-container.show {
+  z-index: 5;
+}
+
+.page-fill-fields .field-div-container.show .inputs-container {
+  display: block;
+  position: absolute;
+  top: 20px;
+  left: 0px;
+  right: auto;
+  width: 300px;
+  z-index: 5;
+}
+
+.page-fill-fields .field-div-container.show .inputs-container.right {
+  left: auto;
+  right: 0px;
+}
+
+.page-fill-fields .field-div-container.show .field-options-holder,
+.page-fill-fields .field-div-container.show .field-handle {
+  display: block !important;
+}
+
+.page-fill-fields *[contentEditable=true]:focus {
+  outline: none;
+  /* border: 1px solid rgb(120, 196, 231);
+  box-shadow: 0 0 5px rgb(120, 196, 231); */
 }
 
 .page-fill-fields .data-div.data-div-radio-check {
   cursor: pointer;
   font-size: 1.6em;
+  font-weight: bold;
+  background: #fae2cb;
+  border: 1px solid #fac899;
+  top: -1px;
+  height: 15px;
 }
 
 .page-fill-fields .data-div.data-div-radio-check.data-div-radio {
-  top: -2px;
-  height: 15px;
   line-height: 30%;
-  border: 1px solid #4c9bdb;
+  padding-top: 1px;
   border-radius: 50%;
-  background: #f8fcff;
-  color: #1972bb;
 }
 
 .page-fill-fields .data-div.data-div-radio-check.data-div-checkbox {
-  top: -3px;
-  left: 2px;
-  line-height: 80%;
+  line-height: 40%;
 }
 
-.page-fill-fields .field-div:not([data-type=radio]) {
-  background: rgba(223, 121, 53, 0.1);
+.page-fill-fields .field-div {
   cursor: pointer;
   color: #000;
   box-shadow: none;
+  display: block;
+  z-index: 3;
 }
 
-.page-fill-fields .field-div[data-type=radio] {
+.page-fill-fields .field-div:not(.radio):not(.checkbox):not(.highlight-div):not(.strikeout-div) {
+  background: rgba(223, 121, 53, 0.1);
+}
+
+.page-fill-fields .field-div.radio,
+.page-fill-fields .field-div .checkbox {
   background: transparent;
-  cursor: pointer;
-  color: #000;
-  border-color: black;
 }
 
 .page-fill-fields .user-field-div {
@@ -17369,7 +17475,7 @@ header .main-search-input::placeholder {
 }
 
 .page-fill-fields .data-div.strikeout {
-  height: 2px;
+  height: 4px;
 }
 
 .page-fill-fields .strikeout-div {
@@ -17379,21 +17485,10 @@ header .main-search-input::placeholder {
 .page-fill-fields .user-field-div.strikeout-div::after {
   content: "";
   width: 100%;
-  height: 2px;
+  height: 4px;
   background: black;
   display: block;
   position: relative;
-}
-
-.page-fill-fields .modal-body {
-  max-height: 65VH;
-  overflow: auto;
-}
-
-@media (max-width: 1500px) {
-  .page-fill-fields .edit-file-sidebar {
-    display: none;
-  }
 }
 
 .page-fill-fields .navbar-edit-file-options li:hover {

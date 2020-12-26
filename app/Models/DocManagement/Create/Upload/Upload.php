@@ -27,10 +27,14 @@ class Upload extends Model
 
     public function scopeIsContract($query, $checklist_form_id) {
 
-        $upload = $this -> where('file_id', $checklist_form_id) -> first();
+        if($checklist_form_id > 0) {
 
-        if($upload -> form_tags == ResourceItems::GetResourceID('contract', 'form_tags')) {
-            return true;
+            $upload = $this -> where('file_id', $checklist_form_id) -> first();
+
+            if($upload -> form_tags == ResourceItems::GetResourceID('contract', 'form_tags')) {
+                return true;
+            }
+
         }
 
         return false;
@@ -39,10 +43,14 @@ class Upload extends Model
 
     public function scopeIsClosingDoc($query, $checklist_form_id) {
 
-        $upload = $this -> where('file_id', $checklist_form_id) -> first();
+        if($checklist_form_id > 0) {
 
-        if($upload -> form_tags == ResourceItems::GetResourceID('closing_docs', 'form_tags')) {
-            return true;
+            $upload = $this -> where('file_id', $checklist_form_id) -> first();
+
+            if($upload -> form_tags == ResourceItems::GetResourceID('closing_docs', 'form_tags')) {
+                return true;
+            }
+
         }
 
         return false;
@@ -51,10 +59,14 @@ class Upload extends Model
 
     public function scopeIsRelease($query, $checklist_form_id) {
 
-        $upload = $this -> where('file_id', $checklist_form_id) -> first();
+        if($checklist_form_id > 0) {
 
-        if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
-            return true;
+            $upload = $this -> where('file_id', $checklist_form_id) -> first();
+
+            if($upload -> form_tags == ResourceItems::GetResourceID('release', 'form_tags')) {
+                return true;
+            }
+
         }
 
         return false;
@@ -63,10 +75,14 @@ class Upload extends Model
 
     public function scopeIsWithdraw($query, $checklist_form_id) {
 
-        $upload = $this -> where('file_id', $checklist_form_id) -> first();
+        if($checklist_form_id > 0) {
 
-        if($upload -> form_tags == ResourceItems::GetResourceID('withdraw', 'form_tags')) {
-            return true;
+            $upload = $this -> where('file_id', $checklist_form_id) -> first();
+
+            if($upload -> form_tags == ResourceItems::GetResourceID('withdraw', 'form_tags')) {
+                return true;
+            }
+
         }
 
         return false;
@@ -111,50 +127,54 @@ class Upload extends Model
 
         foreach($checklist_items as $checklist_item) {
 
-            $checklist_form_id = $checklist_item -> checklist_form_id;
-            $upload = Upload::find($checklist_form_id);
+            if($checklist_item -> checklist_form_id > 0) {
 
-            if($upload -> form_tags == $listing_agreement_form_tags) {
+                $checklist_form_id = $checklist_item -> checklist_form_id;
+                $upload = Upload::find($checklist_form_id);
 
-                $listing_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
-                if($listing_submitted_check) {
-                    if($checklist_item -> checklist_item_status != 'rejected') {
-                        $listing_submitted = true;
-                        if($checklist_item -> checklist_item_status == 'accepted') {
-                            $listing_accepted = true;
-                            $listing = Listings::find($Listing_ID);
-                            if($listing -> ExpirationDate <= date('Y-m-d')) {
-                                $listing_expired = true;
+                if($upload -> form_tags == $listing_agreement_form_tags) {
+
+                    $listing_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
+                    if($listing_submitted_check) {
+                        if($checklist_item -> checklist_item_status != 'rejected') {
+                            $listing_submitted = true;
+                            if($checklist_item -> checklist_item_status == 'accepted') {
+                                $listing_accepted = true;
+                                $listing = Listings::find($Listing_ID);
+                                if($listing -> ExpirationDate <= date('Y-m-d')) {
+                                    $listing_expired = true;
+                                }
                             }
                         }
                     }
-                }
 
-            } else if($upload -> form_tags == $withdraw_form_tags) {
+                } else if($upload -> form_tags == $withdraw_form_tags) {
 
-                $listing_withdraw_submitted_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
-                if($listing_withdraw_submitted_submitted_check) {
-                    if($checklist_item -> checklist_item_status != 'rejected') {
-                        $listing_withdraw_submitted = true;
+                    $listing_withdraw_submitted_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
+                    if($listing_withdraw_submitted_submitted_check) {
+                        if($checklist_item -> checklist_item_status != 'rejected') {
+                            $listing_withdraw_submitted = true;
+                        }
                     }
-                }
 
-            } else if($upload -> form_tags == $contract_form_tags) {
+                } else if($upload -> form_tags == $contract_form_tags) {
 
-                $contract_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
-                if($contract_submitted_check) {
-                    if($checklist_item -> checklist_item_status != 'rejected') {
-                        $contract_submitted = true;
+                    $contract_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
+                    if($contract_submitted_check) {
+                        if($checklist_item -> checklist_item_status != 'rejected') {
+                            $contract_submitted = true;
+                        }
                     }
-                }
 
-            } else if($upload -> form_tags == $release_form_tags) {
+                } else if($upload -> form_tags == $release_form_tags) {
 
-                $release_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
-                if($release_submitted_check) {
-                    if($checklist_item -> checklist_item_status != 'rejected') {
-                        $release_submitted = true;
+                    $release_submitted_check = TransactionChecklistItemsDocs::where('checklist_item_id', $checklist_item -> id) -> first();
+                    if($release_submitted_check) {
+                        if($checklist_item -> checklist_item_status != 'rejected') {
+                            $release_submitted = true;
+                        }
                     }
+
                 }
 
             }

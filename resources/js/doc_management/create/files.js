@@ -4,6 +4,10 @@ if (document.URL.match(/create\/upload\/files/)) {
 
         init();
 
+        $('#file_name_display').on('keyup change', function() {
+            $(this).val(ucwords($(this).val()));
+        });
+
     });
 
     function init() {

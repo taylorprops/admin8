@@ -24,16 +24,29 @@
         overflow: auto;
     }
 
+    .details-tabs .details-list-group {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
 
-    .nav-link:not(.add-to-checklist):not(.options-tab) {
+        /* &::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        } */
+    }
+
+    .details-list-group .nav-link {
         text-transform: uppercase;
-        font-size: 1.1rem;
+        font-size: 1rem;
         padding: 0.5rem 1.5rem;
         border-radius: 0px;
     }
 
-    .nav-link.active {
-        color: $orange;
+
+
+    .details-list-group .nav-link.active {
+        background: $primary;
+        color: $white;
     }
 
     #details_tabs {
@@ -299,11 +312,19 @@
         padding: 0.3rem 1.25rem !important;
     }
 
+    #emailed_documents_container {
+        display: none;
+    }
+
     #email_agent_checklist_details {
         height: 0px;
         display: none;
     }
 
+    #emailed_documents_div {
+        max-height: 200px;
+        overflow: auto;
+    }
 
 
     #document_options_tabs_nav {
@@ -369,8 +390,8 @@
     }
 
     @media (max-width: 1200px) {
-        .details-list-group .nav-link {
-            font-size: 1rem;
+        .details-tabs .details-list-group .nav-link {
+            font-size: .9rem;
             text-transform: initial;
             padding: 0.5rem 1rem;
         }
@@ -430,12 +451,17 @@
             display: none;
         }
 
+        .details-tabs .nav-item {
+            margin-left: 6px;
+        }
+
     }
+
 
 
     @media (max-width: 576px) {
 
-        .details-list-group .nav-link {
+        .details-tabs .details-list-group .nav-link {
             padding: 0.2rem .2rem;
             font-size: .8rem;
         }
@@ -626,8 +652,8 @@
 
 }
 
-.document-loading-container {
-    max-height: 80VH;
+#loading_div {
+    max-height: 60VH;
     overflow: auto;
     font-size: .9rem;
 }

@@ -25,7 +25,8 @@ $(function() {
     $('#main_nav_bar').bootnavbar({});
 
     toastr.options = {
-        "timeOut": 4000
+        "timeOut": 4000,
+        "preventDuplicates": true,
     }
 
     window.text_editor = function(options) {
@@ -36,7 +37,9 @@ $(function() {
         options.force_p_newlines = false;
         options.forced_root_block = '';
 
+        tinymce.remove(options.selector);
         tinymce.init(options);
+
     }
 
 
@@ -95,6 +98,18 @@ $(function() {
         });
     }, 1000);
 
+
+    window.ucwords = function(str) {
+        return str
+            //.toLowerCase()
+            .split(' ')
+            .map(function(word) {
+                if(word) {
+                    return word[0].toUpperCase() + word.substr(1);
+                }
+            })
+            .join(' ');
+    }
 
     $(document).on('keyup change', '.phone', function () {
         global_format_phone(this);
@@ -405,7 +420,7 @@ window.global_loading_on = function(ele, html) {
             <span class="sr-only">Loading...</span> \
         </div> \
     </div> \
-    <div class="loading-spinner-html mt-0 mx-auto">'+html+'</div> \
+    <div class="loading-spinner-html mt-0 mx-2 mx-sm-auto">'+html+'</div> \
     ';
 
     if(ele != '') {

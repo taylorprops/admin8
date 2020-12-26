@@ -50,10 +50,10 @@ window.form_elements = function () {
 
                 let select_input_id = Math.floor(Math.random() * 100000) + 1;
                 // avoid duplicate ids
-                /* if ($('#' + select_input_id).length > 0) {
+                if ($('#' + select_input_id).length > 0) {
                     console.log('dupes');
                     select_input_id = select_input_id + index;
-                } */
+                }
 
                 let id = 'input_' + select_input_id;
 
@@ -117,12 +117,12 @@ window.form_elements = function () {
 
                 } else if (form_type == 'form-checkbox') {
 
-                    element.wrap('<div class="form-ele pretty p-icon p-smooth"></div>').parent('.form-ele').append('<div class="state p-success"><i class="icon fa fa-check"></i><label for="' + id + '" class="form-check-label ' + form_type + '-label ' + active_label + '">' + label + '</label></div>');
+                    element.wrap('<div class="form-ele pretty p-default p-thick p-smooth p-pulse"></div>').parent('.form-ele').append('<div class="state p-primary-o"><label for="' + id + '" class="form-check-label ' + form_type + '-label ' + active_label + '">' + label + '</label></div>');
 
 
                 } else if (form_type == 'form-radio') {
 
-                    element.wrap('<div class="form-ele pretty p-default p-curve p-pulse"></div>').parent('.form-ele').append('<div class="state p-primary-o"><label for="' + id + '" class="form-check-label ' + form_type + '-label ' + active_label + '">' + label + '</label></div>');
+                    element.wrap('<div class="form-ele pretty p-default p-thick p-round p-smooth p-pulse"></div>').parent('.form-ele').append('<div class="state p-primary-o"><label for="' + id + '" class="form-check-label ' + form_type + '-label ' + active_label + '">' + label + '</label></div>');
 
                 } else if (form_type == 'form-input-color') {
 
@@ -490,8 +490,8 @@ window.show_cancel_date = function(wrapper, element) {
 
     if(element.val() == '') {
         wrapper.find('.form-datepicker-cancel').hide();
-        if(element.prev('div.data-div').length == 1) {
-            element.prev('div.data-div').html('');
+        if(element.closest('.field-div-container').find('div.data-div').length == 1) {
+            element.closest('.field-div-container').find('div.data-div').html('');
         }
     } else {
         wrapper.find('.form-datepicker-cancel').show().on('click', function () {
@@ -791,11 +791,15 @@ function shorten_value(input, value, multiple) {
     }
 }
 
-window.select_refresh = function () {
+window.select_refresh = function (ele = '') {
 
-    $('.form-select-value-input.caret').removeClass('caret');
+    let parent = $('body');
+    if(ele != '') {
+        parent = ele;
+    }
+    parent.find('.form-select-value-input.caret').removeClass('caret');
 
-    $('.form-ele').find('.form-select').each(function () {
+    parent.find('.form-ele').find('.form-select').each(function () {
         $(this).unwrap().show();
         $(this).next('.form-select-wrapper').remove();
         $(this).next('.required-div').remove();

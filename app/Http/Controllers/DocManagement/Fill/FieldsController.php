@@ -47,17 +47,33 @@ class FieldsController extends Controller
 
     public function get_edit_properties_html(Request $request) {
 
+        $file_id = $request -> file_id;
         $field_id = $request -> field_id;
-        $field_type = $request -> field_type;
+        $field_category = $request -> field_category;
         $group_id = $request -> group_id;
 
         $common_name = '';
         $custom_name = '';
-        $common_field_sub_type = '';
+        $common_field_type = '';
         $common_field_id = '';
-        $common_field_field_type = '';
+        $common_field_sub_group_id = '';
+        $number_type = '';
 
-        $label = $field_type == 'radio' ? 'Radio Button Group Name' : 'Custom Field Name';
+        $field = Fields::where('field_id', $field_id) -> first();
+
+        if($field) {
+            if($field -> field_name_type == 'common') {
+                $common_name = $field -> field_name_display;
+            } else {
+                $custom_name = $field -> field_name_display;
+            }
+            $common_field_type = $field -> field_type;
+            $common_field_id = $field -> common_field_id;
+            $common_field_sub_group_id = $field -> field_sub_group_id;
+            $number_type = $field -> number_type;
+        }
+
+        $label = $field_category == 'radio' ? 'Radio Button Group Name' : 'Custom Field Name';
 
         $common_fields_groups = CommonFieldsGroups::with('sub_groups')
             -> orderBy('group_order')
@@ -65,11 +81,11 @@ class FieldsController extends Controller
 
         $common_fields = CommonFields::orderBy('field_order') -> get();
 
-        $file = Upload::whereFileId($request -> file_id) -> first();
+        $file = Upload::whereFileId($file_id) -> first();
         $published = $file -> published;
 
 
-        return view('/doc_management/create/fields/edit_properties_html', compact('field_id', 'field_type', 'group_id', 'common_name', 'custom_name', 'common_field_sub_type', 'common_field_id', 'common_field_field_type', 'label', 'common_fields_groups', 'common_fields', 'published'));
+        return view('/doc_management/create/fields/edit_properties_html', compact('field_id', 'field_category', 'group_id', 'common_name', 'custom_name', 'common_field_type', 'common_field_sub_group_id', 'common_field_id', 'number_type', 'label', 'common_fields_groups', 'common_fields', 'published'));
 
         /* $field_id = $request -> field_id;
         $field_type = $request -> field_type;
@@ -118,14 +134,54 @@ class FieldsController extends Controller
 
     public function save_add_fields(Request $request) {
 
-        $data = json_decode($request['data'], true);
+        $fields = json_decode($request['data'], true);
 
-        $file_id = $data[0]['file_id'];
+        $file_id = $fields[0]['file_id'];
 
         $published = Upload::where('file_id', $file_id) -> first();
-        if($published -> published == 'no') {
 
-            // add new fields
+        // TODO: change this back to if($published -> published == 'no') {
+        if($published -> published != '') {
+
+            if(isset($file_id)) {
+
+                // delete all fields for this document
+                $delete_docs = Fields::where('file_id', $file_id) -> delete();
+
+                foreach($fields as $field) {
+
+                    $custom_name = $field['custom_field_name'] ?? null;
+                    $common_name = $field['common_field_name'] ?? null;
+
+                    $field_name = $field['common_field_id'] > 0 ? $common_name : $custom_name;
+                    $field_name_type = $field['common_field_id'] > 0 ? 'common' : 'custom';
+
+                    $new_field = new Fields;
+
+                    $new_field -> file_id = $field['file_id'];
+                    $new_field -> common_field_id = $field['common_field_id'];
+                    $new_field -> field_id = $field['field_id'];
+                    $new_field -> group_id = $field['group_id'];
+                    $new_field -> page = $field['page'];
+                    $new_field -> field_category = $field['field_category']; // textline, date, number, checkbox, radio
+                    $new_field -> field_type = $field['common_field_type']; // address, date, name, number, phone, text
+                    $new_field -> field_name = trim(preg_replace('/\s/', '', $field_name));
+                    $new_field -> field_name_display = $field_name;
+                    $new_field -> field_name_type = $field_name_type; // common or custom
+                    $new_field -> field_sub_group_id = $field['common_field_sub_group_id'];
+                    $new_field -> number_type = $field['number_type']; // numeric or written
+                    $new_field -> top_perc = $field['top_perc'];
+                    $new_field -> left_perc = $field['left_perc'];
+                    $new_field -> width_perc = $field['width_perc'];
+                    $new_field -> height_perc = $field['height_perc'];
+
+                    $new_field -> save();
+
+                }
+
+            }
+
+            /* // add new fields
             if(isset($file_id)) {
 
                 // delete all fields for this document
@@ -174,7 +230,7 @@ class FieldsController extends Controller
 
                 }
 
-            }
+            } */
 
             return true;
 
@@ -188,12 +244,12 @@ class FieldsController extends Controller
 
     }
 
-    public function fillable_files(Request $request) {
+    /* public function fillable_files(Request $request) {
 
         $files = Upload::select('file_name_orig', 'file_id') -> groupBy('file_id', 'file_name_orig') -> get();
         return view('/doc_management/fill/fillable_files', compact('files'));
 
-    }
+    } */
 
     /* public function fill_fields(Request $request) {
 

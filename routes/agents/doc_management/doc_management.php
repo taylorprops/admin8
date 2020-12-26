@@ -77,6 +77,13 @@
     // get documents for add document to checklist html
     Route::get('/agents/doc_management/transactions/get_add_document_to_checklist_documents_html', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_add_document_to_checklist_documents_html');
 
+    // get documents emailed
+    Route::get('/agents/doc_management/transactions/get_emailed_documents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@get_emailed_documents');
+    // add documents emailed
+    Route::post('/agents/doc_management/transactions/add_emailed_documents', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@add_emailed_documents');
+    // delete document emailed
+    Route::post('/agents/doc_management/transactions/delete_emailed_document', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@delete_emailed_document');
+
     // delete document from checklist item
     Route::post('/agents/doc_management/transactions/remove_document_from_checklist_item', 'Agents\DocManagement\Transactions\Details\TransactionsDetailsController@remove_document_from_checklist_item');
     // add notes checklist item
@@ -205,19 +212,21 @@
 
     // ** FILL FIELDS
 
-    // fill fields
-    Route::get('/agents/doc_management/transactions/edit_files/{document_id}/{saved?}', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@file_view');
+    // edit files
+    Route::get('/agents/doc_management/transactions/edit_files/{document_id}', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@file_view');
+    // get files
+    Route::get('/agents/doc_management/transactions/get_edit_file_docs', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@get_edit_file_docs');
 
     // rotate document
     Route::post('/agents/doc_management/transactions/edit_files/rotate_document', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@rotate_document');
 
-    Route::post('/agents/doc_management/transactions/edit_files/save_field_input_values', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@save_field_input_values');
+    // save field inputs
+    Route::post('/agents/doc_management/transactions/edit_files/save_edit_system_inputs', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@save_edit_system_inputs');
+    Route::post('/agents/doc_management/transactions/edit_files/save_edit_user_fields', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@save_edit_user_fields');
+
     // Export filled fields to pdf
     Route::post('/agents/doc_management/transactions/edit_files/convert_to_pdf', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@convert_to_pdf') -> name('convert_to_pdf');
-    // save editing form - user added text, highlighting, etc
-    Route::post('/agents/doc_management/transactions/edit_files/save_edit_options', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@save_edit_options');
-    // get user fields
-    Route::post('/agents/doc_management/transactions/edit_files/get_user_fields', 'Agents\DocManagement\Transactions\EditFiles\TransactionsEditFilesController@get_user_fields');
+
 
 
 ///////////////////////////////// ADMIN ONLY //////////////////////////////////////////////

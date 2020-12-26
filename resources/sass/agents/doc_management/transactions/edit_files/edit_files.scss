@@ -34,11 +34,11 @@
     }
 
     overflow-x: hidden;
-    border: 1px solid $border-color;
+    //border: 1px solid $border-color;
 
     .file-viewer-container {
         width: 100%;
-        max-width: 1200px;
+        max-width: 1100px;
     }
 
     .file-view {
@@ -46,6 +46,7 @@
         width: 100%;
         height: calc(100vh - 130px);
         overflow-y: scroll;
+        overflow-x: hidden;
         -vendor-animation-duration: 2s;
         animation-duration: 2s;
     }
@@ -63,6 +64,7 @@
     .file-view-thumb-container {
         border: 2px solid rgba($primary-color, .2);
         margin-bottom: 5px;
+        max-width: 100px;
     }
 
     .file-view-thumb-container.active {
@@ -73,12 +75,13 @@
         font-size: .7rem;
     }
 
+
     // options
     .form-options-container {
         max-width: 100%;
         //overflow-x: auto;
     }
-    .form-options-container > div {
+    .form-options-div {
         width: 100px;
         text-align: center;
         white-space: nowrap;
@@ -90,12 +93,16 @@
         display: block;
         padding: 10px 0px;
     }
-    .edit-options {
-        display: none;
-    }
+
     .edit-form-action.active {
         background: $primary;
+
+        &:hover {
+            color: $yellow;
+        }
     }
+
+
     // user fields
     .textline-html {
         height: 100%;
@@ -170,86 +177,141 @@
 
     // Fields
 
-    .field-container,
-    .field-container-hidden {
+    // page container
+    .fields-container {
         position: relative;
         padding: 0px;
         margin: 0px;
     }
 
-    input.fillable-field-input {
+    /* input.fillable-field-input {
         width: 100%;
         height: 100%;
+    } */
+
+    .field-div-container {
+
+        .field-datepicker {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: transparent;
+            z-index: 1;
+        }
+
+        .data-div {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            font-size: .8rem;
+            z-index: 0;
+
+            &:not(.data-div-radio-check) {
+                padding-left: 2px;
+                text-align: center;
+            }
+
+
+        }
+
+        .inputs-container {
+            display: none;
+
+            .form-ele {
+                margin: 0px;
+            }
+        }
+
+        .field-options-holder, .field-handle {
+            display: none !important;
+        }
+
+        &.show {
+
+            z-index: 5;
+
+            .inputs-container {
+                display: block;
+                position: absolute;
+                top: 20px;
+                left: 0px;
+                right: auto;
+                width: 300px;
+                z-index: 5;
+
+                &.right {
+                    left: auto;
+                    right: 0px;
+                }
+            }
+
+            .field-options-holder, .field-handle {
+                display: block !important;
+            }
+        }
+
     }
 
-    .field-datepicker {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        width: 100%;
-        height: 100%;
-        background: transparent;
-        border: none;
-        color: transparent;
-        z-index: 1;
+    *[contentEditable="true"]:focus {
+        outline: none;
+        /* border: 1px solid rgb(120, 196, 231);
+        box-shadow: 0 0 5px rgb(120, 196, 231); */
     }
 
-    .data-div {
-        position: absolute;
-        bottom: 0px;
-        left: 0px;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        line-height: 1;
-    }
-
-    $min_width: 320px;
+    /* $min_width: 320px;
     $max_width: 1000px;
     $min_font: 6px;
-    $max_font: 13px;
-    .data-div:not(.data-div-radio-check) {
-        @include fluid-type($min_width, $max_width, $min_font, $max_font);
-        padding-left: 5px;
-        padding-top: .3VH;
-    }
+    $max_font: 13px; */
+    /* .data-div:not(.data-div-radio-check) {
+        //@include fluid-type($min_width, $max_width, $min_font, $max_font);
+        padding-left: 2px;
+        overflow: hidden;
+    } */
 
-    //$min_font: 1em;
-    //$max_font: 1.6em;
     .data-div.data-div-radio-check {
         cursor: pointer;
         font-size: 1.6em;
+        font-weight: bold;
+        background: rgb(250, 226, 203);
+        //background: rgba($orange, .1);
+        border: 1px solid rgb(250, 200, 153);
+        top: -1px;
+        //padding-left: 1px;
+        height: 15px;
 
         &.data-div-radio {
-            top: -2px;
-            height: 15px;
             line-height: 30%;
-            border: 1px solid $primary;
+            padding-top: 1px;
             border-radius: 50%;
-            background: $blue-light;
-            color: $blue-dark;
         }
         &.data-div-checkbox {
-            top: -3px;
-            left: 2px;
-            line-height: 80%;
+            line-height: 40%;
         }
     }
 
 
 
     // Fields
-    .field-div:not([data-type="radio"]) {
-        background: rgba($orange, .1);
+    .field-div {
         cursor: pointer;
         color: #000;
         box-shadow: none;
-    }
-    .field-div[data-type="radio"] {
-        background: transparent;
-        cursor: pointer;
-        color: #000;
-        border-color: black;
+        display: block;
+        z-index: 3;
+
+        &:not(.radio):not(.checkbox):not(.highlight-div):not(.strikeout-div) {
+            background: rgba($orange, .1);
+        }
+
+        &.radio, .checkbox {
+            background: transparent;
+        }
     }
 
     // user fields
@@ -258,14 +320,12 @@
         box-shadow: none;
         color: #000;
     }
-    /* .user-field-div.textline-div {
-        background: rgba($primary, .1);
-    } */
+
     .user-field-div.highlight-div, .data-div.highlight {
         background: rgba($yellow, .3);
     }
     .data-div.strikeout {
-        height: 2px;
+        height: 4px;
     }
     .strikeout-div {
         padding-top: 7px;
@@ -273,7 +333,7 @@
     .user-field-div.strikeout-div::after {
         content: '';
         width: 100%;
-        height: 2px;
+        height: 4px;
         background: black;
         display: block;
         position: relative;
@@ -281,35 +341,12 @@
 
 
 
-    /* .field-div.active {
-        cursor: default;
-        box-shadow: 0px 9px 0px -5px #FFFFFF,
-        0px -9px 0px -5px #FFFFFF,
-        9px 0px 0px -5px #FFFFFF,
-        -9px 0px 0px -5px  #FFFFFF,
-        0px 0px 0px 5px $blue,
-        5px 5px 10px 5px rgba(0, 0, 0, 0);
-    } */
-
-    .modal-body {
-        max-height: 65VH;
-        overflow: auto;
-    }
-
-    @media (max-width: 1500px) {
-        .edit-file-sidebar {
-            display: none;
-        }
-    }
-
     // edit file options bar
     .navbar-edit-file-options {
         li:hover {
             background: $blue-light;
         }
-        a {
 
-        }
     }
 
 

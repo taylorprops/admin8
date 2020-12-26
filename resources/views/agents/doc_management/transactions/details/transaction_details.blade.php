@@ -385,28 +385,32 @@
                                 <div class="row mt-2 mb-3">
                                     <div class="col-12 col-lg-6">
                                         <select class="custom-form-element form-select form-select-no-cancel form-select-no-search select-form-group mt-3" data-label="Select Form Group">
-                                            <option value="all">All</option>
+                                            <option value="all" selected>All</option>
                                             @foreach($form_groups as $form_group)
-                                                <option value="{{ $form_group -> resource_id }}" @if($loop -> first) selected @endif>{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
+                                                <option value="{{ $form_group -> resource_id }}">{{ $form_group -> resource_state }} @if($form_group -> resource_state != $form_group -> resource_name) | {{ $form_group -> resource_name }} @endif</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                </div>
 
-                                <div class="row">
                                     <div class="col-12 col-lg-6">
                                         <div id="form_search_div">
                                             <input type="text" class="custom-form-element form-input form-search" data-label="Search All Forms">
                                         </div>
                                     </div>
+
+                                </div>
+
+                                {{-- <div class="row">
+
                                     <div class="col-12 col-lg-6 mt-1 mt-lg-0">
                                         <select class="custom-form-element form-select form-select-no-search" id="form_categories_search" multiple data-label="Search Form Tags">
+                                            <option value="all">All</option>
                                             @foreach($form_categories as $form_category)
                                             <option value="{{ $form_category -> resource_id }}">{{ $form_category -> resource_name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="form-groups-container border p-1 p-md-3 p-lg-4 mt-2">
 
@@ -430,18 +434,22 @@
                                         @foreach($forms_available as $form)
 
                                             @php
-                                            $form_categories = explode(',', $form -> form_categories);
+                                            $form_categories = preg_replace('/,/', ' ', $form -> form_categories);
                                             $form_status_class = '';
                                             /* if(in_array($form -> file_id, $forms_in_use)) {
                                                 //$form_status_class = 'form-in-use';
                                             } */
                                             @endphp
 
-                                            <li class="list-group-item form-name p-1 {{ $form_status_class }}" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-tags="@foreach($form_categories as $tag){{ $tag }} @endforeach">
-                                                <div class="d-flex justify-content-between">
-                                                    <div class="d-flex justify-content-start align-items-center">
-                                                        <div class="mr-3 mt-1">
+                                            <li class="list-group-item form-name p-1 {{ $form_status_class }}" data-form-id="{{ $form -> file_id }}" data-text="{{ $form -> file_name_display }}" data-tags="{{ $form_categories }}">
+
+                                                <div class="row d-flex align-items-center">
+
+                                                    <div class="col-2 col-sm-1">
+
+                                                        <div class="w-100 d-flex justify-content-end">
                                                             <input type="checkbox" class="custom-form-element form-checkbox individual-template-form"
+                                                            id="template_form_{{ $form -> file_id }}"
                                                             data-file-id="{{ $form -> file_id }}"
                                                             data-file-name="{{ $form -> file_name }}"
                                                             data-file-name-display="{{ $form -> file_name_display }}"
@@ -450,16 +458,32 @@
                                                             data-file-size="{{ get_mb(filesize(Storage::disk('public') -> path(str_replace('/storage/', '', $form -> file_location)))) }}"
                                                             >
                                                         </div>
-                                                        <div title="{{ $form -> file_name_display }}">
-                                                            <a href="{{ $form -> file_location }}" target="_blank">{{ shorten_text($form -> file_name_display, 65) }}</a>
-                                                        </div>
+
                                                     </div>
-                                                    <div class="mr-3 d-none d-lg-block">
-                                                        @foreach($form_categories as $tag)
+
+                                                    <div class="col-10 col-sm-10 col-lg-8">
+
+                                                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+
+                                                            <label class="mb-0" for="template_form_{{ $form -> file_id }}" title="{{ $form -> file_name_display }}">
+                                                                <a class="text-primary pointer">{{ shorten_text($form -> file_name_display, 65) }}</a>
+                                                            </label>
+                                                            <div>
+                                                                <a href="{{ $form -> file_location }}" class="btn btn-sm btn-primary" target="_blank"><i class="fa fa-eye mr-2"></i> View File</a>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="col-12 col-lg-3 d-none d-lg-block">
+                                                        @foreach(explode(' ', $form_categories) as $tag)
                                                         <span class="badge badge-pill form-pill text-white ml-1" style="background-color: {{ $resource_items -> GetCategoryColor($tag) }}">{{ $resource_items -> getResourceName($tag) }}</span>
                                                         @endforeach
                                                     </div>
+
                                                 </div>
+
                                             </li>
 
                                         @endforeach
@@ -570,7 +594,7 @@
                                         // get if required
                                         $checklist_form_required = $available_files -> where('file_id', $checklist_item_required -> checklist_form_id) -> first();
                                         @endphp
-                                        @if($checklist_form_required -> file_location != '')
+                                        @if($checklist_form_required && $checklist_form_required -> file_location != '')
                                             <li class="list-group-item">
                                                 <div class="d-flex justify-content-start align-items-center">
                                                     <div>

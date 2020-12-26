@@ -33,7 +33,7 @@
                     <div class="col-12 col-md-12 col-lg-6 px-1">
                         <div class="add-docs-div bg-blue-light p-3 mb-1 mb-sm-3 border border-primary rounded-lg text-center">
                             <i class="fad fa-clone fa-3x text-primary mb-2"></i>
-                            <div class="h5 text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="Add a preset template of all forms available for the checklist"><i class="fad fa-question-circle ml-2"></i></a></div>
+                            <div class="h5 text-primary mb-3">Templates <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Adding Template Documents" data-content="Add a preset template of all forms available for the checklist<br><br>or<br><br>Add a preset template of individual forms from all Associations"><i class="fad fa-question-circle ml-2"></i></a></div>
                             <div class="row">
                                 <div class="col-12 col-sm-6">
                                     Checklist Documents<br>
@@ -50,19 +50,66 @@
                 <div class="col-12 col-sm-6 col-lg-3 px-1">
                     <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
                         <i class="fad fa-file-upload fa-3x text-primary mb-2"></i>
-                        <div class="h5 text-primary mb-3">Upload Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Uploading Documents" data-content="Add a singel form from all forms available"><i class="fad fa-question-circle ml-2"></i></a></div>
+                        <div class="h5 text-primary mb-3">Upload Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Uploading Documents" data-content="Upload documents from your computer"><i class="fad fa-question-circle ml-2"></i></a></div>
                         <a href="javascript:void(0);" class="btn btn-primary mt-1 mt-md-4" id="upload_documents_button"><i class="fa fa-plus mr-2"></i> Upload Documents</a>
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3 px-1">
                     <div class="add-docs-div bg-blue-light p-3 mb-1 border border-primary rounded-lg text-center">
                         <i class="fad fa-envelope-square fa-3x text-primary mb-2"></i>
-                        <div class="h5 text-primary mb-3">Email Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Emailing Documents" data-content="body{{-- TODO: needs description --}}"><i class="fad fa-question-circle ml-2"></i></a></div>
+                        <div class="h5 text-primary mb-3">Email Documents <a href="javascript: void(0)" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="Emailing Documents" data-content="Email documents to the address below and they will show up in a queue below. Please allow a little time for the email to be processed. You do not need to refresh the screen, the emailed documents will appear when complete."><i class="fad fa-question-circle ml-2"></i></a></div>
                         <div class="w-100 overflow-hidden">
                             <a href="mailto:{{ $property_email }}" target="_blank" class="d-block mt-1 mt-md-5">{{ $property_email }}</a>
                         </div>
                     </div>
                 </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-12 col-xl-6">
+
+            <div id="emailed_documents_container" class="p-4 mb-3 border rounded animate__animated animate__fadeIn">
+
+                <h5 class="text-orange"><i class="fal fa-envelope mb-3 mr-3"></i> Pending Emailed Documents</h5>
+
+                <div class="list-group mb-3" id="emailed_documents_div"></div>
+
+                <div class="pt-3 mt-4 d-flex justify-content-around border-top">
+                    <select class="custom-form-element form-select form-select-no-search" id="emailed_documents_folder" data-label="Select Folder">
+                        @foreach($folders as $folder)
+                            @php
+                            $folder_name = $folder -> folder_name;
+                            if($for_sale == false) {
+                                $folder_name = str_replace('Contract', 'Lease', $folder_name);
+                            }
+
+                            if($transaction_type == 'listing') {
+                                $selected_folder = 'Listing Documents';
+                            } else if($transaction_type == 'contract') {
+                                $selected_folder = 'Contract Documents';
+                                if($for_sale == false) {
+                                    $selected_folder = 'Lease Documents';
+                                }
+                            } else if($transaction_type == 'referral') {
+                                $selected_folder = 'Referral Documents';
+                            }
+                            @endphp
+                            @if($folder -> folder_name != 'Trash')
+                            <option value="{{ $folder -> id }}" @if($selected_folder == $folder_name) selected @endif >{{ $folder_name }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-around">
+                    <a href="javascript: void(0)" class="btn btn-success" id="add_emailed_documents_button"><i class="fal fa-plus mr-2"></i> Add Documents</a>
+                </div>
+
             </div>
 
         </div>
@@ -230,7 +277,7 @@
 
                                                 $menu_options .= '<button type="button" class="dropdown-item text-primary doc-rename-button" data-document-id="'.$document -> id.'" data-document-name="'.$document -> file_name_display.'" title="Rename Document"><i class="fad fa-repeat mr-1 "></i> Rename</button>';
 
-                                                if($document -> pages_total > 1) {
+                                                if($document -> pages_total > 1 && $document -> file_type == 'user') {
                                                     $menu_options .= '<button type="button" class="dropdown-item text-primary doc-split-button" data-document-id="'.$document -> id.'" data-checklist-id="'.$checklist_id.'" data-file-name="'.$document -> file_name_display.'" data-file-type="'.$document -> file_type.'" data-folder="'.$folder -> id.'" title="Split Document"><i class="fad fa-page-break mr-1 "></i> Split</button>';
                                                 }
 
@@ -242,9 +289,9 @@
 
 
 
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0 doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
+                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-duplicate-button" data-document-id="'.$document -> id.'" data-file-type="'.$document -> file_type.'" title="Make Copy Of Form"><i class="fad fa-clone mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Make Copy</span></button>';
 
-                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0 doc-email-button" data-document-id="'.$document -> id.'"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
+                                            $menu_options .= '<button type="button" class="dropdown-item text-primary doc-email-button" data-document-id="'.$document -> id.'" title="Email Form"><i class="fad fa-envelope mr-2 mr-xl-0"></i><span class="d-inline-block d-xl-none"> Email</span></button>';
 
                                             $menu_options .= '
                                             <div class="dropdown-submenu">

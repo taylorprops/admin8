@@ -17,20 +17,12 @@ if (document.URL.match(/transaction_required_details/)) {
             $('.picker__box').prepend('<h3 class="py-3 bg-primary text-yellow-light my-0 border-bottom custom-picker-header">Expiration Date</h3>');
         });
 
-        // disable opening steps unless complete
-        /* $('.step-title').on('click', function(e) {
-            e.stopPropagation();
-        });
-        // validate section
-        $('.next-step').off('click').on('click', function(e) {
-            e.preventDefault();
-
-            let step = $(this).closest('.step');
-            let validate = validate_form(step);
-            if(validate == 'no') {
-                e.stopPropagation();
+        $('#EarnestAmount, #EarnestHeldBy').on('change', function() {
+            $('#EarnestAmount, #EarnestHeldBy').removeClass('.required');
+            if($('#EarnestAmount').val() != '' || $('#EarnestHeldBy').val() != '') {
+                $('#EarnestAmount, #EarnestHeldBy').addClass('.required');
             }
-        }); */
+        });
 
         $('#save_required_details').on('click', function(e) {
             e.preventDefault();
@@ -77,7 +69,9 @@ if (document.URL.match(/transaction_required_details/)) {
             let val = $(this).val();
             let type = $(this).data('type') || null;
 
-            if (val.length > 3) {
+            if (val.length > 4) {
+
+                $('.search-results').html('');
 
                 if (agent_search_request) {
                     agent_search_request.cancel();
@@ -95,32 +89,44 @@ if (document.URL.match(/transaction_required_details/)) {
                     }
                 })
                 .then(function (response) {
+
                     let data = response.data;
-                    $('.search-results').html('');
+
                     $.each(data, function (k, agents) {
+
                         if (agents.length > 0) {
+
+                            $('.search-results-container').show();
+
                             $.each(agents, function (k, agent) {
-                                console.log(agent);
+
                                 let agent_div = ' \
-                                <div class="search-result list-group-item" data-type="'+type+'" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-office-phone="' + agent.OfficePhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
-                                    <div class="row"> \
-                                        <div class="col-6 col-md-3"> \
-                                            <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
-                                        </div> \
-                                        <div class="col-6 col-md-3"> \
-                                        <span class="font-weight-bold">'+ agent.OfficeName + '</span><br><span class="small">' + agent.OfficeMlsId + '</span>\
-                                        </div> \
-                                        <div class="col-12 col-md-6"> \
-                                            '+ agent.OfficeAddress1 + '<br>' + agent.OfficeCity + ', ' + agent.OfficeStateOrProvince + ' ' + agent.OfficePostalCode + ' \
+                                    <div class="search-result list-group-item" data-type="'+type+'" data-agent-first="'+ agent.MemberFirstName + '" data-agent-last="' + agent.MemberLastName + '" data-agent-phone="' + agent.MemberPreferredPhone + '" data-office-phone="' + agent.OfficePhone + '" data-agent-email="' + agent.MemberEmail + '" data-agent-company="' + agent.OfficeName + '" data-agent-mls-id="' + agent.MemberMlsId + '" data-agent-street="' + agent.OfficeAddress1 + '" data-agent-city="' + agent.OfficeCity + '" data-agent-state="' + agent.OfficeStateOrProvince + '" data-agent-zip="' + agent.OfficePostalCode + '"> \
+                                        <div class="row"> \
+                                            <div class="col-6 col-md-3"> \
+                                                <span class="font-weight-bold">'+ agent.MemberLastName + ', ' + agent.MemberFirstName + '</span><br><span class="small">' + agent.MemberType + ' (' + agent.MemberMlsId + ')<br>' + agent.MemberEmail + ' \
+                                            </div> \
+                                            <div class="col-6 col-md-3"> \
+                                            <span class="font-weight-bold">'+ agent.OfficeName + '</span><br><span class="small">' + agent.OfficeMlsId + '</span>\
+                                            </div> \
+                                            <div class="col-12 col-md-6"> \
+                                                '+ agent.OfficeAddress1 + '<br>' + agent.OfficeCity + ', ' + agent.OfficeStateOrProvince + ' ' + agent.OfficePostalCode + ' \
+                                            </div> \
                                         </div> \
                                     </div> \
-                                </div> \
-                            ';
-                                $('.search-results').show().append(agent_div);
+                                ';
+
+                                $('.search-results').append(agent_div);
+
                             });
+
                         } else {
-                            $('.search-results').show().append('<div class="search-result list-group-item text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> No Matching Results</div>');
+
+                            $('.search-results-container').show();
+                            $('.search-results').append('<div class="search-result list-group-item text-danger"><i class="fad fa-exclamation-triangle mr-2"></i> No Matching Results</div>');
+
                         }
+
                     });
 
                     $('.search-result').off('click').on('click', function () {
@@ -131,31 +137,33 @@ if (document.URL.match(/transaction_required_details/)) {
                         }
                     });
 
-                    $(document).mouseup(function (e) {
-                        var container = $('.search-results');
-                        if (!container.is(e.target) && container.has(e.target).length === 0) {
-                            container.hide();
-                        }
-                    });
                 })
                 .catch(function (error) {
                     if (axios.isCancel(error)) {
 
                     } else {
-                        //console.log(error);
+                        //
                     }
                 });
 
 
             } else {
 
-                $('.search-results').hide().html('');
+                $('.search-results-container').hide();
+                $('.search-results').html('');
 
             }
 
         }
 
         $('.agent-search').on('keyup', search_bright_agents);
+
+        $(document).on('mouseup', function (e) {
+            var container = $('.search-results-container');
+            if (!container.is(e.target) && container.has(e.target).length === 0) {
+                container.hide();
+            }
+        });
 
         $('#UsingHeritage').on('change', function() {
             if($(this).val() == 'no') {
@@ -265,19 +273,19 @@ if (document.URL.match(/transaction_required_details/)) {
         let office_zip = ele.data('agent-zip');
         let agent_mls = ele.data('agent-mls-id');
 
-        $('#ListAgentFirstName').val(agent_first)/* .trigger('change') */;
-        $('#ListAgentLastName').val(agent_last)/* .trigger('change') */;
-        $('#ListAgentPreferredPhone').val(agent_phone)/* .trigger('change') */;
-        $('#ListAgentEmail').val(agent_email)/* .trigger('change') */;
-        $('#ListAgentOfficeName').val(agent_company)/* .trigger('change') */;
-        $('#ListAgentOfficeStreet').val(office_street)/* .trigger('change') */;
-        $('#ListAgentOfficeCity').val(office_city)/* .trigger('change') */;
-        $('#ListAgentOfficeState').val(office_state)/* .trigger('change') */;
-        $('#ListAgentOfficeZip').val(office_zip)/* .trigger('change') */;
-        $('#ListAgentMlsId').val(agent_mls)/* .trigger('change') */;
-        select_refresh();
+        $('#ListAgentFirstName').val(agent_first);
+        $('#ListAgentLastName').val(agent_last);
+        $('#ListAgentPreferredPhone').val(agent_phone);
+        $('#ListAgentEmail').val(agent_email);
+        $('#ListAgentOfficeName').val(agent_company);
+        $('#ListAgentOfficeStreet').val(office_street);
+        $('#ListAgentOfficeCity').val(office_city);
+        $('#ListAgentOfficeState').val(office_state);
+        $('#ListAgentOfficeZip').val(office_zip);
+        $('#ListAgentMlsId').val(agent_mls);
+        //select_refresh();
 
-        $('.search-results').fadeOut('slow');
+        $('.search-results-container').fadeOut('slow');
         $('#list_agent_search_div').collapse('hide');
     }
 
